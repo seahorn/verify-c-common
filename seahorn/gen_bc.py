@@ -58,7 +58,7 @@ def get_seahorn_dir():
 
 
 # generate .bc file for main harness .cpp file and stubbed files
-def generate_bitcode(clang_cmd, sea_dir, target, sea_args, comp_options, dry=False, verbose=False):
+def generate_bitcode(clang_cmd, sea_dir, build_dir, target, sea_args, comp_options, dry=False, verbose=False):
     command = [clang_cmd]
     # append path to custom stubbed code
     command.append("-I{helper_dir}".format(helper_dir=HELPER_PATH))
@@ -70,7 +70,8 @@ def generate_bitcode(clang_cmd, sea_dir, target, sea_args, comp_options, dry=Fal
     # append sea clang options
     command.extend(sea_args)
     command.append("-I{sea_dir}".format(sea_dir=sea_dir))
-    outfile = "{target}.bc".format(target=target)
+    file = target.split("/")[-1]
+    outfile = "{build_dir}/{file}.bc".format(build_dir=build_dir,file=file)
     command.append("-o {outfile}".format(outfile=outfile))
     command.append(target)
     command_str = " ".join(command)
@@ -85,14 +86,14 @@ def generate_bitcode(clang_cmd, sea_dir, target, sea_args, comp_options, dry=Fal
             print("error generating bitcode: %s" % err)
 
 # use sea clang to link everything into a single file
-def link_targets(targets, job_path, dry=False, verbose=False):
+def link_targets(targets, job_path, build_dir, dry=False, verbose=False):
     sea_cmd = get_sea()
     if not sea_cmd:
         print("sea not available, skipping link...")
         return
-    outfile = os.path.join(job_path, "out.bc")
+    outfile = os.path.join(build_dir, "out.bc")
     bc_targets = [
-        os.path.join(ROOT_PATH, "{target}.bc".format(target=t)) for t in targets
+        os.path.join(build_dir, "{target}.bc".format(target=t.split("/")[-1])) for t in targets
     ]
     command = [sea_cmd, 'clang', '-S', '-o', outfile, *bc_targets]
     command_str = " ".join(command)
@@ -181,6 +182,10 @@ def main():
         candidate_jobs = os.listdir(full_jobs_path)
     for job in candidate_jobs:
         job_path = os.path.join(full_jobs_path, job)
+        if not os.path.isdir(job_path): continue
+        build_dir = "{job_path}/build".format(job_path=job_path)
+        if not os.path.exists(build_dir):
+            os.mkdir(build_dir)
         if os.path.isdir(job_path):
             src_path, sea_option, targets = get_job_info(job_path)
             if src_path and sea_option and targets:
@@ -199,12 +204,13 @@ def main():
                     generate_bitcode(
                         clang_cmd,
                         sea_dir,
+                        build_dir,
                         target_path,
                         sea_options,
                         compile_args,
                         dry=dry,
                         verbose=verbose)
-                link_targets(targets, job_path, dry=dry, verbose=verbose)
+                link_targets(targets, job_path, build_dir, dry=dry, verbose=verbose)
             else:
                 print("No src file or option found for %s. Skiping" % job_path)
         else:
