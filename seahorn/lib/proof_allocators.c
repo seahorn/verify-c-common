@@ -40,23 +40,23 @@ void *realloc( void *ptr, size_t new_size ) {
 /**
  *
  */
-static void *s_can_fail_calloc_allocator(struct aws_allocator *allocator, size_t num, size_t size) {
+static void *s_calloc_allocator(struct aws_allocator *allocator, size_t num, size_t size) {
     (void)allocator;
-    return can_fail_calloc(num, size);
+    return bounded_calloc(num, size);
 }
 
 /**
  *
  */
-static void *s_can_fail_malloc_allocator(struct aws_allocator *allocator, size_t size) {
+static void *s_malloc_allocator(struct aws_allocator *allocator, size_t size) {
     (void)allocator;
-    return can_fail_malloc(size);
+    return bounded_malloc(size);
 }
 
 /**
  * Since we always allocate with "malloc()", just free with "free()"
  */
-static void s_can_fail_free_allocator(struct aws_allocator *allocator, void *ptr) {
+static void s_free_allocator(struct aws_allocator *allocator, void *ptr) {
     (void)allocator;
     free(ptr);
 }
@@ -64,47 +64,44 @@ static void s_can_fail_free_allocator(struct aws_allocator *allocator, void *ptr
 /**
  *
  */
-static void *s_can_fail_realloc_allocator(struct aws_allocator *allocator, void *ptr, size_t oldsize, size_t newsize) {
+static void *s_realloc_allocator(struct aws_allocator *allocator, void *ptr, size_t oldsize, size_t newsize) {
     (void)allocator;
     (void)oldsize;
-    return can_fail_realloc(ptr, newsize);
+    return realloc(ptr, newsize);
 }
 
-static struct aws_allocator s_can_fail_allocator_static = {
-    .mem_acquire = s_can_fail_malloc_allocator,
-    .mem_release = s_can_fail_free_allocator,
-    .mem_realloc = s_can_fail_realloc_allocator,
-    .mem_calloc = s_can_fail_calloc_allocator,
+static struct aws_allocator s_allocator_static = {
+    .mem_acquire = s_malloc_allocator,
+    .mem_release = s_free_allocator,
+    .mem_realloc = s_realloc_allocator,
+    .mem_calloc = s_calloc_allocator,
 };
 
+void *bounded_calloc(size_t num, size_t size) {
+    size_t required_bytes;
+    assume(aws_mul_size_checked(num, size, &required_bytes) == AWS_OP_SUCCESS);
+    assume(required_bytes <= MEM_BLOCK);
+    void *ptr = malloc(required_bytes);
+    memset(ptr, 0, required_bytes);
+    return ptr;
+}
 
 void *bounded_malloc(size_t size) {
-    assume(size <= MAX_MALLOC);
-    return malloc(size);
+    assume(size <= MEM_BLOCK);
+    return malloc(MEM_BLOCK);
 }
 
-struct aws_allocator *can_fail_allocator() {
-    return &s_can_fail_allocator_static;
+struct aws_allocator *_allocator() {
+    return &s_allocator_static;
 }
 
-void *can_fail_calloc(size_t num, size_t size) {
-    return nondet_bool() ? NULL : bounded_calloc(num, size);
-}
-
-void *can_fail_malloc(size_t size) {
-    return nondet_bool() ? NULL : bounded_malloc(size);
-}
-
-/************************************************************************************************************
- * These assert that the allocator is can_fail_allocator, and then do the allocations without using
- * function pointers. (Function pointers make CBMC slow).
- */
+/************************************************************************************************************/
 
 /**
  * This assert will fail if code ever uses a different allocator than expected during a proof
  */
 bool aws_allocator_is_valid(const struct aws_allocator *alloc) {
-    return alloc == can_fail_allocator();
+    return alloc == _allocator();
 }
 
 void *aws_mem_acquire(struct aws_allocator *allocator, size_t size) {
@@ -112,7 +109,7 @@ void *aws_mem_acquire(struct aws_allocator *allocator, size_t size) {
     /* Protect against https://wiki.sei.cmu.edu/confluence/display/c/MEM04-C.+Beware+of+zero-length+allocations */
     AWS_FATAL_PRECONDITION(size != 0);
 
-    void *mem = can_fail_malloc(size);
+    void *mem = bounded_malloc(size);
     if (!mem) {
         aws_raise_error(AWS_ERROR_OOM);
     }
@@ -132,7 +129,7 @@ void *aws_mem_calloc(struct aws_allocator *allocator, size_t num, size_t size) {
         return NULL;
     }
 
-    void *mem = can_fail_calloc(num, size);
+    void *mem = bounded_calloc(num, size);
     if (!mem) {
         aws_raise_error(AWS_ERROR_OOM);
     }
@@ -165,7 +162,7 @@ void *aws_mem_acquire_many(struct aws_allocator *allocator, size_t count, ...) {
 
     if (total_size > 0) {
 
-        allocation = can_fail_malloc(total_size);
+        allocation = bounded_malloc(total_size);
         if (!allocation) {
             aws_raise_error(AWS_ERROR_OOM);
             goto cleanup;
@@ -213,7 +210,7 @@ int aws_mem_realloc(struct aws_allocator *allocator, void **ptr, size_t oldsize,
         return AWS_OP_SUCCESS;
     }
 
-    void *newptr = can_fail_realloc(*ptr, newsize);
+    void *newptr = realloc(*ptr, newsize);
     if (!newptr) {
         return aws_raise_error(AWS_ERROR_OOM);
     }
