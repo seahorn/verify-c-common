@@ -20,7 +20,7 @@
 /**
  * Runtime: 10s
  */
-void aws_array_list_copy_harness() {
+int main() {
     /* data structure */
     struct aws_array_list from;
     struct aws_array_list to;
@@ -49,4 +49,6 @@ void aws_array_list_copy_harness() {
     sassert(aws_array_list_is_valid(&from));
     sassert(aws_array_list_is_valid(&to));
     sassert(from.item_size == to.item_size);
+
+    return 0;
 }
