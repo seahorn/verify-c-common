@@ -3,4 +3,5 @@ targets:
   - "seahorn/jobs/array_list_copy/array_list.c"
   - "seahorn/jobs/array_list_copy/aws_array_list_copy_harness.c"
   - "seahorn/lib/array_list_helper.c"
+  - "seahorn/lib/proof_allocators.c"
 sea_options: "-c -emit-llvm -D__SEAHORN__ -O1 -Xclang -disable-llvm-optzns -S -Wno-macro-redefined -DMAX_ITEM_SIZE=2 -DMAX_INITIAL_ITEM_ALLOCATION=9223372036854775808ULL"
