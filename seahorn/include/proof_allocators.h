@@ -16,7 +16,7 @@
 #pragma once
 
 #include <aws/common/common.h>
-#include <proof_helpers/nondet.h>
+#include <nondet.h>
 #include <stdlib.h>
 
 /**
