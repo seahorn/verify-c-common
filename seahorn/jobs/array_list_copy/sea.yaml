@@ -1,6 +1,6 @@
 src_path: "aws-c-common/source/array_list.c"
 targets:
-  - "seahorn/jobs/array_list_copy/array_list.c"
+  - "aws-c-common/source/array_list.c"
   - "seahorn/jobs/array_list_copy/aws_array_list_copy_harness.c"
   - "seahorn/lib/array_list_helper.c"
   - "seahorn/lib/proof_allocators.c"
