@@ -182,6 +182,7 @@ def main():
         candidate_jobs = os.listdir(full_jobs_path)
     for job in candidate_jobs:
         job_path = os.path.join(full_jobs_path, job)
+        print ("Job: " + job_path)
         if not os.path.isdir(job_path): continue
         build_dir = "{job_path}/build".format(job_path=job_path)
         if not os.path.exists(build_dir):
