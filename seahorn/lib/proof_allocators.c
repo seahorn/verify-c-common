@@ -1,16 +1,5 @@
 /*
- * Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * A copy of the License is located at
- *
- *  http://aws.amazon.com/apache2.0
- *
- * or in the "license" file accompanying this file. This file is distributed
- * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * 
  */
 
 #include <aws/common/math.h>
@@ -37,6 +26,7 @@ void *realloc( void *ptr, size_t new_size ) {
     return ptr;
 }
 
+#if 0
 /**
  *
  */
@@ -77,6 +67,19 @@ static struct aws_allocator s_allocator_static = {
     .mem_calloc = s_calloc_allocator,
 };
 
+/**
+ * This assert will fail if code ever uses a different allocator than expected during a proof
+ */
+bool aws_allocator_is_valid(const struct aws_allocator *alloc) {
+    return alloc == _allocator();
+}
+
+struct aws_allocator *_allocator() {
+    return &s_allocator_static;
+}
+
+#endif
+
 void *bounded_calloc(size_t num, size_t size) {
     size_t required_bytes;
     assume(aws_mul_size_checked(num, size, &required_bytes) == AWS_OP_SUCCESS);
@@ -91,18 +94,8 @@ void *bounded_malloc(size_t size) {
     return malloc(MEM_BLOCK);
 }
 
-struct aws_allocator *_allocator() {
-    return &s_allocator_static;
-}
-
 /************************************************************************************************************/
 
-/**
- * This assert will fail if code ever uses a different allocator than expected during a proof
- */
-bool aws_allocator_is_valid(const struct aws_allocator *alloc) {
-    return alloc == _allocator();
-}
 
 void *aws_mem_acquire(struct aws_allocator *allocator, size_t size) {
     AWS_FATAL_PRECONDITION(aws_allocator_is_valid(allocator));
