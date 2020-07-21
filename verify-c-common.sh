@@ -20,5 +20,7 @@ ${SEA_DIR}/sea bpf --sea-dsa=cs+t  -m32 -O0  --inline  --horn-bmc-engine=mono --
                    --horn-bv2-extra-widemem --keep-temps --temp-dir=/tmp/verify-c-common \
                    --lower-gv-init --lower-gv-init-struct=false  -S  --devirt-functions \
                    --externalize-addr-taken-functions --keep-shadows \
+		   --horn-bv2-singleton-aliases=true --horn-stats=true \
+                   --horn-unify-assumes=true --horn-vcgen-only-dataflow=true --horn-bmc-coi=true \
                    ${FAT_LL} --sea-dsa-type-aware \
                    --horn-explicit-sp0=false $@
