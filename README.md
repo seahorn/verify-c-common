@@ -8,4 +8,4 @@ STEPS:
   * If you run step 3 from the build dir, then "install step" for aws-c-common is not needed
 3. Copy compile_commands.json to top directory
 4. Run: python (3) seahorn/gen_bc.py
-
+5. Run: verify-c-common.sh
