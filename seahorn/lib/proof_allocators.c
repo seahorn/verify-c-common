@@ -97,7 +97,7 @@ void *bounded_malloc(size_t size) {
     // it will be a read before write causing the
     // compiler to treat it as undef behaviour
     // thereby removing the read.
-    memset(ptr, 0, size);
+    memset(ptr, 0, MEM_BLOCK);
     return ptr;
 }
 
