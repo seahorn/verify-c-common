@@ -7,6 +7,8 @@
 #include <byte_buf_helper.h>
 #include <utils.h>
 
+extern void nd_memset(void* p);
+  
 int main() {
     struct aws_byte_buf to;
     initialize_byte_buf(&to);
@@ -28,12 +30,10 @@ int main() {
      * The specification for the function requires that the buffer
      * be at least 256 bytes.
      */
-    /// XXX At least 256 - but this is static. May fail out-of-bound check
-    /// XXX Maybe we need to allocate and assume size is greater than 256
     uint8_t lookup_table[256];
-    for (unsigned i=0; i < 256; i++) {
-        lookup_table[i] = nd_uint8_t();
-    }
+    // This initializes the LUT non-deterministically
+    nd_memset(lookup_table);
+    
     if (aws_byte_buf_append_with_lookup(&to, &from, lookup_table) == AWS_OP_SUCCESS) {
         sassert(to.len == to_old.len + from.len);
     } else {
