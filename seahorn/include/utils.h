@@ -121,7 +121,10 @@ uint64_t uninterpreted_hasher(const void *a);
  */
 bool uninterpreted_predicate_fn(uint8_t value);
 
-unsigned sea_strlen(const char *str);
+size_t sea_strlen(const char *str, size_t max);
+
+// len is populated by this function
+const char *ensure_c_str_is_nd_allocated(size_t max_size, size_t* len);
 
 const char *ensure_c_str_is_allocated(size_t max_size);
 

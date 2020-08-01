@@ -14,7 +14,7 @@
 int8_t *g_ptr0 = NULL;
 size_t g_ptr0_size;
 
-extern void memset_nd(void *ptr);
+extern void memset_nd(void *ptr, size_t size);
 
 void *realloc( void *ptr, size_t new_size ) {
     if (ptr) {
@@ -99,7 +99,7 @@ void *bounded_malloc(size_t size) {
     // it will be a read before write causing the
     // compiler to treat it as undef behaviour
     // thereby removing the read.
-    memset_nd(ptr);
+    memset_nd(ptr, size);
     return ptr;
 }
 

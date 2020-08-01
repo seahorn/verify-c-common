@@ -8,7 +8,7 @@ shift
 SEA_DIR=${1}
 shift
 
-${SEA_DIR}/sea fpf --sea-dsa=cs+t  -m32 -O0  --inline  --horn-bmc-engine=mono --horn-bmc --horn-bv2=true \
+${SEA_DIR}/sea fpf --sea-dsa=cs+t  -O3  --inline  --horn-bmc-engine=mono --horn-bmc --horn-bv2=true \
                    --log=opsem  --sea-opsem-allocator=normal  --keep-shadows=true --horn-bv2-simplify=true \
                    --horn-bv2-lambdas --horn-gsa --horn-vcgen-use-ite --horn-bv2-ptr-size=8 --horn-bv2-word-size=8 \
                    --horn-bv2-extra-widemem --keep-temps --temp-dir=/tmp/verify-c-common \
