@@ -107,10 +107,28 @@ void assert_byte_cursor_equivalence(
     }
 }
 
-unsigned sea_strlen(const char *str) {
-    unsigned i=0;
-    for (unsigned i=0; str[i] != '\0' && i < MAX_BUFFER_SIZE-1; ++i);
+size_t sea_strlen(const char *str, size_t max) {
+    size_t i;
+    i = nd_size_t();
+    assume(i <= max && max <= MAX_BUFFER_SIZE);
+    assume(str[i] == '\0');
+    // The following assumption cannot be expressed
+    // assume(forall j :: j < i ==> str[j] != '\0');
+    // therefore, we say the following:
+    size_t j = 0;
+    for (j = 0; j < MAX_BUFFER_SIZE; j++) {
+        if (j < i) { 
+            assume(str[j] != '\0'); 
+        }
+    }
     return i;
+}
+
+const char *ensure_c_str_is_nd_allocated(size_t max_size, size_t *len) {
+    // use bounded_nd_malloc to ensure that string is initialized
+    const char *str = bounded_malloc(MAX_BUFFER_SIZE);
+    *len = sea_strlen(str, max_size);
+    return str;
 }
 
 const char *ensure_c_str_is_allocated(size_t max_size) {
