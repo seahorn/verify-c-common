@@ -47,10 +47,13 @@ void save_byte_from_array(
     const uint8_t *const array, 
     const size_t size, 
     struct store_byte_from_buffer *const storage) {
+    storage->index = nd_size_t();
     if (size > 0 && array && storage) {
-        storage->index = nd_size_t();
         assume(storage->index < size);
         storage->byte = array[storage->index];
+    }
+    else {
+        storage->byte = nd_uint8_t();
     }
 }
 
