@@ -7,7 +7,6 @@
 #include <aws/common/array_list.h>
 #include <aws/common/byte_buf.h>
 #include <nondet.h>
-#include <proof_allocators.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -43,7 +42,9 @@ void assert_all_zeroes(const uint8_t *const a, const size_t len);
  * Asserts whether the byte in storage correspond to the byte in the same 
  * position in buffer.
  */
-void assert_byte_from_buffer_matches(const uint8_t *const buffer, const struct store_byte_from_buffer *const b);
+void assert_byte_from_buffer_matches(
+    const uint8_t *const buffer, 
+    const struct store_byte_from_buffer *const b);
 
 /**
  * Nondeterministically selects a byte from array and stores it into a 
@@ -67,6 +68,15 @@ void assert_array_list_equivalence(
     const struct aws_array_list *const rhs,
     const struct store_byte_from_buffer *const rhs_byte);
 
+void assert_byte_buf_equivalence(
+    const struct aws_byte_buf *const lhs,
+    const struct aws_byte_buf *const rhs,
+    const struct store_byte_from_buffer *const rhs_byte);
+
+void assert_byte_cursor_equivalence(
+    const struct aws_byte_cursor *const lhs,
+    const struct aws_byte_cursor *const rhs,
+    const struct store_byte_from_buffer *const rhs_byte);
 /**
  * Standard stub function to compare two items.
  */

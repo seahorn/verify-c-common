@@ -4,6 +4,7 @@
 
 #include <seahorn/seahorn.h>
 #include <aws/common/private/hash_table_impl.h>
+#include <proof_allocators.h>
 #include <utils.h>
 
 void assert_bytes_match(
@@ -69,6 +70,37 @@ void assert_array_list_equivalence(
     sassert(lhs->item_size == rhs->item_size);
     if (lhs->current_size > 0) {
         assert_byte_from_buffer_matches((uint8_t *)lhs->data, rhs_byte);
+    }
+}
+
+void assert_byte_buf_equivalence(
+    const struct aws_byte_buf *const lhs,
+    const struct aws_byte_buf *const rhs,
+    const struct store_byte_from_buffer *const rhs_byte) {
+    /* In order to be equivalent, either both are NULL or both are non-NULL */
+    if (lhs == rhs) {
+        return;
+    } else {
+        sassert(lhs && rhs); /* if only one is null, they differ */
+    }
+    sassert(lhs->len == rhs->len);
+    sassert(lhs->capacity == rhs->capacity);
+    sassert(lhs->allocator == rhs->allocator);
+    if (lhs->len > 0) {
+        assert_byte_from_buffer_matches(lhs->buffer, rhs_byte);
+    }
+}
+
+void assert_byte_cursor_equivalence(
+    const struct aws_byte_cursor *const lhs,
+    const struct aws_byte_cursor *const rhs,
+    const struct store_byte_from_buffer *const rhs_byte) {
+    sassert(!lhs == !rhs);
+    if (lhs && rhs) {
+        sassert(lhs->len == rhs->len);
+        if (lhs->len > 0) {
+            assert_byte_from_buffer_matches(lhs->ptr, rhs_byte);
+        }
     }
 }
 
