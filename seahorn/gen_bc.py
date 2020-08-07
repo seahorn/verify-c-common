@@ -4,6 +4,7 @@ import json
 import os
 from subprocess import Popen
 import shutil
+import sys
 
 SEA_YAML_FILE = 'sea.yaml'
 SRC_PATH = 'src_path'
@@ -58,6 +59,7 @@ def get_seahorn_dir():
 
 
 # generate .bc file for main harness .cpp file and stubbed files
+# return -1 on error, 0 on success
 def generate_bitcode(clang_cmd, sea_dir, build_dir, target, sea_args, comp_options, dry=False, verbose=False):
     command = [clang_cmd]
     # append path to custom stubbed code
@@ -82,10 +84,13 @@ def generate_bitcode(clang_cmd, sea_dir, build_dir, target, sea_args, comp_optio
         _, err = clang_p.communicate()
         if not err and os.path.isfile(outfile):
             print("generated output bitcode in %s" % outfile)
+            return 0
         else:
             print("error generating bitcode: %s" % err)
+            return -1
 
 # use sea clang to link everything into a single file
+# return -1 on error, 0 on success
 def link_targets(targets, job_path, build_dir, dry=False, verbose=False):
     sea_cmd = get_sea()
     if not sea_cmd:
@@ -104,8 +109,10 @@ def link_targets(targets, job_path, build_dir, dry=False, verbose=False):
         _, err = sea_p.communicate()
         if not err and os.path.isfile(outfile):
             print("linked output bitcode in %s" % outfile)
+            return 0
         else:
             print("error linking for %s: %s" % (job_path, err))
+            return -1
 
 def parse_compile_commands():
     cc_dict = dict()
@@ -202,7 +209,7 @@ def main():
                     continue
                 for target in targets:
                     target_path = os.path.join(ROOT_PATH, target)
-                    generate_bitcode(
+                    r = generate_bitcode(
                         clang_cmd,
                         sea_dir,
                         build_dir,
@@ -211,11 +218,17 @@ def main():
                         compile_args,
                         dry=dry,
                         verbose=verbose)
-                link_targets(targets, job_path, build_dir, dry=dry, verbose=verbose)
+                    if r != 0:
+                        sys.exit(1)
+                r = link_targets(targets, job_path, build_dir, dry=dry, verbose=verbose)
+                if r != 0:
+                    sys.exit(1)
             else:
                 print("No src file or option found for %s. Skiping" % job_path)
+                sys.exit(1)
         else:
             print("%s is not a valid verification job!" % job)
+            sys.exit(1)
     return 0
 
 

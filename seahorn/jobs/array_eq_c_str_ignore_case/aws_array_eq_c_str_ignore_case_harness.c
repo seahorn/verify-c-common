@@ -13,12 +13,12 @@ int main() {
     size_t array_len = nd_size_t();
     assume(array_len <= MAX_BUFFER_SIZE);
     void *array = bounded_malloc(MAX_BUFFER_SIZE);
-    const char *c_str = nd_bool() ? NULL : ensure_c_str_is_allocated(MAX_BUFFER_SIZE);
+    size_t str_len = 0;
+    const char *c_str = ensure_c_str_is_nd_allocated(MAX_BUFFER_SIZE, &str_len);
 
     /* save current state of the parameters */
     struct store_byte_from_buffer old_byte_from_array;
     save_byte_from_array((uint8_t *)array, array_len, &old_byte_from_array);
-    size_t str_len = (c_str) ? sea_strlen(c_str) : 0;
     struct store_byte_from_buffer old_byte_from_str;
     save_byte_from_array((uint8_t *)c_str, str_len, &old_byte_from_str);
 
