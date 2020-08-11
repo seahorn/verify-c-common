@@ -6,37 +6,35 @@
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
 NORMAL=$(tput sgr0)
+SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
+VERIFICATION_BASE_CONFIG="$SCRIPT_DIR/seahorn/sea_base.yaml"
+GET_JOB_OPT_SCRIPT="$SCRIPT_DIR/seahorn/get_job_options.py" 
 
 col=10 # change this to whatever column you want the output to start at
+gen_cmd_line=''
 
 : ${1?"Usage: $0 <bitcode_file> <sea_dir>  Need to pass bitcode file from trusty"}
 : ${2:?"Usage: $0 <bitcode_file> <sea_dir> Need to pass SEA_DIR - i.e. the dir which contains the sea{,horn,opt} cmds e.g. seahorn/build/run/bin/"}
 
 
+function getCmdLine {
+    CMD_LINE='python3 '
+    CMD=$1
+    BASE_CONFIG=$2
+    JOB_CONFIG=$3
+    CMD_LINE+="$CMD --base_config=$BASE_CONFIG --job_config=$JOB_CONFIG" 
+    gen_cmd_line=$(eval $CMD_LINE)
+}
+
 function runOnFile {
     INPUT_FILE=${1}
     SEA_DIR=${2}
-    OTHER_FLAGS=${4}
     VERBOSE=${3}
-
+    FLAGS=${4}
+    OTHER_FLAGS=${5}
+    
     cmd=''
-    cmd+="${SEA_DIR}/sea fpf --inline -O3 \
-                       --enable-loop-idiom --enable-indvar \
-                       --no-lower-gv-init-struct --externalize-addr-taken-functions \
-                       --horn-unify-assumes=true \
-                       --horn-gsa --horn-vcgen-use-ite \
-                       --dsa=sea-cs-t --devirt-functions=types \
-                       --bmc=opsem \
-                       --horn-vcgen-only-dataflow=true --horn-bmc-coi=true \
-                       --sea-opsem-allocator=static 
-                       --horn-bv2-lambdas --horn-bv2-simplify=true \
-                       --horn-bv2-extra-widemem \
-                       -S --keep-temps --temp-dir=/tmp/verify-c-common \
-		       --horn-stats=true \
-                       --horn-explicit-sp0=false \
-                       $OTHER_FLAGS \
-                       ${INPUT_FILE}"
-
+    cmd+="${SEA_DIR}/sea fpf $FLAGS $OTHER_FLAGS $INPUT_FILE "
     if [ $VERBOSE -eq 1 ]; then
 	cmd+=" | tee /dev/tty "
     else
@@ -64,13 +62,17 @@ SEA_DIR=${2}
 OTHER_FLAGS=${@:3}
 
 if [[ -d ${INPUT_FILE} ]]; then
-   shopt -s globstar
+   shopt -s globstar 
    for f in $INPUT_FILE/**/out.bc; do  # Whitespace-safe and recursive 
-       runOnFile "$f" $SEA_DIR "0" $OTHER_FLAGS 
+       sea_yaml="$(dirname $f)/../sea.yaml"
+       getCmdLine $GET_JOB_OPT_SCRIPT $VERIFICATION_BASE_CONFIG $sea_yaml               
+       runOnFile $f $SEA_DIR "0" "$gen_cmd_line" "$OTHER_FLAGS" 
        printResult "$f" $?
    done
 else
-    runOnFile $INPUT_FILE $SEA_DIR "1" $OTHER_FLAGS 
+    sea_yaml="$(dirname $INPUT_FILE)/../sea.yaml"
+    getCmdLine $GET_JOB_OPT_SCRIPT $VERIFICATION_BASE_CONFIG $sea_yaml               
+    runOnFile $INPUT_FILE $SEA_DIR "1" "$gen_cmd_line" "$OTHER_FLAGS" 
     result=$?
     if [ $result -eq 1 ]; then
 	exit 0
