@@ -21,6 +21,7 @@ void *realloc( void *ptr, size_t new_size ) {
 }
 
 #ifdef __SEA_AWS_ALLOCATOR__
+#ifdef __SEA_AWS_REAL_ALLOCATOR__
 /**
  *
  */
@@ -66,6 +67,19 @@ static struct aws_allocator s_allocator_static = {
 struct aws_allocator *_allocator() {
     return &s_allocator_static;
 }
+#else
+/** Globally allocated static allocator */
+static struct aws_allocator s_allocator_static = {
+ /* All fields are NULL because they will never be accessed */
+  .mem_acquire = NULL,
+  .mem_release = NULL,
+  .mem_realloc = NULL,
+  .mem_calloc = NULL,
+};
+struct aws_allocator *_allocator() {
+   return &s_allocator_static;
+}
+#endif
 
 #else
 
