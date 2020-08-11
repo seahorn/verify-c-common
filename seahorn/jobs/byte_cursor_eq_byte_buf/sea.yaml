@@ -5,4 +5,5 @@ targets:
   - "seahorn/lib/proof_allocators.c"
   - "seahorn/lib/byte_buf_helper.c"
   - "seahorn/lib/utils.c"
+  - "seahorn/lib/bcmp.c"
 sea_options: "-c -emit-llvm -D__SEAHORN__ -O1 -Xclang -disable-llvm-optzns -S -Wno-macro-redefined -DMAX_BUFFER_SIZE=10"
