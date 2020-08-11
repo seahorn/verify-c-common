@@ -19,3 +19,6 @@ bool aws_byte_cursor_is_bounded(
 
 void ensure_byte_buf_has_allocated_buffer_member(
     struct aws_byte_buf *const buf);
+
+bool aws_byte_buf_has_allocator(const struct aws_byte_buf *const buf);
+
