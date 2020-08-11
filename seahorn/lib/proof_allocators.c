@@ -11,21 +11,13 @@
 #include <seahorn/seahorn.h>
 #include <sea_mem_helper.h>
 
-int8_t *g_ptr0 = NULL;
-size_t g_ptr0_size;
-
 extern void memset_nd(void *ptr, size_t size);
 
 void *realloc( void *ptr, size_t new_size ) {
     if (ptr) {
         free(ptr);
     }
-    ptr = malloc(new_size);
-    if (nd_store_mem_size() && g_ptr0 == NULL) {
-        g_ptr0 = (int8_t*)ptr;
-        g_ptr0_size = new_size;
-    }
-    return ptr;
+    return malloc(new_size);
 }
 
 #ifdef __SEA_AWS_ALLOCATOR__
