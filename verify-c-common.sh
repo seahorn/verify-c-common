@@ -38,9 +38,9 @@ function runOnFile {
                        ${INPUT_FILE}"
 
     if [ $VERBOSE -eq 1 ]; then
-	cmd+="| tee /dev/tty "
+	cmd+=" | tee /dev/tty "
     else
-	cmd+="2> /dev/null "
+	cmd+=" 2> /dev/null "
     fi
     cmd+="| egrep -c \"^unsat$\""
     r=$(eval $cmd)
