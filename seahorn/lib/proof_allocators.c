@@ -69,18 +69,30 @@ static struct aws_allocator s_allocator_static = {
     .mem_calloc = s_calloc_allocator,
 };
 
+
+
+struct aws_allocator *_allocator() {
+    return &s_allocator_static;
+}
+
+#else
+
+struct aws_allocator *nd_allocator = NULL;
+struct aws_allocator *_allocator() {
+    if (nd_allocator == NULL) nd_allocator = nd_voidp();
+    return nd_allocator;
+}
+
+#endif
+
+
+
 /**
  * This assert will fail if code ever uses a different allocator than expected during a proof
  */
 bool aws_allocator_is_valid(const struct aws_allocator *alloc) {
     return alloc == _allocator();
 }
-
-struct aws_allocator *_allocator() {
-    return &s_allocator_static;
-}
-
-#endif
 
 void *bounded_calloc(size_t num, size_t size) {
     size_t required_bytes;
