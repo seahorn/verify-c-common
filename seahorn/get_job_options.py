@@ -38,6 +38,11 @@ def update_dict(original: Dict[str, str], update: Dict[str, str] ) -> Dict[str, 
     return original
 
 def create_flag(key: str, val: str) -> str:
+    if val == 'True' or val == 'False':
+        val = val.lower()
+    elif isinstance(val, bool):
+        val = str(val).lower()	
+
     return '--{0}'.format(key) if val == '' else '--{0}={1}'.format(key, val)
 
 def create_cmd_line(flag_dict: Dict[str, str]) -> str:
