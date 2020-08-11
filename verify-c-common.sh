@@ -20,16 +20,23 @@ function runOnFile {
     VERBOSE=${3}
 
     cmd=''
-    cmd+="${SEA_DIR}/sea fpf --sea-dsa=cs+t  -O3  --inline  --horn-bmc-engine=mono --horn-bmc --horn-bv2=true \
-                       --log=opsem  --sea-opsem-allocator=normal  --keep-shadows=true --horn-bv2-simplify=true \
-                       --horn-bv2-lambdas --horn-gsa --horn-vcgen-use-ite --horn-bv2-ptr-size=8 --horn-bv2-word-size=8 \
-                       --horn-bv2-extra-widemem --keep-temps --temp-dir=/tmp/verify-c-common \
-                       --lower-gv-init --lower-gv-init-struct=false  -S  --devirt-functions \
-                       --externalize-addr-taken-functions --keep-shadows \
-		       --horn-bv2-singleton-aliases=true --horn-stats=true \
-                       --horn-unify-assumes=true --horn-vcgen-only-dataflow=true --horn-bmc-coi=true \
-                       ${INPUT_FILE} --sea-dsa-type-aware \
-                       --horn-explicit-sp0=false $OTHER_FLAGS "
+    cmd+="${SEA_DIR}/sea fpf --inline -O3 \
+                       --enable-loop-idiom --enable-indvar \
+                       --no-lower-gv-init-struct --externalize-addr-taken-functions \
+                       --horn-unify-assumes=true \
+                       --horn-gsa --horn-vcgen-use-ite \
+                       --dsa=sea-cs-t --devirt-functions=types \
+                       --bmc=opsem \
+                       --horn-vcgen-only-dataflow=true --horn-bmc-coi=true \
+                       --sea-opsem-allocator=static 
+                       --horn-bv2-lambdas --horn-bv2-simplify=true \
+                       --horn-bv2-extra-widemem \
+                       -S --keep-temps --temp-dir=/tmp/verify-c-common \
+		       --horn-stats=true \
+                       --horn-explicit-sp0=false \
+                       $OTHER_FLAGS \
+                       ${INPUT_FILE}"
+
     if [ $VERBOSE -eq 1 ]; then
 	cmd+="| tee /dev/tty "
     else
