@@ -36,6 +36,7 @@ function runOnFile {
     cmd=''
     cmd+="${SEA_DIR}/sea fpf $FLAGS $OTHER_FLAGS $INPUT_FILE "
     if [ $VERBOSE -eq 1 ]; then
+        echo $cmd
 	cmd+=" | tee /dev/tty "
     else
 	cmd+=" 2> /dev/null "
