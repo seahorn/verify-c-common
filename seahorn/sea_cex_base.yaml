@@ -43,6 +43,9 @@ verify_options:
   cex: /tmp/h.ll
 # printable counterexample log
   log: cex
+# number of words to unroll symbolic memcpy for array-based memory representation
+# should be at least MAX_BUFFER_SIZE
+  horn-array-sym-memcpy-unroll-count: 10
 # print memory state as a table
 # XXX still flaky, sometimes only the last byte can be trusted
   horn-bmc-hexdump: true
