@@ -7,7 +7,7 @@ RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
 NORMAL=$(tput sgr0)
 SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
-VERIFICATION_BASE_CONFIG="$SCRIPT_DIR/seahorn/sea_base.yaml"
+VERIFICATION_BASE_CONFIG="$SCRIPT_DIR/seahorn/sea.yaml"
 GET_JOB_OPT_SCRIPT="$SCRIPT_DIR/seahorn/get_job_options.py" 
 
 col=10 # change this to whatever column you want the output to start at
