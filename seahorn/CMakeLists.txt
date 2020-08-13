@@ -15,6 +15,12 @@ function(sea_attach_bc)
   set_property(TARGET ${TARGET_BC} PROPERTY EXCLUDE_FROM_ALL OFF)
 endfunction()
 
+function(sea_get_file_name VAR LLVMIR_TARGET)
+  get_property(DIR TARGET ${LLVMIR_TARGET} PROPERTY LLVMIR_DIR)
+  get_property(FILES TARGET ${LLVMIR_TARGET} PROPERTY LLVMIR_FILES)
+  set(${VAR} "${DIR}/${FILES}" PARENT_SCOPE)
+endfunction()
+
 add_definitions(-D__SEAHORN__)
 add_subdirectory(jobs/array_eq_c_str)
 

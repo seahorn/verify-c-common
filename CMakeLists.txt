@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.10.2)
 project(verify-c-common C CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/llvmir)
-
 include(LLVMIRUtil)
+
+enable_testing()
 
 if (CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR )
   message (FATAL_ERROR
@@ -24,10 +25,13 @@ set(LLVMIR_OPT ${SEA_OPT})
 
 set(AWS_C_COMMON_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/aws-c-common)
 set(SEA_LIB ${CMAKE_CURRENT_SOURCE_DIR}/seahorn/lib)
+
+configure_file(verify-c-common.sh.in verify-c-common.sh @ONLY)
+set(VERIFY_SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/verify-c-common.sh)
+
 include_directories(seahorn/include)
 include_directories(aws-c-common/include)
 #include_directories(aws-c-common/build/generated/include)
 include_directories(${SEAHORN_ROOT}/include)
 add_subdirectory(seahorn)
 
-configure_file(verify-c-common.sh.in verify-c-common.sh @ONLY)

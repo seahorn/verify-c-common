@@ -6,3 +6,6 @@ add_executable(array_eq_c_str
 target_compile_definitions(array_eq_c_str PUBLIC MAX_BUFFER_SIZE=10)
 sea_attach_bc(array_eq_c_str)
 configure_file(sea.yaml sea.yaml @ONLY)
+
+sea_get_file_name(BC array_eq_c_str.ir)
+add_test(NAME array_eq_c_str_test COMMAND bash ${VERIFY_SCRIPT} ${BC})
