@@ -5,4 +5,4 @@ add_executable(array_eq_c_str
   ${SEA_LIB}/utils.c)
 target_compile_definitions(array_eq_c_str PUBLIC MAX_BUFFER_SIZE=10)
 sea_attach_bc(array_eq_c_str)
-
+configure_file(sea.yaml sea.yaml @ONLY)

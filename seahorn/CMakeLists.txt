@@ -1,6 +1,6 @@
 function(sea_attach_bc)
   set(SOURCE_EXE ${ARGV0})
-  set(TARGET_BC "${SOURCE_EXE}.bc")
+  set(TARGET_BC "${SOURCE_EXE}.ir")
   set(TARGET_OBJ "${SOURCE_EXE}.obj")
 
   set_target_properties(${SOURCE_EXE} PROPERTIES LINKER_LANGUAGE C)
@@ -17,3 +17,6 @@ endfunction()
 
 add_definitions(-D__SEAHORN__)
 add_subdirectory(jobs/array_eq_c_str)
+
+configure_file(sea.yaml sea.yaml @ONLY)
+configure_file(get_job_options.py get_job_options.py)

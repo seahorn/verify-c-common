@@ -29,3 +29,5 @@ include_directories(aws-c-common/include)
 #include_directories(aws-c-common/build/generated/include)
 include_directories(${SEAHORN_ROOT}/include)
 add_subdirectory(seahorn)
+
+configure_file(verify-c-common.sh.in verify-c-common.sh @ONLY)
