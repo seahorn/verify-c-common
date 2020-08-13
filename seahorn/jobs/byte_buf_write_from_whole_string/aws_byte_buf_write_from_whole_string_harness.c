@@ -6,6 +6,7 @@
 #include <aws/common/string.h>
 #include <aws/common/byte_buf.h>
 #include <byte_buf_helper.h>
+#include <string_helper.h>
 #include <utils.h>
 #include <stddef.h>
 
