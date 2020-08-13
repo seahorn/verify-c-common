@@ -1,7 +1,8 @@
 src_path: "aws-c-common/source/byte_buf.c"
 targets:
+  - "aws-c-common/source/string.c"
   - "aws-c-common/source/byte_buf.c"
-  - "seahorn/jobs/byte_buf_write_from_whole_cursor/aws_byte_buf_write_from_whole_cursor_harness.c"
+  - "seahorn/jobs/byte_buf_write_from_whole_string/aws_byte_buf_write_from_whole_string_harness.c"
   - "seahorn/lib/proof_allocators.c"
   - "seahorn/lib/byte_buf_helper.c"
   - "seahorn/lib/string_helper.c"
@@ -10,3 +11,4 @@ sea_options: "-c -emit-llvm -D__SEAHORN__ -O1 -Xclang -disable-llvm-optzns -S -W
 
 verify_options:
   horn-bv2-word-size: 1
+  horn-bmc-tactic: smtfd
