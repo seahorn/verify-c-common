@@ -11,6 +11,7 @@
   length n each.  If they are equal, and in particular if n is zero,
   bcmp() returns 0.  Otherwise, it returns a nonzero result.
 */
+__attribute__((always_inline))
 int bcmp(const void *s1, const void *s2, size_t n) {
   size_t i;
 
