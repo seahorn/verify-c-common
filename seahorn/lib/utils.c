@@ -110,7 +110,7 @@ void assert_byte_cursor_equivalence(
 size_t sea_strlen(const char *str, size_t max) {
     size_t i;
     i = nd_size_t();
-    assume(i <= max && max <= MAX_BUFFER_SIZE);
+    assume(i < max && max <= MAX_BUFFER_SIZE);
     assume(str[i] == '\0');
     // The following assumption cannot be expressed
     // assume(forall j :: j < i ==> str[j] != '\0');
