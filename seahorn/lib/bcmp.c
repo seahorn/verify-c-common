@@ -1,6 +1,9 @@
 #include <stddef.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <strings.h>
+
+#include <seahorn/seahorn.h>
 
 #ifndef MAX_BUFFER_SIZE
 #error "MAX_BUFFER_SIZE must be defined, try 16"
@@ -68,4 +71,10 @@ __attribute__((always_inline)) int memcmp(const void *s1, const void *s2,
   }
 
   return 0;
+}
+
+__attribute__((always_inline)) void *
+__memcpy_chk(void *dest, const void *src, size_t len, size_t dstlen) {
+  sassert(!(dstlen < len));
+  return __builtin_memcpy(dest, src, len);
 }
