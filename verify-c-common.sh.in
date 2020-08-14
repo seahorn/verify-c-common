@@ -42,9 +42,17 @@ SEA_DIR="@SEAHORN_ROOT@/bin"
 EXPECT=$2
 OTHER_FLAGS=${@:3}
 
+VERBOSE_ARG=1
+
+if [[ $0 =~ .*-silent.sh ]]; then
+   VERBOSE_ARG=0
+else
+   VERBOSE_ARG=1
+fi
+
 sea_yaml="$(dirname $INPUT_FILE)/../../sea.yaml"
 getCmdLine $GET_JOB_OPT_SCRIPT $VERIFICATION_BASE_CONFIG $sea_yaml
-runOnFile $INPUT_FILE "$EXPECT" "1" "$gen_cmd_line" "$OTHER_FLAGS"
+runOnFile $INPUT_FILE "$EXPECT" $VERBOSE_ARG "$gen_cmd_line" "$OTHER_FLAGS"
 result=$?
 if [ $result -eq 1 ]; then
     exit 0
