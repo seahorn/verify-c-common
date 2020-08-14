@@ -1,5 +1,5 @@
 verify_options:
-# Optimization lelel. Lower to O1 for clearer counterexamples
+# Optimization level
   'O3': ''
 # 
 # PREPROCESSING

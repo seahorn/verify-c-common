@@ -14,19 +14,6 @@ This is a common step for all other configurations.
    $ cd aws-c-common ; mkdir build ; cd build ; cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ../ ; cd ../../ ; ln -sf aws-c-common/build/compile_commands.json .
    ```
 
-## Compile verification harnesses using Python script
-
-1. Use `seahorn/gen_bc.py` script to generate all harnesses
-```bash
-$ SEA=<PATH_TO_SEA> python3 seahorn/gen_bc.py
-```
-where `<PATH_TO_SEA>` is a path to the SeaHorn **binary** directory, e.g., `/opt/seahorn/bin`
-
-By default, `gen_bc.py` compiles all jobs under `seahorn/jobs`. Individual jobs
-can be specified on command line. 
-
-Compiled bitcode for a job `seahorn/jobs/NAME` is placed into `seahorn/jobs/NAME/build/out.bc`
-
 ## Compile verification harness using CMake
 
 1. Create a build directory
@@ -42,22 +29,24 @@ use additional options to ensure that `clang` is chosen as the default compiler
 ```bash
 $ ninja
 ```
+4. Verify
+```bash
+$ ninja test
+```
+5. Run individual test
+```bash
+$ ctest -R <TEST_NAME>
+```
+6. Run individual file manually
+```bash
+$ bash verify-c-common.sh <FILE_NAME> <sat|unsat>
+```
+7. Run individual file manually manually:
+```
+# Find command starting with 'sea fpf ...' above and copy-paste
+$ sea fpf ...
+```
+
 Compiled bitcode files are placed under `build/seahorn/jobs/<NAME>/llvm-ir/<NAME>.bc`
 
-## Running SeaHorn
-A script is provided to run all jobs or an individual job.
-To run all jobs:
-```bash
-$ bash verify-c-common.sh seahorn/jobs <SEAHORN_ROOT> <EXTRA_OPTS>
-```
-where `<SEAHORN_ROOT>` is the root of SeaHorn distribution, e.g., `/opt/seahorn`, 
-and `<EXTRA_OPTS>` are any additional options that are passed to `sea`.
-
-To run an individual job:
-```bash
-$ bash verify-c-common.sh seahorn/jobs/NAME/build/out.bc <SEAHORN_ROOT> <EXTRA_OPTS>
-```
-where `NAME` is a name of a job. This assumes that `out.bc` is the compiled bitcode. Change as appropriate.
-
-Verification options can be changed by modifying `seahorn/sea.yaml` and `seahorn/jobs/NAME/sea.yaml` files.
 
