@@ -27,7 +27,8 @@ set(AWS_C_COMMON_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/aws-c-common)
 set(SEA_LIB ${CMAKE_CURRENT_SOURCE_DIR}/seahorn/lib)
 
 configure_file(verify-c-common.sh.in verify-c-common.sh @ONLY)
-set(VERIFY_SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/verify-c-common.sh)
+configure_file(verify-c-common.sh.in verify-c-common-silent.sh @ONLY)
+set(VERIFY_SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/verify-c-common-silent.sh)
 
 include_directories(seahorn/include)
 include_directories(aws-c-common/include)
