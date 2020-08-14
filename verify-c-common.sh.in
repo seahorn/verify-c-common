@@ -50,6 +50,10 @@ else
    VERBOSE_ARG=1
 fi
 
+if [[ $0 =~ .*-cex.sh ]]; then
+   VERIFICATION_BASE_CONFIG="$SCRIPT_DIR/seahorn/sea.cex.yaml"
+fi
+
 sea_yaml="$(dirname $INPUT_FILE)/../../sea.yaml"
 getCmdLine $GET_JOB_OPT_SCRIPT $VERIFICATION_BASE_CONFIG $sea_yaml
 runOnFile $INPUT_FILE "$EXPECT" $VERBOSE_ARG "$gen_cmd_line" "$OTHER_FLAGS"

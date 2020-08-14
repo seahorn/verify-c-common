@@ -28,6 +28,7 @@ set(SEA_LIB ${CMAKE_CURRENT_SOURCE_DIR}/seahorn/lib)
 
 configure_file(verify-c-common.sh.in verify-c-common.sh @ONLY)
 configure_file(verify-c-common.sh.in verify-c-common-silent.sh @ONLY)
+configure_file(verify-c-common.sh.in verify-c-common-cex.sh @ONLY)
 set(VERIFY_SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/verify-c-common-silent.sh)
 
 include_directories(seahorn/include)
