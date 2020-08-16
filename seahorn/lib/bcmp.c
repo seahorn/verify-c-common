@@ -78,3 +78,9 @@ __memcpy_chk(void *dest, const void *src, size_t len, size_t dstlen) {
   sassert(!(dstlen < len));
   return __builtin_memcpy(dest, src, len);
 }
+
+__attribute__((always_inline)) void *
+__memset_chk(void *dest, int c, size_t len, size_t dstlen) {
+  sassert(!(dstlen < len));
+  return __builtin_memset(dest, c, len);
+}
