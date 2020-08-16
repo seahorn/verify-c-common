@@ -1,7 +1,0 @@
-src_path: "aws-c-common/source/byte_buf.c"
-targets:
-  - "aws-c-common/source/byte_buf.c"
-  - "seahorn/jobs/array_eq_ignore_case/aws_array_eq_ignore_case_harness.c"
-  - "seahorn/lib/proof_allocators.c"
-  - "seahorn/lib/utils.c"
-sea_options: "-c -emit-llvm -D__SEAHORN__ -O1 -Xclang -disable-llvm-optzns -S -Wno-macro-redefined -DMAX_BUFFER_SIZE=10"

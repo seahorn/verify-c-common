@@ -1,31 +1,20 @@
 #!/bin/bash
 SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 VERIFICATION_BASE_CONFIG="$SCRIPT_DIR/seahorn/sea.yaml"
-GET_JOB_OPT_SCRIPT="$SCRIPT_DIR/seahorn/get_job_options.py"
-
-gen_cmd_line=''
 
 : ${1?"Usage: $0 <bitcode_file> <expected_result>  Need to pass bitcode file to verify"}
 : ${2?"Usage: $0 <bitcode_file> <expected_result>  Need to pass expected result"}
-
-function getCmdLine {
-    CMD_LINE='python3 '
-    CMD=$1
-    BASE_CONFIG=$2
-    JOB_CONFIG=$3
-    CMD_LINE+="$CMD --base_config=$BASE_CONFIG --job_config=$JOB_CONFIG"
-    gen_cmd_line=$(eval $CMD_LINE)
-}
 
 function runOnFile {
     INPUT_FILE=${1}
     EXPECT=${2}
     VERBOSE=${3}
-    FLAGS=${4}
-    OTHER_FLAGS=${5}
+    BASE_CONFIG=${4}
+    JOB_CONFIG=${5}
+    OTHER_FLAGS=${6}
 
     cmd=''
-    cmd+="${SEA_DIR}/sea fpf $FLAGS $OTHER_FLAGS $INPUT_FILE "
+    cmd+="${SEA_DIR}/sea yama --yforce -y $VERIFICATION_BASE_CONFIG -y $JOB_CONFIG fpf $OTHER_FLAGS $INPUT_FILE "
     cmd+=" 2>&1 "
     if [ $VERBOSE -eq 1 ]; then
         echo $cmd
@@ -55,8 +44,7 @@ if [[ $0 =~ .*-cex.sh ]]; then
 fi
 
 sea_yaml="$(dirname $INPUT_FILE)/../../sea.yaml"
-getCmdLine $GET_JOB_OPT_SCRIPT $VERIFICATION_BASE_CONFIG $sea_yaml
-runOnFile $INPUT_FILE "$EXPECT" $VERBOSE_ARG "$gen_cmd_line" "$OTHER_FLAGS"
+runOnFile $INPUT_FILE "$EXPECT" $VERBOSE_ARG $VERIFICATION_BASE_CONFIG ${sea_yaml} "$OTHER_FLAGS"
 result=$?
 if [ $result -eq 1 ]; then
     exit 0
