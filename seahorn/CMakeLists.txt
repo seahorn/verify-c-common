@@ -29,7 +29,6 @@ endfunction()
 
 configure_file(sea.yaml sea.yaml @ONLY)
 configure_file(sea_cex_base.yaml sea.cex.yaml @ONLY)
-configure_file(get_job_options.py get_job_options.py)
 
 add_definitions(-D__SEAHORN__)
 
