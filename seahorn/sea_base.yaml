@@ -1,6 +1,6 @@
 verify_options:
 # Optimization level
-  'O3': ''
+  '-O3': ''
 # 
 # PREPROCESSING
 #
@@ -33,7 +33,7 @@ verify_options:
 # wide memory manager to track pointer sizes
   horn-bv2-extra-widemem: ''
 # intermediate results in human readable form for debugging
-  S: ''
+  '-S': ''
 # keep intermediate results for debugging 
   keep-temps: ''
   temp-dir: /tmp/verify-c-common

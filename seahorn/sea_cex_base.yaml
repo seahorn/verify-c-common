@@ -1,6 +1,6 @@
 verify_options:
 # Optimization lelel. Lower to O1 for clearer counterexamples
-  'O1': ''
+  '-O1': ''
 # 
 # PREPROCESSING
 #
@@ -33,7 +33,7 @@ verify_options:
 # wide memory manager to track pointer sizes
   horn-bv2-extra-widemem: ''
 # intermediate results in human readable form for debugging
-  S: ''
+  '-S': ''
 # keep intermediate results for debugging 
   keep-temps: ''
   temp-dir: /tmp/verify-c-common
@@ -49,4 +49,5 @@ verify_options:
 # print memory state as a table
 # XXX still flaky, sometimes only the last byte can be trusted
   horn-bmc-hexdump: true
+  horn-bmc-logic: QF_ABV
 

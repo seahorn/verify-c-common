@@ -111,7 +111,7 @@ void *bounded_calloc(size_t num, size_t size) {
 
 void *bounded_malloc(size_t size) {
     assume(size <= MEM_BLOCK);
-    void *ptr =  malloc(MEM_BLOCK);
+    void *ptr =  malloc(size);
     // nd-initialize the array since if caller
     // assumes immediately after calling bounded_malloc
     // it will be a read before write causing the

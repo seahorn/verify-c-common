@@ -6,7 +6,6 @@ add_executable(byte_buf_write_u8
   ${SEA_LIB}/utils.c)
 target_compile_definitions(byte_buf_write_u8 PUBLIC MAX_BUFFER_SIZE=10)
 sea_attach_bc(byte_buf_write_u8)
-configure_file(sea.yaml sea.yaml @ONLY)
 
 sea_get_file_name(BC byte_buf_write_u8.ir)
 add_test(NAME byte_buf_write_u8_test COMMAND bash ${VERIFY_SCRIPT} ${BC} "unsat")
