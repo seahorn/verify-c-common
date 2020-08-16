@@ -8,7 +8,5 @@ add_executable(byte_buf_init_copy
 target_compile_definitions(byte_buf_init_copy PUBLIC MAX_BUFFER_SIZE=10 __SEA_AWS_ALLOCATOR__)
 sea_attach_bc(byte_buf_init_copy)
 configure_file(sea.yaml sea.yaml @ONLY)
-
-sea_get_file_name(BC byte_buf_init_copy.ir)
-add_test(NAME byte_buf_init_copy_test COMMAND bash ${VERIFY_SCRIPT} ${BC} "unsat")
+sea_add_unsat_test(byte_buf_init_copy)
 

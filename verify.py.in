@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+import os.path
+
+SEAHORN_ROOT="@SEAHORN_ROOT@"
+
+def main(argv):
+    import sea
+    class VerifyCmd(sea.CliCmd):
+        def __init__(self):
+            super().__init__('verify', 'Verify', allow_extra=True)
+
+
+        def mk_arg_parser(self, argp):
+            import argparse
+            argp = super().mk_arg_parser(argp)
+
+            argp.add_argument('-v', '--verbose', action='store_true', default=False)
+            argp.add_argument('--silent', action='store_true', default=False,
+                              help='Do not produce any output')
+            argp.add_argument('--expect', type=str, default=None,
+                              help='Expected string in the output')
+            argp.add_argument('--command', type=str, default='fpf',
+                              help='sea command')
+            argp.add_argument('--cex', action='store_true', default=False,
+                              help='Counterexample mode')
+            argp.add_argument('input_file', nargs=1)
+            argp.add_argument('extra', nargs=argparse.REMAINDER)
+            return argp
+
+        def run(self, args = None, _extra = []):
+            extra = _extra + args.extra
+
+            script_dir = os.path.abspath(sys.argv[0])
+            script_dir = os.path.dirname(script_dir)
+
+            file_dir = os.path.abspath(args.input_file[0])
+            file_dir = os.path.dirname(file_dir)
+
+            base_config = os.path.join(script_dir, 'seahorn', 'sea.yaml')
+            if args.cex:
+                base_config = os.path.join(script_dir, 'seahorn', 'sea.cex.yaml')
+            cmd = [os.path.join(SEAHORN_ROOT, 'bin', 'sea'),
+                   'yama', '--yforce',
+                   '-y', base_config,
+                   '-y', os.path.abspath(os.path.join(file_dir, '..', '..', 'sea.yaml')),
+                   args.command]
+            cmd.extend(extra)
+            cmd.append(args.input_file[0])
+
+            if args.verbose:
+                print(' '.join(cmd))
+
+            import subprocess
+            process = subprocess.Popen(cmd, shell=False,
+                                       encoding='utf-8',
+                                       errors='ignore',
+                                       stdout=subprocess.PIPE,
+                                       stderr=subprocess.STDOUT)
+            found_expected = False
+            for line in iter(process.stdout.readline, ''):
+                if not args.silent:
+                    print(line, end='')
+                if args.expect is not None and not found_expected:
+                    found_expected = (line.strip() == args.expect)
+
+            process.stdout.close()
+            rcode = process.wait()
+
+            if rcode == 0 and args.expect is not None:
+                return 0 if found_expected else 1
+
+            return rcode
+
+    cmd = VerifyCmd()
+    return cmd.main(argv)
+
+if __name__ == '__main__':
+    root = os.path.abspath(SEAHORN_ROOT)
+
+    bin_dir = os.path.join(root, 'bin')
+    if os.path.isdir(bin_dir):
+        os.environ['PATH'] = bin_dir + os.pathsep + os.environ['PATH']
+
+    seapy_dir = os.path.join(root, 'lib', 'seapy')
+    if os.path.isdir(seapy_dir):
+        sys.path.insert(0, seapy_dir)
+
+    sys.exit(main(sys.argv[1:]))

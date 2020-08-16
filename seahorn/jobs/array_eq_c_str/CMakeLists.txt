@@ -5,6 +5,4 @@ add_executable(array_eq_c_str
   ${SEA_LIB}/utils.c)
 target_compile_definitions(array_eq_c_str PUBLIC MAX_BUFFER_SIZE=10)
 sea_attach_bc(array_eq_c_str)
-
-sea_get_file_name(BC array_eq_c_str.ir)
-add_test(NAME array_eq_c_str_test COMMAND bash ${VERIFY_SCRIPT} ${BC} "unsat")
+sea_add_unsat_test(array_eq_c_str)
