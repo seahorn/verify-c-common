@@ -124,6 +124,10 @@ size_t sea_strlen(const char *str, size_t max) {
     return i;
 }
 
+size_t strlen(const char *str) {
+    return sea_strlen(str, MAX_BUFFER_SIZE);
+}
+
 const char *ensure_c_str_is_nd_allocated(size_t max_size, size_t *len) {
     // use bounded_nd_malloc to ensure that string is initialized
     const char *str = bounded_malloc(MAX_BUFFER_SIZE);
