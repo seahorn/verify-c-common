@@ -7,7 +7,5 @@ add_executable(byte_buf_eq_ignore_case
   ${SEA_LIB}/utils.c)
 target_compile_definitions(byte_buf_eq_ignore_case PUBLIC MAX_BUFFER_SIZE=10 __SEA_AWS_ALLOCATOR__)
 sea_attach_bc(byte_buf_eq_ignore_case)
-
-sea_get_file_name(BC byte_buf_eq_ignore_case.ir)
-add_test(NAME byte_buf_eq_ignore_case_test COMMAND bash ${VERIFY_SCRIPT} ${BC} "unsat")
+sea_add_unsat_test(byte_buf_eq_ignore_case)
 
