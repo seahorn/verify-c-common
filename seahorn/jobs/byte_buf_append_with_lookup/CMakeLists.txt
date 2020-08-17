@@ -7,6 +7,4 @@ add_executable(byte_buf_append_with_lookup
 target_compile_definitions(byte_buf_append_with_lookup PUBLIC MAX_BUFFER_SIZE=10)
 sea_attach_bc(byte_buf_append_with_lookup)
 configure_file(sea.yaml sea.yaml @ONLY)
-
-sea_get_file_name(BC byte_buf_append_with_lookup.ir)
-add_test(NAME byte_buf_append_with_lookup_test COMMAND bash ${VERIFY_SCRIPT} ${BC} "unsat")
+sea_add_unsat_test(byte_buf_append_with_lookup)

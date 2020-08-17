@@ -6,7 +6,5 @@ add_executable(byte_buf_reserve
   ${SEA_LIB}/utils.c)
 target_compile_definitions(byte_buf_reserve PUBLIC MAX_BUFFER_SIZE=10 __SEA_AWS_ALLOCATOR__)
 sea_attach_bc(byte_buf_reserve)
-
-sea_get_file_name(BC byte_buf_reserve.ir)
-add_test(NAME byte_buf_reserve_test COMMAND bash ${VERIFY_SCRIPT} ${BC} "unsat")
+sea_add_unsat_test(byte_buf_reserve)
 

@@ -22,16 +22,24 @@ $ mkdir build ; cd build
 ```
 2. Configure with cmake
 ```bash
-$ cmake -DSEA_LINK=llvm-link -DSEAHORN_ROOT=<SEAHORN_ROOT> ../ -GNinja
+$ cmake -DSEA_LINK=llvm-link-10 -DCMAKE_C_COMPILER=clang-10 -DCMAKE_CXX_COMPILER=clang++-10 -DSEAHORN_ROOT=<SEAHORN_ROOT> ../ -GNinja
 ```
 use additional options to ensure that `clang` is chosen as the default compiler
 3. Compile
 ```bash
 $ ninja
 ```
+or
+```bash
+$ cmake --build .
+```
 4. Verify
 ```bash
 $ ninja test
+```
+or
+```bash
+$ cmake --build . --target test
 ```
 5. Run individual test
 ```bash
@@ -39,13 +47,12 @@ $ ctest -R <TEST_NAME>
 ```
 6. Run individual file manually
 ```bash
-$ bash verify-c-common.sh <FILE_NAME> <sat|unsat>
+$ ./verify [--cex] <BC_FILE_NAME> 
 ```
-7. Run individual file manually manually:
-```
-# Find command starting with 'sea fpf ...' above and copy-paste
-$ sea fpf ...
-```
+
+The `--cex` generates a counterexample, but also changes configuration options
+to yield more readable results. This might negatively affect the verification
+time.
 
 Compiled bitcode files are placed under `build/seahorn/jobs/<NAME>/llvm-ir/<NAME>.bc`
 

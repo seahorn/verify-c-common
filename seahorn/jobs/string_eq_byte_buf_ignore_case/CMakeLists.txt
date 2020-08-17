@@ -10,6 +10,4 @@ add_executable(string_eq_byte_buf_ignore_case
   ${SEA_LIB}/utils.c)
 target_compile_definitions(string_eq_byte_buf_ignore_case PUBLIC MAX_BUFFER_SIZE=10 MAX_STRING_LEN=16)
 sea_attach_bc(string_eq_byte_buf_ignore_case)
-
-sea_get_file_name(BC string_eq_byte_buf_ignore_case.ir)
-add_test(NAME string_eq_byte_buf_ignore_case_test COMMAND bash ${VERIFY_SCRIPT} ${BC} "unsat")
+sea_add_unsat_test(string_eq_byte_buf_ignore_case)

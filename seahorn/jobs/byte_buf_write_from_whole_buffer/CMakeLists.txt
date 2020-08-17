@@ -7,6 +7,4 @@ add_executable(byte_buf_write_from_whole_buffer
 target_compile_definitions(byte_buf_write_from_whole_buffer PUBLIC MAX_BUFFER_SIZE=10)
 sea_attach_bc(byte_buf_write_from_whole_buffer)
 configure_file(sea.yaml sea.yaml @ONLY)
-
-sea_get_file_name(BC byte_buf_write_from_whole_buffer.ir)
-add_test(NAME byte_buf_write_from_whole_buffer_test COMMAND bash ${VERIFY_SCRIPT} ${BC} "unsat")
+sea_add_unsat_test(byte_buf_write_from_whole_buffer)

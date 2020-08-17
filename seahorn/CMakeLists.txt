@@ -22,9 +22,13 @@ function(sea_get_file_name VAR LLVMIR_TARGET)
   set(${VAR} "${DIR}/${FILES}" PARENT_SCOPE)
 endfunction()
 
+function(sea_add_unsat_test TARGET)
+  sea_get_file_name(BC ${TARGET}.ir)
+  add_test(NAME "${TARGET}_unsat_test" COMMAND ${VERIFY_CMD} --silent --expect=unsat ${BC})
+endfunction()
+
 configure_file(sea.yaml sea.yaml @ONLY)
 configure_file(sea_cex_base.yaml sea.cex.yaml @ONLY)
-configure_file(get_job_options.py get_job_options.py)
 
 add_definitions(-D__SEAHORN__)
 
