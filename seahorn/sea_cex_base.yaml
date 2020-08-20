@@ -9,6 +9,7 @@ verify_options:
   enable-indvar: ''
   no-lower-gv-init-struct: ''
   externalize-addr-taken-functions: ''
+  no-kill-vaarg: ''
   horn-unify-assumes: false
   horn-gsa: false
 # context-sensitive type-aware alias analysis 
