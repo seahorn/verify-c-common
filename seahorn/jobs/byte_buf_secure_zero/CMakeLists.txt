@@ -8,6 +8,7 @@ add_executable(byte_buf_secure_zero
   ${SEA_LIB}/utils.c)
 target_compile_definitions(byte_buf_secure_zero PUBLIC
   MAX_BUFFER_SIZE=10)
+configure_file(sea.yaml sea.yaml @ONLY)
 sea_attach_bc(byte_buf_secure_zero)
 sea_add_unsat_test(byte_buf_secure_zero)
 
