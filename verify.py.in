@@ -27,6 +27,9 @@ def main(argv):
             argp.add_argument('--cex', action='store_true', default=False,
                               help='Counterexample mode')
             argp.add_argument('input_file', nargs=1)
+            argp.add_argument('--dry-run', dest='dry_run', 
+                              action='store_true', default=False,
+                              help='Pass --dry-run to yama')
             argp.add_argument('extra', nargs=argparse.REMAINDER)
             return argp
 
@@ -45,12 +48,16 @@ def main(argv):
             cmd = [os.path.join(SEAHORN_ROOT, 'bin', 'sea'),
                    'yama', '--yforce',
                    '-y', base_config,
-                   '-y', os.path.abspath(os.path.join(file_dir, '..', '..', 'sea.yaml')),
-                   args.command]
+                   '-y', os.path.abspath(os.path.join(file_dir, '..', '..', 'sea.yaml'))]
+
+            if args.dry_run:
+                cmd.append('--dry-run')
+
+            cmd.append(args.command)
             cmd.extend(extra)
             cmd.append(args.input_file[0])
 
-            if args.verbose:
+            if args.verbose: 
                 print(' '.join(cmd))
 
             import subprocess
