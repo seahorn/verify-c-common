@@ -10,6 +10,7 @@ verify_options:
   no-lower-gv-init-struct: ''
   externalize-addr-taken-functions: ''
   no-kill-vaarg: ''
+  with-arith-overflow: true
   horn-unify-assumes: true
   horn-gsa: ''
 # context-sensitive type-aware alias analysis 
