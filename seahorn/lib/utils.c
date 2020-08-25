@@ -107,10 +107,15 @@ void assert_byte_cursor_equivalence(
     }
 }
 
+/* At least MAX_BUFFER_SIZE must be always defined */
+#ifndef MAX_STRING_LEN
+#define MAX_STRING_LEN MAX_BUFFER_SIZE
+#endif
+
 size_t sea_strlen(const char *str, size_t max) {
     size_t i;
     i = nd_size_t();
-    assume(i < max && max <= MAX_BUFFER_SIZE);
+    assume(i < max && max <= MAX_STRING_LEN);
     assume(str[i] == '\0');
     // The following assumption cannot be expressed
     // assume(forall j :: j < i ==> str[j] != '\0');
@@ -125,7 +130,7 @@ size_t sea_strlen(const char *str, size_t max) {
 }
 
 size_t strlen(const char *str) {
-    return sea_strlen(str, MAX_BUFFER_SIZE);
+    return sea_strlen(str, MAX_STRING_LEN);
 }
 
 const char *ensure_c_str_is_nd_allocated(size_t max_size, size_t *len) {
@@ -138,9 +143,9 @@ const char *ensure_c_str_is_nd_allocated(size_t max_size, size_t *len) {
 const char *ensure_c_str_is_allocated(size_t max_size) {
     size_t cap = nd_size_t();
     assume(cap > 0 && cap <= max_size);
-    assume (max_size <= MAX_BUFFER_SIZE);
-    const char *str = bounded_malloc(MAX_BUFFER_SIZE);
-    /* Ensure that its a valid c string. Since all bytes are nondeterminstic, 
+    assume (max_size <= MAX_STRING_LEN);
+    const char *str = bounded_malloc(MAX_STRING_LEN);
+    /* Ensure that its a valid C string. Since all bytes are nondeterminstic, 
      * the actual string length is 0..str_cap
      */
     assume(str[cap - 1] == 0);
