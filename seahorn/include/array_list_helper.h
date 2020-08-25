@@ -18,4 +18,4 @@ bool aws_array_list_is_bounded(
 /**
  * Ensures the data member of an aws_array_list structure is correctly allocated
  */
-//void ensure_array_list_has_allocated_data_member(struct aws_array_list *const list);
+void ensure_array_list_has_allocated_data_member(struct aws_array_list *const list);
