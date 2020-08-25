@@ -7,3 +7,6 @@
 #undef AWS_CRYPTOSDK_P_USE_X86_64_ASM
 #undef AWS_CRYPTOSDK_P_SPECTRE_MITIGATIONS
 #undef AWS_CRYPTOSDK_P_HAVE_BUILTIN_EXPECT
+
+// use gcc/clang builtins for arithmetic overflow checking opertions 
+#define AWS_HAVE_GCC_OVERFLOW_MATH_EXTENSIONS 
