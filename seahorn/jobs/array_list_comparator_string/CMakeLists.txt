@@ -12,5 +12,6 @@ target_compile_definitions(array_list_comparator_string
   MAX_INITIAL_ITEM_ALLOCATION=9223372036854775808ULL
   MAX_BUFFER_SIZE=10
   MAX_STRING_LEN=16)
+configure_file(sea.yaml sea.yaml @ONLY)
 sea_attach_bc(array_list_comparator_string)
 sea_add_unsat_test(array_list_comparator_string)
