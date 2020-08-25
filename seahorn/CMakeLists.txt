@@ -22,9 +22,11 @@ function(sea_get_file_name VAR LLVMIR_TARGET)
   set(${VAR} "${DIR}/${FILES}" PARENT_SCOPE)
 endfunction()
 
+set(VERIFY_FLAGS $ENV{VERIFY_FLAGS} CACHE STRING "Flags for verify script")
+
 function(sea_add_unsat_test TARGET)
   sea_get_file_name(BC ${TARGET}.ir)
-  add_test(NAME "${TARGET}_unsat_test" COMMAND ${VERIFY_CMD} --silent --expect=unsat ${BC})
+  add_test(NAME "${TARGET}_unsat_test" COMMAND ${VERIFY_CMD} ${VERIFY_FLAGS} --expect=unsat ${BC})
 endfunction()
 
 configure_file(sea.yaml sea.yaml @ONLY)
