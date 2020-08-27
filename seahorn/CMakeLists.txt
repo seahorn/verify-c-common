@@ -7,6 +7,7 @@ function(sea_attach_bc)
   target_compile_options(${SOURCE_EXE} PUBLIC -O1 -Xclang -disable-llvm-optzns )
   target_compile_options(${SOURCE_EXE} PUBLIC -Wno-macro-redefined)
   target_compile_options(${SOURCE_EXE} PUBLIC -g)
+  target_compile_options(${SOURCE_EXE} PUBLIC -fdeclspec)
   set_property(TARGET ${SOURCE_EXE} PROPERTY EXCLUDE_FROM_ALL ON)
 
   llvmir_attach_bc_target(TARGET ${TARGET_OBJ} DEPENDS ${SOURCE_EXE})
