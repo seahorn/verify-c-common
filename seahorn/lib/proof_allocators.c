@@ -11,7 +11,14 @@
 #include <seahorn/seahorn.h>
 #include <sea_mem_helper.h>
 
-extern void memset_nd(void *ptr, size_t size);
+/** 
+ * Non-deterministic initialization of a memory segment.
+ * Only accesses memory pointed by the argument (plus source of nondet values)
+ * Note: might have different attribute from other nd() functions because it actually
+ *       accesses memory passed through arguments
+ */
+#define NDMEM_FN_ATTR __declspec(noalias)
+extern NDMEM_FN_ATTR void memset_nd(void *ptr, size_t size);
 
 void *realloc( void *ptr, size_t new_size ) {
     if (ptr) {
