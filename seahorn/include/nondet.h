@@ -20,16 +20,24 @@
 #include <stdint.h>
 
 /**
+ * Mark nondet functions as not accessing memory
+ * Note: if the attribute is too agressive, the optimizer might remove
+ *       calls to nondet functions, thus reducing the amount of non-determinism.
+ * Note: using each nondet function only once grately simplifies debugging.
+ */
+#define NONDET_FN_ATTR __declspec(noalias)
+
+/**
  * Non-determinstic functions 
  */
-extern bool nd_bool(void);
-extern int nd_int(void);
-extern size_t nd_size_t(void);
-extern uint16_t nd_uint16_t(void);
-extern uint32_t nd_uint32_t(void);
-extern uint64_t nd_uint64_t(void);
-extern uint8_t nd_uint8_t(void);
-extern void *nd_voidp(void);
+extern NONDET_FN_ATTR bool nd_bool(void);
+extern NONDET_FN_ATTR int nd_int(void);
+extern NONDET_FN_ATTR size_t nd_size_t(void); 
+extern NONDET_FN_ATTR uint16_t nd_uint16_t(void);
+extern NONDET_FN_ATTR uint32_t nd_uint32_t(void);
+extern NONDET_FN_ATTR uint64_t nd_uint64_t(void);
+extern NONDET_FN_ATTR uint8_t nd_uint8_t(void);
+extern void *nd_voidp(void) __attribute__((malloc));
 
 /* store allocated mem size */
-extern int nd_store_mem_size(void);
+extern NONDET_FN_ATTR int nd_store_mem_size(void);
