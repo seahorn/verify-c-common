@@ -1,3 +1,5 @@
 build
+debug
+cex
 aws-c-common
 compile_commands.json
