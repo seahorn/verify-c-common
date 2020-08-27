@@ -1,18 +1,3 @@
-/*
- * Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"). You may not use
- * this file except in compliance with the License. A copy of the License is
- * located at
- *
- *     http://aws.amazon.com/apache2.0/
- *
- * or in the "license" file accompanying this file. This file is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- * implied. See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 #pragma once
 
 #include <stdbool.h>
@@ -41,3 +26,12 @@ extern void *nd_voidp(void) __attribute__((malloc));
 
 /* store allocated mem size */
 extern NONDET_FN_ATTR int nd_store_mem_size(void);
+
+/**
+ * Non-deterministic initialization of a memory segment.
+ * Only accesses memory pointed by the argument (plus source of nondet values)
+ * Note: might have different attribute from other nd() functions because it
+ * actually accesses memory passed through arguments
+ */
+#define NDMEM_FN_ATTR __declspec(noalias)
+extern NDMEM_FN_ATTR void memhavoc(void *ptr, size_t size);
