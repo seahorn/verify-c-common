@@ -1,3 +1,2 @@
 verify_options:
-# disable type awareness
-  dsa: sea-cs 
+  horn-bmc-tactic: smtfd
