@@ -50,7 +50,19 @@ def main(argv):
             script_dir = os.path.abspath(sys.argv[0])
             script_dir = os.path.dirname(script_dir)
 
-            file_dir = os.path.abspath(args.input_file[0])
+            input_file = os.path.abspath(args.input_file[0])
+
+            # try to guess input file from directory name
+            if os.path.isdir(input_file):
+                fname = os.path.basename(input_file)
+                _input_file = os.path.join(input_file, 'llvm-ir', fname + '.ir',
+                                           fname + '.ir.bc')
+                print("input_file", _input_file)
+                if os.path.isfile(_input_file):
+                    input_file = _input_file
+
+
+            file_dir = input_file
             file_dir = os.path.dirname(file_dir)
 
             cmd = [os.path.join(SEAHORN_ROOT, 'bin', 'sea'),
@@ -79,7 +91,7 @@ def main(argv):
 
             cmd.append(args.command)
             cmd.extend(extra)
-            cmd.append(args.input_file[0])
+            cmd.append(input_file)
 
             if args.verbose:
                 print(' '.join(cmd))
