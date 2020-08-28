@@ -4,7 +4,7 @@ function(sea_attach_bc)
   set(TARGET_OBJ "${SOURCE_EXE}.obj")
 
   set_target_properties(${SOURCE_EXE} PROPERTIES LINKER_LANGUAGE C)
-  target_compile_options(${SOURCE_EXE} PUBLIC -O1 -Xclang -disable-llvm-optzns )
+  target_compile_options(${SOURCE_EXE} PUBLIC -O1 -Xclang -disable-llvm-optzns)
   target_compile_options(${SOURCE_EXE} PUBLIC -Wno-macro-redefined)
   target_compile_options(${SOURCE_EXE} PUBLIC -g)
   target_compile_options(${SOURCE_EXE} PUBLIC -fdeclspec)
@@ -32,8 +32,10 @@ endfunction()
 
 configure_file(sea.yaml sea.yaml @ONLY)
 configure_file(sea_cex_base.yaml sea.cex.yaml @ONLY)
+configure_file(sea_vac.yaml sea.vac.yaml @ONLY)
 
 add_definitions(-D__SEAHORN__)
+add_definitions(-DVACCHECK)
 
 add_subdirectory(jobs/array_eq_c_str)
 add_subdirectory(jobs/array_eq_c_str_ignore_case)

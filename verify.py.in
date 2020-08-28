@@ -1,23 +1,32 @@
 #!/usr/bin/env python3
-
-import sys
+"""
+Verify script for seahorn verification jobs
+return code
+0 - all ok
+1 - expected string not found in stderr/stdout
+2 - error reported to stderr
+"""
 import os
 import os.path
+import re
+import sys
 
-SEAHORN_ROOT="@SEAHORN_ROOT@"
+SEAHORN_ROOT = "@SEAHORN_ROOT@"
+ERROR_PREFIX = r'^Error:.*(Antecedent|Consequent).*$'
 
 def main(argv):
     import sea
+
     class VerifyCmd(sea.CliCmd):
         def __init__(self):
             super().__init__('verify', 'Verify', allow_extra=True)
-
 
         def mk_arg_parser(self, argp):
             import argparse
             argp = super().mk_arg_parser(argp)
 
-            argp.add_argument('-v', '--verbose', action='store_true', default=False)
+            argp.add_argument('-v', '--verbose', action='store_true',
+                              default=False)
             argp.add_argument('--silent', action='store_true', default=False,
                               help='Do not produce any output')
             argp.add_argument('--expect', type=str, default=None,
@@ -26,38 +35,64 @@ def main(argv):
                               help='sea command')
             argp.add_argument('--cex', action='store_true', default=False,
                               help='Counterexample mode')
+            argp.add_argument('--vac', action='store_true', default=False,
+                              help='Vacuity mode')
             argp.add_argument('input_file', nargs=1)
-            argp.add_argument('--dry-run', dest='dry_run', 
+            argp.add_argument('--dry-run', dest='dry_run',
                               action='store_true', default=False,
                               help='Pass --dry-run to yama')
             argp.add_argument('extra', nargs=argparse.REMAINDER)
             return argp
 
-        def run(self, args = None, _extra = []):
+        def run(self, args=None, _extra=[]):
             extra = _extra + args.extra
 
             script_dir = os.path.abspath(sys.argv[0])
             script_dir = os.path.dirname(script_dir)
 
-            file_dir = os.path.abspath(args.input_file[0])
+            input_file = os.path.abspath(args.input_file[0])
+
+            # try to guess input file from directory name
+            if os.path.isdir(input_file):
+                fname = os.path.basename(input_file)
+                _input_file = os.path.join(input_file, 'llvm-ir', fname + '.ir',
+                                           fname + '.ir.bc')
+                if os.path.isfile(_input_file):
+                    input_file = _input_file
+
+
+            file_dir = input_file
             file_dir = os.path.dirname(file_dir)
 
+            cmd = [os.path.join(SEAHORN_ROOT, 'bin', 'sea'),
+                   'yama', '--yforce']
+
+            # base config
             base_config = os.path.join(script_dir, 'seahorn', 'sea.yaml')
             if args.cex:
-                base_config = os.path.join(script_dir, 'seahorn', 'sea.cex.yaml')
-            cmd = [os.path.join(SEAHORN_ROOT, 'bin', 'sea'),
-                   'yama', '--yforce',
-                   '-y', base_config,
-                   '-y', os.path.abspath(os.path.join(file_dir, '..', '..', 'sea.yaml'))]
+                base_config = os.path.join(script_dir, 'seahorn',
+                                           'sea.cex.yaml')
+            cmd.extend(['-y', base_config])
+
+            # vacuity config
+            if args.vac:
+                vac_config = os.path.join(script_dir, 'seahorn',
+                                          'sea.vac.yaml')
+                cmd.extend(['-y', vac_config])
+
+            # job specific config
+            job_config = os.path.abspath(os.path.join(file_dir, '..', '..',
+                                                      'sea.yaml'))
+            cmd.extend(['-y', job_config])
 
             if args.dry_run:
                 cmd.append('--dry-run')
 
             cmd.append(args.command)
             cmd.extend(extra)
-            cmd.append(args.input_file[0])
+            cmd.append(input_file)
 
-            if args.verbose: 
+            if args.verbose:
                 print(' '.join(cmd))
 
             import subprocess
@@ -67,22 +102,26 @@ def main(argv):
                                        stdout=subprocess.PIPE,
                                        stderr=subprocess.STDOUT)
             found_expected = False
+            found_error = False
             for line in iter(process.stdout.readline, ''):
                 if not args.silent:
                     print(line, end='')
                 if args.expect is not None and not found_expected:
                     found_expected = (line.strip() == args.expect)
-
+                if re.match(ERROR_PREFIX, line):
+                    found_error = True
             process.stdout.close()
             rcode = process.wait()
 
+            if args.vac and found_error:
+                return 2
             if rcode == 0 and args.expect is not None:
                 return 0 if found_expected else 1
-
             return rcode
 
     cmd = VerifyCmd()
     return cmd.main(argv)
+
 
 if __name__ == '__main__':
     root = os.path.abspath(SEAHORN_ROOT)

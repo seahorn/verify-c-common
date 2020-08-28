@@ -7,8 +7,6 @@
 #include <byte_buf_helper.h>
 #include <utils.h>
 
-extern void nd_memset(void* p);
-  
 int main() {
     struct aws_byte_buf to;
     initialize_byte_buf(&to);
@@ -32,8 +30,8 @@ int main() {
      */
     uint8_t lookup_table[256];
     // This initializes the LUT non-deterministically
-    nd_memset(lookup_table);
-    
+    memhavoc(lookup_table, sizeof(lookup_table));
+
     if (aws_byte_buf_append_with_lookup(&to, &from, lookup_table) == AWS_OP_SUCCESS) {
         sassert(to.len == to_old.len + from.len);
     } else {
