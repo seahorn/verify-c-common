@@ -5,3 +5,4 @@ verify_options:
   horn-vcgen-only-dataflow: false
   # don't reduce by data dependence
   horn-bmc-coi: false
+  horn-bv2-vacuity-check: "all"
