@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
-
-import sys
+"""
+Verify script for seahorn verification jobs
+return code
+0 - all ok
+1 - expected string not found in stderr/stdout
+2 - error reported to stderr
+"""
 import os
 import os.path
+import re
+import sys
 
 SEAHORN_ROOT = "@SEAHORN_ROOT@"
-
+ERROR_PREFIX = r'^Error:.*(Antecedent|Consequent).*$'
 
 def main(argv):
     import sea
@@ -84,18 +91,21 @@ def main(argv):
                                        stdout=subprocess.PIPE,
                                        stderr=subprocess.STDOUT)
             found_expected = False
+            found_error = False
             for line in iter(process.stdout.readline, ''):
                 if not args.silent:
                     print(line, end='')
                 if args.expect is not None and not found_expected:
                     found_expected = (line.strip() == args.expect)
-
+                if re.match(ERROR_PREFIX, line):
+                    found_error = True
             process.stdout.close()
             rcode = process.wait()
 
+            if args.vac and found_error:
+                return 2
             if rcode == 0 and args.expect is not None:
                 return 0 if found_expected else 1
-
             return rcode
 
     cmd = VerifyCmd()
