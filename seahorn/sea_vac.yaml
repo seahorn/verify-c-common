@@ -1,0 +1,7 @@
+verify_options:
+  # Unify all assumes - needed for Vacuity check
+  horn-unify-assumes: true
+  # don't ignore control flow
+  horn-vcgen-only-dataflow: false
+  # don't reduce by data dependence
+  horn-bmc-coi: false
