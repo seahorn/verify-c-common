@@ -18,3 +18,8 @@ struct aws_string *ensure_string_is_allocated_bounded_length(size_t max_size) {
     assume(len < max_size);
     return ensure_string_is_allocated(len);
 }
+
+struct aws_string *ensure_string_is_allocated_nondet_length(void) {
+    /* Considers any size up to the maximum possible size for the array [bytes] in aws_string */
+    return ensure_string_is_allocated_bounded_length(SIZE_MAX - 1 - sizeof(struct aws_string));
+}
