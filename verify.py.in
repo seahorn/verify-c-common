@@ -13,7 +13,7 @@ import sys
 
 SEAHORN_ROOT = "@SEAHORN_ROOT@"
 #ERROR_PREFIX = r'^Error:.*(Antecedent|Consequent).*$'
-ERROR_PREFIX = r'^Error: (vacuity|assertion) failed with'
+ERROR_PREFIX = r'^Error: (vacuity|assertion) failed'
 
 def main(argv):
     import sea
