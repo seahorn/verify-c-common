@@ -95,6 +95,9 @@ def main(argv):
 
             if args.verbose:
                 print(' '.join(cmd))
+	   
+            if args.expect is None:
+                os.execv(cmd[0], cmd)
 
             import subprocess
             process = subprocess.Popen(cmd, shell=False,
