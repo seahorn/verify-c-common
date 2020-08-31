@@ -1,3 +1,4 @@
 verify_options:
   horn-bv2-word-size: 1
+  bound: @MAX_BUFFER_SIZE@
   

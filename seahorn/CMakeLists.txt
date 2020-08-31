@@ -24,6 +24,7 @@ function(sea_get_file_name VAR LLVMIR_TARGET)
 endfunction()
 
 set(VERIFY_FLAGS $ENV{VERIFY_FLAGS} CACHE STRING "Flags for verify script")
+separate_arguments(VERIFY_FLAGS)
 
 function(sea_add_unsat_test TARGET)
   sea_get_file_name(BC ${TARGET}.ir)

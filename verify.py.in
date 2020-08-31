@@ -12,7 +12,8 @@ import re
 import sys
 
 SEAHORN_ROOT = "@SEAHORN_ROOT@"
-ERROR_PREFIX = r'^Error:.*(Antecedent|Consequent).*$'
+#ERROR_PREFIX = r'^Error:.*(Antecedent|Consequent).*$'
+ERROR_PREFIX = r'^Error: (vacuity|assertion) failed'
 
 def main(argv):
     import sea
@@ -94,6 +95,9 @@ def main(argv):
 
             if args.verbose:
                 print(' '.join(cmd))
+	   
+            if args.expect is None:
+                os.execv(cmd[0], cmd)
 
             import subprocess
             process = subprocess.Popen(cmd, shell=False,
