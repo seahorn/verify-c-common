@@ -114,7 +114,7 @@ size_t sea_strlen(const char *str, size_t max) {
   // assume(forall j :: j < i ==> str[j] != '\0');
   // therefore, we say the following:
   size_t j = 0;
-  for (j = 0; j < MAX_BUFFER_SIZE; j++) {
+  for (j = 0; j < MAX_STRING_LEN; j++) {
     if (j < i) {
       assume(str[j] != '\0');
     }
@@ -125,8 +125,7 @@ size_t sea_strlen(const char *str, size_t max) {
 size_t strlen(const char *str) { return sea_strlen(str, MAX_STRING_LEN); }
 
 const char *ensure_c_str_is_nd_allocated(size_t max_size, size_t *len) {
-  // use bounded_nd_malloc to ensure that string is initialized
-  const char *str = bounded_malloc(MAX_BUFFER_SIZE);
+  const char *str = bounded_malloc(MAX_STRING_LEN);
   *len = sea_strlen(str, max_size);
   return str;
 }
