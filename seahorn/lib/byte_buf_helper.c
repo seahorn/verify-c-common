@@ -13,7 +13,7 @@
 
 void initialize_byte_buf(struct aws_byte_buf *const buf) {
     buf->len = nd_size_t();
-    buf->buffer = bounded_malloc(sizeof(*(buf->buffer)) * MAX_BUFFER_SIZE);
+    buf->buffer = can_fail_malloc(sizeof(*(buf->buffer)) * MAX_BUFFER_SIZE);
     buf->capacity = nd_size_t();
     assume(buf->capacity <= MAX_BUFFER_SIZE);
     assume (buf->len <= buf->capacity);
@@ -23,9 +23,7 @@ void initialize_byte_buf(struct aws_byte_buf *const buf) {
 void initialize_byte_cursor(struct aws_byte_cursor *const cursor) {
     cursor->len = nd_size_t();
     assume(cursor->len <= MAX_BUFFER_SIZE);
-    cursor->ptr = (nd_bool()) ? 
-        NULL : 
-        bounded_malloc(sizeof(*(cursor->ptr)) * MAX_BUFFER_SIZE);
+    cursor->ptr = can_fail_malloc(sizeof(*(cursor->ptr)) * MAX_BUFFER_SIZE);
 }
 
 bool aws_byte_buf_is_bounded(
