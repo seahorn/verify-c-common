@@ -133,7 +133,7 @@ void *aws_mem_acquire(struct aws_allocator *allocator, size_t size) {
    */
   AWS_FATAL_PRECONDITION(size != 0);
 
-  void *mem = bounded_malloc(size);
+  void *mem = can_fail_malloc(size);
   if (!mem) {
     aws_raise_error(AWS_ERROR_OOM);
   }
