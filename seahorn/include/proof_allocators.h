@@ -1,5 +1,5 @@
 /*
- * 
+ *
  */
 
 #pragma once
@@ -16,7 +16,7 @@
 
 #define MEM_BLOCK 4096
 
-void *realloc( void *ptr, size_t new_size );
+void *realloc(void *ptr, size_t new_size);
 
 /**
  *
@@ -27,7 +27,7 @@ void *bounded_calloc(size_t num, size_t size);
  *
  */
 void *bounded_malloc(size_t size);
-
+void *can_fail_malloc(size_t size);
 /**
  *
  */
