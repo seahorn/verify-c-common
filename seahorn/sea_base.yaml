@@ -14,7 +14,7 @@ verify_options:
   horn-unify-assumes: true
   horn-gsa: ''
 # do not instrument library functions with memory assertions 
-  no-fat-fns: 'bcmp,memcpy'
+  no-fat-fns: 'bcmp,memcpy,assert_bytes_match'
 # context-sensitive type-aware alias analysis 
   dsa: sea-cs-t
 # weak support for function pointers. sea-dsa is better but less stable
