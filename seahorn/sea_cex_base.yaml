@@ -12,6 +12,8 @@ verify_options:
   no-kill-vaarg: ''
   with-arith-overflow: true
   horn-unify-assumes: false
+# do not instrument library functions with memory assertions
+  no-fat-fns: 'bcmp,memcpy' 
   horn-gsa: false
 # context-sensitive type-aware alias analysis 
   dsa: sea-cs-t

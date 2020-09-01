@@ -13,6 +13,8 @@ verify_options:
   with-arith-overflow: true
   horn-unify-assumes: true
   horn-gsa: ''
+# do not instrument library functions with memory assertions 
+  no-fat-fns: 'bcmp,memcpy'
 # context-sensitive type-aware alias analysis 
   dsa: sea-cs-t
 # weak support for function pointers. sea-dsa is better but less stable
