@@ -11,7 +11,7 @@
 
 void assert_bytes_match(const uint8_t *const a, const uint8_t *const b,
                         const size_t len) {
-  sassert(!a == !b);
+  sassert(len == 0 || !a == !b);
   if (len > 0 && a != NULL && b != NULL) {
     size_t i = nd_size_t();
     /* prevent spurious pointer overflows */
