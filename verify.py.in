@@ -12,11 +12,30 @@ import re
 import sys
 
 SEAHORN_ROOT = "@SEAHORN_ROOT@"
-#ERROR_PREFIX = r'^Error:.*(Antecedent|Consequent).*$'
-ERROR_PREFIX = r'^Error: (vacuity|assertion) failed'
+ASSERT_ERROR_PREFIX = r'^Error: assertion failed'
+# the plan is to have two sets, vac error and info and put filepath:linenumbers) into both
+VACUITY_CHECK_RE = r'^(?P<stream>Info|Error).*(?P<what>vacuity).*(?P<result>passed|failed).*sat\) (?P<debuginfo>.*)$'
+
+def check_vacuity(line, passed_set, failed_set):
+    m = re.match(VACUITY_CHECK_RE, line)
+    if not m:
+        return
+    debugInfo = m.group('debuginfo')
+    if (m.group('stream') == 'Info'
+        and m.group('what') == 'vacuity'
+        and m.group('result') == 'passed'):
+        passed_set.add(debugInfo.strip())
+    elif (m.group('stream') == 'Error'
+        and m.group('what') == 'vacuity'
+        and m.group('result') == 'failed'):
+        failed_set.add(debugInfo.strip())
+
 
 def main(argv):
     import sea
+
+    def check_vacuity_inner(line, passed_set, failed_set):
+        return check_vacuity(line, passed_set, failed_set)
 
     class VerifyCmd(sea.CliCmd):
         def __init__(self):
@@ -95,7 +114,7 @@ def main(argv):
 
             if args.verbose:
                 print(' '.join(cmd))
-	   
+   
             if args.expect is None:
                 os.execv(cmd[0], cmd)
 
@@ -107,21 +126,30 @@ def main(argv):
                                        stderr=subprocess.STDOUT)
             found_expected = False
             found_error = False
+            vacuity_passed = set()
+            vacuity_failed = set()
             for line in iter(process.stdout.readline, ''):
                 if not args.silent:
                     print(line, end='')
+                # checks after this line are mutually exclusive
                 if args.expect is not None and not found_expected:
                     found_expected = (line.strip() == args.expect)
-                if re.match(ERROR_PREFIX, line):
+                elif re.match(ASSERT_ERROR_PREFIX, line):
                     found_error = True
+                else:
+                    check_vacuity_inner(line, vacuity_passed, vacuity_failed)
+               
             process.stdout.close()
             rcode = process.wait()
 
             if args.vac and found_error:
                 return 2
-            if rcode == 0 and args.expect is not None:
+            elif args.vac and (vacuity_failed - vacuity_passed):
+                return 2
+            elif rcode == 0 and args.expect is not None:
                 return 0 if found_expected else 1
-            return rcode
+            else:
+                return rcode
 
     cmd = VerifyCmd()
     return cmd.main(argv)
