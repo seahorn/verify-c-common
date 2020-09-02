@@ -10,4 +10,5 @@ target_compile_definitions(array_list_set_at
   MAX_INITIAL_ITEM_ALLOCATION=9223372036854775808ULL
   MAX_BUFFER_SIZE=10)
 sea_attach_bc(array_list_set_at)
+configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(array_list_set_at)
