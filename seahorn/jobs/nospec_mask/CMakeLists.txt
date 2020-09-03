@@ -1,0 +1,5 @@
+add_executable(nospec_mask
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  aws_nospec_mask_harness.c)
+sea_attach_bc(nospec_mask)
+sea_add_unsat_test(nospec_mask)
