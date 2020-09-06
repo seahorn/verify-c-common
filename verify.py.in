@@ -10,6 +10,7 @@ import os
 import os.path
 import re
 import sys
+import subprocess
 
 SEAHORN_ROOT = "@SEAHORN_ROOT@"
 ASSERT_ERROR_PREFIX = r'^Error: assertion failed'
@@ -30,12 +31,30 @@ def check_vacuity(line, passed_set, failed_set):
         and m.group('result') == 'failed'):
         failed_set.add(debugInfo.strip())
 
+def generate_cex_exe(args, input_file, output_file):
+    cmd = [os.path.join(SEAHORN_ROOT, 'bin', 'sea'),
+            'exe', '-m64', '-g', input_file]
+    fname = os.path.basename(input_file)
+    jname = fname.split(".")[0]
+    cex_path = "/tmp/verify-c-common/{job}.h.ll".format(job=jname)
+    if not os.path.isfile(cex_path):
+        print("[sea exe] no harness file found, aborting...")
+        return
+    cmd.append(cex_path)
+    cmd.extend(['-o', output_file])
+    if args.dry_run or args.verbose:
+        print(' '.join(cmd))
+    if not args.dry_run:
+        subprocess.run(cmd)
 
 def main(argv):
     import sea
 
     def check_vacuity_inner(line, passed_set, failed_set):
         return check_vacuity(line, passed_set, failed_set)
+
+    def generate_cex_exe_inner(argp, input_file, output_file):
+        return generate_cex_exe(argp, input_file, output_file)
 
     class VerifyCmd(sea.CliCmd):
         def __init__(self):
@@ -61,6 +80,8 @@ def main(argv):
             argp.add_argument('--dry-run', dest='dry_run',
                               action='store_true', default=False,
                               help='Pass --dry-run to yama')
+            argp.add_argument('--output_cex', type=str, default=None,
+                              help='Output counter example executable file')
             argp.add_argument('extra', nargs=argparse.REMAINDER)
             return argp
 
@@ -92,6 +113,11 @@ def main(argv):
             if args.cex:
                 base_config = os.path.join(script_dir, 'seahorn',
                                            'sea.cex.yaml')
+                # job-based cex harness path
+                fname = os.path.basename(input_file)
+                jname = fname.split(".")[0]
+                cex_path= "/tmp/verify-c-common/{job}.h.ll".format(job=jname)
+                extra.append("--cex=" + cex_path)
             cmd.extend(['-y', base_config])
 
             # vacuity config
@@ -116,9 +142,11 @@ def main(argv):
                 print(' '.join(cmd))
    
             if args.expect is None:
-                os.execv(cmd[0], cmd)
+                output = subprocess.run(cmd)
+                if args.cex and args.output_cex is not None:
+                    generate_cex_exe_inner(args, input_file, args.output_cex)
+                return output.returncode
 
-            import subprocess
             process = subprocess.Popen(cmd, shell=False,
                                        encoding='utf-8',
                                        errors='ignore',
@@ -139,9 +167,11 @@ def main(argv):
                     found_error = True
                 else:
                     check_vacuity_inner(line, vacuity_passed, vacuity_failed)
-               
+
             process.stdout.close()
             rcode = process.wait()
+            if args.cex and args.output_cex is not None:
+                generate_cex_exe_inner(args, input_file, args.output_cex)
 
             if args.vac and found_error:
                 return 2

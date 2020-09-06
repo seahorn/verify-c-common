@@ -1,0 +1,4 @@
+add_executable(is_power_of_two_cex
+  aws_is_power_of_two_cex_harness.c)
+sea_attach_bc(is_power_of_two_cex)
+# sea_add_unsat_test(is_power_of_two_cex)

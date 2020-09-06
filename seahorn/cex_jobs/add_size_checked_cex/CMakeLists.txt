@@ -1,0 +1,4 @@
+add_executable(add_size_checked_cex
+  aws_add_size_checked_cex_harness.c)
+sea_attach_bc(add_size_checked_cex)
+# sea_add_unsat_test(add_size_checked_cex)

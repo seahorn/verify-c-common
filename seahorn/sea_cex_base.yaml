@@ -43,8 +43,6 @@ verify_options:
   temp-dir: /tmp/verify-c-common
 # time and result stats
   horn-stats: true
-# produce counterexample harness
-  cex: /tmp/h.ll
 # printable counterexample log
   log: cex
 # number of words to unroll symbolic memcpy for array-based memory representation
