@@ -9,3 +9,7 @@ verify_options:
   # unwinding assertions
   # Note: checked only by the incremental checking during vacuity
   assert-on-backedge: true
+  # add branch sentinel intrinsic
+  add-branch-sentinel: ''
+  # evaluate branch sentinel intrinsic
+  eval-branch-sentinel: ''
