@@ -36,7 +36,7 @@ configure_file(sea_cex_base.yaml sea.cex.yaml @ONLY)
 configure_file(sea_vac.yaml sea.vac.yaml @ONLY)
 
 add_definitions(-D__SEAHORN__)
-#add_definitions(-DVACCHECK)
+add_definitions(-DVACCHECK)
 
 add_subdirectory(jobs/add_size_checked)
 add_subdirectory(jobs/add_size_saturating)
