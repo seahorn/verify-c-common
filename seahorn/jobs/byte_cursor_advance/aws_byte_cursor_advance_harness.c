@@ -27,7 +27,7 @@ int main() {
     struct aws_byte_cursor rv = aws_byte_cursor_advance(&cursor, len);
 
     /* assertions */
-    assert(aws_byte_cursor_is_valid(&rv));
+    sassert(aws_byte_cursor_is_valid(&rv));
     if (old.len > (SIZE_MAX >> 1) || len > (SIZE_MAX >> 1) || len > old.len) {
         sassert(rv.ptr == NULL);
         sassert(rv.len == 0);

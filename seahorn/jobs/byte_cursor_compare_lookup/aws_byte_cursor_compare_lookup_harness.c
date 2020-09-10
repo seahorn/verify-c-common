@@ -22,7 +22,7 @@ int main() {
 
     /* assumptions */
     assume(aws_byte_cursor_is_valid(&lhs));
-    if (nondet_bool()) {
+    if (nd_bool()) {
         rhs = lhs;
     } else {
         initialize_byte_cursor(&rhs);
