@@ -7,7 +7,6 @@
 
 int main() {
     size_t test_val = nd_size_t();
-    assume(test_val <= 2);
     size_t result;
     int rval = aws_round_up_to_power_of_two(test_val, &result);
 
