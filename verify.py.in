@@ -131,9 +131,10 @@ def main(argv):
             for line in iter(process.stdout.readline, ''):
                 if not args.silent:
                     print(line, end='')
+
                 # checks after this line are mutually exclusive
-                if args.expect is not None and not found_expected:
-                    found_expected = (line.strip() == args.expect)
+                if not found_expected and args.expect is not None and line.strip() == args.expect:
+                    found_expected = True
                 elif re.match(ASSERT_ERROR_PREFIX, line):
                     found_error = True
                 else:
