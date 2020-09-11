@@ -1,2 +1,6 @@
 verify_options:
   horn-bv2-word-size: 1
+# This needs to go to MEM_BLOCK=4096.
+# Arbitrary amount of memory is copied.
+# Not a problem for lambdas, but gets very hard for arrays 
+  horn-array-sym-memcpy-unroll-count: @MAX_STRING_LEN@
