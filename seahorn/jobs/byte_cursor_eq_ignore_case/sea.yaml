@@ -1,0 +1,2 @@
+verify_options:
+  bound: @MAX_BUFFER_SIZE@
