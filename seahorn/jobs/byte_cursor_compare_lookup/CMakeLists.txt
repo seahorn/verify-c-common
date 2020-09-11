@@ -5,7 +5,9 @@ add_executable(byte_cursor_compare_lookup
   ${SEA_LIB}/byte_buf_helper.c
   ${SEA_LIB}/bcmp.c
   ${SEA_LIB}/utils.c)
-target_compile_definitions(byte_cursor_compare_lookup PUBLIC MAX_BUFFER_SIZE=10)
+set(MAX_BUFFER_SIZE 10)
+target_compile_definitions(byte_cursor_compare_lookup PUBLIC MAX_BUFFER_SIZE=${MAX_BUFFER_SIZE})
 sea_attach_bc(byte_cursor_compare_lookup)
+configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(byte_cursor_compare_lookup)
 
