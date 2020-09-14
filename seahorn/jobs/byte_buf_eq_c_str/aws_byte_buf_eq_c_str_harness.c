@@ -11,7 +11,8 @@ int main() {
     /* parameters */
     struct aws_byte_buf buf;
     initialize_byte_buf(&buf);
-    const char *c_str = ensure_c_str_is_allocated(MAX_BUFFER_SIZE);
+    size_t str_len;
+    const char *c_str = ensure_c_str_is_nd_allocated(MAX_BUFFER_SIZE, &str_len);
 
     /* assumptions */
     assume(aws_byte_buf_is_valid(&buf));
@@ -20,7 +21,6 @@ int main() {
     struct aws_byte_buf old = buf;
     struct store_byte_from_buffer old_byte;
     save_byte_from_array(buf.buffer, buf.len, &old_byte);
-    size_t str_len = (c_str) ? strlen(c_str) : 0;
     struct store_byte_from_buffer old_byte_from_str;
     save_byte_from_array((uint8_t *)c_str, str_len, &old_byte_from_str);
 
