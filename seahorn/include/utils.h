@@ -126,6 +126,7 @@ size_t strlen(const char *str);
 
 // len is populated by this function
 const char *ensure_c_str_is_nd_allocated(size_t max_size, size_t* len);
+const char *can_fail_c_str_allocation(size_t max_size, size_t* len);
 
 const char *ensure_c_str_is_allocated(size_t max_size);
 

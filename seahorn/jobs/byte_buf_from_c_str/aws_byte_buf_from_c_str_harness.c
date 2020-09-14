@@ -10,9 +10,8 @@
 
 int main() {
     /* parameter */
-    const char *c_str = nd_bool() ?  
-        ensure_c_str_is_allocated(MAX_BUFFER_SIZE) :
-        NULL;
+    size_t str_len = 0;
+    const char *c_str = can_fail_c_str_allocation(MAX_BUFFER_SIZE, &str_len);
 
     /* operation under verification */
     struct aws_byte_buf buf = aws_byte_buf_from_c_str(c_str);
@@ -21,12 +20,12 @@ int main() {
     sassert(aws_byte_buf_is_valid(&buf));
     sassert(buf.allocator == NULL);
     if (buf.buffer) {
-        sassert(buf.len == sea_strlen(c_str, MAX_BUFFER_SIZE));
+        sassert(buf.len == str_len);
         sassert(buf.capacity == buf.len);
         assert_bytes_match(buf.buffer, (uint8_t *)c_str, buf.len);
     } else {
         if (c_str) {
-            sassert(sea_strlen(c_str, MAX_BUFFER_SIZE) == 0);
+            sassert(str_len == 0);
         }
         sassert(buf.len == 0);
         sassert(buf.capacity == 0);

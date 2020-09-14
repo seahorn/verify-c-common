@@ -10,17 +10,16 @@
 
 int main() {
     /* parameter */
-    const char *c_str = nd_bool() ?
-                        ensure_c_str_is_allocated(MAX_BUFFER_SIZE) :
-                        NULL;
-
+    size_t str_len;
+    const char *c_str = can_fail_c_str_allocation(MAX_BUFFER_SIZE, &str_len);
+  
     /* operation under verification */
     struct aws_byte_cursor cur = aws_byte_cursor_from_c_str(c_str);
 
     /* assertions */
     sassert(aws_byte_cursor_is_valid(&cur));
     if (cur.ptr) { /* if ptr is NULL len shoud be 0, otherwise equal to c_str */
-        sassert(cur.len == strlen(c_str));
+        sassert(cur.len == str_len);
         assert_bytes_match(cur.ptr, (uint8_t *)c_str, cur.len);
     } else {
         sassert(cur.len == 0);

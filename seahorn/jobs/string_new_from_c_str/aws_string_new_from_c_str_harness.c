@@ -12,7 +12,8 @@
 
 int main() {
     /* parameters */
-    const char *c_str = ensure_c_str_is_allocated(MAX_STRING_LEN);
+    size_t str_len;
+    const char *c_str = ensure_c_str_is_nd_allocated(MAX_STRING_LEN, &str_len);
     struct aws_allocator *allocator = _allocator();
 
     /* operation under verification */
@@ -20,7 +21,7 @@ int main() {
 
     /* assertions */
     if (str) {
-        sassert(str->len <= MAX_STRING_LEN);
+        sassert(str->len == str_len);
         sassert(str->bytes[str->len] == 0);
         assert_bytes_match(str->bytes, (uint8_t*)c_str, str->len);
         sassert(aws_string_is_valid(str));

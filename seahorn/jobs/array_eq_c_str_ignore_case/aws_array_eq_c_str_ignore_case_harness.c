@@ -12,7 +12,7 @@ int main() {
     /* assumptions */
     size_t array_len = nd_size_t();
     assume(array_len <= MAX_BUFFER_SIZE);
-    void *array = bounded_malloc(MAX_BUFFER_SIZE);
+    void *array = can_fail_malloc(MAX_BUFFER_SIZE);
     size_t str_len = 0;
     const char *c_str = ensure_c_str_is_nd_allocated(MAX_BUFFER_SIZE, &str_len);
 

@@ -9,6 +9,7 @@
 
 #include <stdlib.h> // for exit()
 
+
 void assert_bytes_match(const uint8_t *const a, const uint8_t *const b,
                         const size_t len) {
   sassert(len == 0 || !a == !b);
@@ -125,10 +126,21 @@ size_t sea_strlen(const char *str, size_t max) {
 size_t strlen(const char *str) { return sea_strlen(str, MAX_STRING_LEN); }
 
 const char *ensure_c_str_is_nd_allocated(size_t max_size, size_t *len) {
-  const char *str = bounded_malloc(MAX_STRING_LEN);
+  const char *str = bounded_malloc(max_size);
   *len = sea_strlen(str, max_size);
   return str;
 }
+
+const char *can_fail_c_str_allocation(size_t max_size, size_t *len) {
+  const char *str = can_fail_malloc(max_size);
+  if (!str) {
+    *len = 0;
+    return str;
+  }
+  *len = sea_strlen(str, max_size);
+  return str;
+}
+
 
 const char *ensure_c_str_is_allocated(size_t max_size) {
   size_t cap = nd_size_t();
