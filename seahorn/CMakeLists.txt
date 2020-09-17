@@ -45,8 +45,7 @@ add_subdirectory(jobs/mul_size_saturating)
 add_subdirectory(jobs/is_power_of_two)
 add_subdirectory(jobs/round_up_to_power_of_two)
 
-# requires support for inline asm
-# add_subdirectory(jobs/nospec_mask)
+add_subdirectory(jobs/nospec_mask)
 
 add_subdirectory(jobs/ptr_eq)
 
