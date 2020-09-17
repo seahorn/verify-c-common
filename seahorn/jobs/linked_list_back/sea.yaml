@@ -1,0 +1,4 @@
+verify_options:
+  # MAX_LINKED_LIST_ITEM_ALLOCATION to account for
+  # head and tail
+  bound: @UNROLL_BOUND@
