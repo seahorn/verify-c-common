@@ -38,11 +38,11 @@ void ensure_linked_list_is_allocated(struct aws_linked_list *const list, size_t 
 // 2. Assert only the node at 'length' + 1 index should be the tail
 // 3. Assert that any node in [0, length] satisfies aws_linked_list_node_next_is_valid
 bool sea_aws_linked_list_is_valid(const struct aws_linked_list *list, size_t length) {
-    sassert(list &&
-            list->head.next &&
-            list->head.prev == NULL &&
-            list->tail.prev &&
-            list->tail.next == NULL);
+    sassert(list); 
+    sassert(list->head.next); 
+    sassert(list->head.prev == NULL);
+    sassert(list->tail.prev);
+    sassert(list->tail.next == NULL);
 
     /* This could go into an infinite loop for a circular list */
     const struct aws_linked_list_node *temp = &list->head;
