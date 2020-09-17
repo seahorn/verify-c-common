@@ -30,6 +30,8 @@ configure_file(verify.py.in verify @ONLY)
 set(VERIFY_SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/verify-c-common.sh)
 set(VERIFY_CMD ${CMAKE_CURRENT_BINARY_DIR}/verify)
 
+set (MAX_LINKED_LIST_ITEM_ALLOCATION_SIZE 5)
+set (MAX_BUFFER_SIZE 10)
 include_directories(seahorn/include)
 include_directories(aws-c-common/include)
 #include_directories(aws-c-common/build/generated/include)
