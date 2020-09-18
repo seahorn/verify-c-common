@@ -124,6 +124,16 @@ void *bounded_malloc(size_t size) {
   return ptr;
 }
 
+/** Pure bounded memory allocation
+ 
+ Does not fail. Does not initialize memory.
+*/
+void *bounded_malloc_pure(size_t size) {
+  assume(size <= MEM_BLOCK);
+  void *ptr = malloc(size);
+  return ptr;
+}
+
 /************************************************************************************************************/
 
 void *aws_mem_acquire(struct aws_allocator *allocator, size_t size) {

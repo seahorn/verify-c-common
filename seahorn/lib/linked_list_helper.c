@@ -6,29 +6,37 @@
 // length is populated; to be used by caller
 void ensure_linked_list_is_allocated(struct aws_linked_list *const list,
                                      size_t max_length, size_t *length) {
-  *length = nd_size_t();
-  assume(*length < max_length);
-  assume(max_length <= MAX_LINKED_LIST_ITEM_ALLOCATION);
+  size_t len = nd_size_t();
+  *length = len;
+  assume(len < max_length);
   list->head.prev = NULL;
+  /* break two NULL stores that are optimized into memset */
+  assume(max_length <= MAX_LINKED_LIST_ITEM_ALLOCATION);
   list->tail.next = NULL;
+
+  if (len == 0) {
+    list->head.next = &list->tail;
+    list->tail.prev = &list->head;
+    return;
+  }
 
   struct aws_linked_list_node *curr = &list->head;
 
   for (size_t i = 0; i < MAX_LINKED_LIST_ITEM_ALLOCATION; i++) {
     /* This malloc should never fail as it wouldn't be valid to
      * have NULL nodes in the middle of the linked list. */
-    if (i < *length) {
+    if (i < len) {
       // struct aws_linked_list_node *node = NULL;
       struct aws_linked_list_node *node =
-          bounded_malloc(sizeof(struct aws_linked_list_node));
+          bounded_malloc_pure(sizeof(struct aws_linked_list_node));
       curr->next = node;
       node->prev = curr;
+      // -- node is currently the last node in the list
+      node->next = &list->tail;
+      list->tail.prev = node;
       curr = node;
     }
   }
-
-  curr->next = &list->tail;
-  list->tail.prev = curr;
 }
 
 // This is the seahorn variant of
