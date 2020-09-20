@@ -1,6 +1,4 @@
 verify_options:
   horn-bv2-word-size: 1
-  # smftd is needed for branch sentinel option
-  # to use SAT solver. By default is uses SMT
-  # solver which seems to hang on this problem.
+  horn-array-sym-memcpy-unroll-count: @MAX_STRING_LEN@
   horn-bmc-tactic: 'smtfd' 
