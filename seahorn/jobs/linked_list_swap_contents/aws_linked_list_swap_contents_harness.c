@@ -36,12 +36,11 @@ void sea_nd_init_linked_list(struct aws_linked_list *list, size_t *len) {
   // -- the linst.
   list->head.next = node1;
   node1->prev = &list->head;
-  node1->next = nd_voidp();
+  node1->next = nd_len == 2 ? node2 : nd_voidp();
 
-  node2->prev = nd_voidp();
+  node2->prev = nd_len == 2 ? node1 : nd_voidp();
   node2->next = &list->tail;
   list->tail.prev = node2;
-
 }
 
 int main(void) {
