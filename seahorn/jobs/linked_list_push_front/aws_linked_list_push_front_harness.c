@@ -1,5 +1,6 @@
 
 #include "nondet.h"
+#include <linked_list_helper.h>
 #include <aws/common/linked_list.h>
 #include <seahorn/seahorn.h>
 
@@ -10,35 +11,29 @@ int main(void) {
   struct aws_linked_list_node node1;
   struct aws_linked_list_node *nnode;
 
-  // -- tail; should be untouched during operation under verification
+  // --- initialize linked list
+  // head and tail are initialized
+  list.head.prev = NULL; 
   list.tail.next = NULL;
-  list.tail.prev = nd_voidp();
-  void *list_tail_prev_old = list.tail.prev;
 
   bool list_is_empty = nd_bool();
-
+  
   if (list_is_empty) {
     nnode = &list.tail;
-  } else {
+  } else {   
     // -- since list.tail.prev is initialized nondeterministically
     // -- it might point to head. To exclude this, we assume that list is
     // -- non-empty
     assume(!aws_linked_list_empty(&list));
     nnode = &node1;
-    node1.next = nd_voidp();
+    attach_nodeA_to_nodeB(nnode, &list.tail, false /*  directlyAttached */);
   }
+  attach_nodeA_to_nodeB(&list.head, nnode, true /* directlyAttached */);
 
+  // --- end: initialize linked list
+  // 
+  void *list_tail_prev_old = list.tail.prev;
   void *nnode_next_old = nnode->next;
-
-  // -- head; list of size at least 1
-  list.head.prev = NULL;
-  list.head.next = nnode;
-
-  // -- successor of head
-  nnode->prev = &list.head;
-
-  /* Keep the old first node of the linked list */
-  struct aws_linked_list_node *old_first = list.head.next;
 
   /* perform operation under verification */
   aws_linked_list_push_front(&list, &to_add);
@@ -50,7 +45,7 @@ int main(void) {
   sassert(aws_linked_list_node_prev_is_valid(&to_add));
   sassert(aws_linked_list_node_next_is_valid(&to_add));
   sassert(list.head.next == &to_add);
-  sassert(to_add.next == old_first);
+  sassert(to_add.next == nnode);
 
   if (!list_is_empty) {
     sassert(list.tail.prev == list_tail_prev_old);
