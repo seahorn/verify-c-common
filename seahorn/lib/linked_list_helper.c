@@ -73,3 +73,13 @@ bool sea_aws_linked_list_is_valid(const struct aws_linked_list *list,
   }
   return temp == &list->tail;
 }
+
+void attach_nodeA_to_nodeB(struct aws_linked_list_node *nodeA, struct aws_linked_list_node *nodeB, bool directlyAttached) {
+  if (directlyAttached) {
+    nodeA->next = nodeB;
+    nodeB->prev = nodeA;
+  } else {
+    nodeA->next = nd_voidp();
+    nodeB->prev = nd_voidp();
+  }
+}
