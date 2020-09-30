@@ -56,4 +56,15 @@ time.
 
 Compiled bitcode files are placed under `build/seahorn/jobs/<NAME>/llvm-ir/<NAME>.bc`
 
+The following sequence of commands work for me
+```
+$ git clone https://github.com/yvizel/verify-c-common.git
+$ cd verify-c-common
+$ git clone https://github.com/awslabs/aws-c-common.git
+$ mkdir build
+$ cd build
+$ cmake -DSEA_LINK=llvm-link-10 -DCMAKE_C_COMPILER=clang-10 -DCMAKE_CXX_COMPILER=clang++-10 -DSEAHORN_ROOT=/home/usea/seahorn ../ -GNinja
+$ cmake --build .
+$ ctest
+```
 
