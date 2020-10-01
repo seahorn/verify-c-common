@@ -4,7 +4,31 @@
 
 #include <stddef.h>
 
-void ensure_linked_list_is_allocated(struct aws_linked_list *const list, size_t max_length, size_t *length);
-bool sea_aws_linked_list_is_valid(const struct aws_linked_list *list, size_t length);
-void attach_nodeA_to_nodeB(struct aws_linked_list_node *nodeA, struct aws_linked_list_node *nodeB, bool directlyAttached);
+// note: when directly attached is false,
+// the nodes may still be directly attached
+// since they are attached non-deterministically
+void attach_nodeA_to_nodeB(struct aws_linked_list_node *nodeA,
+                           struct aws_linked_list_node *nodeB,
+                           bool directlyAttached);
 
+// This function creates a linked list of the forms:
+// If size == 0, then
+// HEAD <--> TAIL
+// If size == 1, then
+// HEAD <--> NODE --> nd_pointer    nd_pointer <-- TAIL
+// If size > 1, then
+// HEAD <--> NODE1 <--> NODE2 --> nd_pointer <-- TAIL
+// where nd_pointer is a non deterministic void pointer
+void sea_nd_init_linked_list_from_front(struct aws_linked_list *list,
+                                        size_t *size);
+
+// This function creates a linked list of the forms:
+// If size == 0, then
+// HEAD <--> TAIL
+// If size == 1, then
+// HEAD --> nd_pointer nd_pointer <-- NODE <--> TAIL
+// If size > 1, then
+// HEAD --> nd_pointer nd_pointer <-- NODE1 <--> NODE2 <--> TAIL
+// where nd_pointer is a non deterministic void pointer
+void sea_nd_init_linked_list_from_back(struct aws_linked_list *list,
+                                       size_t *size);
