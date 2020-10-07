@@ -120,40 +120,12 @@ add_subdirectory(jobs/byte_cursor_from_c_str)
 add_subdirectory(jobs/byte_cursor_from_string)
 add_subdirectory(jobs/linked_list_back)
 add_subdirectory(jobs/linked_list_front)
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 add_subdirectory(jobs/linked_list_begin)
 add_subdirectory(jobs/linked_list_end)
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 2397118... Add linked_list_front
-=======
-add_subdirectory(jobs/linked_list_begin)
->>>>>>> ce5f422... Add linked_list_begin
-=======
->>>>>>> d7da261... Add linked_list_end
-=======
->>>>>>> 2397118... Add linked_list_front
-=======
-add_subdirectory(jobs/linked_list_begin)
->>>>>>> ce5f422... Add linked_list_begin
-=======
->>>>>>> d7da261... Add linked_list_end
 add_subdirectory(jobs/linked_list_remove)
 add_subdirectory(jobs/linked_list_init)
-<<<<<<< HEAD
-<<<<<<< HEAD
 add_subdirectory(jobs/linked_list_reset)
 add_subdirectory(jobs/linked_list_next)
-=======
->>>>>>> ac80371... Add linked_list int test
-=======
-add_subdirectory(jobs/linked_list_reset)
-add_subdirectory(jobs/linked_list_next)
->>>>>>> be9808f... Add linked_list reset and next
 add_subdirectory(jobs/linked_list_pop_back)
 add_subdirectory(jobs/linked_list_pop_front)
 add_subdirectory(jobs/linked_list_push_back)
@@ -161,8 +133,6 @@ add_subdirectory(jobs/linked_list_push_front)
 add_subdirectory(jobs/linked_list_swap_contents)
 add_subdirectory(jobs/linked_list_insert_after)
 add_subdirectory(jobs/linked_list_insert_before)
-add_subdirectory(jobs/linked_list_rbegin)
-add_subdirectory(jobs/linked_list_rend)
 add_subdirectory(jobs/string_bytes)
 add_subdirectory(jobs/string_compare)
 add_subdirectory(jobs/string_eq)
