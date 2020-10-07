@@ -40,7 +40,7 @@ int main(void) {
 
   // -- if len is 1, successor is head, ow it is node2
   if (len_one) {
-    pnode = &list.head;
+    pnode = &list.tail;
   } else {
     pnode = &node2;
   }
