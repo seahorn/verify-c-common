@@ -4,6 +4,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "nondet.h"
 
 int main () {
@@ -16,6 +17,10 @@ int main () {
 =======
 void aws_linked_list_node_reset_harness() {
 =======
+=======
+#include "nondet.h"
+
+>>>>>>> f3cf922... Update linked_list_next
 int main () {
 >>>>>>> fbd5cf8... Update linked_list_reset
     /* data structure */
