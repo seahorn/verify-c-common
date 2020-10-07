@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 #include <seahorn/seahorn.h>
 #include <aws/common/linked_list.h>
 #include <linked_list_helper.h>
 
 int main() {
+=======
+#include <aws/common/linked_list.h>
+#include <proof_helpers/make_common_data_structures.h>
+
+void aws_linked_list_end_harness() {
+>>>>>>> d7da261... Add linked_list_end
     /* data structure */
     struct aws_linked_list list;
     size_t length;
@@ -16,9 +23,13 @@ int main() {
 
     /* assertions */
     sassert(rval == &list.tail);
+<<<<<<< HEAD
     sassert(sea_aws_linked_list_is_valid(&list, length));
     sassert(aws_linked_list_node_prev_is_valid(rval));
     sassert(rval->next == NULL);
 
     return 0;
+=======
+    sassert(aws_linked_list_is_valid(&list));
+>>>>>>> d7da261... Add linked_list_end
 }
