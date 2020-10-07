@@ -3,10 +3,15 @@
 #include <linked_list_helper.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "nondet.h"
 
 =======
 >>>>>>> fbd5cf8... Update linked_list_reset
+=======
+#include "nondet.h"
+
+>>>>>>> f3cf922... Update linked_list_next
 int main () {
     /* data structure */
     struct aws_linked_list_node node; // Preconditions require node to not be NULL
