@@ -127,6 +127,7 @@ add_subdirectory(jobs/linked_list_front)
 add_subdirectory(jobs/linked_list_begin)
 add_subdirectory(jobs/linked_list_end)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 2397118... Add linked_list_front
 =======
@@ -139,6 +140,8 @@ add_subdirectory(jobs/linked_list_begin)
 =======
 add_subdirectory(jobs/linked_list_begin)
 >>>>>>> ce5f422... Add linked_list_begin
+=======
+>>>>>>> d7da261... Add linked_list_end
 add_subdirectory(jobs/linked_list_remove)
 add_subdirectory(jobs/linked_list_init)
 <<<<<<< HEAD
