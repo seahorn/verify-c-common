@@ -1,0 +1,6 @@
+verify_options:
+# MAX_LINKED_LIST_ITEM_ALLOCATION to account for
+# head and tail
+  bound: @UNROLL_BOUND@
+# stack allocation from a symbolic starting point
+  horn-explicit-sp0: true

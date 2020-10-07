@@ -2,7 +2,7 @@
 #include <aws/common/linked_list.h>
 #include <linked_list_helper.h>
 
-void aws_linked_list_end_harness() {
+int main() {
     /* data structure */
     struct aws_linked_list list;
     size_t length;
@@ -18,6 +18,7 @@ void aws_linked_list_end_harness() {
     sassert(rval == &list.tail);
     sassert(sea_aws_linked_list_is_valid(&list, length));
     sassert(aws_linked_list_node_prev_is_valid(rval));
-    sassert(aws_linked_list_node_next_is_valid(rval));
-    sassert(aws_linked_list_is_valid(&list));
+    sassert(rval->next == NULL);
+
+    return 0;
 }
