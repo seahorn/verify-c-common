@@ -1,5 +1,6 @@
+#include <seahorn/seahorn.h>
 #include <aws/common/linked_list.h>
-#include <proof_helpers/make_common_data_structures.h>
+#include <linked_list_helper.h>
 
 void aws_linked_list_end_harness() {
     /* data structure */

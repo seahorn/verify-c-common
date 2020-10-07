@@ -11,7 +11,7 @@ void aws_linked_list_init_harness() {
 
     /* assertions */
     sassert(aws_linked_list_is_valid(&list));
-    sasset(list_is_empty);
+    sassert(aws_linked_list_empty(&list));
     sassert(list->head.next, &list->tail);
     sassert(list->tail.prev, &list->head);
 }
