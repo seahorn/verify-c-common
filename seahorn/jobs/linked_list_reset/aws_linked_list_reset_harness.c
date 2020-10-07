@@ -20,9 +20,16 @@ int main () {
 >>>>>>> fbd5cf8... Update linked_list_reset
     /* data structure */
     struct aws_linked_list_node node; // Preconditions require node to not be NULL
+<<<<<<< HEAD
     node.next = nd_voidp();
     node.prev = nd_voidp();
 >>>>>>> be9808f... Add linked_list reset and next
+=======
+    void *front = nd_voidp();
+    void *back = nd_voidp();
+    node.next = front;
+    node.prev = back;
+>>>>>>> 56b5555... Update linked_list_reset
     
     /* perform operation under verification */
     aws_linked_list_node_reset(&node);
