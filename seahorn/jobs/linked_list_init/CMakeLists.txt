@@ -11,6 +11,7 @@ target_compile_definitions(linked_list_init
   MAX_LINKED_LIST_ITEM_ALLOCATION=${MAX_LINKED_LIST_ITEM_ALLOCATION_SIZE})
 sea_attach_bc(linked_list_init)
 <<<<<<< HEAD
+<<<<<<< HEAD
 sea_add_unsat_test(linked_list_init)
 =======
 configure_file(sea.yaml sea.yaml @ONLY)
@@ -18,3 +19,6 @@ sea_add_unsat_test(linked_list_init)
 
 
 >>>>>>> ac80371... Add linked_list int test
+=======
+sea_add_unsat_test(linked_list_init)
+>>>>>>> 09c016a... Update linked_list_init
