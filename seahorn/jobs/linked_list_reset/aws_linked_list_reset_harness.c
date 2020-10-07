@@ -2,6 +2,8 @@
 #include <aws/common/linked_list.h>
 #include <linked_list_helper.h>
 
+#include "nondet.h"
+
 int main () {
     /* data structure */
     struct aws_linked_list_node node; // Preconditions require node to not be NULL
