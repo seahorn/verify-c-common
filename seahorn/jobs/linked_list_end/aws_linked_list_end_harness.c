@@ -5,6 +5,7 @@
 #include <linked_list_helper.h>
 
 int main() {
+<<<<<<< HEAD
 =======
 =======
 #include <seahorn/seahorn.h>
@@ -14,6 +15,8 @@ int main() {
 
 void aws_linked_list_end_harness() {
 >>>>>>> d7da261... Add linked_list_end
+=======
+>>>>>>> 773666d... Update linked_list_end
     /* data structure */
     struct aws_linked_list list;
     size_t length;
@@ -38,8 +41,14 @@ void aws_linked_list_end_harness() {
 =======
     sassert(sea_aws_linked_list_is_valid(&list, length));
     sassert(aws_linked_list_node_prev_is_valid(rval));
+<<<<<<< HEAD
     sassert(aws_linked_list_node_next_is_valid(rval));
 >>>>>>> ac80371... Add linked_list int test
     sassert(aws_linked_list_is_valid(&list));
 >>>>>>> d7da261... Add linked_list_end
+=======
+    sassert(rval->next == NULL);
+
+    return 0;
+>>>>>>> 773666d... Update linked_list_end
 }
