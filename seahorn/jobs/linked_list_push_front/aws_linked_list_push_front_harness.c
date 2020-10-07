@@ -26,9 +26,9 @@ int main(void) {
     // -- non-empty
     assume(!aws_linked_list_empty(&list));
     nnode = &node1;
-    aws_linked_list_attach_after(nnode, &list.tail, false /*  directlyAttached */);
+    attach_nodeA_to_nodeB(nnode, &list.tail, false /*  directlyAttached */);
   }
-  aws_linked_list_attach_after(&list.head, nnode, true /* directlyAttached */);
+  attach_nodeA_to_nodeB(&list.head, nnode, true /* directlyAttached */);
 
   // --- end: initialize linked list
   // 

@@ -39,79 +39,6 @@ void ensure_linked_list_is_allocated(struct aws_linked_list *const list,
   }
 }
 
-// init helper for length <= 2
-static inline void init_short_aws_linked_list(struct aws_linked_list *list,
-                                              size_t length) {
-  sassert(length <= 2);
-  struct aws_linked_list_node *front;
-  struct aws_linked_list_node *back;
-  // initialize
-  list->head.prev = NULL;
-  list->tail.next = NULL;
-  // populate linked list based on nd length
-  if (length == 0) {
-    aws_linked_list_attach_after(&list->head, &list->tail, true);
-  } else if (length == 1) {
-    front = malloc(sizeof(struct aws_linked_list_node));
-    aws_linked_list_attach_after(&list->head, front, true);
-    aws_linked_list_attach_after(front, &list->tail, true);
-  } else if (length == 2) {
-    front = malloc(sizeof(struct aws_linked_list_node));
-    back = malloc(sizeof(struct aws_linked_list_node));
-    aws_linked_list_attach_after(&list->head, front, true);
-    aws_linked_list_attach_after(front, back, true);
-    aws_linked_list_attach_after(back, &list->tail, true);
-  }
-}
-
-void sea_nd_init_aws_linked_list_from_front(struct aws_linked_list *list,
-                                            size_t *length) {
-  size_t nd_len = nd_size_t();
-  *length = nd_len;
-  if (nd_len <= 2) {
-    init_short_aws_linked_list(list, nd_len);
-  } else {
-    // HEAD <--> front <--> front_next --> nd ... nd <-- TAIL
-    struct aws_linked_list_node *front = malloc(sizeof(struct aws_linked_list_node));
-    struct aws_linked_list_node *front_next = malloc(sizeof(struct aws_linked_list_node));
-    aws_linked_list_attach_after(&list->head, front, true);
-    aws_linked_list_attach_after(front, front_next, true);
-    aws_linked_list_attach_after(front_next, &list->tail, false);
-  }
-}
-
-void sea_nd_init_aws_linked_list_from_back(struct aws_linked_list *list,
-                                           size_t *length) {
-  size_t nd_len = nd_size_t();
-  *length = nd_len;
-  if (nd_len <= 2) {
-    init_short_aws_linked_list(list, nd_len);
-  } else {
-    // HEAD --> nd ... nd <-- back_prev <--> back <--> TAIL
-    struct aws_linked_list_node *back = malloc(sizeof(struct aws_linked_list_node));
-    struct aws_linked_list_node *back_prev = malloc(sizeof(struct aws_linked_list_node));
-    aws_linked_list_attach_after(&list->head, back_prev, false);
-    aws_linked_list_attach_after(back_prev, back, true);
-    aws_linked_list_attach_after(back, &list->tail, true);
-  }
-}
-
-void sea_nd_init_aws_linked_list(struct aws_linked_list *list,
-                                 size_t *length) {
-  size_t nd_len = nd_size_t();
-  *length = nd_len;
-  if (nd_len <= 2) {
-    init_short_aws_linked_list(list, nd_len);
-  } else {
-    // HEAD <--> front --> nd ... nd <-- back <--> TAIL
-    struct aws_linked_list_node *front = malloc(sizeof(struct aws_linked_list_node));
-    struct aws_linked_list_node *back = malloc(sizeof(struct aws_linked_list_node));
-    aws_linked_list_attach_after(&list->head, front, true);
-    aws_linked_list_attach_after(front, back, false);
-    aws_linked_list_attach_after(back, &list->tail, true);
-  }
-}
-
 // This is the seahorn variant of
 // https://sourcegraph.com/github.com/awslabs/aws-c-common/-/blob/include/aws/common/linked_list.inl#L81
 // TODO: we can make this faster by getting rid of the loop
@@ -123,8 +50,12 @@ void sea_nd_init_aws_linked_list(struct aws_linked_list *list,
 // aws_linked_list_node_next_is_valid
 bool sea_aws_linked_list_is_valid(const struct aws_linked_list *list,
                                   size_t length) {
-  if (list && list->head.next && list->head.prev == NULL && list->tail.prev && list->tail.next == NULL) {
-#if (SEA_DEEP_CHECKS == 1)
+  sassert(list);
+  sassert(list->head.next);
+  sassert(list->head.prev == NULL);
+  sassert(list->tail.prev);
+  sassert(list->tail.next == NULL);
+
   /* This could go into an infinite loop for a circular list */
   const struct aws_linked_list_node *temp = &list->head;
   /* Head must reach tail by following next pointers */
@@ -141,22 +72,14 @@ bool sea_aws_linked_list_is_valid(const struct aws_linked_list *list,
     }
   }
   return temp == &list->tail;
-#else
-  return true;
-#endif
-  }
-  else
-    return false;
 }
 
-void aws_linked_list_attach_after(struct aws_linked_list_node *after,
-                                  struct aws_linked_list_node *to_attach,
-                                  bool directly_attached) {
-  if (directly_attached) {
-    after->next = to_attach;
-    to_attach->prev = after;
+void attach_nodeA_to_nodeB(struct aws_linked_list_node *nodeA, struct aws_linked_list_node *nodeB, bool directlyAttached) {
+  if (directlyAttached) {
+    nodeA->next = nodeB;
+    nodeB->prev = nodeA;
   } else {
-    after->next = nd_voidp();
-    to_attach->prev = nd_voidp();
+    nodeA->next = nd_voidp();
+    nodeB->prev = nd_voidp();
   }
 }

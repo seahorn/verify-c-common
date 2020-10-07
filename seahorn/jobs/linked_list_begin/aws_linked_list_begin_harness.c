@@ -21,12 +21,9 @@ int main () {
     sassert(aws_linked_list_node_next_is_valid(rval));
 <<<<<<< HEAD
 <<<<<<< HEAD
-    return 0;
-=======
-    sassert(aws_linked_list_is_valid(&list));
->>>>>>> ac80371... Add linked_list int test
+<<<<<<< HEAD
 =======
 
+>>>>>>> dfccf75... return to prev state
     return 0;
->>>>>>> c5d1a65... Update linked_list_begin
 }

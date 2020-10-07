@@ -4,6 +4,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "nondet.h"
 
 =======
@@ -12,6 +13,10 @@
 #include "nondet.h"
 
 >>>>>>> f3cf922... Update linked_list_next
+=======
+#include "nondet.h"
+
+>>>>>>> dfccf75... return to prev state
 int main () {
     /* data structure */
     struct aws_linked_list_node node; // Preconditions require node to not be NULL
