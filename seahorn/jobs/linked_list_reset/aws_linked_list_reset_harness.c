@@ -3,6 +3,7 @@
 #include <linked_list_helper.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "nondet.h"
 
 int main () {
@@ -14,9 +15,10 @@ int main () {
     node.prev = back;
 =======
 void aws_linked_list_node_reset_harness() {
+=======
+int main () {
+>>>>>>> fbd5cf8... Update linked_list_reset
     /* data structure */
-    struct aws_linked_list list;
-
     struct aws_linked_list_node node; // Preconditions require node to not be NULL
     node.next = nd_voidp();
     node.prev = nd_voidp();
@@ -30,8 +32,13 @@ void aws_linked_list_node_reset_harness() {
     sassert(node.next == NULL);
     sassert(node.prev == NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     return 0;
 =======
 >>>>>>> be9808f... Add linked_list reset and next
+=======
+
+    return 0;
+>>>>>>> fbd5cf8... Update linked_list_reset
 }
