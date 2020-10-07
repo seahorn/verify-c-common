@@ -15,5 +15,8 @@ void aws_linked_list_end_harness() {
 
     /* assertions */
     sassert(rval == &list.tail);
+    sassert(sea_aws_linked_list_is_valid(&list, length));
+    sassert(aws_linked_list_node_prev_is_valid(rval));
+    sassert(aws_linked_list_node_next_is_valid(rval));
     sassert(aws_linked_list_is_valid(&list));
 }
