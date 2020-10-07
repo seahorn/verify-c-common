@@ -2,7 +2,7 @@
 #include <aws/common/linked_list.h>
 #include <linked_list_helper.h>
 
-void aws_linked_list_init_harness() {
+int main () {
     /* data structure */
     struct aws_linked_list list;
 
@@ -10,8 +10,10 @@ void aws_linked_list_init_harness() {
     aws_linked_list_init(&list);
 
     /* assertions */
-    sassert(aws_linked_list_is_valid(&list));
+    sassert(sea_aws_linked_list_is_valid(&list, 0));
     sassert(aws_linked_list_empty(&list));
-    sassert(list->head.next, &list->tail);
-    sassert(list->tail.prev, &list->head);
+    sassert(list.head.next == &list.tail);
+    sassert(list.tail.prev == &list.head);
+
+    return 0;
 }
