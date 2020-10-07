@@ -134,8 +134,11 @@ add_subdirectory(jobs/linked_list_begin)
 >>>>>>> d7da261... Add linked_list_end
 add_subdirectory(jobs/linked_list_remove)
 add_subdirectory(jobs/linked_list_init)
+<<<<<<< HEAD
 add_subdirectory(jobs/linked_list_reset)
 add_subdirectory(jobs/linked_list_next)
+=======
+>>>>>>> ac80371... Add linked_list int test
 add_subdirectory(jobs/linked_list_pop_back)
 add_subdirectory(jobs/linked_list_pop_front)
 add_subdirectory(jobs/linked_list_push_back)
