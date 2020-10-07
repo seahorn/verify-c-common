@@ -2,10 +2,8 @@
 #include <aws/common/linked_list.h>
 #include <linked_list_helper.h>
 
-void aws_linked_list_node_reset_harness() {
+int main () {
     /* data structure */
-    struct aws_linked_list list;
-
     struct aws_linked_list_node node; // Preconditions require node to not be NULL
     node.next = nd_voidp();
     node.prev = nd_voidp();
@@ -17,4 +15,6 @@ void aws_linked_list_node_reset_harness() {
     sassert(AWS_IS_ZEROED(node));
     sassert(node.next == NULL);
     sassert(node.prev == NULL);
+
+    return 0;
 }
