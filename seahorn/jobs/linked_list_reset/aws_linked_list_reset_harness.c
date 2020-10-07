@@ -5,8 +5,10 @@
 int main () {
     /* data structure */
     struct aws_linked_list_node node; // Preconditions require node to not be NULL
-    node.next = nd_voidp();
-    node.prev = nd_voidp();
+    void *front = nd_voidp();
+    void *back = nd_voidp();
+    node.next = front;
+    node.prev = back;
     
     /* perform operation under verification */
     aws_linked_list_node_reset(&node);
