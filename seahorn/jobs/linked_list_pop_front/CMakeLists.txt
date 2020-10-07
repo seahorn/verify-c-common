@@ -9,6 +9,5 @@ target_compile_definitions(linked_list_pop_front
   PUBLIC AWS_DEEP_CHECKS=0
   MAX_BUFFER_SIZE=${MAX_BUFFER_SIZE}
   MAX_LINKED_LIST_ITEM_ALLOCATION=${MAX_LINKED_LIST_ITEM_ALLOCATION_SIZE})
-sea_attachc(linked_list_pop_front)
+sea_attach_bc(linked_list_pop_front)
 sea_add_unsat_test(linked_list_pop_front)
-
