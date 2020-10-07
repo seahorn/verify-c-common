@@ -18,19 +18,6 @@ int main() {
     sassert(rval == &list.tail);
     sassert(sea_aws_linked_list_is_valid(&list, length));
     sassert(aws_linked_list_node_prev_is_valid(rval));
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    sassert(rval->next == NULL);
-
-    return 0;
-=======
-    sassert(aws_linked_list_node_next_is_valid(rval));
-    sassert(aws_linked_list_is_valid(&list));
->>>>>>> ac80371... Add linked_list int test
-=======
-=======
->>>>>>> dfccf75... return to prev state
     sassert(rval->next == NULL);
 
     return 0;

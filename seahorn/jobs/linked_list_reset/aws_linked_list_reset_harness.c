@@ -2,21 +2,8 @@
 #include <aws/common/linked_list.h>
 #include <linked_list_helper.h>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 #include "nondet.h"
 
-=======
->>>>>>> fbd5cf8... Update linked_list_reset
-=======
-#include "nondet.h"
-
->>>>>>> f3cf922... Update linked_list_next
-=======
-#include "nondet.h"
-
->>>>>>> dfccf75... return to prev state
 int main () {
     /* data structure */
     struct aws_linked_list_node node; // Preconditions require node to not be NULL
