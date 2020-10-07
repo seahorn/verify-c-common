@@ -1,12 +1,16 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <seahorn/seahorn.h>
 #include <aws/common/linked_list.h>
 #include <linked_list_helper.h>
 
 int main() {
 =======
+=======
+#include <seahorn/seahorn.h>
+>>>>>>> be9808f... Add linked_list reset and next
 #include <aws/common/linked_list.h>
-#include <proof_helpers/make_common_data_structures.h>
+#include <linked_list_helper.h>
 
 void aws_linked_list_end_harness() {
 >>>>>>> d7da261... Add linked_list_end

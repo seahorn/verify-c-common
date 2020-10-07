@@ -10,10 +10,17 @@ int main () {
     aws_linked_list_init(&list);
 
     /* assertions */
+<<<<<<< HEAD
     sassert(sea_aws_linked_list_is_valid(&list, 0));
     sassert(aws_linked_list_empty(&list));
     sassert(list.head.next == &list.tail);
     sassert(list.tail.prev == &list.head);
 
     return 0;
+=======
+    sassert(aws_linked_list_is_valid(&list));
+    sassert(aws_linked_list_empty(&list));
+    sassert(list->head.next, &list->tail);
+    sassert(list->tail.prev, &list->head);
+>>>>>>> be9808f... Add linked_list reset and next
 }

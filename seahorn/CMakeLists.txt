@@ -135,10 +135,15 @@ add_subdirectory(jobs/linked_list_begin)
 add_subdirectory(jobs/linked_list_remove)
 add_subdirectory(jobs/linked_list_init)
 <<<<<<< HEAD
+<<<<<<< HEAD
 add_subdirectory(jobs/linked_list_reset)
 add_subdirectory(jobs/linked_list_next)
 =======
 >>>>>>> ac80371... Add linked_list int test
+=======
+add_subdirectory(jobs/linked_list_reset)
+add_subdirectory(jobs/linked_list_next)
+>>>>>>> be9808f... Add linked_list reset and next
 add_subdirectory(jobs/linked_list_pop_back)
 add_subdirectory(jobs/linked_list_pop_front)
 add_subdirectory(jobs/linked_list_push_back)

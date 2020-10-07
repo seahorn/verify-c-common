@@ -10,4 +10,11 @@ target_compile_definitions(linked_list_next
   MAX_BUFFER_SIZE=${MAX_BUFFER_SIZE}
   MAX_LINKED_LIST_ITEM_ALLOCATION=${MAX_LINKED_LIST_ITEM_ALLOCATION_SIZE})
 sea_attach_bc(linked_list_next)
+<<<<<<< HEAD
 sea_add_unsat_test(linked_list_next)
+=======
+configure_file(sea.yaml sea.yaml @ONLY)
+sea_add_unsat_test(linked_list_next)
+
+
+>>>>>>> be9808f... Add linked_list reset and next
