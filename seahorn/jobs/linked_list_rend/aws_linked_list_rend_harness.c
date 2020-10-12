@@ -1,33 +1,21 @@
-#include <seahorn/seahorn.h>
 #include <aws/common/linked_list.h>
 #include <linked_list_helper.h>
+#include <seahorn/seahorn.h>
 
 int main(void) {
-    /* data structure */
-    struct aws_linked_list list;
-    size_t length;
-    sea_nd_init_aws_linked_list(&list, &length);
+  /* data structure */
+  struct aws_linked_list list;
+  size_t length;
+  struct saved_aws_linked_list to_save = {0};
 
-    /* Assume the preconditions */
-    assume(sea_aws_linked_list_is_valid(&list, length));
+  sea_nd_init_aws_linked_list_from_head(&list, &length);
+  struct aws_linked_list_node *start = &list.head;
+  aws_linked_list_save_to_tail(&list, length, start, &to_save);
 
-    /* store old expected value of op under verification */
-    struct aws_linked_list_node *old_rend = &list.head;
-
-    /* Note: list can never be a NULL pointer as is_valid checks for that */
-
-    /* perform operation under verification */
-    struct aws_linked_list_node const *rend = aws_linked_list_rend(&list);
-
-    /* assertions */
-    /*
-        XZ: disagree with original check:
-        assert(rval == &list.head);
-        *read* functions should always be checked for preservation of old value
-    */
-    sassert(rend == old_rend);
-    sassert(old_rend == &list.head);
-    sassert(sea_aws_linked_list_is_valid(&list, length));
-    sassert(aws_linked_list_node_next_is_valid(rend));
-
+  /* perform operation under verification */
+  struct aws_linked_list_node const *rend = aws_linked_list_rend(&list);
+  sassert(rend == &list.head);
+  sassert(aws_linked_list_node_next_is_valid(rend));
+  sassert(is_aws_list_unchanged_to_tail(&list, &to_save));
+  return 0;
 }

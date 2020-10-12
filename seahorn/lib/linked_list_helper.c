@@ -3,46 +3,9 @@
 #include <proof_allocators.h>
 #include <seahorn/seahorn.h>
 
-// length is populated; to be used by caller
-void ensure_linked_list_is_allocated(struct aws_linked_list *const list,
-                                     size_t max_length, size_t *length) {
-  size_t len = nd_size_t();
-  *length = len;
-  assume(len < max_length);
-  list->head.prev = NULL;
-  /* break two NULL stores that are optimized into memset */
-  assume(max_length <= MAX_LINKED_LIST_ITEM_ALLOCATION);
-  list->tail.next = NULL;
-
-  if (len == 0) {
-    list->head.next = &list->tail;
-    list->tail.prev = &list->head;
-    return;
-  }
-
-  struct aws_linked_list_node *curr = &list->head;
-
-  for (size_t i = 0; i < MAX_LINKED_LIST_ITEM_ALLOCATION; i++) {
-    /* This malloc should never fail as it wouldn't be valid to
-     * have NULL nodes in the middle of the linked list. */
-    if (i < len) {
-      // struct aws_linked_list_node *node = NULL;
-      struct aws_linked_list_node *node =
-          bounded_malloc_pure(sizeof(struct aws_linked_list_node));
-      curr->next = node;
-      node->prev = curr;
-      // -- node is currently the last node in the list
-      node->next = &list->tail;
-      list->tail.prev = node;
-      curr = node;
-    }
-  }
-}
-
 // init helper for length <= 2
 static inline void init_short_aws_linked_list(struct aws_linked_list *list,
                                               size_t length) {
-  sassert(length <= 2);
   struct aws_linked_list_node *front;
   struct aws_linked_list_node *back;
   // initialize
@@ -64,89 +27,255 @@ static inline void init_short_aws_linked_list(struct aws_linked_list *list,
   }
 }
 
-void sea_nd_init_aws_linked_list_from_front(struct aws_linked_list *list,
-                                            size_t *length) {
+void init_node(struct aws_linked_list_node *node) {
+  assume(node);
+  node->next = NULL;
+  node->prev = NULL;
+}
+
+void sea_nd_init_aws_linked_list_from_head(struct aws_linked_list *list,
+                                           size_t *length) {
+  list->head.prev = NULL;
+  list->tail.next = NULL;
+
   size_t nd_len = nd_size_t();
   *length = nd_len;
   if (nd_len <= 2) {
     init_short_aws_linked_list(list, nd_len);
   } else {
     // HEAD <--> front <--> front_next --> nd ... nd <-- TAIL
-    struct aws_linked_list_node *front = malloc(sizeof(struct aws_linked_list_node));
-    struct aws_linked_list_node *front_next = malloc(sizeof(struct aws_linked_list_node));
+    struct aws_linked_list_node *front =
+        malloc(sizeof(struct aws_linked_list_node));
+    init_node(front);
+    struct aws_linked_list_node *front_next =
+        malloc(sizeof(struct aws_linked_list_node));
+    init_node(front_next);
     aws_linked_list_attach_after(&list->head, front, true);
     aws_linked_list_attach_after(front, front_next, true);
     aws_linked_list_attach_after(front_next, &list->tail, false);
   }
 }
 
-void sea_nd_init_aws_linked_list_from_back(struct aws_linked_list *list,
+void sea_nd_init_aws_linked_list_from_tail(struct aws_linked_list *list,
                                            size_t *length) {
+  list->head.prev = NULL;
+  list->tail.next = NULL;
+
   size_t nd_len = nd_size_t();
   *length = nd_len;
   if (nd_len <= 2) {
     init_short_aws_linked_list(list, nd_len);
   } else {
     // HEAD --> nd ... nd <-- back_prev <--> back <--> TAIL
-    struct aws_linked_list_node *back = malloc(sizeof(struct aws_linked_list_node));
-    struct aws_linked_list_node *back_prev = malloc(sizeof(struct aws_linked_list_node));
+    struct aws_linked_list_node *back =
+        malloc(sizeof(struct aws_linked_list_node));
+    init_node(back);
+    struct aws_linked_list_node *back_prev =
+        malloc(sizeof(struct aws_linked_list_node));
+    init_node(back_prev);
     aws_linked_list_attach_after(&list->head, back_prev, false);
     aws_linked_list_attach_after(back_prev, back, true);
     aws_linked_list_attach_after(back, &list->tail, true);
   }
 }
 
-void sea_nd_init_aws_linked_list(struct aws_linked_list *list,
-                                 size_t *length) {
-  size_t nd_len = nd_size_t();
-  *length = nd_len;
-  if (nd_len <= 2) {
-    init_short_aws_linked_list(list, nd_len);
+bool nodes_prev_equal(struct aws_linked_list_node *node,
+                      struct saved_aws_linked_list_node *saved) {
+  return node == saved->node && node->prev == saved->node_prev;
+}
+
+bool nodes_next_equal(struct aws_linked_list_node *node,
+                      struct saved_aws_linked_list_node *saved) {
+  return node == saved->node && node->next == saved->node_next;
+}
+
+bool nodes_equal(struct aws_linked_list_node *node,
+                 struct saved_aws_linked_list_node *saved) {
+  return nodes_prev_equal(node, saved) && nodes_next_equal(node, saved);
+}
+
+void sea_save_aws_node_to_sea_node(struct aws_linked_list_node *s,
+                                   struct saved_aws_linked_list_node *d) {
+  d->node = s;
+  d->node_prev = s->prev;
+  d->node_next = s->next;
+}
+
+bool check_tail_unchanged(struct aws_linked_list *list,
+                          struct saved_aws_linked_list *saved) {
+  return nodes_equal(&list->tail, &saved->tail);
+}
+
+bool is_aws_list_unchanged_to_tail(struct aws_linked_list *list,
+                                   struct saved_aws_linked_list *saved) {
+  if (saved->saved_size == 0) {
+    // if saved size is zero, only check that tail is unchanged
+    return nodes_next_equal(&list->tail, &saved->tail);
+  } else if (saved->saved_size == 1) {
+    // if saved size is 1 then check start and tail are unchanged
+    return nodes_next_equal(saved->save_point, &saved->nodes[0]) &&
+           nodes_equal(&list->tail, &saved->tail);
+    ;
+  } else if (saved->saved_size == 2) {
+    // if saved size is 2 then check start, start.next and tail are unchanged
+    return nodes_next_equal(saved->save_point, &saved->nodes[0]) &&
+           nodes_equal(saved->save_point->next, &saved->nodes[1]) &&
+           nodes_equal(&list->tail, &saved->tail);
+    ;
+  } else if (saved->saved_size == 3) {
+    // we only save a maximum of three nodes since that is the maximum we
+    // construct concretely are head <--> node1 <--> node2
+    return nodes_next_equal(saved->save_point, &saved->nodes[0]) &&
+           nodes_equal(saved->save_point->next, &saved->nodes[1]) &&
+           nodes_equal(saved->save_point->next->next, &saved->nodes[2]) &&
+           nodes_equal(&list->tail, &saved->tail);
   } else {
-    // HEAD <--> front --> nd ... nd <-- back <--> TAIL
-    struct aws_linked_list_node *front = malloc(sizeof(struct aws_linked_list_node));
-    struct aws_linked_list_node *back = malloc(sizeof(struct aws_linked_list_node));
-    aws_linked_list_attach_after(&list->head, front, true);
-    aws_linked_list_attach_after(front, back, false);
-    aws_linked_list_attach_after(back, &list->tail, true);
+    return false;
+  }
+  // do nothing here: if condition should be exhaustive
+}
+
+bool is_aws_list_unchanged_to_head(struct aws_linked_list *list,
+                                   struct saved_aws_linked_list *saved) {
+  if (saved->saved_size == 0) {
+    // if saved size is zero, only check that head is unchanged
+    return nodes_prev_equal(&list->head, &saved->head);
+  } else if (saved->saved_size == 1) {
+    // if saved size is 1 then check start and head are unchanged
+    return nodes_prev_equal(saved->save_point, &saved->nodes[0]) &&
+           nodes_equal(&list->head, &saved->head);
+    ;
+  } else if (saved->saved_size == 2) {
+    // if saved size is 2 then check start, start.prev and head are unchanged
+    return nodes_prev_equal(saved->save_point, &saved->nodes[0]) &&
+           nodes_equal(saved->save_point->prev, &saved->nodes[1]) &&
+           nodes_equal(&list->head, &saved->head);
+    ;
+  } else if (saved->saved_size == 3) {
+    // we only save a maximum of three nodes since that is the maximum we
+    // construct concretely are node1 <--> node2 <--> tail
+    return nodes_prev_equal(saved->save_point, &saved->nodes[0]) &&
+           nodes_equal(saved->save_point->prev, &saved->nodes[1]) &&
+           nodes_equal(saved->save_point->prev->prev, &saved->nodes[2]) &&
+           nodes_equal(&list->head, &saved->head);
+  } else {
+    return false;
+  }
+  // do nothing here: if condition should be exhaustive
+}
+
+// iterator function for save*Node
+struct aws_linked_list_node *getNext(struct aws_linked_list_node *node) {
+  return node->next;
+}
+
+// iterator function for save*Node
+struct aws_linked_list_node *getPrev(struct aws_linked_list_node *node) {
+  return node->prev;
+}
+
+void save_one_node(struct aws_linked_list_node *start,
+                   struct saved_aws_linked_list *to_save) {
+  sea_save_aws_node_to_sea_node(start, &to_save->nodes[0]);
+  to_save->saved_size = 1;
+}
+void save_two_nodes(
+    struct aws_linked_list_node *start, struct saved_aws_linked_list *to_save,
+    struct aws_linked_list_node *(*next)(struct aws_linked_list_node *)) {
+  sea_save_aws_node_to_sea_node(start, &to_save->nodes[0]);
+  sea_save_aws_node_to_sea_node((*next)(start), &to_save->nodes[1]);
+  to_save->saved_size = 2;
+}
+void save_three_nodes(
+    struct aws_linked_list_node *start, struct saved_aws_linked_list *to_save,
+    struct aws_linked_list_node *(*next)(struct aws_linked_list_node *)) {
+  sea_save_aws_node_to_sea_node(start, &to_save->nodes[0]);
+  sea_save_aws_node_to_sea_node((*next)(start), &to_save->nodes[1]);
+  sea_save_aws_node_to_sea_node((*next)((*next)(start)), &to_save->nodes[2]);
+  to_save->saved_size = 3;
+}
+void aws_linked_list_save_to_tail(struct aws_linked_list *list, size_t size,
+                                  struct aws_linked_list_node *start,
+                                  struct saved_aws_linked_list *to_save) {
+  sea_save_aws_node_to_sea_node(&list->head, &to_save->head);
+  sea_save_aws_node_to_sea_node(&list->tail, &to_save->tail);
+
+  to_save->save_point = start;
+
+  if (size == 0) {
+    // only possibility is to save head or tail.
+    // Note tail is never saved in nodes[..] array
+    if (&list->head == start) {
+      save_one_node(start, to_save);
+    } else {
+      to_save->saved_size = 0;
+    }
+  } else if (size == 1) {
+    // either save head, head.next or only head.next
+    if (&list->head == start) {
+      save_two_nodes(start, to_save, getNext);
+    } else if (list->head.next == start) {
+      save_one_node(start, to_save);
+    } else {
+      to_save->saved_size = 0;
+    }
+  } else if (size > 1) {
+    // either save
+    // 1) head, head.next, head.next.next OR
+    // 2) head.next, head.next.next OR
+    // 3) head.next.next
+    if (&list->head == start) {
+      save_three_nodes(start, to_save, getNext);
+    } else if (list->head.next == start) {
+      save_two_nodes(start, to_save, getNext);
+    } else if (list->head.next->next == start) {
+      save_one_node(start, to_save);
+    } else {
+      to_save->saved_size = 0;
+    }
   }
 }
 
-// This is the seahorn variant of
-// https://sourcegraph.com/github.com/awslabs/aws-c-common/-/blob/include/aws/common/linked_list.inl#L81
-// TODO: we can make this faster by getting rid of the loop
-// This can be accomplished by storing all the node addresses in an array
-// and asserting properties like
-// 1. Assert no inbetween node between [0,length] should be the tail
-// 2. Assert only the node at 'length' + 1 index should be the tail
-// 3. Assert that any node in [0, length] satisfies
-// aws_linked_list_node_next_is_valid
-bool sea_aws_linked_list_is_valid(const struct aws_linked_list *list,
-                                  size_t length) {
-  if (list && list->head.next && list->head.prev == NULL && list->tail.prev && list->tail.next == NULL) {
-#if (SEA_DEEP_CHECKS == 1)
-  /* This could go into an infinite loop for a circular list */
-  const struct aws_linked_list_node *temp = &list->head;
-  /* Head must reach tail by following next pointers */
-  bool head_reaches_tail = false;
-  /* By satisfying the above and that edges are bidirectional, we
-   * also guarantee that tail reaches head by following prev
-   * pointers */
-  for (size_t i = 0; i < MAX_LINKED_LIST_ITEM_ALLOCATION; i++) {
-    if (i <= length) {
-      if (!aws_linked_list_node_next_is_valid(temp)) {
-        return false;
-      }
-      temp = temp->next;
+void aws_linked_list_save_to_head(struct aws_linked_list *list, size_t size,
+                                  struct aws_linked_list_node *start,
+                                  struct saved_aws_linked_list *to_save) {
+  sea_save_aws_node_to_sea_node(&list->head, &to_save->head);
+  sea_save_aws_node_to_sea_node(&list->tail, &to_save->tail);
+
+  to_save->save_point = start;
+
+  if (size == 0) {
+    // only possibility is to save tail or head
+    // Note: head is never saved in nodes[..] array
+    if (&list->tail == start) {
+      save_one_node(start, to_save);
+    } else {
+      to_save->saved_size = 0;
+    }
+  } else if (size == 1) {
+    // either save (in-order) tail, tail.prev or only tail.prev
+    if (&list->tail == start) {
+      save_two_nodes(start, to_save, getPrev);
+    } else if (list->tail.prev == start) {
+      save_one_node(start, to_save);
+    } else {
+      to_save->saved_size = 0;
+    }
+  } else if (size > 1) {
+    // either save (in-order)
+    // 1) tail, tail.prev, tail.prev.prev OR
+    // 2) tail.prev, tail.prev.prev OR
+    // 3) tail.prev.prev
+    if (&list->tail == start) {
+      save_three_nodes(start, to_save, getPrev);
+    } else if (list->tail.prev == start) {
+      save_two_nodes(start, to_save, getPrev);
+    } else if (list->tail.prev->prev == start) {
+      save_one_node(start, to_save);
+    } else {
+      to_save->saved_size = 0;
     }
   }
-  return temp == &list->tail;
-#else
-  return true;
-#endif
-  }
-  else
-    return false;
 }
 
 void aws_linked_list_attach_after(struct aws_linked_list_node *after,
@@ -159,4 +288,10 @@ void aws_linked_list_attach_after(struct aws_linked_list_node *after,
     after->next = nd_voidp();
     to_attach->prev = nd_voidp();
   }
+}
+
+bool is_aws_linked_list_node_attached_after(
+    struct aws_linked_list_node *after,
+    struct aws_linked_list_node *to_attach) {
+  return after->next == to_attach && to_attach->prev == after;
 }
