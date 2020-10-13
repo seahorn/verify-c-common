@@ -1,5 +1,6 @@
 #include "seahorn/seahorn.h"
 #include <aws/common/linked_list.h>
+#include <linked_list_helper.h>
 #include "nondet.h"
 
 /*
@@ -20,8 +21,7 @@ int main(void) {
     struct aws_linked_list_node before_prev;
     struct aws_linked_list_node to_add;
 
-    before.prev = &before_prev;
-    before_prev.next = &before;
+    aws_linked_list_attach_after(&before_prev, &before, true);
 
     /*
     XZ: ensure before.next and before_prev.prev
@@ -37,14 +37,12 @@ int main(void) {
     aws_linked_list_insert_before(&before, &to_add);
 
     /* assertions */
-    sassert(aws_linked_list_node_prev_is_valid(&before));
-    sassert(aws_linked_list_node_prev_is_valid(&to_add));
-    sassert(aws_linked_list_node_next_is_valid(&to_add));
-    sassert(aws_linked_list_node_next_is_valid(&before_prev));
+    sassert(is_aws_linked_list_node_attached_after(&before_prev, &to_add));
+    sassert(is_aws_linked_list_node_attached_after(&to_add, &before));
 
-    sassert(before.prev == &to_add);
-    sassert(before_prev.next == &to_add);
-
+    /*
+    ensure before.next and before_prev.prev remain unchanged
+    */
     sassert(before.next == before_next);
     sassert(before_prev.prev == before_prev_prev);
 }

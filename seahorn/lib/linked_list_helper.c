@@ -79,6 +79,30 @@ void sea_nd_init_aws_linked_list_from_tail(struct aws_linked_list *list,
   }
 }
 
+void sea_nd_init_aws_linked_list(struct aws_linked_list *list,
+                                 size_t *length) {
+  list->head.prev = NULL;
+  list->tail.next = NULL;
+
+  size_t nd_len = nd_size_t();
+  *length = nd_len;
+  if (nd_len <= 2) {
+    init_short_aws_linked_list(list, nd_len);
+  }
+  else {
+    // HEAD <--> front --> nd ... nd <-- back <--> TAIL
+    struct aws_linked_list_node *front =
+        malloc(sizeof(struct aws_linked_list_node));
+    init_node(front);
+    struct aws_linked_list_node *back =
+        malloc(sizeof(struct aws_linked_list_node));
+    init_node(back);
+    aws_linked_list_attach_after(&list->head, front, true);
+    aws_linked_list_attach_after(front, back, false);
+    aws_linked_list_attach_after(back, &list->tail, true);
+  }
+}
+
 bool nodes_prev_equal(struct aws_linked_list_node *node,
                       struct saved_aws_linked_list_node *saved) {
   return node == saved->node && node->prev == saved->node_prev;
@@ -115,13 +139,13 @@ bool is_aws_list_unchanged_to_tail(struct aws_linked_list *list,
     // if saved size is 1 then check start and tail are unchanged
     return nodes_next_equal(saved->save_point, &saved->nodes[0]) &&
            nodes_equal(&list->tail, &saved->tail);
-    ;
+
   } else if (saved->saved_size == 2) {
     // if saved size is 2 then check start, start.next and tail are unchanged
     return nodes_next_equal(saved->save_point, &saved->nodes[0]) &&
            nodes_equal(saved->save_point->next, &saved->nodes[1]) &&
            nodes_equal(&list->tail, &saved->tail);
-    ;
+
   } else if (saved->saved_size == 3) {
     // we only save a maximum of three nodes since that is the maximum we
     // construct concretely are head <--> node1 <--> node2
@@ -162,6 +186,54 @@ bool is_aws_list_unchanged_to_head(struct aws_linked_list *list,
     return false;
   }
   // do nothing here: if condition should be exhaustive
+}
+
+bool is_aws_list_unchanged_full(struct aws_linked_list *list,
+                                   struct saved_aws_linked_list *saved) {
+  if (saved->saved_size == 0)
+  { /* saved zero nodes */
+    return saved->head.node_next == saved->tail.node &&
+           saved->tail.node_prev == saved->head.node;
+  }
+  else if (saved->saved_size == 1)
+  {
+    // when content consists of one node, only check equality of the node itself
+    return saved->save_point == saved->save_point_end &&
+           saved->save_point == saved->nodes[0].node;
+  }
+  else if (saved->saved_size == 2)
+  {
+    return nodes_next_equal(saved->save_point, &saved->nodes[0]) &&
+           nodes_prev_equal(saved->save_point_end, &saved->nodes[1]);
+  }
+  else if (saved->saved_size == 3)
+  {
+    if (nodes_next_equal(saved->save_point, &saved->nodes[0]) &&
+        nodes_prev_equal(saved->save_point_end, &saved->nodes[2]))
+    {
+      if (saved->nodes[1].node == saved->save_point->next)
+      {
+        return nodes_equal(saved->save_point->next, &saved->nodes[1]);
+      }
+      else if (saved->nodes[1].node == saved->save_point_end->prev)
+      {
+        return nodes_equal(saved->save_point_end->prev, &saved->nodes[1]);
+      }
+      else
+        return false;
+    }
+    else
+      return false;
+  }
+  else if (saved->saved_size == 4)
+  {
+    return nodes_next_equal(saved->save_point, &saved->nodes[0]) &&
+           nodes_equal(saved->save_point->next, &saved->nodes[1]) &&
+           nodes_equal(saved->save_point_end->prev, &saved->nodes[2]) &&
+           nodes_prev_equal(saved->save_point_end, &saved->nodes[3]);
+  }
+  else
+    return false;
 }
 
 // iterator function for save*Node
@@ -274,6 +346,71 @@ void aws_linked_list_save_to_head(struct aws_linked_list *list, size_t size,
       save_one_node(start, to_save);
     } else {
       to_save->saved_size = 0;
+    }
+  }
+}
+
+void aws_linked_list_save_full(struct aws_linked_list *list, size_t size,
+                               struct aws_linked_list_node *start,
+                               struct aws_linked_list_node *end,
+                               struct saved_aws_linked_list *to_save)
+{
+  sea_save_aws_node_to_sea_node(&list->head, &to_save->head);
+  sea_save_aws_node_to_sea_node(&list->tail, &to_save->tail);
+  to_save->save_point = start;
+  to_save->save_point_end = end;
+  if (start == end) {
+    save_one_node(start, to_save);
+    return;
+  }
+  if (size == 0) {
+    /* only save head and tail */
+    if (start == &list->head) {
+      save_two_nodes(start, to_save, getNext);
+    } else {
+      /* save content when empty */
+      to_save->saved_size = 0;
+    }
+  } else if (size == 1) {
+    /* front nodes: [head, head.next...] or [head.next...] */
+    /* back nodes: [...tail] or same as front nodes */
+    size_t back_nodes_start = 0;
+    if (start == &list->head) {
+      sea_save_aws_node_to_sea_node(&list->head, &to_save->nodes[0]);
+      sea_save_aws_node_to_sea_node(list->head.next, &to_save->nodes[1]);
+      to_save->saved_size = 2;
+      back_nodes_start = 2;
+    } else if (start == list->head.next) {
+      sea_save_aws_node_to_sea_node(list->head.next, &to_save->nodes[0]);
+      to_save->saved_size = 1;
+      back_nodes_start = 1;
+    }
+    /* head.next == tail.prev, so only conditionally add tail */
+    if (end == &list->tail) {
+      sea_save_aws_node_to_sea_node(end, &to_save->nodes[back_nodes_start]);
+      to_save->saved_size += 1;
+    }
+  } else if (size > 1) {
+    size_t back_nodes_start = 0;
+    /* front nodes: [head, head.next...] or [head.next...] */
+    /* back nodes: [...tail.prev] or [...tail.prev, tail] */
+    if (start == &list->head) {
+      sea_save_aws_node_to_sea_node(&list->head, &to_save->nodes[0]);
+      sea_save_aws_node_to_sea_node(list->head.next, &to_save->nodes[1]);
+      to_save->saved_size = 2;
+      back_nodes_start = 2;
+    } else if (start == list->head.next) {
+      sea_save_aws_node_to_sea_node(list->head.next, &to_save->nodes[0]);
+      to_save->saved_size = 1;
+      back_nodes_start = 1;
+    }
+    if (end == &list->tail) {
+      sea_save_aws_node_to_sea_node(list->tail.prev, &to_save->nodes[back_nodes_start]);
+      sea_save_aws_node_to_sea_node(&list->tail, &to_save->nodes[back_nodes_start + 1]);
+      to_save->saved_size += 2;
+    } else if (end == list->tail.prev) {
+      sea_save_aws_node_to_sea_node(list->tail.prev, &to_save->nodes[back_nodes_start]);
+      to_save->saved_size += 1;
     }
   }
 }

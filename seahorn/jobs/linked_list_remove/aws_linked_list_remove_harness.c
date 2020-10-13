@@ -1,5 +1,6 @@
 #include <aws/common/linked_list.h>
 #include "nondet.h"
+#include <linked_list_helper.h>
 #include <seahorn/seahorn.h>
 
 int main(void) {
@@ -11,17 +12,15 @@ int main(void) {
     void* prev_saved_prev;
     void* next_saved_next;
 
-    // -- set prev to nd pointer, which makes it non-dereferencable
+    // -- set prev.prev to nd pointer, which makes it non-dereferencable
     prev_saved_prev = nd_voidp();
-    prev.prev = prev_saved_prev;    
-    prev.next = &node;
+    prev.prev = prev_saved_prev;
 
-    node.prev = &prev;
-    node.next = &next;
+    aws_linked_list_attach_after(&prev, &node, true);
+    aws_linked_list_attach_after(&node, &next, true);
 
-    // -- set next to nd pointer, which makes it non-dereferencable
+    // -- set next.next to nd pointer, which makes it non-dereferencable
     next_saved_next = nd_voidp();
-    next.prev = &node;
     next.next = next_saved_next;
 
 
@@ -29,10 +28,7 @@ int main(void) {
     aws_linked_list_remove(&node);
 
     /* sassertions */
-    sassert(aws_linked_list_node_next_is_valid(&prev));
-    sassert(aws_linked_list_node_prev_is_valid(&next));
-
-    sassert(prev.next == &next);
+    sassert(is_aws_linked_list_node_attached_after(&prev, &next));
 
     // -- check that fields that should be not touched are not changed
     // -- they cannot have been dereferenced because they are loaded with non-deref pointers
