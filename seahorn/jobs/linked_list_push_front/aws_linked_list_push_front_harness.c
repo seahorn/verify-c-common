@@ -1,5 +1,6 @@
 #include <aws/common/linked_list.h>
 #include <linked_list_helper.h>
+#include <proof_allocators.h>
 #include <seahorn/seahorn.h>
 
 int main(void) {
@@ -9,7 +10,7 @@ int main(void) {
   struct saved_aws_linked_list to_save = {0};
   size_t size;
 
-  sea_nd_init_aws_linked_list_from_head(&list, &size);
+  sea_nd_init_aws_linked_list_from_head(&list, &size, _allocator());
   struct aws_linked_list_node *start = list.head.next;
   aws_linked_list_save_to_tail(&list, size, start, &to_save);
 

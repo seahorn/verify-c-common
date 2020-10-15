@@ -1,6 +1,7 @@
 #pragma once
 
 #include <aws/common/linked_list.h>
+#include <proof_allocators.h>
 
 #include <stddef.h>
 
@@ -25,7 +26,8 @@ void aws_linked_list_attach_after(struct aws_linked_list_node *after,
     HEAD <--> FRONT <--> FRONT_NEXT --> nd_ptr ... nd_ptr <-- TAIL
 */
 void sea_nd_init_aws_linked_list_from_head(struct aws_linked_list *list,
-                                           size_t *length);
+                                           size_t *length,
+                                           struct aws_allocator *allocator);
 
 /*
     For functions that only access the back node (tail.prev)
@@ -40,7 +42,8 @@ void sea_nd_init_aws_linked_list_from_head(struct aws_linked_list *list,
     HEAD --> nd_ptr ... nd_ptr <-- BACK_PREV <--> BACK <--> TAIL
 */
 void sea_nd_init_aws_linked_list_from_tail(struct aws_linked_list *list,
-                                           size_t *length);
+                                           size_t *length,
+                                           struct aws_allocator *allocator);
 
 // This stores a snapshot of a single linked list node
 struct saved_aws_linked_list_node {

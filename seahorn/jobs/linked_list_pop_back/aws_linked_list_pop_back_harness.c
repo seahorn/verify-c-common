@@ -9,7 +9,7 @@ int main(void) {
   size_t size;
   // this is the node before/(left-of) the node to be popped.
   struct aws_linked_list_node *node2;
-  sea_nd_init_aws_linked_list_from_tail(&list, &size);
+  sea_nd_init_aws_linked_list_from_tail(&list, &size, _allocator());
   assume(size > 0);
   /* Keep the old last node of the linked list */
   struct aws_linked_list_node *old_prev_last = list.tail.prev->prev;

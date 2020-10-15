@@ -8,7 +8,7 @@ int main(void) {
   size_t length;
   struct saved_aws_linked_list to_save = {0};
 
-  sea_nd_init_aws_linked_list_from_head(&list, &length);
+  sea_nd_init_aws_linked_list_from_head(&list, &length, _allocator());
   struct aws_linked_list_node *start = &list.head;
   aws_linked_list_save_to_tail(&list, length, start, &to_save);
 

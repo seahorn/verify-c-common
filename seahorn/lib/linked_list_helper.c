@@ -5,7 +5,8 @@
 
 // init helper for length <= 2
 static inline void init_short_aws_linked_list(struct aws_linked_list *list,
-                                              size_t length) {
+                                              size_t length,
+                                              struct aws_allocator *allocator) {
   struct aws_linked_list_node *front;
   struct aws_linked_list_node *back;
   // initialize
@@ -15,12 +16,15 @@ static inline void init_short_aws_linked_list(struct aws_linked_list *list,
   if (length == 0) {
     aws_linked_list_attach_after(&list->head, &list->tail, true);
   } else if (length == 1) {
-    front = malloc(sizeof(struct aws_linked_list_node));
+    front =
+        allocator->mem_acquire(allocator, sizeof(struct aws_linked_list_node));
     aws_linked_list_attach_after(&list->head, front, true);
     aws_linked_list_attach_after(front, &list->tail, true);
   } else if (length == 2) {
-    front = malloc(sizeof(struct aws_linked_list_node));
-    back = malloc(sizeof(struct aws_linked_list_node));
+    front =
+        allocator->mem_acquire(allocator, sizeof(struct aws_linked_list_node));
+    back =
+        allocator->mem_acquire(allocator, sizeof(struct aws_linked_list_node));
     aws_linked_list_attach_after(&list->head, front, true);
     aws_linked_list_attach_after(front, back, true);
     aws_linked_list_attach_after(back, &list->tail, true);
@@ -34,21 +38,22 @@ void init_node(struct aws_linked_list_node *node) {
 }
 
 void sea_nd_init_aws_linked_list_from_head(struct aws_linked_list *list,
-                                           size_t *length) {
+                                           size_t *length,
+                                           struct aws_allocator *allocator) {
   list->head.prev = NULL;
   list->tail.next = NULL;
 
   size_t nd_len = nd_size_t();
   *length = nd_len;
   if (nd_len <= 2) {
-    init_short_aws_linked_list(list, nd_len);
+    init_short_aws_linked_list(list, nd_len, allocator);
   } else {
     // HEAD <--> front <--> front_next --> nd ... nd <-- TAIL
     struct aws_linked_list_node *front =
-        malloc(sizeof(struct aws_linked_list_node));
+        allocator->mem_acquire(allocator, sizeof(struct aws_linked_list_node));
     init_node(front);
     struct aws_linked_list_node *front_next =
-        malloc(sizeof(struct aws_linked_list_node));
+        allocator->mem_acquire(allocator, sizeof(struct aws_linked_list_node));
     init_node(front_next);
     aws_linked_list_attach_after(&list->head, front, true);
     aws_linked_list_attach_after(front, front_next, true);
@@ -57,21 +62,22 @@ void sea_nd_init_aws_linked_list_from_head(struct aws_linked_list *list,
 }
 
 void sea_nd_init_aws_linked_list_from_tail(struct aws_linked_list *list,
-                                           size_t *length) {
+                                           size_t *length,
+                                           struct aws_allocator *allocator) {
   list->head.prev = NULL;
   list->tail.next = NULL;
 
   size_t nd_len = nd_size_t();
   *length = nd_len;
   if (nd_len <= 2) {
-    init_short_aws_linked_list(list, nd_len);
+    init_short_aws_linked_list(list, nd_len, allocator);
   } else {
     // HEAD --> nd ... nd <-- back_prev <--> back <--> TAIL
     struct aws_linked_list_node *back =
-        malloc(sizeof(struct aws_linked_list_node));
+        allocator->mem_acquire(allocator, sizeof(struct aws_linked_list_node));
     init_node(back);
     struct aws_linked_list_node *back_prev =
-        malloc(sizeof(struct aws_linked_list_node));
+        allocator->mem_acquire(allocator, sizeof(struct aws_linked_list_node));
     init_node(back_prev);
     aws_linked_list_attach_after(&list->head, back_prev, false);
     aws_linked_list_attach_after(back_prev, back, true);
