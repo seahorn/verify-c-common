@@ -1,4 +1,5 @@
 
+
 #include <seahorn/seahorn.h>
 #include <aws/common/linked_list.h>
 #include <linked_list_helper.h>
@@ -6,25 +7,23 @@
 
 
 int main() {
-    /* data structure */
-    struct aws_linked_list list;
-    size_t length;
-    ensure_linked_list_is_allocated(&list, MAX_LINKED_LIST_ITEM_ALLOCATION, &length);
+  /* data structure */
+  struct aws_linked_list list;
+  struct saved_aws_linked_list to_save = {0};
+  size_t size;
 
-    /* Keep the old last node of the linked list */
-    struct aws_linked_list_node *old_last = list.tail.prev;
+  sea_nd_init_aws_linked_list_from_tail(&list, &size);
+  struct aws_linked_list_node *start = &list.tail;
+  aws_linked_list_save_to_head(&list, size, start, &to_save);
+  // function only accepts non empty linked lists
+  assume(size > 0);
 
-    /* Assume the preconditions. The function requires that list != NULL */
-    assume(!aws_linked_list_empty(&list));
+  /* perform operation under verification */
+  struct aws_linked_list_node *back = aws_linked_list_back(&list);
 
-    /* perform operation under verification */
-    struct aws_linked_list_node *back = aws_linked_list_back(&list);
+  /* assertions */
+  sassert(list.tail.prev == back);
+  sassert(is_aws_list_unchanged_to_head(&list, &to_save));
 
-    /* assertions */
-    sassert(sea_aws_linked_list_is_valid(&list, length));
-    sassert(aws_linked_list_node_prev_is_valid(back));
-    sassert(aws_linked_list_node_next_is_valid(back));
-    sassert(back == old_last);
-
-    return 0;
+  return 0;
 }

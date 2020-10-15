@@ -1,39 +1,17 @@
-
-#include "nondet.h"
-#include <linked_list_helper.h>
 #include <aws/common/linked_list.h>
+#include <linked_list_helper.h>
 #include <seahorn/seahorn.h>
 
 int main(void) {
   /* data structure */
   struct aws_linked_list list;
   struct aws_linked_list_node to_add;
-  struct aws_linked_list_node node1;
-  struct aws_linked_list_node *nnode;
+  struct saved_aws_linked_list to_save = {0};
+  size_t size;
 
-  // --- initialize linked list
-  // head and tail are initialized
-  list.head.prev = NULL; 
-  list.tail.next = NULL;
-
-  bool list_is_empty = nd_bool();
-  
-  if (list_is_empty) {
-    nnode = &list.tail;
-  } else {   
-    // -- since list.tail.prev is initialized nondeterministically
-    // -- it might point to head. To exclude this, we assume that list is
-    // -- non-empty
-    assume(!aws_linked_list_empty(&list));
-    nnode = &node1;
-    attach_nodeA_to_nodeB(nnode, &list.tail, false /*  directlyAttached */);
-  }
-  attach_nodeA_to_nodeB(&list.head, nnode, true /* directlyAttached */);
-
-  // --- end: initialize linked list
-  // 
-  void *list_tail_prev_old = list.tail.prev;
-  void *nnode_next_old = nnode->next;
+  sea_nd_init_aws_linked_list_from_head(&list, &size);
+  struct aws_linked_list_node *start = list.head.next;
+  aws_linked_list_save_to_tail(&list, size, start, &to_save);
 
   /* perform operation under verification */
   aws_linked_list_push_front(&list, &to_add);
@@ -41,16 +19,11 @@ int main(void) {
   /* assertions */
   sassert(list.tail.next == NULL);
   sassert(list.head.prev == NULL);
-
+ 
   sassert(aws_linked_list_node_prev_is_valid(&to_add));
   sassert(aws_linked_list_node_next_is_valid(&to_add));
-  sassert(list.head.next == &to_add);
-  sassert(to_add.next == nnode);
-
-  if (!list_is_empty) {
-    sassert(list.tail.prev == list_tail_prev_old);
-  }
-  sassert(nnode->next == nnode_next_old);
-
+  sassert(is_aws_linked_list_node_attached_after(&list.head, &to_add));
+  sassert(is_aws_linked_list_node_attached_after(&to_add, to_save.save_point));
+  sassert(is_aws_list_unchanged_to_tail(&list, &to_save));
   return 0;
 }
