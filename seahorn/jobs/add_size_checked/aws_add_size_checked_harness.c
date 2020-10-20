@@ -4,7 +4,7 @@
 
 /**
  */
-int main() {
+int main(void) {
     if (nd_bool()) {
         uint64_t a = nd_uint64_t();
         uint64_t b = nd_uint64_t();
