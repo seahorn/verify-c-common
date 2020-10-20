@@ -23,6 +23,32 @@ function(sea_get_file_name VAR LLVMIR_TARGET)
   set(${VAR} "${DIR}/${FILES}" PARENT_SCOPE)
 endfunction()
 
+macro(add_fuzz_executable name)
+  cmake_parse_arguments(ARG
+    "EXCLUDE_FROM_ALL" "" "" ${ARGN})
+
+  set(EXE_NAME "${name}_fuzz")
+
+  add_executable(${EXE_NAME} ${ARG_UNPARSED_ARGUMENTS})
+
+  target_compile_options(${EXE_NAME} PRIVATE -Wno-macro-redefined)
+  target_compile_options(${EXE_NAME} PRIVATE -g)
+  target_compile_options(${EXE_NAME} PRIVATE -fdeclspec)
+  target_compile_definitions(${EXE_NAME} PRIVATE main=_main)
+  target_compile_definitions(${EXE_NAME} PRIVATE MAX_BUFFER_SIZE=${MAX_BUFFER_SIZE})
+  target_link_libraries(${EXE_NAME} PRIVATE nd_fuzz)
+
+  target_compile_options(${EXE_NAME} PRIVATE -fsanitize=fuzzer -fsanitize=address)
+  target_link_libraries(${EXE_NAME} PRIVATE -fsanitize=fuzzer -fsanitize=address)
+endmacro()
+
+function(sea_attach_fuzz name)
+  get_property(IN_FILES TARGET ${name} PROPERTY SOURCES) 
+  add_fuzz_executable(${name} ${IN_FILES})
+endfunction()
+
+
+
 set(VERIFY_FLAGS $ENV{VERIFY_FLAGS} CACHE STRING "Flags for verify script")
 separate_arguments(VERIFY_FLAGS)
 
