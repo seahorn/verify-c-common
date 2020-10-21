@@ -6,10 +6,15 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <setjmp.h>
+
 /** Global access to fuzz data */
 uint8_t *g_fuzz_data;
 size_t g_fuzz_data_size;
 uint8_t *g_fuzz_data_iterator;
+
+/** jmp environment */
+jmp_buf g_jmp_buf;
 
 #define UPDATE_FUZZ_ITERATOR(TYPE)                                             \
   if (g_fuzz_data_iterator + sizeof(TYPE) - g_fuzz_data >= g_fuzz_data_size) { \
@@ -53,7 +58,12 @@ void __VERIFIER_assert(bool v) {
   return assert(v);
 }
 
-void __VERIFIER_assume(bool v) { __VERIFIER_assert(v); }
+void __VERIFIER_assume(bool v) {
+  // -- if assumption fails, jump back to LLVMFuzzerTestOneInput
+  if (!v) {
+    longjmp(g_jmp_buf, 1);
+  }
+}
 
 void __VERIFIER_error(void) {
   fprintf(stdout, "ERROR REACHED\n");
@@ -69,6 +79,10 @@ int LLVMFuzzerTestOneInput(uint8_t *Data, size_t Size) {
   g_fuzz_data_size = Size;
   g_fuzz_data_iterator = g_fuzz_data;
 
+  if (setjmp(g_jmp_buf)) {
+    // assumption failed, abort
+    return 0;
+  }
   _main();
 
   return 0;
