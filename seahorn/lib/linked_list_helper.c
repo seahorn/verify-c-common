@@ -278,15 +278,13 @@ void aws_linked_list_save_to_head(struct aws_linked_list *list, size_t size,
   }
 }
 
-void aws_linked_list_attach_after(struct aws_linked_list_node *after,
-                                  struct aws_linked_list_node *to_attach,
-                                  bool directly_attached) {
-  if (directly_attached) {
-    after->next = to_attach;
-    to_attach->prev = after;
+void attach_nodeA_to_nodeB(struct aws_linked_list_node *nodeA, struct aws_linked_list_node *nodeB, bool directlyAttached) {
+  if (directlyAttached) {
+    nodeA->next = nodeB;
+    nodeB->prev = nodeA;
   } else {
-    after->next = nd_voidp();
-    to_attach->prev = nd_voidp();
+    nodeA->next = nd_voidp();
+    nodeB->prev = nd_voidp();
   }
 }
 
