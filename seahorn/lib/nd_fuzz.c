@@ -31,6 +31,36 @@ bool nd_bool(void) {
   return res;
 }
 
+int nd_int(void) {
+  int res;
+
+  UPDATE_FUZZ_ITERATOR(int);
+  memcpy(&res, g_fuzz_data_iterator, sizeof(int));
+  g_fuzz_data_iterator += sizeof(int);
+
+  return res;
+}
+
+uint8_t nd_uint8_t(void) {
+  uint8_t res;
+
+  UPDATE_FUZZ_ITERATOR(uint8_t);
+  memcpy(&res, g_fuzz_data_iterator, sizeof(uint8_t));
+  g_fuzz_data_iterator += sizeof(uint8_t);
+
+  return res;
+}
+
+uint16_t nd_uint16_t(void) {
+  uint16_t res;
+
+  UPDATE_FUZZ_ITERATOR(uint16_t);
+  memcpy(&res, g_fuzz_data_iterator, sizeof(uint16_t));
+  g_fuzz_data_iterator += sizeof(uint16_t);
+
+  return res;
+}
+
 uint32_t nd_uint32_t(void) {
   uint32_t res;
 
@@ -49,6 +79,35 @@ uint64_t nd_uint64_t(void) {
   g_fuzz_data_iterator += sizeof(uint64_t);
 
   return res;
+}
+
+size_t nd_size_t(void) {
+  size_t res;
+
+  UPDATE_FUZZ_ITERATOR(size_t);
+  memcpy(&res, g_fuzz_data_iterator, sizeof(size_t));
+  g_fuzz_data_iterator += sizeof(size_t);
+
+  return res;
+}
+
+void *nd_voidp(void) {
+  void *res;
+
+  UPDATE_FUZZ_ITERATOR(res);
+  memcpy(&res, g_fuzz_data_iterator, sizeof(res));
+  g_fuzz_data_iterator += sizeof(res);
+
+  return res;
+}
+
+void memhavoc(void *ptr, size_t size) {
+  if (g_fuzz_data_iterator + size - g_fuzz_data >= g_fuzz_data_size) { 
+    g_fuzz_data_iterator = g_fuzz_data;                                        
+  }
+
+  memcpy(&ptr, g_fuzz_data_iterator, size);
+  g_fuzz_data_iterator += size;
 }
 
 void __VERIFIER_assert(bool v) {
