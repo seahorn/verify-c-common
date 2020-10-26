@@ -11,6 +11,10 @@
 #include <sea_mem_helper.h>
 #include <seahorn/seahorn.h>
 
+// XXX Temporary hack 
+#include "sea_allocators.c"
+
+
 void *realloc(void *ptr, size_t new_size) {
   if (ptr) {
     free(ptr);
