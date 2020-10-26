@@ -123,7 +123,9 @@ size_t sea_strlen(const char *str, size_t max) {
   return i;
 }
 
+#ifdef __SEAHORN__
 size_t strlen(const char *str) { return sea_strlen(str, MAX_STRING_LEN); }
+#endif
 
 const char *ensure_c_str_is_nd_allocated(size_t max_size, size_t *len) {
   const char *str = bounded_malloc(max_size);
