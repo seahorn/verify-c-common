@@ -28,7 +28,7 @@ function(sea_get_file_name VAR LLVMIR_TARGET)
   set(${VAR} "${DIR}/${FILES}" PARENT_SCOPE)
 endfunction()
 
-macro(add_fuzz_executable name)
+macro(sea_add_fuzz_executable name)
   cmake_parse_arguments(ARG
     "EXCLUDE_FROM_ALL" "" "" ${ARGN})
 
@@ -43,15 +43,18 @@ macro(add_fuzz_executable name)
   target_compile_definitions(${EXE_NAME} PRIVATE MAX_BUFFER_SIZE=${MAX_BUFFER_SIZE})
   target_link_libraries(${EXE_NAME} PRIVATE nd_fuzz)
 
+  target_link_libraries(${EXE_NAME} PRIVATE aws-c-common )
+
   target_compile_options(${EXE_NAME} PRIVATE -fsanitize=fuzzer -fsanitize=address)
   target_link_libraries(${EXE_NAME} PRIVATE -fsanitize=fuzzer -fsanitize=address)
+
 endmacro()
 
-function(sea_attach_fuzz name)
-  get_property(IN_FILES TARGET ${name} PROPERTY SOURCES) 
-  add_fuzz_executable(${name} ${IN_FILES})
-endfunction()
-
+macro(sea_add_fuzz)
+  if(SEA_ENABLE_FUZZ)
+    sea_add_fuzz_executable(${ARGV})
+  endif()
+endmacro()
 
 
 set(VERIFY_FLAGS $ENV{VERIFY_FLAGS} CACHE STRING "Flags for verify script")
