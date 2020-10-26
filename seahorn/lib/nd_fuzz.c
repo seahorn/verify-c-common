@@ -18,7 +18,7 @@ jmp_buf g_jmp_buf;
 
 #define UPDATE_FUZZ_ITERATOR(TYPE)                                             \
   if (g_fuzz_data_iterator + sizeof(TYPE) - g_fuzz_data >= g_fuzz_data_size) { \
-    g_fuzz_data_iterator = g_fuzz_data;                                        \
+    longjmp(g_jmp_buf, 1);                                             \
   }
 
 bool nd_bool(void) {
@@ -102,11 +102,11 @@ void *nd_voidp(void) {
 }
 
 void memhavoc(void *ptr, size_t size) {
-  if (g_fuzz_data_iterator + size - g_fuzz_data >= g_fuzz_data_size) { 
-    g_fuzz_data_iterator = g_fuzz_data;                                        
+  if (g_fuzz_data_iterator + size - g_fuzz_data >= g_fuzz_data_size) {
+    longjmp(g_jmp_buf, 1);
   }
 
-  memcpy(&ptr, g_fuzz_data_iterator, size);
+  memcpy(ptr, g_fuzz_data_iterator, size);
   g_fuzz_data_iterator += size;
 }
 
@@ -145,4 +145,8 @@ int LLVMFuzzerTestOneInput(uint8_t *Data, size_t Size) {
   _main();
 
   return 0;
+}
+
+bool nd_malloc_fail(void) {
+  return nd_bool();
 }
