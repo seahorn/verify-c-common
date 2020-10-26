@@ -10,6 +10,11 @@ function(sea_attach_bc)
   target_compile_options(${SOURCE_EXE} PUBLIC -fdeclspec)
   set_property(TARGET ${SOURCE_EXE} PROPERTY EXCLUDE_FROM_ALL ON)
 
+  target_compile_definitions(${SOURCE_EXE} PRIVATE __SEAHORN__)
+  target_compile_definitions(${SOURCE_EXE} PRIVATE VACCHECK)
+
+
+
   llvmir_attach_bc_target(TARGET ${TARGET_OBJ} DEPENDS ${SOURCE_EXE})
   set_property(TARGET ${TARGET_OBJ} PROPERTY EXCLUDE_FROM_ALL ON)
   llvmir_attach_link_target(TARGET ${TARGET_BC} DEPENDS ${TARGET_OBJ})
@@ -60,9 +65,6 @@ endfunction()
 configure_file(sea.yaml sea.yaml @ONLY)
 configure_file(sea_cex_base.yaml sea.cex.yaml @ONLY)
 configure_file(sea_vac.yaml sea.vac.yaml @ONLY)
-
-add_definitions(-D__SEAHORN__)
-add_definitions(-DVACCHECK)
 
 add_subdirectory(lib)
 
