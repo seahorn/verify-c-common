@@ -11,7 +11,6 @@ int main() {
     struct aws_byte_buf buf;
     initialize_byte_buf(&buf);
     assume(aws_byte_buf_is_valid(&buf));
-    assume(buf.capacity == MAX_BUFFER_SIZE);
 
     /* operation under verification */
     aws_byte_buf_secure_zero(&buf);
