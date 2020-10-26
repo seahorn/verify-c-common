@@ -12,11 +12,14 @@
 #include <stdlib.h>
 
 void initialize_byte_buf(struct aws_byte_buf *const buf) {
-    buf->len = nd_size_t();
-    buf->buffer = can_fail_malloc(sizeof(*(buf->buffer)) * MAX_BUFFER_SIZE);
-    buf->capacity = nd_size_t();
-    assume(buf->capacity <= MAX_BUFFER_SIZE);
-    assume (buf->len <= buf->capacity);
+    size_t len = nd_size_t();
+    size_t cap = nd_size_t();
+    assume(len <= cap);
+    assume(cap <= MAX_BUFFER_SIZE);
+
+    buf->len = len;
+    buf->capacity = cap;
+    buf->buffer = can_fail_malloc(cap * sizeof(*(buf->buffer)));
     buf->allocator = _allocator();
 }
 
