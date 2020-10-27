@@ -3,6 +3,21 @@
 #include <proof_allocators.h>
 #include <seahorn/seahorn.h>
 
+// alloc is a ptr to the allocated memory. Clear the metadata bit for entire
+// allocation. This can be a single bit if frequency is zero or multiple bits if
+// frequency is non zero.
+extern void resetModified(void *alloc);
+// return true if metadata bit is set
+// Check if allocation is modified.
+// ptr will point to a start of an allocation
+extern bool isModified(void *ptr);
+// Check whether memory region from ptr upto a length of byteSz is modified
+// byteSz in bytes. It has to be a multiple of word size.
+extern bool isModified(void *ptr, size_t byteSz);
+// frequency in bytes. It has to be a multiple of word size. If frequency is
+// zero then use default i.e. one bit per allocation.
+extern void setMarkFrequency(void *alloc, size_t frequency)
+
 // init helper for length <= 2
 static inline void init_short_aws_linked_list(struct aws_linked_list *list,
                                               size_t length) {
@@ -118,6 +133,14 @@ bool nodes_equal(struct aws_linked_list_node *node,
   return nodes_prev_equal(node, saved) && nodes_next_equal(node, saved);
 }
 
+bool node_unmodified(struct aws_linked_list_node *node) {
+  return !isModified(node);
+}
+
+bool node_next_unmodified(struct aws_linked_list_node *node) {
+  return !isModified(&node->next, sizeof(node->next));
+}
+
 void sea_save_aws_node_to_sea_node(struct aws_linked_list_node *s,
                                    struct saved_aws_linked_list_node *d) {
   d->node = s;
@@ -134,25 +157,26 @@ bool is_aws_list_unchanged_to_tail(struct aws_linked_list *list,
                                    struct saved_aws_linked_list *saved) {
   if (saved->saved_size == 0) {
     // if saved size is zero, only check that tail is unchanged
+    // NOTE: we will still have use of saved nodes e.g. in this case
     return nodes_next_equal(&list->tail, &saved->tail);
   } else if (saved->saved_size == 1) {
     // if saved size is 1 then check start and tail are unchanged
-    return nodes_next_equal(saved->save_point, &saved->nodes[0]) &&
-           nodes_equal(&list->tail, &saved->tail);
+    return node_next_unmodified(saved->save_point) &&
+           node_unmodified(&list->tail);
 
   } else if (saved->saved_size == 2) {
     // if saved size is 2 then check start, start.next and tail are unchanged
-    return nodes_next_equal(saved->save_point, &saved->nodes[0]) &&
-           nodes_equal(saved->save_point->next, &saved->nodes[1]) &&
-           nodes_equal(&list->tail, &saved->tail);
+    return node_next_unmodified(saved->save_point) &&
+           node_unmodified(saved->save_point->next) &&
+           nodes_unmodified(&list->tail, &saved->tail);
 
   } else if (saved->saved_size == 3) {
     // we only save a maximum of three nodes since that is the maximum we
     // construct concretely are head <--> node1 <--> node2
-    return nodes_next_equal(saved->save_point, &saved->nodes[0]) &&
-           nodes_equal(saved->save_point->next, &saved->nodes[1]) &&
-           nodes_equal(saved->save_point->next->next, &saved->nodes[2]) &&
-           nodes_equal(&list->tail, &saved->tail);
+    return node_next_unmodified(saved->save_point) &&
+           node_unmodified(saved->save_point->next) &&
+           node_unmodified(saved->save_point->next->next) &&
+           node_unmodified(&list->tail, &saved->tail);
   } else {
     return false;
   }
@@ -266,6 +290,43 @@ void save_three_nodes(
   sea_save_aws_node_to_sea_node((*next)((*next)(start)), &to_save->nodes[2]);
   to_save->saved_size = 3;
 }
+
+void setMarkFreqForPartialCheck(struct aws_linked_list_node *start) {
+  size_t freq = sizeof(aws_linked_list_node *)
+  setMarkFrequency(start, freq);
+}
+
+void reset_mod_one_node(struct aws_linked_list_node *start,
+                       struct saved_aws_linked_list *to_save) {
+  // call save_node also for partial unmodified check later on
+  resetModified(start);
+  setMarkFreqForPartialCheck(start)
+  to_save->saved_size = 1;
+}
+
+void reset_mod_two_nodes(
+    struct aws_linked_list_node *start,
+    struct saved_aws_linked_list *to_save,
+    struct aws_linked_list_node *(*next)(struct aws_linked_list_node *)) {
+  // call save_node also for partial unmodified check later on
+  resetModified(start);
+  setMarkFreqForPartialCheck(start);
+  resetModified((*next)(start));
+  to_save->saved_size = 2;
+}
+
+void reset_mod_three_nodes(
+    struct aws_linked_list_node *start,
+    struct saved_aws_linked_list *to_save,
+    struct aws_linked_list_node *(*next)(struct aws_linked_list_node *)) {
+  // call save_node also for partial unmodified check later on
+  resetModified(start);
+  setMarkFreqForPartialCheck(start);
+  resetModified((*next)(start));
+  resetModified((*next)((*next)(start)));
+  to_save->saved_size = 3;
+}
+
 void aws_linked_list_save_to_tail(struct aws_linked_list *list, size_t size,
                                   struct aws_linked_list_node *start,
                                   struct saved_aws_linked_list *to_save) {
@@ -278,16 +339,16 @@ void aws_linked_list_save_to_tail(struct aws_linked_list *list, size_t size,
     // only possibility is to save head or tail.
     // Note tail is never saved in nodes[..] array
     if (&list->head == start) {
-      save_one_node(start, to_save);
+      reset_mod_one_node(start);
     } else {
       to_save->saved_size = 0;
     }
   } else if (size == 1) {
     // either save head, head.next or only head.next
     if (&list->head == start) {
-      save_two_nodes(start, to_save, getNext);
+     reset_mod_two_nodes(start, getNext);
     } else if (list->head.next == start) {
-      save_one_node(start, to_save);
+      reset_mod_one_node(start, to_save);
     } else {
       to_save->saved_size = 0;
     }
@@ -297,11 +358,11 @@ void aws_linked_list_save_to_tail(struct aws_linked_list *list, size_t size,
     // 2) head.next, head.next.next OR
     // 3) head.next.next
     if (&list->head == start) {
-      save_three_nodes(start, to_save, getNext);
+      reset_mod_three_nodes(start, to_save);
     } else if (list->head.next == start) {
-      save_two_nodes(start, to_save, getNext);
+      reset_mod_two_nodes(start, getNext);
     } else if (list->head.next->next == start) {
-      save_one_node(start, to_save);
+      reset_mod_one_node(start, to_save);
     } else {
       to_save->saved_size = 0;
     }
