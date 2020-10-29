@@ -1,0 +1,25 @@
+language: cpp
+dist: trusty
+os: linux
+cache: apt
+branches:
+  only:
+    - master
+matrix:
+  include:
+   - env: BUILD_TYPE=RelWithDebInfo
+     script:
+      - docker build -t verify-c-common -f verify-c-common.Dockerfile .
+      - docker run -t verify-c-common /bin/bash -c "cd build && ninja test"
+services:
+  - docker
+
+install: true
+
+notifications:
+   slack: seahornteam:NAUqZmZHFFviPH4ktQbJXgKu
+   email:
+     recipients:
+      - seahorn-build@googlegroups.com
+     on_success: always
+     on_failure: always

@@ -11,7 +11,7 @@
 int main() {
     /* parameter */
     size_t str_len = 0;
-    const char *c_str = can_fail_c_str_allocation(MAX_BUFFER_SIZE, &str_len);
+    const char *c_str = ensure_c_str_is_nd_allocated(MAX_BUFFER_SIZE, &str_len);
 
     /* operation under verification */
     struct aws_byte_buf buf = aws_byte_buf_from_c_str(c_str);
