@@ -27,5 +27,7 @@ RUN mkdir build && cd build
 RUN cmake -DSEA_LINK=llvm-link-10 -DCMAKE_C_COMPILER=clang-10 -DCMAKE_CXX_COMPILER=clang++-10 -DSEAHORN_ROOT=/home/usea/seahorn ../ -GNinja
 RUN ninja
 
+RUN ninja test
+
 ## set default user and wait for someone to login and start running verification tasks
 USER usea
