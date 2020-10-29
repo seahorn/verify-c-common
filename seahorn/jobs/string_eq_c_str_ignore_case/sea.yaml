@@ -1,2 +1,3 @@
 verify_options:
   bound: @MAX_STRING_LEN@
+  horn-bmc-tactic: 'smtfd'  # to use SAT solver

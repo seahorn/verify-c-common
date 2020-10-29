@@ -106,7 +106,13 @@ void assert_byte_cursor_equivalence(
 #define MAX_STRING_LEN MAX_BUFFER_SIZE
 #endif
 
-size_t sea_strlen(const char *str, size_t max) {
+// This function is here for posterity only.
+// Similar to `sea_strlen` it returns the length of a string
+// but most importantly it creates a valid string of that length
+// pointed to by `str`.
+// OTOH `sea_strlen` is close to a conventional `strlen` and does not write to
+// the string.
+size_t sea_strlen_unused(const char *str, size_t max) {
   size_t i;
   i = nd_size_t();
   assume(i < max && max <= MAX_STRING_LEN);
@@ -123,36 +129,72 @@ size_t sea_strlen(const char *str, size_t max) {
   return i;
 }
 
+// A strlen implementation.
+// If the end-delimiter is not in offset <= max_size from start then
+// 0 is returned.
+size_t sea_strlen(const char *str, size_t max_size) {
+  size_t len = 0;
+  for (size_t i = 0; i < MAX_STRING_LEN; i++) {
+    if (i <= max_size) {
+      if (str[i] == '\0') {
+        return len;
+      }
+      len++;
+    }
+  }
+  return 0;
+}
+
+// This takes in a ptr to an allocated piece of memory with the desired
+// string len and initializes the string.
+void sea_init_str(const char *str, size_t str_len) {
+  assume(str[str_len] == '\0');
+  // The following assumption cannot be expressed
+  // assume(forall j :: j < i ==> str[j] != '\0');
+  // therefore, we say the following:
+  for (size_t j = 0; j < MAX_STRING_LEN; j++) {
+    if (j < str_len) {
+      assume(str[j] != '\0');
+    }
+  }
+}
+
 #ifdef __SEAHORN__
 size_t strlen(const char *str) { return sea_strlen(str, MAX_STRING_LEN); }
 #endif
 
-const char *ensure_c_str_is_nd_allocated(size_t max_size, size_t *len) {
-  const char *str = bounded_malloc(max_size);
-  *len = sea_strlen(str, max_size);
-  return str;
-}
-
-const char *can_fail_c_str_allocation(size_t max_size, size_t *len) {
-  const char *str = can_fail_malloc(max_size);
+// This cannot return a NULL ptr.
+// Returned len is always > 0
+const char *ensure_c_str_is_nd_allocated_safe(size_t max_size, size_t *len) {
+  size_t alloc_size;
+  alloc_size = nd_size_t();
+  // allocate no more than MAX_STRING_LEN + 1
+  assume(alloc_size > 0 && alloc_size <= max_size &&
+         max_size <= MAX_STRING_LEN);
+  // bounded_malloc never fails
+  const char *str = bounded_malloc(alloc_size);
   if (!str) {
     *len = 0;
     return str;
   }
-  *len = sea_strlen(str, max_size);
+  sea_init_str(str, alloc_size - 1);
+  *len = alloc_size - 1;
   return str;
 }
 
-
-const char *ensure_c_str_is_allocated(size_t max_size) {
-  size_t cap = nd_size_t();
-  assume(cap > 0 && cap <= max_size);
-  assume(max_size <= MAX_STRING_LEN);
-  const char *str = bounded_malloc(MAX_STRING_LEN);
-  /* Ensure that its a valid C string. Since all bytes are nondeterminstic,
-   * the actual string length is 0..str_cap
-   */
-  assume(str[cap - 1] == 0);
+// This can return a NULL ptr. len will be zero in this case.
+const char *ensure_c_str_is_nd_allocated(size_t max_size, size_t *len) {
+  size_t alloc_size;
+  alloc_size = nd_size_t();
+  assume(alloc_size > 0 && alloc_size <= max_size &&
+         max_size <= MAX_STRING_LEN);
+  const char *str = can_fail_malloc(alloc_size);
+  if (!str) {
+    *len = 0;
+    return str;
+  }
+  sea_init_str(str, alloc_size - 1);
+  *len = alloc_size - 1;
   return str;
 }
 
