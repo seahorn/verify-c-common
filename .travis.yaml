@@ -1,0 +1,24 @@
+language: cpp
+dist: trusty
+os: linux
+cache: apt
+branches:
+  only:
+    - master
+matrix:
+  include:
+   - env: BUILD_TYPE=RelWithDebInfo
+     script:
+      - docker build -t verify-c-common -f verify-c-common.Dockerfile .
+      - docker run --rm -it verify-c-common
+services:
+  - docker
+
+install: true
+
+notifications:
+   email:
+     recipients:
+      - chni@uwaterloo.ca
+     on_success: always
+     on_failure: always
