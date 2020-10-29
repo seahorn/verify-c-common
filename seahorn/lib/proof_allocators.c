@@ -12,8 +12,9 @@
 #include <seahorn/seahorn.h>
 
 // XXX Temporary hack 
+#ifdef __SEAHORN__
 #include "sea_allocators.c"
-
+#endif
 
 void *realloc(void *ptr, size_t new_size) {
   if (ptr) {

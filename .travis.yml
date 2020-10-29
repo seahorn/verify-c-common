@@ -1,0 +1,48 @@
+language: cpp
+dist: trusty
+os: linux
+cache: apt
+branches:
+  only:
+    - master
+matrix:
+  include:
+   - env: BUILD_TYPE=RelWithDebInfo
+     script:
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+      - docker build -t verify-c-common -f verify-c-common.Dockerfile .
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+      - docker build -t verify-c-common -f verify-c-common.Dockerfile .
+      - docker run --rm -it verify-c-common
+>>>>>>> 90206dc... Add more scripts
+      - docker run -t verify-c-common /bin/bash -c "cd build && ninja test"
+=======
+      - docker run --rm -it verify-c-common
+      - cd build
+      - cmake --build . --target test
+>>>>>>> a4893ac... Add tests
+=======
+=======
+>>>>>>> 294766e... Try to build travis
+      - docker run -t verify-c-common /bin/bash -c "cd build && ninja test"
+>>>>>>> eceb88d... edit travis file
+=======
+      - docker build -t verify-c-common -f verify-c-common.Dockerfile .
+      - docker run -t verify-c-common /bin/bash -c "cd build && ninja test"
+>>>>>>> 874488b... Add travis and dockerfile
+services:
+  - docker
+
+install: true
+
+notifications:
+   slack: seahornteam:NAUqZmZHFFviPH4ktQbJXgKu
+   email:
+     recipients:
+      - seahorn-build@googlegroups.com
+     on_success: always
+     on_failure: always
