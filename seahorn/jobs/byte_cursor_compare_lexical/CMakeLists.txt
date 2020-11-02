@@ -5,7 +5,6 @@ add_executable(byte_cursor_compare_lexical
   ${SEA_LIB}/byte_buf_helper.c
   ${SEA_LIB}/bcmp.c
   ${SEA_LIB}/utils.c)
-target_compile_definitions(byte_cursor_compare_lexical PUBLIC MAX_BUFFER_SIZE=10)
 sea_attach_bc(byte_cursor_compare_lexical)
 sea_add_unsat_test(byte_cursor_compare_lexical)
 

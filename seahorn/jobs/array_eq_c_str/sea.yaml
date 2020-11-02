@@ -1,2 +1,2 @@
 verify_options:
-  bound: @MAX_BUFFER_SIZE@
+  bound: @MAX_STRING_LEN@

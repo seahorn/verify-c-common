@@ -8,6 +8,5 @@ add_executable(string_bytes
   ${SEA_LIB}/string_helper.c
   ${SEA_LIB}/bcmp.c
   ${SEA_LIB}/utils.c)
-target_compile_definitions(string_bytes PUBLIC MAX_BUFFER_SIZE=10 MAX_STRING_LEN=16)
 sea_attach_bc(string_bytes)
 sea_add_unsat_test(string_bytes)

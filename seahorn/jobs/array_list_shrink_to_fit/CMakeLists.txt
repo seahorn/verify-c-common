@@ -7,7 +7,6 @@ add_executable(array_list_shrink_to_fit
   ${SEA_LIB}/bcmp.c)
 target_compile_definitions(array_list_shrink_to_fit
   PUBLIC MAX_ITEM_SIZE=2
-  MAX_INITIAL_ITEM_ALLOCATION=9223372036854775808ULL
-  MAX_BUFFER_SIZE=10)
+  MAX_INITIAL_ITEM_ALLOCATION=9223372036854775808ULL)
 sea_attach_bc(array_list_shrink_to_fit)
 sea_add_unsat_test(array_list_shrink_to_fit)

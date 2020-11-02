@@ -5,7 +5,7 @@ add_executable(byte_buf_from_c_str
   ${SEA_LIB}/byte_buf_helper.c
   ${SEA_LIB}/bcmp.c
   ${SEA_LIB}/utils.c)
-target_compile_definitions(byte_buf_from_c_str PUBLIC MAX_BUFFER_SIZE=10 __SEA_AWS_ALLOCATOR__)
+target_compile_definitions(byte_buf_from_c_str PUBLIC __SEA_AWS_ALLOCATOR__)
 sea_attach_bc(byte_buf_from_c_str)
 sea_add_unsat_test(byte_buf_from_c_str)
 

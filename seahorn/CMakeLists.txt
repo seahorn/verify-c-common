@@ -225,6 +225,20 @@ function(sea_add_unsat_test TARGET)
   add_test(NAME "${TARGET}_unsat_test" COMMAND ${VERIFY_CMD} ${VERIFY_FLAGS} --expect=unsat ${BC})
 endfunction()
 
+
+
+# Set upper bound on data structures
+set(MAX_LINKED_LIST_ITEM_ALLOCATION_SIZE 5)
+set(MAX_BUFFER_SIZE 10)
+set(MAX_STRING_LEN 16)
+
+# Compile-time definitions
+add_definitions(
+  -DMAX_BUFFER_SIZE=${MAX_BUFFER_SIZE}
+  -DMAX_STRING_LEN=${MAX_STRING_LEN}
+  -DMAX_LINKED_LIST_ITEM_ALLOCATION_SIZE=${MAX_LINKED_LIST_ITEM_ALLOCATION_SIZE}
+  )
+
 configure_file(sea.yaml sea.yaml @ONLY)
 configure_file(sea_cex_base.yaml sea.cex.yaml @ONLY)
 configure_file(sea_vac.yaml sea.vac.yaml @ONLY)

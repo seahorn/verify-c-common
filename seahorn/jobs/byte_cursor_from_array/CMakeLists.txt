@@ -5,7 +5,6 @@ add_executable(byte_cursor_from_array
   ${SEA_LIB}/byte_buf_helper.c
   ${SEA_LIB}/bcmp.c
   ${SEA_LIB}/utils.c)
-target_compile_definitions(byte_cursor_from_array PUBLIC MAX_BUFFER_SIZE=10)
 sea_attach_bc(byte_cursor_from_array)
 sea_add_unsat_test(byte_cursor_from_array)
 

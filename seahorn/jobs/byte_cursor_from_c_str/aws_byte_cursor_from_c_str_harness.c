@@ -12,7 +12,7 @@ int main() {
     /* parameter */
     size_t str_len;
     const char *c_str = ensure_c_str_is_nd_allocated(MAX_BUFFER_SIZE, &str_len);
-
+  
     /* operation under verification */
     struct aws_byte_cursor cur = aws_byte_cursor_from_c_str(c_str);
 

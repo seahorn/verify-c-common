@@ -7,8 +7,7 @@ add_executable(array_list_pop_front_n
   ${SEA_LIB}/bcmp.c)
 target_compile_definitions(array_list_pop_front_n
   PUBLIC MAX_ITEM_SIZE=2
-  MAX_INITIAL_ITEM_ALLOCATION=9223372036854775808ULL
-  MAX_BUFFER_SIZE=10)
+  MAX_INITIAL_ITEM_ALLOCATION=9223372036854775808ULL)
 sea_attach_bc(array_list_pop_front_n)
 configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(array_list_pop_front_n)
