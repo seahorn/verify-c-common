@@ -8,11 +8,9 @@ add_executable(string_eq
   ${SEA_LIB}/string_helper.c
   ${SEA_LIB}/bcmp.c
   ${SEA_LIB}/utils.c)
-set(MAX_STRING_LEN 16)
-set(MAX_BUFFER_SIZE ${MAX_STRING_LEN})
-target_compile_definitions(string_eq 
-		PUBLIC 
-		MAX_BUFFER_SIZE=${MAX_STRING_LEN} 
-		MAX_STRING_LEN=${MAX_STRING_LEN})
+target_compile_definitions(string_eq
+		PUBLIC
+    # needed for bcmp
+		MAX_BUFFER_SIZE=${MAX_STRING_LEN})
 sea_attach_bc(string_eq)
 sea_add_unsat_test(string_eq)
