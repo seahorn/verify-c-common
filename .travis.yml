@@ -10,7 +10,6 @@ matrix:
    - env: BUILD_TYPE=RelWithDebInfo
      script:
       - docker build -t verify-c-common -f verify-c-common.Dockerfile .
-      - docker run --rm -it verify-c-common
       - docker run -t verify-c-common /bin/bash -c "cd build && ninja test"
 services:
   - docker
