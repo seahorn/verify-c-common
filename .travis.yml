@@ -11,6 +11,8 @@ matrix:
      script:
       - docker build -t verify-c-common -f verify-c-common.Dockerfile .
       - docker run --rm -it verify-c-common
+      - cd build
+      - cmake --build . --target test
 services:
   - docker
 
