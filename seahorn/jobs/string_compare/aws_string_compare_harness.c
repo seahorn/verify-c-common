@@ -11,11 +11,11 @@
 
 int main() {
     struct aws_string *str_a = nd_bool() ?
-            ensure_string_is_allocated_bounded_length(MAX_STRING_LEN) :
+            ensure_string_is_allocated_bounded_length(MAX_BUFFER_SIZE) :
             NULL;
     struct aws_string *str_b = nd_bool() ?
             (nd_bool() ? str_a : NULL) :
-            ensure_string_is_allocated_bounded_length(MAX_STRING_LEN);
+            ensure_string_is_allocated_bounded_length(MAX_BUFFER_SIZE);
     bool nondet_parameter = nd_bool();
     if (aws_string_compare(str_a, nondet_parameter ? str_b : str_a) == AWS_OP_SUCCESS) {
         if (nondet_parameter && str_a && str_b) {

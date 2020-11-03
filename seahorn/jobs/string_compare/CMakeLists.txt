@@ -8,9 +8,5 @@ add_executable(string_compare
   ${SEA_LIB}/string_helper.c
   ${SEA_LIB}/bcmp.c
   ${SEA_LIB}/utils.c)
-target_compile_definitions(string_compare
-		PUBLIC
-    # needed for bmcp
-		MAX_BUFFER_SIZE=${MAX_STRING_LEN})
 sea_attach_bc(string_compare)
 sea_add_unsat_test(string_compare)

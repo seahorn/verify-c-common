@@ -11,9 +11,9 @@
 
 int main() {
     struct aws_string *str_a = nd_bool() ?
-            ensure_string_is_allocated_bounded_length(MAX_STRING_LEN) : NULL;
+            ensure_string_is_allocated_bounded_length(MAX_BUFFER_SIZE) : NULL;
     struct aws_string *str_b = nd_bool() ?
-            str_a : ensure_string_is_allocated_bounded_length(MAX_STRING_LEN);
+            str_a : ensure_string_is_allocated_bounded_length(MAX_BUFFER_SIZE);
     if (aws_string_eq(str_a, str_b) && str_a && str_b) {
         sassert(str_a->len == str_b->len);
         assert_bytes_match(str_a->bytes, str_b->bytes, str_a->len);
