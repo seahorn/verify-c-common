@@ -17,8 +17,9 @@ services:
 install: true
 
 notifications:
+   slack: seahornteam:NAUqZmZHFFviPH4ktQbJXgKu
    email:
      recipients:
-      - chni@uwaterloo.ca
+      - seahorn-build@googlegroups.com
      on_success: always
      on_failure: always
