@@ -1,4 +1,5 @@
 build
+build_fuzz
 debug
 cex
 aws-c-common

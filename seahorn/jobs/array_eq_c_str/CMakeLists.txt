@@ -1,9 +1,7 @@
 add_executable(array_eq_c_str
   ${AWS_C_COMMON_ROOT}/source/byte_buf.c
-  aws_array_eq_c_str_harness.c
-  ${SEA_LIB}/proof_allocators.c
-  )
-sea_link_libraries(array_eq_c_str sea_utils.ir)
+  aws_array_eq_c_str_harness.c)
+sea_link_libraries(array_eq_c_str sea_proofs.ir sea_bounds.ir)
 
 sea_attach_bc(array_eq_c_str)
 

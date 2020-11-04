@@ -14,7 +14,7 @@ int main() {
     initialize_byte_buf(&buf);
 
     /* parameters */
-    struct aws_allocator *allocator = _allocator();
+    struct aws_allocator *allocator = sea_allocator();
     struct aws_byte_cursor cursor;
     initialize_byte_cursor(&cursor);
 

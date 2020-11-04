@@ -5,6 +5,7 @@
 #include <seahorn/seahorn.h>
 #include <aws/common/byte_buf.h>
 #include <proof_allocators.h>
+#include <string_helper.h>
 #include <nondet.h>
 #include <utils.h>
 

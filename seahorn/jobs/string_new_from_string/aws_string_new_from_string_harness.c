@@ -13,9 +13,8 @@
 int main() {
     /* parameters */
     struct aws_string *source = ensure_string_is_allocated_bounded_length(SIZE_MAX - 1 - sizeof(struct aws_string));
-    //struct aws_string *source = ensure_string_is_allocated_nondet_length();
     struct aws_allocator *allocator =
-            (source->allocator) ? source->allocator : _allocator();
+            (source->allocator) ? source->allocator : sea_allocator();
 
     /* operation under verification */
     struct aws_string *str = aws_string_new_from_string(allocator, source);

@@ -29,7 +29,8 @@ void *bounded_calloc(size_t num, size_t size);
 void *bounded_malloc(size_t size);
 void *bounded_malloc_pure(size_t size);
 void *can_fail_malloc(size_t size);
+
 /**
- *
+ * Pointer to SeaHorn-based allocator
  */
-struct aws_allocator *_allocator(void);
+struct aws_allocator *sea_allocator(void);

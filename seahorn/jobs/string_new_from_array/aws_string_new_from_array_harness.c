@@ -14,7 +14,7 @@ int main() {
     /* parameters */
     size_t alloc_size = nd_size_t();
     uint8_t *array = bounded_malloc(alloc_size);
-    struct aws_allocator *allocator = _allocator();
+    struct aws_allocator *allocator = sea_allocator();
     size_t reported_size = nd_size_t();
 
     /* precondition */

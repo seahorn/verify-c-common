@@ -1,5 +1,5 @@
 /*
- * 
+ *
  */
 
 #pragma once
@@ -21,16 +21,16 @@ struct store_byte_from_buffer {
  * Asserts whether all bytes from two arrays of same length match.
  */
 void assert_bytes_match(
-    const uint8_t *const a, 
-    const uint8_t *const b, 
+    const uint8_t *const a,
+    const uint8_t *const b,
     const size_t len);
 
 /**
  * Asserts whether all bytes from an array are equal to c.
  */
 void assert_all_bytes_are(
-    const uint8_t *const a, 
-    const uint8_t c, 
+    const uint8_t *const a,
+    const uint8_t c,
     const size_t len);
 
 /**
@@ -39,32 +39,32 @@ void assert_all_bytes_are(
 void assert_all_zeroes(const uint8_t *const a, const size_t len);
 
 /**
- * Asserts whether the byte in storage correspond to the byte in the same 
+ * Asserts whether the byte in storage correspond to the byte in the same
  * position in buffer.
  */
 void assert_byte_from_buffer_matches(
-    const uint8_t *const buffer, 
+    const uint8_t *const buffer,
     const struct store_byte_from_buffer *const b);
 
 /**
- * Nondeterministically selects a byte from array and stores it into a 
- * store_array_list_byte structure. Afterwards, one can prove using the 
- * assert_array_list_equivalence function whether no byte in the array has 
+ * Nondeterministically selects a byte from array and stores it into a
+ * store_array_list_byte structure. Afterwards, one can prove using the
+ * assert_array_list_equivalence function whether no byte in the array has
  * changed.
  */
 void save_byte_from_array(
-    const uint8_t *const array, 
-    const size_t size, 
+    const uint8_t *const array,
+    const size_t size,
     struct store_byte_from_buffer *const storage);
 
 /**
- * Asserts two aws_array_list structures are equivalent. Prior to using this 
- * function, it is necessary to select a non-deterministic byte from the rhs 
- * aws_array_list structure (use save_byte_from_array function), so it can 
+ * Asserts two aws_array_list structures are equivalent. Prior to using this
+ * function, it is necessary to select a non-deterministic byte from the rhs
+ * aws_array_list structure (use save_byte_from_array function), so it can
  * properly assert all bytes match.
  */
 void assert_array_list_equivalence(
-    const struct aws_array_list *const lhs,
+const struct aws_array_list *const lhs,
     const struct aws_array_list *const rhs,
     const struct store_byte_from_buffer *const rhs_byte);
 
@@ -99,11 +99,11 @@ bool nondet_equals(const void *const a, const void *const b);
 bool uninterpreted_equals(const void *const a, const void *const b);
 
 /**
- * uninterpreted_equals(), but with an extra assertion that a and b are both 
+ * uninterpreted_equals(), but with an extra assertion that a and b are both
  * not null
  */
 bool uninterpreted_equals_assert_inputs_nonnull(
-    const void *const a, 
+    const void *const a,
     const void *const b);
 
 /**
@@ -121,19 +121,3 @@ uint64_t uninterpreted_hasher(const void *a);
  */
 bool uninterpreted_predicate_fn(uint8_t value);
 
-size_t sea_strlen(const char *str, size_t max);
-void sea_init_str(const char *str, size_t len);
-size_t strlen(const char *str);
-
-// len is populated by this function
-const char *ensure_c_str_is_nd_allocated_safe(size_t max_size, size_t* len);
-const char *ensure_c_str_is_nd_allocated(size_t max_size, size_t* len);
-
-const char *ensure_c_str_is_allocated(size_t max_size);
-
-bool aws_byte_cursor_is_bounded(
-    const struct aws_byte_cursor *const cursor, 
-    const size_t max_size);
-    
-void ensure_byte_buf_has_allocated_buffer_member(
-    struct aws_byte_buf *const buf);

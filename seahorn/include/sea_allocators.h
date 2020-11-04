@@ -55,3 +55,6 @@ INLINE void *sea_malloc_aligned_safe(size_t sz);
    Combination of sea_malloc_havoc() with sea_malloc_aligned()
  */
 INLINE void *sea_malloc_aligned_havoc(size_t sz);
+
+INLINE void sea_free(void *ptr);
+INLINE void *sea_realloc(void *ptr, size_t sz);

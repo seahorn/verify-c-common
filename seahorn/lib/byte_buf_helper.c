@@ -20,7 +20,7 @@ void initialize_byte_buf(struct aws_byte_buf *const buf) {
     buf->len = len;
     buf->capacity = cap;
     buf->buffer = can_fail_malloc(cap * sizeof(*(buf->buffer)));
-    buf->allocator = _allocator();
+    buf->allocator = sea_allocator();
 }
 
 void initialize_byte_cursor(struct aws_byte_cursor *const cursor) {
@@ -44,10 +44,10 @@ bool aws_byte_cursor_is_bounded(
 void ensure_byte_buf_has_allocated_buffer_member(
     struct aws_byte_buf *const buf) {
     //TODO - figure out allocator issues
-    buf->allocator = _allocator(); 
+    buf->allocator = sea_allocator(); 
     buf->buffer = bounded_malloc(sizeof(*(buf->buffer)) * MAX_BUFFER_SIZE);
 }
 
 bool aws_byte_buf_has_allocator(const struct aws_byte_buf *const buf) {
-    return (buf->allocator == _allocator());
+    return (buf->allocator == sea_allocator());
 }

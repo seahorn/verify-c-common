@@ -17,7 +17,7 @@ void initialize_array_list(struct aws_array_list *const list) {
     list->item_size = nd_size_t();
     /// XXX Cannot do this for now
     list->data = can_fail_malloc(list->current_size);
-    list->alloc = _allocator();
+    list->alloc = sea_allocator();
 }
 bool aws_array_list_is_bounded(
     const struct aws_array_list *const list,

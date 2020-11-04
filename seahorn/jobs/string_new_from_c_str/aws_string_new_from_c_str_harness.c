@@ -15,7 +15,7 @@ int main() {
   size_t str_len = 0;
   const char *c_str =
       ensure_c_str_is_nd_allocated_safe(MAX_STRING_LEN, &str_len);
-  struct aws_allocator *allocator = _allocator();
+  struct aws_allocator *allocator = sea_allocator();
 
   /* operation under verification */
   struct aws_string *str = aws_string_new_from_c_str(allocator, c_str);

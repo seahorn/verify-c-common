@@ -17,7 +17,7 @@ int main() {
     initialize_array_list(&list);
 
     /* parameters */
-    struct aws_allocator *allocator = _allocator(); /* Precondition: allocator is non-null */
+    struct aws_allocator *allocator = sea_allocator(); /* Precondition: allocator is non-null */
 
     size_t item_size = nd_size_t();
     assume(item_size > 0 && item_size <= MAX_ITEM_SIZE);

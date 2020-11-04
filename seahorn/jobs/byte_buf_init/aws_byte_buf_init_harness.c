@@ -14,7 +14,7 @@ int main() {
     initialize_byte_buf(&buf);
 
     /* parameters */
-    struct aws_allocator *allocator = _allocator(); /* Precondition: allocator is non-null */
+    struct aws_allocator *allocator = sea_allocator(); /* Precondition: allocator is non-null */
     size_t capacity = nd_size_t();
 
     if (aws_byte_buf_init(&buf, allocator, capacity) == AWS_OP_SUCCESS) {
