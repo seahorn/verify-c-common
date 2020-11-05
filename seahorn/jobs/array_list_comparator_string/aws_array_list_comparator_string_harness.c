@@ -11,8 +11,8 @@
 extern void sea_dsa_alias(const void *p, ...);
 
 int main() {
-    struct aws_string *str_a = ensure_string_is_allocated_bounded_length(MAX_STRING_LEN);
-    struct aws_string *str_b = nd_bool() ? str_a : ensure_string_is_allocated_bounded_length(MAX_STRING_LEN);
+    struct aws_string *str_a = ensure_string_is_allocated_bounded_length(MAX_BUFFER_SIZE);
+    struct aws_string *str_b = nd_bool() ? str_a : ensure_string_is_allocated_bounded_length(MAX_BUFFER_SIZE);
 
     // -- force aliasing between the two strings
     // -- without this annotation, type-aware sea-dsa gets confused between different representations
