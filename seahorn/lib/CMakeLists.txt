@@ -27,8 +27,9 @@ sea_attach_bc(sea_proofs)
 
 add_library(sea_fuzz
   nd_fuzz.c
-  proof_allocators.c
-  string_helper.c
+  fuzz_allocators.c
+  fuzz_string_helper.c
   bounds.c
-  utils.c)
+  utils.c
+  )
 target_compile_options(sea_fuzz PUBLIC -fdeclspec)
