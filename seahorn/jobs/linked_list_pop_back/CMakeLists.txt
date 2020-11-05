@@ -1,13 +1,11 @@
 # add head and tail to list size.
 MATH(EXPR UNROLL_BOUND "${MAX_LINKED_LIST_ITEM_ALLOCATION_SIZE} + 2")
 add_executable(linked_list_pop_back
-  aws_linked_list_pop_back_harness.c
-  ${SEA_LIB}/proof_allocators.c
-  ${SEA_LIB}/linked_list_helper.c)
+  aws_linked_list_pop_back_harness.c)
 target_compile_definitions(linked_list_pop_back
   # We will use our own function for is_valid check hence AWS_DEEP_CHECK is off
   PUBLIC AWS_DEEP_CHECKS=0)
-sea_attach_bc(linked_list_pop_back)
+sea_attach_bc_link(linked_list_pop_back)
 sea_add_unsat_test(linked_list_pop_back)
 
 

@@ -1,5 +1,4 @@
 add_executable(mul_size_saturating
-  aws_mul_size_saturating_harness.c
-  ${SEA_LIB}/utils.c)
-sea_attach_bc(mul_size_saturating)
+  aws_mul_size_saturating_harness.c)
+sea_attach_bc_link(mul_size_saturating)
 sea_add_unsat_test(mul_size_saturating)

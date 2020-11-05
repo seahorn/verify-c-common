@@ -150,8 +150,8 @@ function(sea_overlink_libraries target)
   set_property(TARGET ${target} APPEND PROPERTY LLVMIR_OVERRIDE ${ARGN})
 endfunction()
 
-function(sea_attach_bc)
-  set(SOURCE_EXE ${ARGV0})
+function(sea_attach_bc name)
+  set(SOURCE_EXE ${name})
   set(TARGET_BC "${SOURCE_EXE}.ir")
   set(TARGET_OBJ "${SOURCE_EXE}.obj")
 
@@ -207,8 +207,12 @@ macro(sea_add_fuzz_executable name)
 
   target_compile_options(${EXE_NAME} PRIVATE -fsanitize=fuzzer -fsanitize=address)
   target_link_libraries(${EXE_NAME} PRIVATE -fsanitize=fuzzer -fsanitize=address)
-
 endmacro()
+
+function(sea_attach_bc_link name)
+  sea_link_libraries(${name} sea_proofs.ir sea_bounds.ir)
+  sea_attach_bc(${name})
+endfunction()
 
 macro(sea_add_fuzz)
   if(SEA_ENABLE_FUZZ)
