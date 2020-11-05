@@ -1,3 +1,6 @@
 verify_options:
   horn-bmc-tactic: smtfd
   bound: @MAX_BUFFER_SIZE@
+# disable type-awareness to get around a bug with mixing i8* and typed pointers
+  dsa: sea-cs
+ 
