@@ -1,5 +1,7 @@
 /** Custom version of aws_mem_XXX functions that directly call our custom allocator */
 
+#include <proof_allocators.h>
+
 #include <aws/common/math.h>
 
 /************************************************************************************/

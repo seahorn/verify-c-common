@@ -13,17 +13,15 @@ add_library(sea_proofs
   string_helper.c
   utils.c
   proof_allocators.c
-  #sea_allocators.c
-  #allocator_override.c
+  sea_allocators.c
+  allocator_override.c
   bcmp.c
-  #sea_string.c
-  #error_override.c
-  )
+  sea_string.c
+  error_override.c)
 
 target_compile_definitions(sea_proofs PUBLIC
   MAX_BUFFER_SIZE=${MAX_BUFFER_SIZE}
   MAX_STRING_LEN=${MAX_STRING_LEN})
-target_compile_definitions(sea_proofs PRIVATE NBOUNDS)
 sea_attach_bc(sea_proofs)
 
 

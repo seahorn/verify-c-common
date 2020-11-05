@@ -48,11 +48,3 @@ struct aws_allocator *sea_allocator() {
   return &s_allocator_static;
 }
 
-#include "sea_allocators.c"
-
-#ifdef __SEAHORN__
-#include "allocator_override.c"
-#ifndef NBOUNDS
-#include "bounds.c"
-#endif
-#endif

@@ -75,4 +75,3 @@ const char *ensure_c_str_is_nd_allocated(size_t max_size, size_t *len) {
   return str;
 }
 
-#include "sea_string.c"
