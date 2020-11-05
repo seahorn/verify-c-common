@@ -47,10 +47,10 @@ static const char *_ensure_c_str_is_nd_allocated(size_t max_size, size_t *len,
                                           bool safe) {
   size_t alloc_size;
   alloc_size = nd_size_t();
-  // allocate no more than MAX_STRING_LEN + 1
+  // allocate no more than sea_max_string_len() + 1
   assume(alloc_size > 0);
   assume(alloc_size <= max_size);
-  assume(max_size <= MAX_STRING_LEN);
+  assume(max_size <= sea_max_string_len());
 
   // this allocation never fails
   char *str;
