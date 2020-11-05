@@ -14,7 +14,7 @@ add_library(sea_proofs
   utils.c
   proof_allocators.c
   sea_allocators.c
-  #allocator_override.c
+  allocator_override.c
   bcmp.c
   sea_string.c
   error_override.c)
