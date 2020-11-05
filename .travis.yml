@@ -1,0 +1,18 @@
+language: cpp
+dist: trusty
+os: linux
+cache: apt
+branches:
+  only:
+    - master
+matrix:
+  include:
+   - env: BUILD_TYPE=RelWithDebInfo
+     script:
+      - docker build -t verify-c-common -f docker/verify-c-common.Dockerfile .
+      - docker run -t verify-c-common /bin/bash -c "cd build && ninja test"
+services:
+  - docker
+
+install: true
+
