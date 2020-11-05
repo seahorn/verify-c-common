@@ -201,9 +201,9 @@ macro(sea_add_fuzz_executable name)
   target_compile_options(${EXE_NAME} PRIVATE -fdeclspec)
   target_compile_definitions(${EXE_NAME} PRIVATE main=_main)
   target_compile_definitions(${EXE_NAME} PRIVATE MAX_BUFFER_SIZE=${MAX_BUFFER_SIZE})
-  target_link_libraries(${EXE_NAME} PRIVATE nd_fuzz)
 
-  target_link_libraries(${EXE_NAME} PRIVATE aws-c-common )
+  target_link_libraries(${EXE_NAME} PRIVATE AWS::aws-c-common )
+  target_link_libraries(${EXE_NAME} PRIVATE sea_fuzz)
 
   target_compile_options(${EXE_NAME} PRIVATE -fsanitize=fuzzer -fsanitize=address)
   target_link_libraries(${EXE_NAME} PRIVATE -fsanitize=fuzzer -fsanitize=address)

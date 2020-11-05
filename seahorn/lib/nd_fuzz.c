@@ -147,6 +147,4 @@ int LLVMFuzzerTestOneInput(uint8_t *Data, size_t Size) {
   return 0;
 }
 
-bool nd_malloc_fail(void) {
-  return nd_bool();
-}
+bool nd_malloc_is_fail(void) { return nd_bool(); }

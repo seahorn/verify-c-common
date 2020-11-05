@@ -1,11 +1,3 @@
-add_library(nd_fuzz nd_fuzz.c)
-
-add_library(sea_utils utils.c)
-target_compile_definitions(sea_utils PUBLIC
-  MAX_BUFFER_SIZE=${MAX_BUFFER_SIZE}
-  MAX_STRING_LEN=${MAX_STRING_LEN})
-sea_attach_bc(sea_utils)
-
 # various upper bounds
 add_library(sea_bounds bounds.c)
 target_compile_definitions(sea_bounds PUBLIC
@@ -34,3 +26,11 @@ target_compile_definitions(sea_proofs PUBLIC
 target_compile_definitions(sea_proofs PRIVATE NBOUNDS)
 sea_attach_bc(sea_proofs)
 
+
+add_library(sea_fuzz
+  nd_fuzz.c
+  proof_allocators.c
+  string_helper.c
+  bounds.c
+  utils.c)
+target_compile_options(sea_fuzz PUBLIC -fdeclspec)
