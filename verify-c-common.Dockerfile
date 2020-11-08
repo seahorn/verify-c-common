@@ -6,17 +6,20 @@ ENV SEAHORN=/home/usea/seahorn/bin/sea PATH="$PATH:/home/usea/seahorn/bin:/home/
 ## install required pacakges
 USER root
 
+RUN apt remove --purge cmake
+RUN snap install cmake --classic
+
 ## clone verify-c-common repository
 USER usea
 WORKDIR /home/usea
 RUN git clone https://github.com/yvizel/verify-c-common.git 
 
-## clone trusty repository (takes a long time)
+## clone verify-c-common repository
 WORKDIR /home/usea/verify-c-common
 RUN git clone https://github.com/awslabs/aws-c-common.git
 
 WORKDIR /home/usea/verify-c-common/aws-c-common
-RUN mkdir build && cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ../
+RUN mkdir build && cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_INSTALL_PREFIX=$(pwd)/run ../ -GNinja && cmake --build . --target install
 
 WORKDIR /home/usea/verify-c-common
 RUN ln -sf aws-c-common/build/compile_commands.json .

@@ -4,7 +4,7 @@ os: linux
 cache: apt
 branches:
   only:
-    - master
+    - master2
 matrix:
   include:
    - env: BUILD_TYPE=RelWithDebInfo
