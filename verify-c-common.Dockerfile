@@ -6,7 +6,8 @@ ENV SEAHORN=/home/usea/seahorn/bin/sea PATH="$PATH:/home/usea/seahorn/bin:/home/
 ## install required pacakges
 USER root
 
-RUN cmake install
+RUN apt remove --purge cmake
+RUN snap install cmake --classic
 
 ## clone verify-c-common repository
 USER usea
