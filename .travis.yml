@@ -20,6 +20,6 @@ notifications:
    slack: seahornteam:NAUqZmZHFFviPH4ktQbJXgKu
    email:
      recipients:
-      - seahorn-build@googlegroups.com
+      - chni@uwaterloo.ca
      on_success: always
      on_failure: always

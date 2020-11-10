@@ -3,11 +3,10 @@ FROM seahorn/seahorn-llvm10:nightly
 
 ENV SEAHORN=/home/usea/seahorn/bin/sea PATH="$PATH:/home/usea/seahorn/bin:/home/usea/bin"
 
-RUN apt remove --purge cmake
-RUN snap install cmake --classic
-
 ## install required pacakges
 USER root
+
+RUN cmake install
 
 ## clone verify-c-common repository
 USER usea
