@@ -199,14 +199,18 @@ macro(sea_add_fuzz_executable name)
   target_compile_options(${EXE_NAME} PRIVATE -Wno-macro-redefined)
   target_compile_options(${EXE_NAME} PRIVATE -g)
   target_compile_options(${EXE_NAME} PRIVATE -fdeclspec)
+
+  target_compile_options(${EXE_NAME} PRIVATE -ggdb3 -fno-omit-frame-pointer
+    -fprofile-instr-generate -fcoverage-mapping)
   target_compile_definitions(${EXE_NAME} PRIVATE main=_main)
   target_compile_definitions(${EXE_NAME} PRIVATE MAX_BUFFER_SIZE=${MAX_BUFFER_SIZE})
 
   target_link_libraries(${EXE_NAME} PRIVATE AWS::aws-c-common )
   target_link_libraries(${EXE_NAME} PRIVATE sea_fuzz)
 
-  target_compile_options(${EXE_NAME} PRIVATE -fsanitize=fuzzer -fsanitize=address)
-  target_link_libraries(${EXE_NAME} PRIVATE -fsanitize=fuzzer -fsanitize=address)
+  target_compile_options(${EXE_NAME} PRIVATE -fsanitize=fuzzer,address,undefined)
+  target_link_libraries(${EXE_NAME} PRIVATE -fsanitize=fuzzer,address,undefined
+    -fprofile-instr-generate -fcoverage-mapping)
 endmacro()
 
 function(sea_attach_bc_link name)
