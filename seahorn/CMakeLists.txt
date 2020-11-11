@@ -218,6 +218,11 @@ function(sea_attach_bc_link name)
   sea_attach_bc(${name})
 endfunction()
 
+function(klee_attach_bc_link name)
+  sea_link_libraries(${name} sea_symex.ir sea_bounds.ir)
+  sea_attach_bc(${name})
+endfunction()
+
 macro(sea_add_fuzz)
   if(SEA_ENABLE_FUZZ)
     sea_add_fuzz_executable(${ARGV})
