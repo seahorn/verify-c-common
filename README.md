@@ -1,5 +1,9 @@
 # verify-c-common
 
+![os](https://img.shields.io/badge/os-linux-orange?logo=linux)
+![os](https://img.shields.io/badge/os-macos-silver?logo=apple)
+![Azure DevOps builds](https://img.shields.io/azure-devops/build/seahorn/verify-c-common/2)
+
 ## Setup AWS-C-COMMON
 This is a common step for all other configurations.
 
