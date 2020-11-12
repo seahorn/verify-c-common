@@ -10,8 +10,12 @@ matrix:
    - env: BUILD_TYPE=RelWithDebInfo
      script:
       - docker build -t verify-c-common -f docker/verify-c-common.Dockerfile .
-      - docker run -t verify-c-common /bin/bash -c "cd build && ninja test"
-      - docker run -t verify-c-common /bin/bash -c 'cd build && env VERIFY_FLAGS="--vac" ninja test'
+      - |
+        travis_wait 120 sleep infinity &
+        docker run -t verify-c-common /bin/bash -c "cd build && ninja test"
+      - |
+        travis_wait 120 sleep infinity &
+        docker run -t verify-c-common /bin/bash -c 'cd build && env VERIFY_FLAGS="--vac" ninja test'
 services:
   - docker
 
