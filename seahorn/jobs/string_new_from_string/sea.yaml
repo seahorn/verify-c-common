@@ -2,3 +2,4 @@ verify_options:
   horn-bv2-word-size: 1
   horn-array-sym-memcpy-unroll-count: @MAX_STRING_LEN@
   horn-bmc-tactic: 'smtfd' 
+  horn-bv2-lambdas: true
