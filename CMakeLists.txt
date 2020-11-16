@@ -8,6 +8,7 @@ enable_testing()
 
 
 option(SEA_ENABLE_FUZZ "Enable fuzzing" OFF)
+option(SEA_WITH_BLEEDING_EDGE "Enable bleeding edge proofs" OFF)
 
 if (CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR )
   message (FATAL_ERROR
