@@ -38,12 +38,12 @@ add_library(sea_symex
   array_list_helper.c
   byte_buf_helper.c
   linked_list_helper.c
-  string_helper.c
+  klee_string_helper.c
   utils.c
-  proof_allocators.c
+  klee_allocators.c
   sea_allocators.c
   allocator_override.c
-  bcmp.c
+  # bcmp.c
   sea_string.c
   error_override.c
   nd_klee.c
