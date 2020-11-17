@@ -190,7 +190,7 @@ function(sea_attach_bc_cc name)
 
   # setup target with the options that we need
   set_target_properties(${SOURCE_EXE} PROPERTIES LINKER_LANGUAGE CXX)
-  target_compile_options(${SOURCE_EXE} PUBLIC -O3 -Xclang -disable-llvm-optzns)
+  target_compile_options(${SOURCE_EXE} PUBLIC -O1 -Xclang -disable-llvm-optzns)
   target_compile_options(${SOURCE_EXE} PUBLIC -Wno-macro-redefined)
   target_compile_options(${SOURCE_EXE} PUBLIC -g)
   target_compile_options(${SOURCE_EXE} PUBLIC -fdeclspec)
