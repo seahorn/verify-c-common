@@ -23,7 +23,7 @@ INLINE void *sea_malloc_aligned(size_t sz) {
 #undef AWS_ALIGN_ROUND_UP
 
 INLINE void *sea_malloc_havoc(size_t sz) {
-  void *data = malloc(sz);
+  void *data = sea_malloc(sz);
   memhavoc(data, sz);
   return data;
 }
