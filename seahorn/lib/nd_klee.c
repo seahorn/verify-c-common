@@ -60,7 +60,11 @@ extern void __assert_fail (const char *__assertion, const char *__file,
 size_t nd_size_t(void) {
   size_t res;
   klee_make_symbolic(&res, sizeof(res), "res_size");
+<<<<<<< HEAD
 
+=======
+  klee_assume(res >= 0);
+>>>>>>> 23bee82 (feat(lib): definition of nd() functions for klee)
   return res;
 }
 
@@ -76,6 +80,7 @@ int nd_int(void) {
   klee_make_symbolic(&res, sizeof(res), "res_int");
   
   return res;
+<<<<<<< HEAD
 }
 
 uint8_t nd_uint8_t(void) {
@@ -95,10 +100,34 @@ uint16_t nd_uint16_t(void) {
 uint32_t nd_uint32_t(void) {
   uint32_t res;
   klee_make_symbolic(&res, sizeof(res), "res_uint32_t");
+=======
+}
+
+uint8_t nd_uint8_t(void) {
+  uint8_t res;
+  klee_make_symbolic(&res, sizeof(res), "res_uint8_t");
+>>>>>>> 23bee82 (feat(lib): definition of nd() functions for klee)
 
   return res;
 }
 
+<<<<<<< HEAD
+=======
+uint16_t nd_uint16_t(void) {
+  uint16_t res;
+  klee_make_symbolic(&res, sizeof(res), "res_uint16_t");
+
+  return res;
+}
+
+uint32_t nd_uint32_t(void) {
+  uint32_t res;
+  klee_make_symbolic(&res, sizeof(res), "res_uint32_t");
+
+  return res;
+}
+
+>>>>>>> 23bee82 (feat(lib): definition of nd() functions for klee)
 uint64_t nd_uint64_t(void) {
   uint64_t res;
   klee_make_symbolic(&res, sizeof(res), "res_uint64_t");
@@ -122,7 +151,15 @@ void __VERIFIER_error(void) {
   * initialize memory content as non-deterministic value.
 */
 void memhavoc(void *ptr, size_t size) {
+<<<<<<< HEAD
   klee_make_symbolic(ptr, size, "memhavoc");
+=======
+  for (size_t i = 0; i < size; ++i){
+    char *tmp_ptr = (char *)(ptr + i);
+    klee_make_symbolic(&tmp_ptr, sizeof(tmp_ptr), "havoc_content");
+  }
+  return;
+>>>>>>> 23bee82 (feat(lib): definition of nd() functions for klee)
 }
 
 void *nd_voidp(void) {
@@ -133,4 +170,8 @@ void *nd_voidp(void) {
   return res;
 }
 
+<<<<<<< HEAD
 bool nd_malloc_is_fail(void) { return nd_bool(); }
+=======
+bool nd_malloc_is_fail(void) { return nd_bool(); }
+>>>>>>> 23bee82 (feat(lib): definition of nd() functions for klee)
