@@ -25,7 +25,7 @@ target_compile_definitions(sea_proofs PUBLIC
 sea_attach_bc(sea_proofs)
 
 add_library(sea_symex
-  array_list_helper.c
+  klee_bounded_array_list_helper.c
   byte_buf_helper.c
   linked_list_helper.c
   klee_string_helper.c
