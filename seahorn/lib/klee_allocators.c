@@ -1,5 +1,6 @@
 
 #include <proof_allocators.h>
+#include <nondet.h>
 
 size_t alloc_size(size_t sz) {
   switch(sz) {
@@ -24,11 +25,11 @@ size_t alloc_size(size_t sz) {
 }
 
 void *bounded_malloc(size_t size) {
-  return malloc(alloc_size(size));
+  return size == 0 ? NULL : malloc(alloc_size(size));
 }
 
 void *can_fail_malloc(size_t size) { 
-    return malloc(alloc_size(size)); 
+    return bounded_malloc(size); 
 }
 
 /**

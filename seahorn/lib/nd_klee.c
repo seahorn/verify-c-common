@@ -59,7 +59,7 @@ extern void __assert_fail (const char *__assertion, const char *__file,
 size_t nd_size_t(void) {
   size_t res;
   klee_make_symbolic(&res, sizeof(res), "res_size");
-  klee_assume(res >= 0);
+
   return res;
 }
 
