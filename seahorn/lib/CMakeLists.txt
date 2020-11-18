@@ -35,7 +35,7 @@ sea_attach_bc_cc(str_proofs)
 
 # symbolic execution (klee) helpers
 add_library(sea_symex
-  array_list_helper.c
+  klee_bounded_array_list_helper.c
   byte_buf_helper.c
   linked_list_helper.c
   klee_string_helper.c
