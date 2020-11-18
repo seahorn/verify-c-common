@@ -151,12 +151,22 @@ function(sea_overlink_libraries target)
 endfunction()
 
 function(sea_attach_bc name)
+  set(options)
+  set(oneValueArgs LINKER_LANGUAGE)
+  set(multiValueArgs)
+  cmake_parse_arguments(ARGS
+    "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  if (NOT ARGS_LINKER_LANGUAGE)
+    set(ARGS_LINKER_LANGUAGE "C")
+  endif()
+
   set(SOURCE_EXE ${name})
   set(TARGET_BC "${SOURCE_EXE}.ir")
   set(TARGET_OBJ "${SOURCE_EXE}.obj")
 
   # setup target with the options that we need
-  set_target_properties(${SOURCE_EXE} PROPERTIES LINKER_LANGUAGE C)
+  set_target_properties(${SOURCE_EXE} PROPERTIES LINKER_LANGUAGE ${ARGS_LINKER_LANGUAGE})
   target_compile_options(${SOURCE_EXE} PUBLIC -O1 -Xclang -disable-llvm-optzns)
   target_compile_options(${SOURCE_EXE} PUBLIC -Wno-macro-redefined)
   target_compile_options(${SOURCE_EXE} PUBLIC -g)
@@ -184,35 +194,7 @@ endfunction()
 
 # for C++ code
 function(sea_attach_bc_cc name)
-  set(SOURCE_EXE ${name})
-  set(TARGET_BC "${SOURCE_EXE}.ir")
-  set(TARGET_OBJ "${SOURCE_EXE}.obj")
-
-  # setup target with the options that we need
-  set_target_properties(${SOURCE_EXE} PROPERTIES LINKER_LANGUAGE CXX)
-  target_compile_options(${SOURCE_EXE} PUBLIC -O1 -Xclang -disable-llvm-optzns)
-  target_compile_options(${SOURCE_EXE} PUBLIC -Wno-macro-redefined)
-  target_compile_options(${SOURCE_EXE} PUBLIC -g)
-  target_compile_options(${SOURCE_EXE} PUBLIC -fdeclspec)
-  set_property(TARGET ${SOURCE_EXE} PROPERTY EXCLUDE_FROM_ALL ON)
-
-  target_compile_definitions(${SOURCE_EXE} PRIVATE __SEAHORN__)
-  target_compile_definitions(${SOURCE_EXE} PRIVATE VACCHECK)
-
-  # convert ${SOURCE_EXE} target to llvm
-  llvmir_attach_bc_target(TARGET ${TARGET_OBJ} DEPENDS ${SOURCE_EXE})
-  set_property(TARGET ${TARGET_OBJ} PROPERTY EXCLUDE_FROM_ALL ON)
-
-  get_property(IN_LLVMIR_LINK TARGET ${SOURCE_EXE} PROPERTY LLVMIR_LINK)
-  get_property(IN_LLVMIR_OVERRIDE TARGET ${SOURCE_EXE} PROPERTY LLVMIR_OVERRIDE)
-  set_property(TARGET ${TARGET_OBJ} PROPERTY LLVMIR_LINK ${IN_LLVMIR_LINK})
-  set_property(TARGET ${TARGET_OBJ} PROPERTY LLVMIR_OVERRIDE ${IN_LLVMIR_OVERRIDE})
-  # link all files of ${TARGET_OBJ} together
-  # llvmir_attach_link_target(TARGET ${TARGET_BC} DEPENDS ${TARGET_OBJ})
-  sea_llvm_link(${TARGET_BC} LINK ${TARGET_OBJ})
-  add_dependencies(${TARGET_BC} ${TARGET_OBJ})
-
-  set_property(TARGET ${TARGET_BC} PROPERTY EXCLUDE_FROM_ALL OFF)
+  sea_attach_bc(${name} LINKER_LANGUAGE CXX)
 endfunction()
 
 function(sea_get_file_name VAR LLVMIR_TARGET)
