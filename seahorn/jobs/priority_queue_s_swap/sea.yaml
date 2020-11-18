@@ -3,4 +3,7 @@ verify_options:
   horn-bmc-tactic: 'smtfd' 
   # switch to true for faster verification times 
   horn-explicit-sp0: true 
+  # this benchmark uses AWS_ZEROED() which has undefined behavior
+  # in this case, TBAA cannot be trusted
+  horn-shadow-mem-use-tbaa: false
   
