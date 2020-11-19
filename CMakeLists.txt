@@ -10,6 +10,8 @@ enable_testing()
 option(SEA_ENABLE_FUZZ "Enable fuzzing" OFF)
 option(SEA_WITH_BLEEDING_EDGE "Enable bleeding edge proofs" OFF)
 
+option(SEA_ENABLE_KLEE "Enable klee" OFF)
+
 if (CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR )
   message (FATAL_ERROR
     "In-source builds are not allowed. Please clean your source tree and try again.")
