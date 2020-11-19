@@ -122,7 +122,7 @@ void __VERIFIER_error(void) {
 */
 void memhavoc(void *ptr, size_t size) {
   for (size_t i = 0; i < size; ++i){
-    char *tmp_ptr = (char *)(ptr + i);
+    void *tmp_ptr = (ptr + i);
     klee_make_symbolic(&tmp_ptr, sizeof(tmp_ptr), "havoc_content");
   }
   return;

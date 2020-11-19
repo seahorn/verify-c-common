@@ -29,7 +29,7 @@ void *bounded_malloc(size_t size) {
 }
 
 void *can_fail_malloc(size_t size) { 
-    return bounded_malloc(size); 
+    return nd_bool() ? NULL : bounded_malloc(size); 
 }
 
 /**
