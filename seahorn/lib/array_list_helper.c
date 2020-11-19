@@ -33,3 +33,10 @@ void initialize_bounded_array_list(struct aws_array_list *const list,
   assume(list->length <= max_initial_item_allocation);
   list->alloc = sea_allocator();
 }
+
+bool aws_array_list_is_bounded(const struct aws_array_list *const list,
+                               const size_t max_initial_item_allocation,
+                               const size_t max_item_size) {
+  bool item_size_is_bounded = list->item_size <= max_item_size;
+  bool length_is_bounded = list->length <= max_initial_item_allocation;
+  return item_size_is_bounded && length_is_bounded;
