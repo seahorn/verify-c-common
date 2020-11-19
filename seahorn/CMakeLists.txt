@@ -229,6 +229,23 @@ macro(sea_add_fuzz)
   endif()
 endmacro()
 
+macro(sea_add_klee_bc name)
+  cmake_parse_arguments(ARG
+    "EXCLUDE_FROM_ALL" "" "" ${ARGN})
+
+  set(TARGET_KLEE "${name}.klee")
+  add_executable(${TARGET_KLEE} ${ARG_UNPARSED_ARGUMENTS})
+
+  target_compile_definitions(${TARGET_KLEE} PUBLIC MAX_ITEM_SIZE=2 MAX_BLOCK_SIZE=16
+    MAX_INITIAL_ITEM_ALLOCATION=8)
+  klee_attach_bc_link(${TARGET_KLEE})
+endmacro()
+
+macro(sea_add_klee)
+  if(SEA_ENABLE_KLEE)
+    sea_add_klee_bc(${ARGV})
+  endif()
+endmacro()
 
 set(VERIFY_FLAGS $ENV{VERIFY_FLAGS} CACHE STRING "Flags for verify script")
 separate_arguments(VERIFY_FLAGS)

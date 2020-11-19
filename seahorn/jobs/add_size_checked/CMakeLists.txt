@@ -4,7 +4,5 @@ sea_add_unsat_test(add_size_checked)
 
 sea_add_fuzz(add_size_checked aws_add_size_checked_harness.c)
 
-
 # klee
-add_executable(add_size_checked.klee aws_add_size_checked_harness.c)
-klee_attach_bc_link(add_size_checked.klee)
+sea_add_klee(add_size_checked aws_add_size_checked_harness.c)
