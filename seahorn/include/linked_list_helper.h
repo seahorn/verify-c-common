@@ -4,6 +4,9 @@
 
 #include <stddef.h>
 
+#include <nondet.h>
+extern NONDET_FN_ATTR struct aws_linked_list_node *nd_linked_list_node(void);
+
 /*
     Half of aws_linked_list_insert_after: sets up double linkage of
     *to_attach* after *after*, but does not link old after->next after to_attach

@@ -13,14 +13,14 @@ int main(void) {
     void* next_saved_next;
 
     // -- set prev.prev to nd pointer, which makes it non-dereferencable
-    prev_saved_prev = nd_voidp();
+    prev_saved_prev = nd_linked_list_node();
     prev.prev = prev_saved_prev;
 
     aws_linked_list_attach_after(&prev, &node, true);
     aws_linked_list_attach_after(&node, &next, true);
 
     // -- set next.next to nd pointer, which makes it non-dereferencable
-    next_saved_next = nd_voidp();
+    next_saved_next = nd_linked_list_node();
     next.next = next_saved_next;
 
 

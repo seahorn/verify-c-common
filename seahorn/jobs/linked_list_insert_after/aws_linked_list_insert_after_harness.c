@@ -28,8 +28,8 @@ int main(void) {
     does not get accessed by operation under verification;
     this is guaranteed by behaviour of nd pointer with fat mem
     */
-    struct aws_linked_list_node *after_prev = nd_voidp();
-    struct aws_linked_list_node *after_next_next = nd_voidp();
+    struct aws_linked_list_node *after_prev = nd_linked_list_node();
+    struct aws_linked_list_node *after_next_next = nd_linked_list_node();
     after.prev = after_prev;
     after_next.next = after_next_next;
 
