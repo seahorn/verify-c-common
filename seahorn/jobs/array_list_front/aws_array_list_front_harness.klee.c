@@ -8,9 +8,10 @@
 #include <utils.h>
 #include <proof_allocators.h>
 
-
+/**
+ * Runtime: 6s
+ */
 int main() {
-
     /* data structure */
     struct aws_array_list list;
     initialize_bounded_array_list(&list, MAX_BLOCK_SIZE);
@@ -18,7 +19,6 @@ int main() {
     /* assumptions */
     assume(aws_array_list_is_bounded(&list, MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE));
     assume(aws_array_list_is_valid(&list));
-
     void *val = bounded_malloc(list.item_size);
 
     /* save current state of the data structure */
@@ -27,13 +27,15 @@ int main() {
     save_byte_from_array((uint8_t *)list.data, list.current_size, &old_byte);
 
     /* assume preconditions */
+    assume(aws_array_list_is_valid(&list));
     assume(val && AWS_MEM_IS_WRITABLE(val, list.item_size));
 
     /* perform operation under verification */
-    if (aws_array_list_back(&list, val) == AWS_OP_SUCCESS) {
-        /* In the case aws_array_list_back is successful, we can ensure the list isn't empty */
-        sassert(list.data != NULL);
-        sassert(list.length != 0);
+    if (!aws_array_list_front(&list, val)) {
+        /* In the case aws_array_list_front is successful, we can ensure the list isn't empty */
+        sassert(AWS_BYTES_EQ(val, list.data, list.item_size));
+        sassert(list.data);
+        sassert(list.length);
     }
 
     /* assertions */
