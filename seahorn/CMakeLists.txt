@@ -251,14 +251,28 @@ macro(sea_add_klee_bc name)
   set(TARGET_KLEE "${name}.klee")
   add_executable(${TARGET_KLEE} ${ARG_UNPARSED_ARGUMENTS})
 
-  target_compile_definitions(${TARGET_KLEE} PUBLIC MAX_ITEM_SIZE=2 MAX_BLOCK_SIZE=16
-    MAX_INITIAL_ITEM_ALLOCATION=8)
+  target_compile_definitions(${TARGET_KLEE} PUBLIC MAX_ITEM_SIZE=2 MAX_BLOCK_SIZE=${MAX_BUFFER_SIZE}
+    MAX_INITIAL_ITEM_ALLOCATION=9223372036854775808ULL)
   klee_attach_bc_link(${TARGET_KLEE})
+endmacro()
+
+macro(sea_add_klee_bc_test name)
+  cmake_parse_arguments(ARG
+    "EXCLUDE_FROM_ALL" "" "" ${ARGN})
+
+  set(TARGET_KLEE "${name}_klee")
+  add_executable(${TARGET_KLEE} ${ARG_UNPARSED_ARGUMENTS})
+
+  target_compile_definitions(${TARGET_KLEE} PUBLIC MAX_ITEM_SIZE=2 MAX_BLOCK_SIZE=${MAX_BUFFER_SIZE}
+    MAX_INITIAL_ITEM_ALLOCATION=9223372036854775808ULL)
+    sea_attach_bc_link(${TARGET_KLEE})
+    sea_add_unsat_test(${TARGET_KLEE})
 endmacro()
 
 macro(sea_add_klee)
   if(SEA_ENABLE_KLEE)
     sea_add_klee_bc(${ARGV})
+    sea_add_klee_bc_test(${ARGV})
   endif()
 endmacro()
 

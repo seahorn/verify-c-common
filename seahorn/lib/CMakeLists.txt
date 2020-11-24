@@ -35,6 +35,12 @@ target_compile_definitions(str_proofs PUBLIC
 sea_attach_bc_cc(str_proofs)
 
 # symbolic execution (klee) helpers
+if(SEA_ENABLE_KLEE)
+  set(SEA_SCPT ${CMAKE_SOURCE_DIR}/seahorn/scripts)
+  add_custom_target(klee_malloc ALL
+    COMMAND /bin/bash ${SEA_SCPT}/create_alloce_size_switch.sh ${SEA_LIB} ${MAX_BUFFER_SIZE})
+endif()
+
 add_library(sea_symex
   array_list_helper.c
   byte_buf_helper.c
@@ -44,7 +50,7 @@ add_library(sea_symex
   klee_allocators.c
   sea_allocators.c
   allocator_override.c
-  # bcmp.c
+  qsort_override.c
   sea_string.c
   error_override.c
   nd_klee.c
