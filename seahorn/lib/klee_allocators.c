@@ -1,7 +1,6 @@
 
 #include <proof_allocators.h>
 #include <nondet.h>
-
 size_t alloc_size(size_t sz) {
   switch(sz) {
     case 1: return 1;
@@ -14,13 +13,7 @@ size_t alloc_size(size_t sz) {
     case 8: return 8;
     case 9: return 9;
     case 10: return 10;
-    case 11: return 11;
-    case 12: return 12;
-    case 13: return 13;
-    case 14: return 14;
-    case 15: return 15;
-    case 16: return 16;
-    default: return sz <= 4096 ? 4096 : sz; 
+    default: return sz <= 4096 ? 4096 : sz;
   }
 }
 
