@@ -121,10 +121,7 @@ void __VERIFIER_error(void) {
   * initialize memory content as non-deterministic value.
 */
 void memhavoc(void *ptr, size_t size) {
-  for (size_t i = 0; i < size; ++i){
-    void *tmp_ptr = (ptr + i);
-    klee_make_symbolic(&tmp_ptr, sizeof(tmp_ptr), "havoc_content");
-  }
+  klee_make_symbolic(ptr, size, "memhavoc");
 }
 
 void *nd_voidp(void) {
