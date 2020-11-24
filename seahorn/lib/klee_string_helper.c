@@ -5,9 +5,9 @@
 struct aws_string *ensure_string_is_allocated(size_t len) {
   size_t alloc_size = sizeof(struct aws_string) + len + 1;
   struct aws_string *str = bounded_malloc(alloc_size);
-  memhavoc(str, alloc_size);
 
   if (str) {
+    memhavoc(str, alloc_size); // only memhavoc if allocation succeeded
     /* Fields are declared const, so we need to copy them in like this */
     *(struct aws_allocator **)(&str->allocator) = nd_bool() ? sea_allocator() : NULL;
     *(size_t *)(&str->len) = len;
