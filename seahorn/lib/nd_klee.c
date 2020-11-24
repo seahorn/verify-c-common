@@ -125,7 +125,6 @@ void memhavoc(void *ptr, size_t size) {
     void *tmp_ptr = (ptr + i);
     klee_make_symbolic(&tmp_ptr, sizeof(tmp_ptr), "havoc_content");
   }
-  return;
 }
 
 void *nd_voidp(void) {
