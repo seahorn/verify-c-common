@@ -8,9 +8,10 @@
 #include <utils.h>
 #include <proof_allocators.h>
 
-
+/**
+ * Runtime: 11s
+ */
 int main() {
-
     /* data structure */
     struct aws_array_list list;
     initialize_bounded_array_list(&list, MAX_BLOCK_SIZE);
@@ -19,26 +20,25 @@ int main() {
     assume(aws_array_list_is_bounded(&list, MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE));
     assume(aws_array_list_is_valid(&list));
 
-    void *val = bounded_malloc(list.item_size);
-
     /* save current state of the data structure */
     struct aws_array_list old = list;
     struct store_byte_from_buffer old_byte;
     save_byte_from_array((uint8_t *)list.data, list.current_size, &old_byte);
 
-    /* assume preconditions */
-    assume(val && AWS_MEM_IS_WRITABLE(val, list.item_size));
-
     /* perform operation under verification */
-    if (aws_array_list_back(&list, val) == AWS_OP_SUCCESS) {
-        /* In the case aws_array_list_back is successful, we can ensure the list isn't empty */
-        sassert(list.data != NULL);
-        sassert(list.length != 0);
-    }
+    size_t n = nd_size_t();
+    aws_array_list_pop_front_n(&list, n);
 
     /* assertions */
     sassert(aws_array_list_is_valid(&list));
-    assert_array_list_equivalence(&list, &old, &old_byte);
+    if (n == 0) {
+        assert_array_list_equivalence(&list, &old, &old_byte);
+    } else {
+        sassert(list.alloc == old.alloc);
+        sassert(list.current_size == old.current_size);
+        sassert(list.item_size == old.item_size);
+        (n >= old.length) ? sassert(list.length == 0) : sassert(list.length == old.length - n);
+    }
 
     return 0;
 }
