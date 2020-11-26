@@ -1,6 +1,7 @@
 /**
  */
 
+#include "utils.h"
 #include <aws/common/priority_queue.h>
 #include <priority_queue_helper.h>
 #include <seahorn/seahorn.h>
@@ -20,7 +21,10 @@ int main(void) {
   aws_priority_queue_clean_up(&queue);
 
   /* assertions */
-  sassert(AWS_IS_ZEROED(queue.container));
-  sassert(AWS_IS_ZEROED(queue.backpointers));
+  size_t container_size = queue.container.item_size * queue.container.length;
+  assert_all_zeroes(queue.container.data, container_size);
+  size_t backpointers_size =
+      queue.backpointers.item_size * queue.backpointers.length;
+  assert_all_zeroes(queue.backpointers.data, backpointers_size);
   return 0;
 }
