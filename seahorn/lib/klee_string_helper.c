@@ -22,19 +22,26 @@ struct aws_string *ensure_string_is_allocated_bounded_length(size_t max_size) {
   return ensure_string_is_allocated(len);
 }
 
-/** Allocate a randomly initialized string with a range of maximal length
- */
-const char *ensure_c_str_is_nd_allocated_safe(size_t max_size, size_t *len) {
+static const char *_ensure_c_str_is_nd_allocated(size_t max_size, size_t *len,
+                                          bool safe) {
     size_t alloc_size;
     alloc_size = nd_size_t();
     // allocate size (0, max_size]
     assume(alloc_size > 0);
     assume(alloc_size <= max_size);
 
-    char *str = bounded_malloc(alloc_size);
+    char *str = NULL;
+    if (safe) {
+      str = bounded_malloc(alloc_size);
+    }
+    else {
+      str = can_fail_malloc(alloc_size);
+      if (!str) {
+        return NULL;
+      }
+    }
     // make sure allocation is safe
     assume(str != NULL);
-
     memhavoc(str, alloc_size);
 
     *len = alloc_size - 1;
@@ -43,4 +50,15 @@ const char *ensure_c_str_is_nd_allocated_safe(size_t max_size, size_t *len) {
         assume(str[j] != '\0');
     }
     return str;
+}
+
+// This can return a NULL ptr. len will be zero in this case.
+const char *ensure_c_str_is_nd_allocated(size_t max_size, size_t *len) {
+  return _ensure_c_str_is_nd_allocated(max_size, len, false);
+}
+
+/** Allocate a randomly initialized string with a range of maximal length
+ */
+const char *ensure_c_str_is_nd_allocated_safe(size_t max_size, size_t *len) {
+  return _ensure_c_str_is_nd_allocated(max_size, len, true);
 }
