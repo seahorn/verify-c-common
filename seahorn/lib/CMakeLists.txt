@@ -45,7 +45,7 @@ endif()
 
 add_library(sea_symex
   klee_array_list_helper.c
-  byte_buf_helper.c
+  klee_byte_buf_helper.c
   linked_list_helper.c
   klee_string_helper.c
   utils.c
