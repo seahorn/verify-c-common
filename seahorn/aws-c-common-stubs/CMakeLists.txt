@@ -10,3 +10,7 @@ llvmir_attach_opt_pass_target(TARGET priority_queue.opt.ir DEPENDS priority_queu
 
 add_library(sift_either_override s_sift_either_override.c)
 sea_attach_bc(sift_either_override)
+
+add_library(remove_node_override s_remove_node_override.c)
+sea_attach_bc(remove_node_override)
+
