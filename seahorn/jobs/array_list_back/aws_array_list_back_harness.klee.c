@@ -8,10 +8,6 @@
 #include <utils.h>
 #include <proof_allocators.h>
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 9e23b71 (test(harness): add remain bounded array list harnesses work both for klee and seahorn)
 int main() {
 
     /* data structure */

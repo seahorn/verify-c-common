@@ -14,17 +14,10 @@
 int main() {
     /* data structure */
     struct aws_array_list list;
-<<<<<<< HEAD
     initialize_bounded_array_list(&list, MAX_INITIAL_SIZE,
         MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE);
 
     /* assumptions */
-=======
-    initialize_bounded_array_list(&list, MAX_BLOCK_SIZE);
-
-    /* assumptions */
-    assume(aws_array_list_is_bounded(&list, MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE));
->>>>>>> 9e23b71 (test(harness): add remain bounded array list harnesses work both for klee and seahorn)
     assume(aws_array_list_is_valid(&list));
 
     /* save current state of the data structure */
