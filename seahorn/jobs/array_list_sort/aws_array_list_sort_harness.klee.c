@@ -25,10 +25,10 @@ int compare(const void *a, const void *b) {
 int main() {
     /* data structure */
     struct aws_array_list list;
-    initialize_bounded_array_list(&list, MAX_BLOCK_SIZE);
+    initialize_bounded_array_list(&list, MAX_INITIAL_SIZE,
+        MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE);
 
     /* assumptions */
-    assume(aws_array_list_is_bounded(&list, MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE));
     assume(aws_array_list_is_valid(&list));
 
     /* save current state of the data structure */

@@ -14,7 +14,8 @@
 int main() {
     /* data structure */
     struct aws_array_list list;
-    initialize_bounded_array_list(&list, MAX_BLOCK_SIZE);
+    initialize_bounded_array_list(&list, MAX_INITIAL_SIZE,
+        MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE);
 
     /* parameters */
     struct aws_allocator *allocator = sea_allocator(); /* Precondition: allocator is non-null */
@@ -23,7 +24,7 @@ int main() {
     assume(item_size > 0 && item_size <= MAX_ITEM_SIZE);
     size_t initial_item_allocation = nd_size_t();
     assume(initial_item_allocation <= MAX_INITIAL_ITEM_ALLOCATION);
-    assume(initial_item_allocation * item_size <= MAX_BLOCK_SIZE);
+    assume(initial_item_allocation * item_size <= MAX_INITIAL_SIZE);
 
     /* perform operation under verification */
     if (aws_array_list_init_dynamic(&list, allocator, initial_item_allocation, item_size) == AWS_OP_SUCCESS) {
