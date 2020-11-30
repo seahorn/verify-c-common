@@ -14,17 +14,18 @@
 int main() {
     /* data structure */
     struct aws_array_list list;
-    initialize_bounded_array_list(&list, MAX_BLOCK_SIZE);
+    initialize_bounded_array_list(&list, MAX_INITIAL_SIZE,
+        MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE);
     /* parameters */
     size_t item_size = nd_size_t();
     size_t initial_item_allocation = nd_size_t();
     size_t len = nd_size_t();
 
     /* assumptions */
-    assume(len <= MAX_BLOCK_SIZE);
+    assume(len <= MAX_INITIAL_SIZE);
     assume(initial_item_allocation > 0 && initial_item_allocation <= MAX_INITIAL_ITEM_ALLOCATION);
     assume(item_size > 0 && item_size <= MAX_ITEM_SIZE);
-    assume(initial_item_allocation * item_size <= MAX_BLOCK_SIZE);
+    assume(initial_item_allocation * item_size <= MAX_INITIAL_SIZE);
     // -- Klee could direct two paths for the following assumption:
     // -- the multiplication is overflow or not
     // -- however, when it is not overflow, Klee will hit a false assumption

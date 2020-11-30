@@ -14,14 +14,13 @@ int main() {
     struct aws_array_list from;
     struct aws_array_list to;
 
-    initialize_bounded_array_list(&from, MAX_BLOCK_SIZE);
-    initialize_bounded_array_list(&to, MAX_BLOCK_SIZE);
+    initialize_bounded_array_list(&from, MAX_INITIAL_SIZE,
+        MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE);
+    initialize_bounded_array_list(&to, MAX_INITIAL_SIZE,
+        MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE);
 
     /* assumptions */
-    assume(aws_array_list_is_bounded(&from, MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE));
     assume(aws_array_list_is_valid(&from));
-
-    assume(aws_array_list_is_bounded(&to, MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE));
     assume(aws_array_list_is_valid(&to));
 
     assume(from.item_size == to.item_size);
