@@ -58,7 +58,7 @@ int main(void) {
         /* The node pointing in the element of the priority queue
          * now points to SIZE_MAX to indicate that the item was
          * removed */
-        //sassert(node->current_index == SIZE_MAX);
+        sassert(node->current_index == SIZE_MAX);
       }
     }
   }

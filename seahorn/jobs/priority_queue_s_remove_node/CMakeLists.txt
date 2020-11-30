@@ -11,6 +11,7 @@ target_compile_definitions(
   MAX_HEAP_HEIGHT=3
 )
 sea_link_libraries(priority_queue_s_remove_node priority_queue.opt.ir)
+sea_overlink_libraries(priority_queue_s_remove_node sift_either_override.ir)
 sea_attach_bc_link(priority_queue_s_remove_node)
 configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(priority_queue_s_remove_node)

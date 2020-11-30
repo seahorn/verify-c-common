@@ -8,3 +8,5 @@ set(LLVMIR_OPT ${SEA_PP})
 llvmir_attach_opt_pass_target(TARGET priority_queue.opt.ir DEPENDS priority_queue.ir
   "--externalize-function=^s_*" "-externalize-functions-delete=false" "--externalize-fns")
 
+add_library(sift_either_override s_sift_either_override.c)
+sea_attach_bc(sift_either_override)
