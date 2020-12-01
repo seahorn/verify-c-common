@@ -10,28 +10,26 @@
 #include <stddef.h>
 #include <stdint.h>
 
+extern __declspec(noalias) void sea_printf(const char *format, ...);
+
 #define IMPLIES(a, b) (!(a) || (b))
 
 struct store_byte_from_buffer {
-    size_t index;
-    uint8_t byte;
+  size_t index;
+  uint8_t byte;
 };
 
 /**
  * Asserts whether all bytes from two arrays of same length match.
  */
-void assert_bytes_match(
-    const uint8_t *const a,
-    const uint8_t *const b,
-    const size_t len);
+void assert_bytes_match(const uint8_t *const a, const uint8_t *const b,
+                        const size_t len);
 
 /**
  * Asserts whether all bytes from an array are equal to c.
  */
-void assert_all_bytes_are(
-    const uint8_t *const a,
-    const uint8_t c,
-    const size_t len);
+void assert_all_bytes_are(const uint8_t *const a, const uint8_t c,
+                          const size_t len);
 
 /**
  * Asserts whether all bytes from an array are equal to 0.
@@ -43,8 +41,7 @@ void assert_all_zeroes(const uint8_t *const a, const size_t len);
  * position in buffer.
  */
 void assert_byte_from_buffer_matches(
-    const uint8_t *const buffer,
-    const struct store_byte_from_buffer *const b);
+    const uint8_t *const buffer, const struct store_byte_from_buffer *const b);
 
 /**
  * Nondeterministically selects a byte from array and stores it into a
@@ -52,10 +49,8 @@ void assert_byte_from_buffer_matches(
  * assert_array_list_equivalence function whether no byte in the array has
  * changed.
  */
-void save_byte_from_array(
-    const uint8_t *const array,
-    const size_t size,
-    struct store_byte_from_buffer *const storage);
+void save_byte_from_array(const uint8_t *const array, const size_t size,
+                          struct store_byte_from_buffer *const storage);
 
 /**
  * Asserts two aws_array_list structures are equivalent. Prior to using this
@@ -64,13 +59,12 @@ void save_byte_from_array(
  * properly assert all bytes match.
  */
 void assert_array_list_equivalence(
-const struct aws_array_list *const lhs,
+    const struct aws_array_list *const lhs,
     const struct aws_array_list *const rhs,
     const struct store_byte_from_buffer *const rhs_byte);
 
 void assert_byte_buf_equivalence(
-    const struct aws_byte_buf *const lhs,
-    const struct aws_byte_buf *const rhs,
+    const struct aws_byte_buf *const lhs, const struct aws_byte_buf *const rhs,
     const struct store_byte_from_buffer *const rhs_byte);
 
 void assert_byte_cursor_equivalence(
@@ -102,9 +96,8 @@ bool uninterpreted_equals(const void *const a, const void *const b);
  * uninterpreted_equals(), but with an extra assertion that a and b are both
  * not null
  */
-bool uninterpreted_equals_assert_inputs_nonnull(
-    const void *const a,
-    const void *const b);
+bool uninterpreted_equals_assert_inputs_nonnull(const void *const a,
+                                                const void *const b);
 
 /**
  * Standard stub function to hash one item.
@@ -120,4 +113,3 @@ uint64_t uninterpreted_hasher(const void *a);
  * Standard stub function of a predicate
  */
 bool uninterpreted_predicate_fn(uint8_t value);
-
