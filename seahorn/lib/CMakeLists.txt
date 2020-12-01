@@ -42,7 +42,7 @@ add_library(sea_symex
   klee_allocators.c
   sea_allocators.c
   allocator_override.c
-  sea_string.c
+  sea_string.cc
   error_override.c
   nd_klee.c
   klee_switch.c
