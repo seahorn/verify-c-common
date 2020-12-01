@@ -27,6 +27,31 @@ target_compile_definitions(sea_proofs PUBLIC
   MAX_STRING_LEN=${MAX_STRING_LEN})
 sea_attach_bc(sea_proofs)
 
+if(SEA_ENABLE_KLEE)
+  set(SEA_SCPT ${CMAKE_SOURCE_DIR}/seahorn/scripts)
+  add_custom_target(klee_malloc ALL
+    COMMAND python3 ${SEA_SCPT}/create_alloce_size_switch.py -path ${SEA_LIB} -size ${MAX_BUFFER_SIZE})
+endif()
+
+add_library(sea_symex
+  klee_array_list_helper.c
+  klee_byte_buf_helper.c
+  linked_list_helper.c
+  klee_string_helper.c
+  utils.c
+  klee_allocators.c
+  sea_allocators.c
+  allocator_override.c
+  sea_string.cc
+  error_override.c
+  nd_klee.c
+  klee_switch.c
+  )
+target_compile_definitions(sea_symex PUBLIC
+  MAX_BUFFER_SIZE=${MAX_BUFFER_SIZE}
+  MAX_STRING_LEN=${MAX_STRING_LEN})
+sea_attach_bc(sea_symex)
+
 # string proof helpers
 add_library(str_proofs
   sea_string.cc)
