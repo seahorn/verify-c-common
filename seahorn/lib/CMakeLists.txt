@@ -14,6 +14,7 @@ add_library(sea_proofs
   byte_buf_helper.c
   linked_list_helper.c
   string_helper.c
+  priority_queue_helper.c
   utils.c
   proof_allocators.c
   sea_allocators.c

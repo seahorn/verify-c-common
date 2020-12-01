@@ -4,3 +4,5 @@ verify_options:
 # Arbitrary amount of memory is copied.
 # Not a problem for lambdas, but gets very hard for arrays 
   horn-array-sym-memcpy-unroll-count: @MAX_STRING_LEN@
+# switching to lambads due to above comment
+  horn-bv2-lambdas: true

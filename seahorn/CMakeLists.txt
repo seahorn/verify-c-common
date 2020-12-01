@@ -298,6 +298,9 @@ configure_file(sea.yaml sea.yaml @ONLY)
 configure_file(sea_cex_base.yaml sea.cex.yaml @ONLY)
 configure_file(sea_vac.yaml sea.vac.yaml @ONLY)
 
+# compilation recipes for aws-c-common library
+add_subdirectory(aws-c-common-stubs)
+
 add_subdirectory(lib)
 
 add_subdirectory(jobs/add_size_checked)
@@ -403,3 +406,13 @@ add_subdirectory(jobs/string_eq_ignore_case)
 add_subdirectory(jobs/string_new_from_array)
 add_subdirectory(jobs/string_new_from_c_str)
 add_subdirectory(jobs/string_new_from_string)
+#
+add_subdirectory(jobs/priority_queue_size)
+add_subdirectory(jobs/priority_queue_capacity)
+add_subdirectory(jobs/priority_queue_top)
+add_subdirectory(jobs/priority_queue_init_static)
+add_subdirectory(jobs/priority_queue_init_dynamic)
+add_subdirectory(jobs/priority_queue_clean_up)
+if(${SEA_WITH_BLEEDING_EDGE})
+  add_subdirectory(jobs/priority_queue_s_swap)
+endif()

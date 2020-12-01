@@ -153,6 +153,13 @@ def main(argv):
                 return rcode
 
     cmd = VerifyCmd()
+
+    # read extra flags from environment variable
+    if 'VERIFY_FLAGS' in os.environ:
+        env_flags = os.environ['VERIFY_FLAGS']
+        env_flags = env_flags.split()
+        argv = env_flags + argv
+
     return cmd.main(argv)
 
 

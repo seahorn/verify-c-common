@@ -14,5 +14,5 @@ jobs:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-      - script: docker build -t seahorn/verify-c-common:ci docker/verify-c-common.Dockerfile .
+      - script: docker build -t seahorn/verify-c-common:ci -f docker/verify-c-common.Dockerfile .
       - script: docker run -i seahorn/verify-c-common:ci /bin/bash -c "cd build && cmake --build . --target test"
