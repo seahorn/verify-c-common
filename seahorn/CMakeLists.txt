@@ -397,4 +397,5 @@ if(${SEA_WITH_BLEEDING_EDGE})
 
   add_subdirectory(jobs/ring_buffer_release)
   add_subdirectory(jobs/ring_buffer_acquire)
+  add_subdirectory(jobs/ring_buffer_buf_belongs_to_pool)
 endif()

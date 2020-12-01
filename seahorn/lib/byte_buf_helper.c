@@ -47,11 +47,18 @@ bool aws_byte_cursor_is_bounded(
 
 void ensure_byte_buf_has_allocated_buffer_member(
     struct aws_byte_buf *const buf) {
-    //TODO - figure out allocator issues
     buf->allocator = sea_allocator();
     buf->buffer = bounded_malloc(sizeof(*(buf->buffer)) * sea_max_buffer_size());
 }
 
 bool aws_byte_buf_has_allocator(const struct aws_byte_buf *const buf) {
     return (buf->allocator == sea_allocator());
+}
+
+bool byte_bufs_are_equal(struct aws_byte_buf *b1, struct aws_byte_buf *b2) {
+  if (!b1 || !b2)
+    return b1 == b2;
+
+  return b1->len == b2->len && b1->buffer == b2->buffer &&
+         b1->capacity == b2->capacity && b1->allocator == b2->allocator;
 }
