@@ -20,7 +20,6 @@ add_library(sea_proofs
   sea_allocators.c
   allocator_override.c
   bcmp.c
-  sea_string.c
   error_override.c)
 
 target_compile_definitions(sea_proofs PUBLIC
@@ -52,6 +51,15 @@ target_compile_definitions(sea_symex PUBLIC
   MAX_BUFFER_SIZE=${MAX_BUFFER_SIZE}
   MAX_STRING_LEN=${MAX_STRING_LEN})
 sea_attach_bc(sea_symex)
+
+# string proof helpers
+add_library(str_proofs
+  sea_string.cc)
+
+target_compile_definitions(str_proofs PUBLIC
+    MAX_BUFFER_SIZE=${MAX_BUFFER_SIZE}
+    MAX_STRING_LEN=${MAX_STRING_LEN})
+sea_attach_bc_cc(str_proofs)
 
 add_library(sea_fuzz
   nd_fuzz.c

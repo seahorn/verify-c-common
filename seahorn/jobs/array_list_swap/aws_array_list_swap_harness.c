@@ -28,6 +28,15 @@ int main() {
 
     /* save current state of the data structure */
     struct aws_array_list old = list;
+    /* save a byte of the element at index a */
+    struct store_byte_from_buffer old_a_byte;
+    old_a_byte.index = index_a * old.item_size; // bytes
+    old_a_byte.byte = ((uint8_t *)list.data)[old_a_byte.index];
+
+    /* save a byte of the element at index b */
+    struct store_byte_from_buffer old_b_byte;
+    old_b_byte.index = index_b * old.item_size; // bytes
+    old_b_byte.byte = ((uint8_t *)list.data)[old_b_byte.index];
 
     /* perform operation under verification */
     aws_array_list_swap(&list, index_a, index_b);
@@ -38,6 +47,10 @@ int main() {
     sassert(list.current_size == old.current_size);
     sassert(list.length == old.length);
     sassert(list.item_size == old.item_size);
+    // data[a] == old_data[b]; data[b] == old_data[a]
+    uint8_t *data_bytes = (uint8_t *)list.data;
+    sassert(*(data_bytes + old_a_byte.index) == old_b_byte.byte);
+    sassert(*(data_bytes + old_b_byte.index) == old_a_byte.byte);
 
     return 0;
 }

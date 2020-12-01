@@ -422,8 +422,8 @@ void aws_linked_list_attach_after(struct aws_linked_list_node *after,
     after->next = to_attach;
     to_attach->prev = after;
   } else {
-    after->next = nd_voidp();
-    to_attach->prev = nd_voidp();
+    after->next = nd_linked_list_node();
+    to_attach->prev = nd_linked_list_node();
   }
 }
 

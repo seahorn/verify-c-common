@@ -6,4 +6,5 @@ verify_options:
   # this benchmark uses AWS_ZEROED() which has undefined behavior
   # in this case, TBAA cannot be trusted
   horn-shadow-mem-use-tbaa: false
+  bound: 5
   

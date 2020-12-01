@@ -151,12 +151,22 @@ function(sea_overlink_libraries target)
 endfunction()
 
 function(sea_attach_bc name)
+  set(options)
+  set(oneValueArgs LINKER_LANGUAGE)
+  set(multiValueArgs)
+  cmake_parse_arguments(ARGS
+    "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  if (NOT ARGS_LINKER_LANGUAGE)
+    set(ARGS_LINKER_LANGUAGE "C")
+  endif()
+
   set(SOURCE_EXE ${name})
   set(TARGET_BC "${SOURCE_EXE}.ir")
   set(TARGET_OBJ "${SOURCE_EXE}.obj")
 
   # setup target with the options that we need
-  set_target_properties(${SOURCE_EXE} PROPERTIES LINKER_LANGUAGE C)
+  set_target_properties(${SOURCE_EXE} PROPERTIES LINKER_LANGUAGE ${ARGS_LINKER_LANGUAGE})
   target_compile_options(${SOURCE_EXE} PUBLIC -O1 -Xclang -disable-llvm-optzns)
   target_compile_options(${SOURCE_EXE} PUBLIC -Wno-macro-redefined)
   target_compile_options(${SOURCE_EXE} PUBLIC -g)
@@ -180,6 +190,11 @@ function(sea_attach_bc name)
   add_dependencies(${TARGET_BC} ${TARGET_OBJ})
 
   set_property(TARGET ${TARGET_BC} PROPERTY EXCLUDE_FROM_ALL OFF)
+endfunction()
+
+# for C++ code
+function(sea_attach_bc_cc name)
+  sea_attach_bc(${name} LINKER_LANGUAGE CXX)
 endfunction()
 
 function(sea_get_file_name VAR LLVMIR_TARGET)
@@ -214,7 +229,7 @@ macro(sea_add_fuzz_executable name)
 endmacro()
 
 function(sea_attach_bc_link name)
-  sea_link_libraries(${name} sea_proofs.ir sea_bounds.ir)
+  sea_link_libraries(${name} sea_proofs.ir sea_bounds.ir str_proofs.ir)
   sea_attach_bc(${name})
 endfunction()
 
@@ -415,4 +430,8 @@ add_subdirectory(jobs/priority_queue_init_dynamic)
 add_subdirectory(jobs/priority_queue_clean_up)
 if(${SEA_WITH_BLEEDING_EDGE})
   add_subdirectory(jobs/priority_queue_s_swap)
+  add_subdirectory(jobs/priority_queue_s_sift_up)
+  add_subdirectory(jobs/priority_queue_s_sift_down)
+  add_subdirectory(jobs/priority_queue_s_sift_either)
+  add_subdirectory(jobs/priority_queue_s_remove_node)
 endif()
