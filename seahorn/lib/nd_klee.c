@@ -134,3 +134,10 @@ void *nd_voidp(void) {
 }
 
 bool nd_malloc_is_fail(void) { return nd_bool(); }
+
+/* nd_linked_list_node - special function for returning a symbolic value of
+ * the linked list node pointer.
+*/
+struct aws_linked_list_node *nd_linked_list_node(void) {
+  return (struct aws_linked_list_node *)nd_voidp();
+}
