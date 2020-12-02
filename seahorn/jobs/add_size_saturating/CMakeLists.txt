@@ -4,3 +4,6 @@ sea_attach_bc_link(add_size_saturating)
 sea_add_unsat_test(add_size_saturating)
 
 sea_add_fuzz(add_size_saturating aws_add_size_saturating_harness.c)
+
+# klee
+sea_add_klee(add_size_saturating aws_add_size_saturating_harness.c)
