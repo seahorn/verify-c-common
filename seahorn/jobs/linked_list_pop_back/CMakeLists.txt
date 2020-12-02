@@ -8,4 +8,6 @@ target_compile_definitions(linked_list_pop_back
 sea_attach_bc_link(linked_list_pop_back)
 sea_add_unsat_test(linked_list_pop_back)
 
-
+# klee
+sea_add_klee(linked_list_pop_back
+aws_linked_list_pop_back_harness.klee.c)

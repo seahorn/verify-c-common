@@ -233,12 +233,56 @@ function(sea_attach_bc_link name)
   sea_attach_bc(${name})
 endfunction()
 
+function(klee_attach_bc_link name)
+  sea_link_libraries(${name} sea_symex.ir sea_bounds.ir)
+  sea_attach_bc(${name})
+endfunction()
+
 macro(sea_add_fuzz)
   if(SEA_ENABLE_FUZZ)
     sea_add_fuzz_executable(${ARGV})
   endif()
 endmacro()
 
+macro(sea_add_klee_bc name)
+  cmake_parse_arguments(ARG
+    "EXCLUDE_FROM_ALL" "" "" ${ARGN})
+
+  set(TARGET_KLEE "${name}.klee")
+  add_executable(${TARGET_KLEE} ${ARG_UNPARSED_ARGUMENTS})
+  target_compile_definitions(${TARGET_KLEE} PUBLIC 
+    MAX_INITIAL_SIZE=${MAX_INITIAL_SIZE}
+    MAX_ITEM_SIZE=${MAX_ITEM_SIZE}
+    MAX_INITIAL_ITEM_ALLOCATION=${MAX_INITIAL_ITEM_ALLOCATION}
+    )
+  klee_attach_bc_link(${TARGET_KLEE})
+endmacro()
+
+function(add_subset_test_target TEST_TARGET_NAME TEST_EXEC SET_NAME)
+
+  # This adds the "make subset test" target.
+  add_custom_target(${TEST_TARGET_NAME}
+    COMMAND ${CMAKE_CTEST_COMMAND} -R ${TEST_EXEC}
+    COMMENT "Running ${SET_NAME} unit tests.")
+endfunction()
+
+if(SEA_ENABLE_KLEE)
+  add_subset_test_target("klee_test" "klee_" "klee")
+  add_subset_test_target("sea_test" "unsat_test" "seahorn")
+  add_subset_test_target("sea_temp_test" "unsat_temp_" "temp seahorn")
+endif()
+
+function(sea_add_klee_test TARGET)
+  sea_get_file_name(BC ${TARGET}.klee.ir)
+  add_test(NAME "klee_${TARGET}_test" COMMAND klee --libc=uclibc --exit-on-error ${BC})
+endfunction()
+
+macro(sea_add_klee)
+  if(SEA_ENABLE_KLEE)
+    sea_add_klee_bc(${ARGV})
+    sea_add_klee_test(${ARGV0})
+  endif()
+endmacro()
 
 set(VERIFY_FLAGS $ENV{VERIFY_FLAGS} CACHE STRING "Flags for verify script")
 separate_arguments(VERIFY_FLAGS)
@@ -254,6 +298,9 @@ endfunction()
 set(MAX_LINKED_LIST_ITEM_ALLOCATION_SIZE 5)
 set(MAX_BUFFER_SIZE 10)
 set(MAX_STRING_LEN 16)
+set(MAX_INITIAL_SIZE 10)
+set(MAX_ITEM_SIZE 2)
+set(MAX_INITIAL_ITEM_ALLOCATION 9223372036854775808ULL)
 
 # Compile-time definitions
 add_definitions(
