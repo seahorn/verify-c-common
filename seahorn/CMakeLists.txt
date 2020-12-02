@@ -269,12 +269,14 @@ endfunction()
 if(SEA_ENABLE_KLEE)
   add_subset_test_target("klee_test" "klee_" "klee")
   add_subset_test_target("sea_test" "unsat_test" "seahorn")
-  add_subset_test_target("sea_temp_test" "unsat_temp_" "temp seahorn")
+  # The next line of code sets up a subset of unit testing for new harness files (*.klee.c)
+  # add_subset_test_target("sea_temp_test" "unsat_temp_" "temp seahorn")
 endif()
 
 function(sea_add_klee_test TARGET)
   sea_get_file_name(BC ${TARGET}.klee.ir)
-  add_test(NAME "klee_${TARGET}_test" COMMAND klee --libc=uclibc --exit-on-error ${BC})
+  set(TIME_OUT_VAL 180) # Set a timeout value for 3 minutes
+  add_test(NAME "klee_${TARGET}_test" COMMAND timeout ${TIME_OUT_VAL} klee --libc=uclibc --exit-on-error ${BC})
 endfunction()
 
 macro(sea_add_klee)
