@@ -100,3 +100,5 @@ void assert_byte_cursor_equivalence(
     }
   }
 }
+
+bool uninterpreted_predicate_fn(uint8_t value);
