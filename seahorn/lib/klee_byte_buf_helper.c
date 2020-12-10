@@ -63,3 +63,9 @@ void ensure_byte_buf_has_allocated_buffer_member(
 bool aws_byte_buf_has_allocator(const struct aws_byte_buf *const buf) {
     return (buf->allocator == sea_allocator());
 }
+
+void ensure_byte_cursor_has_allocated_buffer_member(struct aws_byte_cursor *const cursor) {
+    if (cursor != NULL) {
+        cursor->ptr = bounded_malloc(cursor->len);
+    }
+}
