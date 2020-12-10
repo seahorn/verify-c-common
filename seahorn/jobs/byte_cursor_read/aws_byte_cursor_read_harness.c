@@ -1,34 +1,27 @@
 /*
- * Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * A copy of the License is located at
- *
- *  http://aws.amazon.com/apache2.0
- *
- * or in the "license" file accompanying this file. This file is distributed
- * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
  */
 
+#include <seahorn/seahorn.h>
 #include <aws/common/byte_buf.h>
-#include <proof_helpers/make_common_data_structures.h>
-#include <proof_helpers/proof_allocators.h>
+#include <proof_allocators.h>
+#include <byte_buf_helper.h>
+#include <utils.h>
 
-void aws_byte_cursor_read_harness() {
+int main() {
     /* parameters */
     struct aws_byte_cursor cur;
-    size_t length;
+    initialize_byte_cursor(&cur);
+    size_t length = nd_size_t();
+    assume(length <= MAX_BUFFER_SIZE);
     void *dest = bounded_malloc(length);
 
     /* assumptions */
     ensure_byte_cursor_has_allocated_buffer_member(&cur);
-    __CPROVER_assume(aws_byte_cursor_is_valid(&cur));
+    assume(aws_byte_cursor_is_valid(&cur));
 
     /* precondition */
-    __CPROVER_assume(AWS_MEM_IS_WRITABLE(dest, length));
+    assume(AWS_MEM_IS_WRITABLE(dest, length));
 
     /* save current state of the data structure */
     struct aws_byte_cursor old_cur = cur;
@@ -41,7 +34,7 @@ void aws_byte_cursor_read_harness() {
     }
 
     /* assertions */
-    assert(aws_byte_cursor_is_valid(&cur));
+    sassert(aws_byte_cursor_is_valid(&cur));
     /* the following assertions are included, because aws_byte_cursor_read internally uses
      * aws_byte_cursor_advance_nospec and it copies the bytes from the advanced cursor to *dest
      */
@@ -50,7 +43,8 @@ void aws_byte_cursor_read_harness() {
             assert_byte_from_buffer_matches(cur.ptr, &old_byte_from_cur);
         }
     } else {
-        assert(cur.ptr == old_cur.ptr + length);
-        assert(cur.len == old_cur.len - length);
+        sassert(cur.ptr == old_cur.ptr + length);
+        sassert(cur.len == old_cur.len - length);
     }
+    return 0;
 }

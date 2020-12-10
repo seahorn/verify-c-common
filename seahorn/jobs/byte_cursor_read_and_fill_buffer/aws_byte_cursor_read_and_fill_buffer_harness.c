@@ -1,32 +1,25 @@
 /*
- * Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * A copy of the License is located at
- *
- *  http://aws.amazon.com/apache2.0
- *
- * or in the "license" file accompanying this file. This file is distributed
- * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
  */
 
+#include <seahorn/seahorn.h>
 #include <aws/common/byte_buf.h>
-#include <proof_helpers/make_common_data_structures.h>
-#include <proof_helpers/proof_allocators.h>
+#include <proof_allocators.h>
+#include <byte_buf_helper.h>
+#include <utils.h>
 
-void aws_byte_cursor_read_and_fill_buffer_harness() {
+int main() {
     /* parameters */
     struct aws_byte_cursor cur;
+    initialize_byte_cursor(&cur);
     struct aws_byte_buf buf;
+    initialize_byte_buf(&buf);
 
     /* assumptions */
     ensure_byte_cursor_has_allocated_buffer_member(&cur);
-    __CPROVER_assume(aws_byte_cursor_is_valid(&cur));
+    assume(aws_byte_cursor_is_valid(&cur));
     ensure_byte_buf_has_allocated_buffer_member(&buf);
-    __CPROVER_assume(aws_byte_buf_is_valid(&buf));
+    assume(aws_byte_buf_is_valid(&buf));
 
     /* save current state of the data structure */
     struct aws_byte_cursor old_cur = cur;
@@ -38,14 +31,14 @@ void aws_byte_cursor_read_and_fill_buffer_harness() {
 
     /* operation under verification */
     if (aws_byte_cursor_read_and_fill_buffer(&cur, &buf)) {
-        assert(buf.len == buf.capacity);
+        sassert(buf.len == buf.capacity);
         assert_bytes_match(old_cur.ptr, buf.buffer, buf.capacity);
     }
 
     /* assertions */
-    assert(aws_byte_cursor_is_valid(&cur));
-    assert(aws_byte_buf_is_valid(&buf));
-    assert(old_buf.allocator == buf.allocator);
+    sassert(aws_byte_cursor_is_valid(&cur));
+    sassert(aws_byte_buf_is_valid(&buf));
+    sassert(old_buf.allocator == buf.allocator);
     /* the following assertions are included, because aws_byte_cursor_read internally uses
      * aws_byte_cursor_advance_nospec and it copies the bytes from the advanced cursor to *dest
      */
@@ -54,7 +47,8 @@ void aws_byte_cursor_read_and_fill_buffer_harness() {
             assert_byte_from_buffer_matches(cur.ptr, &old_byte_from_cur);
         }
     } else {
-        assert(cur.ptr == old_cur.ptr + old_buf.capacity);
-        assert(cur.len == old_cur.len - old_buf.capacity);
+        sassert(cur.ptr == old_cur.ptr + old_buf.capacity);
+        sassert(cur.len == old_cur.len - old_buf.capacity);
     }
+    return 0;
 }
