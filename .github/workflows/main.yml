@@ -1,6 +1,12 @@
 name: CI
 
-on: push
+on: 
+  push:
+    branches: master
+  pull_request:
+    branches: master
+  schedule:
+    - cron: 0 0 * * *  # run every day at UTC 00:00
 
 jobs:
   build:
@@ -8,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        verify_flag: ['\"\"', '\"--vac\"', '\"--vac --horn-bmc-solver=smt-y2\"', '\"--cex\"', '\"--cex --horn-bmc-solver=smt-y2\"']
+        verify_flag: ["", "--vac", "--vac --horn-bmc-solver=smt-y2", "--cex", "--cex --horn-bmc-solver=smt-y2"]
        
     steps:
       - name: Checkout 
@@ -16,11 +22,11 @@ jobs:
 
       - name: Get type
         id: type
-        run: echo ::set-output name=type::$(echo ${{ matrix.verify_flag }} | cut -c4-6)
+        run: echo ::set-output name=type::$(echo ${{ matrix.verify_flag }} | awk '{ print substr($1,3,5) "" substr($2,22) }')
        
       - name: Get exclude test
         id: exclude_files
-        run: echo ::set-output name=exclude_files::$(cat ".github/workflows/blacklist.${{steps.type.outputs.type}}.txt" | tr '\n' '|')
+        run: (test -f ".github/workflows/blacklist.${{steps.type.outputs.type}}.txt" && echo ::set-output name=exclude_files::"($(cat ".github/workflows/blacklist.${{steps.type.outputs.type}}.txt" | tr '\n' '|'))" ) || (echo ::set-output name=exclude_files::" ")
      
       - name: Docker 
         run: docker build -t verify-c-common . --file docker/verify-c-common.Dockerfile
@@ -30,4 +36,4 @@ jobs:
         run: echo "::set-output name=num_cores::$(nproc --all)"
         
       - name: Run Tests 
-        run: docker run -t verify-c-common /bin/bash -c "cd build && env VERIFY_FLAGS=${{ matrix.verify_flag }} ctest -j ${{steps.cores.outputs.num_cores}} --timeout 2000 -E '\"(${{ steps.exclude_files.outputs.exclude_files }})\"'"
+        run: docker run -t verify-c-common /bin/bash -c "cd build && env VERIFY_FLAGS=\"${{ matrix.verify_flag }}\" ctest -j ${{steps.cores.outputs.num_cores}} --timeout 2000 -E \"${{ steps.exclude_files.outputs.exclude_files }}\""
