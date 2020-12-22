@@ -1,25 +1,47 @@
 /*
- * Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * A copy of the License is located at
- *
- *  http://aws.amazon.com/apache2.0
- *
- * or in the "license" file accompanying this file. This file is distributed
- * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
  */
 
-#define DEST_TYPE uint64_t
-#define BYTE_WIDTH 8
-#define BYTE_CURSOR_READ aws_byte_cursor_read_be64
-#define AWS_NTOH aws_ntoh64
+#include <seahorn/seahorn.h>
+#include <aws/common/byte_buf.h>
+#include <proof_allocators.h>
+#include <byte_buf_helper.h>
+#include <utils.h>
 
-#include <proof_helpers/aws_byte_cursor_read_common.h>
+int main() {
+    /* parameters */
+    struct aws_byte_cursor cur;
+    initialize_byte_cursor(&cur);
+    uint64_t *dest = can_fail_malloc(sizeof(*dest));
 
-void aws_byte_cursor_read_be64_harness() {
-    aws_byte_cursor_read_common_harness();
+    /* assumptions */
+    ensure_byte_cursor_has_allocated_buffer_member(&cur);
+    assume(aws_byte_cursor_is_valid(&cur));
+    assume(cur.len >= 8);
+    assume(AWS_MEM_IS_READABLE(cur.ptr, 8));
+    assume(dest != NULL);
+
+    /* save current state of the data structure */
+    struct aws_byte_cursor old_cur = cur;
+    struct store_byte_from_buffer old_byte_from_cur;
+    save_byte_from_array(cur.ptr, cur.len, &old_byte_from_cur);
+    uint64_t dest_copy = nd_uint64_t();
+    memcpy(&dest_copy, old_cur.ptr, 8);
+    dest_copy = aws_ntoh64(dest_copy);
+
+    /* operation under verification */
+    if (aws_byte_cursor_read_be64(&cur, dest)) {
+        assert_bytes_match((uint8_t *)&dest_copy, (uint8_t *)dest, 8);
+    }
+
+    /* assertions */
+    sassert(aws_byte_cursor_is_valid(&cur));
+    if (old_cur.len <= (SIZE_MAX >> 1) && 8 <= old_cur.len) {
+        /* the following assertions are included, because aws_byte_cursor_read internally uses
+         * aws_byte_cursor_advance_nospec and it copies the bytes from the advanced cursor to *dest
+         */
+        sassert(2 <= old_cur.len && old_cur.len <= (SIZE_MAX >> 1));
+        sassert(cur.ptr == old_cur.ptr + 8);
+        sassert(cur.len == old_cur.len - 8);
+    }
 }
