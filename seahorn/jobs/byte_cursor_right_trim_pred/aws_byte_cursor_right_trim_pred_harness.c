@@ -15,7 +15,6 @@ int main() {
 
     /* assumptions */
     assume(aws_byte_cursor_is_bounded(&cur, MAX_BUFFER_SIZE));
-    ensure_byte_cursor_has_allocated_buffer_member(&cur);
     assume(aws_byte_cursor_is_valid(&cur));
 
     /* save current state of the data structure */

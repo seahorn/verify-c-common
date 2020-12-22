@@ -28,6 +28,8 @@ struct aws_byte_cursor aws_byte_cursor_advance_nospec(struct aws_byte_cursor *co
         /* Make sure we don't speculate-underflow len either */
         len = len & mask;
         // mask is 0 if speculating past a failed bounds check. Otherwise, returns UINTPTR_MAX
+        // the original code is:
+        // cursor->ptr = (uint8_t *)((uintptr_t)cursor->ptr & mask);
         cursor->ptr = mask ? cursor->ptr : NULL;
         /* Make sure subsequent nospec accesses don't advance ptr past NULL */
         cursor->len = cursor->len & mask;

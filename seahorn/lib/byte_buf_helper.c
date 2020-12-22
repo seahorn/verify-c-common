@@ -62,9 +62,3 @@ bool byte_bufs_are_equal(struct aws_byte_buf *b1, struct aws_byte_buf *b2) {
   return b1->len == b2->len && b1->buffer == b2->buffer &&
          b1->capacity == b2->capacity && b1->allocator == b2->allocator;
 }
-
-void ensure_byte_cursor_has_allocated_buffer_member(struct aws_byte_cursor *const cursor) {
-    if (cursor != NULL) {
-        cursor->ptr = bounded_malloc(cursor->len);
-    }
-}

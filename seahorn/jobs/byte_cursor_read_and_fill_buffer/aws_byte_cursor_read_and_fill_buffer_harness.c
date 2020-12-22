@@ -16,9 +16,7 @@ int main() {
     initialize_byte_buf(&buf);
 
     /* assumptions */
-    ensure_byte_cursor_has_allocated_buffer_member(&cur);
     assume(aws_byte_cursor_is_valid(&cur));
-    ensure_byte_buf_has_allocated_buffer_member(&buf);
     assume(aws_byte_buf_is_valid(&buf));
 
     /* save current state of the data structure */

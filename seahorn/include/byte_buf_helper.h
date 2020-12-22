@@ -21,6 +21,3 @@ void ensure_byte_buf_has_allocated_buffer_member(
 bool aws_byte_buf_has_allocator(const struct aws_byte_buf *const buf);
 
 bool byte_bufs_are_equal(struct aws_byte_buf *b1, struct aws_byte_buf *b2);
-
-void ensure_byte_cursor_has_allocated_buffer_member(
-    struct aws_byte_cursor *const cursor);
