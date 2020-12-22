@@ -17,3 +17,5 @@ sea_attach_bc(sift_up_override)
 add_library(remove_node_override s_remove_node_override.c)
 sea_attach_bc(remove_node_override)
 
+add_library(byte_cursor_advance_nospec_override byte_cursor_advance_nospec_override.c)
+sea_attach_bc(byte_cursor_advance_nospec_override)
