@@ -15,7 +15,6 @@ int main() {
     uint32_t *dest = can_fail_malloc(sizeof(*dest));
 
     /* assumptions */
-    ensure_byte_cursor_has_allocated_buffer_member(&cur);
     assume(aws_byte_cursor_is_valid(&cur));
     assume(cur.len >= 4);
     assume(AWS_MEM_IS_READABLE(cur.ptr, 4));
@@ -25,7 +24,7 @@ int main() {
     struct aws_byte_cursor old_cur = cur;
     struct store_byte_from_buffer old_byte_from_cur;
     save_byte_from_array(cur.ptr, cur.len, &old_byte_from_cur);
-    uint32_t dest_copy = nd_uint32_t();
+    uint32_t dest_copy;
     memcpy(&dest_copy, old_cur.ptr, 4);
     dest_copy = aws_ntoh32(dest_copy);
 

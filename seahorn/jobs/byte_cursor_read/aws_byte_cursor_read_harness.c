@@ -17,7 +17,6 @@ int main() {
     void *dest = bounded_malloc(length);
 
     /* assumptions */
-    ensure_byte_cursor_has_allocated_buffer_member(&cur);
     assume(aws_byte_cursor_is_valid(&cur));
 
     /* precondition */

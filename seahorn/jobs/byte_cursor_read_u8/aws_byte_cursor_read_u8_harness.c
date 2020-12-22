@@ -12,12 +12,11 @@ int main() {
     /* parameters */
     struct aws_byte_cursor cur;
     initialize_byte_cursor(&cur);
-    size_t length;
+    size_t length = nd_size_t();
     assume(length >= 1);
     uint8_t *dest = bounded_malloc(length);
 
     /* assumptions */
-    ensure_byte_cursor_has_allocated_buffer_member(&cur);
     assume(aws_byte_cursor_is_valid(&cur));
 
     /* precondition */
