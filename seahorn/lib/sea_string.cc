@@ -3,6 +3,7 @@
 #include <nondet.h>
 #include <sea_string.h>
 #include <seahorn/seahorn.h>
+#include <config.h>
 
 template <size_t i, size_t N, typename Function> class Loop {
 public:
