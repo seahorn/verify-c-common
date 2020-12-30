@@ -1,0 +1,28 @@
+#pragma once
+/* clang-format off */
+
+#ifndef MAX_BUFFER_SIZE
+#define MAX_BUFFER_SIZE @MAX_BUFFER_SIZE@
+#endif
+
+#ifndef MAX_LINKED_LIST_ITEM_ALLOCATION_SIZE
+#define MAX_LINKED_LIST_ITEM_ALLOCATION_SIZE @MAX_LINKED_LIST_ITEM_ALLOCATION_SIZE@
+#endif
+
+#ifndef MAX_STRING_LEN
+#define MAX_STRING_LEN @MAX_STRING_LEN@
+#endif
+
+#ifndef MAX_INITIAL_SIZE
+#define MAX_INITIAL_SIZE @MAX_INITIAL_SIZE@
+#endif
+
+#ifndef MAX_ITEM_SIZE
+#define MAX_ITEM_SIZE @MAX_ITEM_SIZE@
+#endif
+
+#ifndef MAX_INITIAL_ITEM_ALLOCATION
+#define MAX_INITIAL_ITEM_ALLOCATION @MAX_INITIAL_ITEM_ALLOCATION@
+#endif
+
+/* clang-format on */

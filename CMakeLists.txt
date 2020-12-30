@@ -42,9 +42,12 @@ configure_file(verify.py.in verify @ONLY)
 set(VERIFY_SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/verify-c-common.sh)
 set(VERIFY_CMD ${CMAKE_CURRENT_BINARY_DIR}/verify)
 
+
+# add the include directory from the build tree
+include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR}/include)
+
 include_directories(seahorn/include)
 include_directories(aws-c-common/include)
-#include_directories(aws-c-common/build/generated/include)
 include_directories(${SEAHORN_ROOT}/include)
 add_subdirectory(seahorn)
 

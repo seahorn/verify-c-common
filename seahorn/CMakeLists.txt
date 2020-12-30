@@ -311,6 +311,7 @@ add_definitions(
   -DMAX_LINKED_LIST_ITEM_ALLOCATION_SIZE=${MAX_LINKED_LIST_ITEM_ALLOCATION_SIZE}
   )
 
+configure_file(include/config.h.in ${PROJECT_BINARY_DIR}/include/config.h)
 configure_file(sea.yaml sea.yaml @ONLY)
 configure_file(sea_cex_base.yaml sea.cex.yaml @ONLY)
 configure_file(sea_vac.yaml sea.vac.yaml @ONLY)
