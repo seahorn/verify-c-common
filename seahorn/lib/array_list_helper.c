@@ -5,6 +5,7 @@
 #include <array_list_helper.h>
 #include <aws/common/common.h>
 #include <limits.h>
+#include <bounds.h>
 #include <nondet.h>
 #include <proof_allocators.h>
 #include <seahorn/seahorn.h>
@@ -21,17 +22,14 @@ void initialize_array_list(struct aws_array_list *const list) {
   list->alloc = sea_allocator();
 }
 
-void initialize_bounded_array_list(struct aws_array_list *const list,
-                                const size_t max_initial_size,
-                                const size_t max_initial_item_allocation,
-                                const size_t max_item_size) {
+void initialize_bounded_array_list(struct aws_array_list *const list) {
   list->current_size = nd_size_t();
-  assume(list->current_size <= max_initial_size);
+  // No need for seahorn of assume(list->current_size <= SIZE_MAX);
   list->item_size = nd_size_t();
   list->length = nd_size_t();
   list->data = can_fail_malloc(list->current_size);
   assume(aws_array_list_is_bounded(list, 
-      max_initial_item_allocation, max_item_size));
+      sea_max_array_list_len(), sea_max_array_list_item_size()));
   list->alloc = sea_allocator();
 }
 
