@@ -11,6 +11,7 @@
 #include <aws/common/array_list.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <bounds.h>
 
 bool aws_array_list_is_bounded(const struct aws_array_list *const list,
                                const size_t max_initial_item_allocation,
@@ -27,7 +28,7 @@ bool aws_array_list_is_bounded(const struct aws_array_list *const list,
   return item_size_is_bounded && length_is_bounded;
 }
 
-void initialize_bounded_array_list(struct aws_array_list *const list,) {
+void initialize_bounded_array_list(struct aws_array_list *const list) {
   list->current_size = nd_size_t();
   assume(list->current_size <= sea_max_array_list_initial_size());
   list->item_size = nd_size_t();
