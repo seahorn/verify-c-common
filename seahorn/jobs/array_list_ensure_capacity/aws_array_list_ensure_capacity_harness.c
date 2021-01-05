@@ -13,10 +13,9 @@
 int main() {
     /* data structure */
     struct aws_array_list list;
-    initialize_array_list(&list);
+    initialize_bounded_array_list(&list);
 
     /* assumptions */
-    assume(aws_array_list_is_bounded(&list, MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE));
     assume(aws_array_list_is_valid(&list));
 
     /* save current state of the data structure */
@@ -26,6 +25,7 @@ int main() {
 
     /* perform operation under verification */
     size_t index = nd_size_t();
+    KLEE_ASSUME(index <= KLEE_MAX_SIZE);
     if (!aws_array_list_ensure_capacity(&list, index)) {
         /* assertions */
         sassert(aws_array_list_is_valid(&list));

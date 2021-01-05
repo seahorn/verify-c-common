@@ -11,6 +11,7 @@
 int main() {
     /* parameters */
     size_t length = nd_size_t();
+    KLEE_ASSUME(length <= KLEE_MAX_SIZE);
     uint8_t *array = bounded_malloc(length);
 
     /* operation under verification */

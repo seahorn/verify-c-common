@@ -15,13 +15,21 @@ int main() {
 
     /* assumptions */
     assume(aws_byte_cursor_is_valid(&lhs));
-    assume(lhs.ptr != NULL);
+    #ifdef __KLEE__
+        if (lhs.ptr == NULL) return 0;
+    #else 
+        assume(lhs.ptr != NULL);
+    #endif
     if (nd_bool()) {
         rhs = lhs;
     } else {
         initialize_byte_cursor(&rhs);
         assume(aws_byte_cursor_is_valid(&rhs));
-        assume(rhs.ptr != NULL);
+        #ifdef __KLEE__
+            if (rhs.ptr == NULL) return 0;
+        #else 
+            assume(rhs.ptr != NULL);
+        #endif
     }
 
     /* save current state of the data structure */

@@ -14,18 +14,21 @@ int main() {
     struct aws_array_list from;
     struct aws_array_list to;
 
-    initialize_array_list(&from);
-    initialize_array_list(&to);
+    initialize_bounded_array_list(&from);
+    initialize_bounded_array_list(&to);
 
     /* assumptions */
-    assume(aws_array_list_is_bounded(&from, MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE));
     assume(aws_array_list_is_valid(&from));
-
-    assume(aws_array_list_is_bounded(&to, MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE));
     assume(aws_array_list_is_valid(&to));
 
     assume(from.item_size == to.item_size);
-    assume(from.data != NULL);
+    // --  Klee forks two braches for from.data (NULL or !NULL)
+    // --  We exit main function if from.data == NULL  
+    #ifdef __KLEE__
+        if (!from.data) return 0;
+    #else 
+        assume(from.data != NULL);
+    #endif
 
     /* perform operation under verification */
     if (!aws_array_list_copy(&from, &to)) {

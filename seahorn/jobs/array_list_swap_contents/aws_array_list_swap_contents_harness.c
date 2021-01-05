@@ -13,15 +13,12 @@
 int main() {
     /* data structure */
     struct aws_array_list from;
-    initialize_array_list(&from);
+    initialize_bounded_array_list(&from);
     struct aws_array_list to;
-    initialize_array_list(&to);
+    initialize_bounded_array_list(&to);
 
     /* assumptions */
-    assume(aws_array_list_is_bounded(&from, MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE));
     assume(aws_array_list_is_valid(&from));
-
-    assume(aws_array_list_is_bounded(&to, MAX_INITIAL_ITEM_ALLOCATION, MAX_ITEM_SIZE));
     assume(aws_array_list_is_valid(&to));
 
     assume(from.alloc != NULL);

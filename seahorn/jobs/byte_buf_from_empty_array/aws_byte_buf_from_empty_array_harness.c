@@ -10,6 +10,7 @@
 
 int main() {
     size_t capacity = nd_size_t();
+    KLEE_ASSUME(capacity <= KLEE_MAX_SIZE);
     void *array = bounded_malloc(sizeof(*(array)) * (capacity));
 
     struct aws_byte_buf buf = aws_byte_buf_from_empty_array(array, capacity);
