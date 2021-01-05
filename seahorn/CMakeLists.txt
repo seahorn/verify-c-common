@@ -466,3 +466,8 @@ if(${SEA_WITH_BLEEDING_EDGE})
   add_subdirectory(jobs/ring_buffer_buf_belongs_to_pool)
   add_subdirectory(jobs/ring_buffer_acquire_up_to)
 endif()
+
+if(${SEA_ENABLE_BENCHMARK})
+  add_subdirectory(benchmark_jobs/linked_list_pop_back_benchmark)
+endif()
+
