@@ -26,7 +26,11 @@ void *can_fail_malloc(size_t size) {
  */
 static void *s_malloc_allocator(struct aws_allocator *allocator, size_t size) {
   (void)allocator;
+#ifdef SEA_ALLOCATOR_CAN_FAIL
+  return can_fail_malloc(size);
+#else
   return bounded_malloc(size);
+#endif
 }
 
 /**

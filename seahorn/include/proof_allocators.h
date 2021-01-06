@@ -8,9 +8,6 @@
 #include <nondet.h>
 #include <stdlib.h>
 
-/**
- *
- */
 #define OBJECT_BITS 8
 #define MAX_MALLOC (SIZE_MAX >> (OBJECT_BITS + 1))
 
@@ -18,16 +15,23 @@
 
 void *realloc(void *ptr, size_t new_size);
 
-/**
- *
- */
-void *bounded_calloc(size_t num, size_t size);
 
 /**
- *
+ * Deterministically allocates [size] bytes and returns a pointer;
+ * memory allocated will be marked as containing non-det content using memhavoc
  */
 void *bounded_malloc(size_t size);
+
+/**
+ * XXX: no implementation yet
+ */
 void *bounded_malloc_pure(size_t size);
+
+/**
+ * Can non-deterministically fail;
+ * if successful, allocate [size] bytes and returns a pointer;
+ * memory allocated will be marked as containing non-det content using memhavoc
+ */
 void *can_fail_malloc(size_t size);
 
 /**

@@ -33,19 +33,19 @@ int s_update_template_size(struct hash_table_state *template,
   }
 
   /* Update the template once we've calculated everything successfully */
+#ifdef __SEAHORN__
   template->size = size;
-  /* begin original code for setting template->max_load
-    template->max_load = (size_t)(template->max_load_factor * (double)template->size);
-    // Ensure that there is always at least one empty slot in the hash table
-    if (template->max_load >= size)
-    {
-      template->max_load = size - 1;
-    }
-  end original code for setting template->max_load */
-  /* stubbed code for setting template->max_load */
   template->max_load = nd_size_t();
   assume(template->max_load < size);
   assume(template->max_load >= template->entry_count);
+#else
+  template->max_load = (size_t)(template->max_load_factor * (double)template->size);
+  /* Ensure that there is always at least one empty slot in the hash table */
+  if (template->max_load >= size)
+  {
+    template->max_load = size - 1;
+  }
+#endif
 
   /* Since size is a power of 2: (index & (size - 1)) == (index % size) */
   template->mask = size - 1;

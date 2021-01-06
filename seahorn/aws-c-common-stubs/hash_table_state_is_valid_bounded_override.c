@@ -24,10 +24,11 @@ bool hash_table_state_is_valid(const struct hash_table_state *map) {
   bool entry_count = (map->entry_count <= map->max_load);
   bool max_load = (map->max_load < map->size);
   bool mask_is_correct = (map->mask == (map->size - 1));
-  /* original code */
-  // bool max_load_factor_bounded = map->max_load_factor == 0.95;
-  // //(map->max_load_factor < 1.0);
+#ifdef __SEAHORN__
   bool max_load_factor_bounded = true;
+#else
+  bool max_load_factor_bounded = map->max_load_factor == 0.95; //(map->max_load_factor < 1.0);
+#endif
   bool slots_allocated =
       AWS_MEM_IS_WRITABLE(&map->slots[0], sizeof(map->slots[0]) * map->size);
 
