@@ -1,0 +1,7 @@
+add_executable(hash_table_init_bounded
+  aws_hash_table_init_bounded_harness.c)
+sea_link_libraries(hash_table_init_bounded hash_table.opt.ir)
+sea_overlink_libraries(hash_table_init_bounded update_template_size_override.ir)
+sea_overlink_libraries(hash_table_init_bounded hash_table_state_is_valid_bounded.ir)
+sea_attach_bc_link(hash_table_init_bounded)
+sea_add_unsat_test(hash_table_init_bounded)

@@ -303,12 +303,14 @@ set(MAX_STRING_LEN 16)
 set(MAX_INITIAL_SIZE 10)
 set(MAX_ITEM_SIZE 2)
 set(MAX_INITIAL_ITEM_ALLOCATION 9223372036854775808ULL)
+set(MAX_TABLE_SIZE 4)
 
 # Compile-time definitions
 add_definitions(
   -DMAX_BUFFER_SIZE=${MAX_BUFFER_SIZE}
   -DMAX_STRING_LEN=${MAX_STRING_LEN}
   -DMAX_LINKED_LIST_ITEM_ALLOCATION_SIZE=${MAX_LINKED_LIST_ITEM_ALLOCATION_SIZE}
+  -DMAX_TABLE_SIZE=${MAX_TABLE_SIZE}
   )
 
 configure_file(sea.yaml sea.yaml @ONLY)
@@ -466,4 +468,10 @@ if(${SEA_WITH_BLEEDING_EDGE})
   add_subdirectory(jobs/ring_buffer_acquire)
   add_subdirectory(jobs/ring_buffer_buf_belongs_to_pool)
   add_subdirectory(jobs/ring_buffer_acquire_up_to)
+
+  add_subdirectory(jobs/hash_array_ignore_case) # vac fail
+  add_subdirectory(jobs/hash_byte_cursor_ptr) # sat
+  add_subdirectory(jobs/hash_table_init_bounded) # spurious sat
+  add_subdirectory(jobs/hash_table_get_entry_count) # sat
+
 endif()
