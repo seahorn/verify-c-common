@@ -25,4 +25,8 @@
 #define MAX_INITIAL_ITEM_ALLOCATION @MAX_INITIAL_ITEM_ALLOCATION@
 #endif
 
+#ifndef MAX_TABLE_SIZE
+#define MAX_TABLE_SIZE @MAX_TABLE_SIZE@
+#endif
+
 /* clang-format on */

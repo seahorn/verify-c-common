@@ -18,6 +18,9 @@ add_library(
   bcmp.c
   error_override.c
 )
+if(SEA_ALLOCATOR_CAN_FAIL)
+  target_compile_definitions(sea_proofs PRIVATE SEA_ALLOCATOR_CAN_FAIL)
+endif()
 sea_attach_bc(sea_proofs)
 
 # string proof helpers

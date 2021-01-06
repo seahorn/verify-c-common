@@ -71,6 +71,7 @@ void assert_byte_cursor_equivalence(
     const struct aws_byte_cursor *const lhs,
     const struct aws_byte_cursor *const rhs,
     const struct store_byte_from_buffer *const rhs_byte);
+
 /**
  * Standard stub function to compare two items.
  */
