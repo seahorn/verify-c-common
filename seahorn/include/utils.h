@@ -6,6 +6,7 @@
 
 #include <aws/common/array_list.h>
 #include <aws/common/byte_buf.h>
+#include <aws/common/hash_table.h>
 #include <nondet.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -71,6 +72,13 @@ void assert_byte_cursor_equivalence(
     const struct aws_byte_cursor *const lhs,
     const struct aws_byte_cursor *const rhs,
     const struct store_byte_from_buffer *const rhs_byte);
+
+void save_byte_from_hash_table(const struct aws_hash_table *map,
+                               struct store_byte_from_buffer *storage);
+
+void check_hash_table_unchanged(const struct aws_hash_table *map,
+                                const struct store_byte_from_buffer *storage);
+
 /**
  * Standard stub function to compare two items.
  */

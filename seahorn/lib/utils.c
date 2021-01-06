@@ -101,4 +101,21 @@ void assert_byte_cursor_equivalence(
   }
 }
 
+void save_byte_from_hash_table(const struct aws_hash_table *map,
+                               struct store_byte_from_buffer *storage) {
+  struct hash_table_state *state = map->p_impl;
+  size_t size_in_bytes = nd_size_t();
+  assume(hash_table_state_required_bytes(state->size, &size_in_bytes) ==
+         AWS_OP_SUCCESS);
+  save_byte_from_array((uint8_t *)state, size_in_bytes, storage);
+}
+
+void check_hash_table_unchanged(const struct aws_hash_table *map,
+                                const struct store_byte_from_buffer *storage) {
+  struct hash_table_state *state = map->p_impl;
+  uint8_t *byte_array = (uint8_t *)state;
+  assert_byte_from_buffer_matches((uint8_t *)state, storage);
+  // sassert(byte_array[storage->index] == storage->byte);
+}
+
 bool uninterpreted_predicate_fn(uint8_t value);

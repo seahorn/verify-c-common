@@ -14,6 +14,11 @@
  */
 INLINE void *sea_malloc(size_t sz);
 
+/*
+   calloc allocator that can non-determinisitcally return NULL to indicate fail
+*/
+INLINE void *sea_calloc(size_t num, size_t size);
+
 /**
    Aligned memory allocator
 

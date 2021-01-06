@@ -11,6 +11,11 @@ INLINE void *sea_malloc(size_t sz) {
   return nd_malloc_is_fail() ? NULL : malloc(sz);
 }
 
+extern NONDET_FN_ATTR bool nd_calloc_is_fail(void);
+INLINE void *sea_calloc(size_t num, size_t sz) {
+  return nd_calloc_is_fail() ? NULL : calloc(num, sz);
+}
+
 // from: aws-c-common/source/allocator.c
 #define AWS_ALIGN_ROUND_UP(value, alignment)                                   \
   (((value) + ((alignment)-1)) & ~((alignment)-1))
