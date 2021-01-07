@@ -5,3 +5,4 @@ string_eq_unsat_test
 string_compare_unsat_test
 ring_buffer_clean_up_unsat_test
 linked_list_pop_front_unsat_test
+string_eq_c_str_unsat_test
