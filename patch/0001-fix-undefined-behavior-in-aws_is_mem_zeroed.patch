@@ -1,0 +1,28 @@
+From 9bbf36b798df125466f4be6da7a36c5c925a28e8 Mon Sep 17 00:00:00 2001
+From: Arie Gurfinkel <arie.gurfinkel@gmail.com>
+Date: Thu, 7 Jan 2021 13:37:55 -0500
+Subject: [PATCH] fix: undefined behavior in aws_is_mem_zeroed
+
+---
+ include/aws/common/zero.inl | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/include/aws/common/zero.inl b/include/aws/common/zero.inl
+index 25887bf..d8a2ac5 100644
+--- a/include/aws/common/zero.inl
++++ b/include/aws/common/zero.inl
+@@ -23,8 +23,10 @@ bool aws_is_mem_zeroed(const void *buf, size_t bufsize) {
+     const uint64_t *buf_u64 = (const uint64_t *)buf;
+     const size_t num_u64_checks = bufsize / 8;
+     size_t i;
++    uint64_t val;
+     for (i = 0; i < num_u64_checks; ++i) {
+-        if (buf_u64[i]) {
++        memcpy(&val, &buf_u64[i], sizeof(val));
++        if (val) {
+             return false;
+         }
+     }
+-- 
+2.24.3 (Apple Git-128)
+
