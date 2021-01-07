@@ -10,5 +10,6 @@ struct aws_string *ensure_string_is_allocated_bounded_length(size_t max_size);
 // len is populated by this function
 const char *ensure_c_str_is_nd_allocated_safe(size_t max_size, size_t *len);
 const char *ensure_c_str_is_nd_allocated(size_t max_size, size_t *len);
+const char *ensure_c_str_is_nd_allocated_aligned(size_t max_size, size_t *len);
 
 const char *ensure_c_str_is_allocated(size_t max_size);
