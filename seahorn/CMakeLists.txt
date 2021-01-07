@@ -449,6 +449,7 @@ add_subdirectory(jobs/string_eq_ignore_case)
 add_subdirectory(jobs/string_new_from_array)
 add_subdirectory(jobs/string_new_from_c_str)
 add_subdirectory(jobs/string_new_from_string)
+add_subdirectory(jobs/string_destroy)
 #
 add_subdirectory(jobs/priority_queue_size)
 add_subdirectory(jobs/priority_queue_capacity)
