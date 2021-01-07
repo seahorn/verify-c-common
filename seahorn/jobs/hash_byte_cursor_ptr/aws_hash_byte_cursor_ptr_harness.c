@@ -8,7 +8,7 @@
 
 int main(void) {
     struct aws_byte_cursor cur;
-    initialize_byte_cursor(&cur);
+    initialize_byte_cursor_aligned(&cur);
 
     assume(aws_byte_cursor_is_bounded(&cur, MAX_BUFFER_SIZE));
     assume(aws_byte_cursor_is_valid(&cur));
@@ -17,4 +17,5 @@ int main(void) {
     uint64_t rval = aws_hash_byte_cursor_ptr(&cur);
 
     sassert(aws_byte_cursor_is_valid(&cur));
+    return 0;
 }
