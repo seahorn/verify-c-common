@@ -8,6 +8,7 @@
 
 void initialize_byte_buf(struct aws_byte_buf *const buf);
 void initialize_byte_cursor(struct aws_byte_cursor *const buf);
+void initialize_byte_cursor_aligned(struct aws_byte_cursor *const buf);
 
 bool aws_byte_buf_is_bounded(const struct aws_byte_buf *const buf,
                              const size_t max_size);
