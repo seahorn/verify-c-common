@@ -17,8 +17,8 @@ INLINE void *sea_malloc(size_t sz) {
 
 INLINE void *sea_malloc_aligned(size_t sz) {
   enum { S_ALIGNMENT = sizeof(intmax_t) };
-  size_t alloc_size = AWS_ALIGN_ROUND_UP(sz, S_ALIGNMENT);
-  return sea_malloc(sz);
+  size_t alloc_sz = AWS_ALIGN_ROUND_UP(sz, S_ALIGNMENT);
+  return sea_malloc(alloc_sz);
 }
 #undef AWS_ALIGN_ROUND_UP
 
