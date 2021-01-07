@@ -1,10 +1,10 @@
-#include <seahorn/seahorn.h>
 #include <aws/common/hash_table.h>
-#include <aws/common/private/hash_table_impl.h>
 #include <aws/common/byte_buf.h>
+
+#include <seahorn/seahorn.h>
+
 #include <byte_buf_helper.h>
-#include <proof_allocators.h>
-#include <utils.h>
+#include <config.h>
 
 int main(void) {
     struct aws_byte_cursor cur;
