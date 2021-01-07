@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        verify_flag: ["", "--vac", "--vac --horn-bmc-solver=smt-y2", "--cex", "--cex --horn-bmc-solver=smt-y2"]
+        verify_flag: ["", "--vac", "--horn-bmc-solver=smt-y2", "--cex", "--cex --horn-bmc-solver=smt-y2"]
        
     steps:
       - name: Checkout 
