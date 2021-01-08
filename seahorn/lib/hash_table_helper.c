@@ -1,9 +1,10 @@
 #include <aws/common/math.h>
 #include <aws/common/private/hash_table_impl.h>
+
+#include <seahorn/seahorn.h>
+
 #include <hash_table_helper.h>
 #include <proof_allocators.h>
-#include <seahorn/seahorn.h>
-#include <utils.h>
 
 void initialize_bounded_aws_hash_table(struct aws_hash_table *map,
                                        size_t max_table_entries) {

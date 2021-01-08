@@ -1,6 +1,7 @@
 #pragma once
 
 #include <aws/common/hash_table.h>
+#include <utils.h>
 
 /*
  * Initialize aws_hash_table with a proper allocated p_impl member
