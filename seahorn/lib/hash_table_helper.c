@@ -51,3 +51,5 @@ void assert_hash_table_unchanged(const struct aws_hash_table *map,
   uint8_t *byte_array = (uint8_t *)state;
   assert_byte_from_buffer_matches((uint8_t *)state, storage);
 }
+
+void uninterpreted_destroy_fn(void *key_or_val);
