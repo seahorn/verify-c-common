@@ -15,17 +15,11 @@
 
 void *realloc(void *ptr, size_t new_size);
 
-
 /**
  * Deterministically allocates [size] bytes and returns a pointer;
  * memory allocated will be marked as containing non-det content using memhavoc
  */
 void *bounded_malloc(size_t size);
-
-/**
- * XXX: no implementation yet
- */
-void *bounded_malloc_pure(size_t size);
 
 /**
  * Can non-deterministically fail;
