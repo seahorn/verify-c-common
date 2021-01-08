@@ -6,10 +6,10 @@
 
 #include <seahorn/seahorn.h>
 
-#include <proof_allocators.h>
-#include <hash_table_helper.h>
-#include <utils.h>
 #include <config.h>
+#include <hash_table_helper.h>
+#include <proof_allocators.h>
+#include <utils.h>
 
 int main(void) {
   struct aws_hash_table map;
@@ -24,7 +24,7 @@ int main(void) {
 
   sassert(aws_hash_iter_is_valid(&iter));
   sassert(iter.status == AWS_HASH_ITER_STATUS_DONE ||
-         iter.status == AWS_HASH_ITER_STATUS_READY_FOR_USE);
+          iter.status == AWS_HASH_ITER_STATUS_READY_FOR_USE);
   sassert(aws_hash_table_is_valid(&map));
   assert_hash_table_unchanged(&map, &old_byte);
   return 0;

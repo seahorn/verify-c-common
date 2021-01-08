@@ -6,10 +6,10 @@
 
 #include <seahorn/seahorn.h>
 
-#include <proof_allocators.h>
-#include <hash_table_helper.h>
-#include <utils.h>
 #include <config.h>
+#include <hash_table_helper.h>
+#include <proof_allocators.h>
+#include <utils.h>
 
 int main(void) {
   struct aws_hash_table map;

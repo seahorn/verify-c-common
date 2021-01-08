@@ -16,15 +16,17 @@ extern NONDET_FN_ATTR int nd_int_strcmp(void);
 // -- strcmp up to MAX_STRING_LEN, and non-deterministic result otherwise
 int strcmp(const char *str1, const char *str2) {
 
-  const unsigned char *s1 = (const unsigned char*)str1;
-  const unsigned char *s2 = (const unsigned char*)str2;
+  const unsigned char *s1 = (const unsigned char *)str1;
+  const unsigned char *s2 = (const unsigned char *)str2;
 
   unsigned char c1, c2;
   for (unsigned i = 0; i < MAX_STRING_LEN; ++i) {
     c1 = *s1++;
     c2 = *s2++;
-    if (c1 == '\0' && c2 == '\0') return 0;
-    if (c1 != c2) return c1 - c2;
+    if (c1 == '\0' && c2 == '\0')
+      return 0;
+    if (c1 != c2)
+      return c1 - c2;
   }
   return nd_int_strcmp();
 }
