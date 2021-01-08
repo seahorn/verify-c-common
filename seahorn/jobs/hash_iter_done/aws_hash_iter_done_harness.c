@@ -18,7 +18,6 @@ int main(void) {
 
   struct aws_hash_iter iter;
   mk_valid_aws_hash_iter(&iter, &map);
-  assume(aws_hash_iter_is_valid(&iter));
   assume(iter.status == AWS_HASH_ITER_STATUS_DONE ||
          iter.status == AWS_HASH_ITER_STATUS_READY_FOR_USE);
   enum aws_hash_iter_status old_status = iter.status;
