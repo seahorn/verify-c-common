@@ -39,10 +39,10 @@ int s_update_template_size(struct hash_table_state *template,
   assume(template->max_load < size);
   assume(template->max_load >= template->entry_count);
 #else
-  template->max_load = (size_t)(template->max_load_factor * (double)template->size);
+  template->max_load =
+      (size_t)(template->max_load_factor * (double)template->size);
   /* Ensure that there is always at least one empty slot in the hash table */
-  if (template->max_load >= size)
-  {
+  if (template->max_load >= size) {
     template->max_load = size - 1;
   }
 #endif

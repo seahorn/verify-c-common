@@ -3,9 +3,9 @@
 
 #include <seahorn/seahorn.h>
 
+#include <hash_table_helper.h>
 #include <proof_allocators.h>
 #include <utils.h>
-#include <hash_table_helper.h>
 
 int main(void) {
   /* data structure */

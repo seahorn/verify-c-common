@@ -14,7 +14,8 @@ void initialize_bounded_aws_hash_table(struct aws_hash_table *map,
 
   size_t required_bytes = nd_size_t();
   /* assume setting required_bytes is successful */
-  assume(hash_table_state_required_bytes(num_entries, &required_bytes) == AWS_OP_SUCCESS);
+  assume(hash_table_state_required_bytes(num_entries, &required_bytes) ==
+         AWS_OP_SUCCESS);
   struct hash_table_state *impl = bounded_malloc(required_bytes);
   impl->size = num_entries;
   map->p_impl = impl;

@@ -8,14 +8,14 @@
 
 #include <seahorn/seahorn.h>
 
+#include <config.h>
 #include <proof_allocators.h>
 #include <string_helper.h>
 #include <utils.h>
-#include <config.h>
 
 int main(void) {
   struct aws_string *str =
-    ensure_string_is_allocated_bounded_length(MAX_STRING_LEN);
+      ensure_string_is_allocated_bounded_length(MAX_STRING_LEN);
 
   assume(aws_string_is_valid(str));
 

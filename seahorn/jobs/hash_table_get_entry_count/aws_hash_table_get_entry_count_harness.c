@@ -4,8 +4,8 @@
 
 #include <seahorn/seahorn.h>
 
-#include <proof_allocators.h>
 #include <hash_table_helper.h>
+#include <proof_allocators.h>
 #include <utils.h>
 
 int main(void) {
