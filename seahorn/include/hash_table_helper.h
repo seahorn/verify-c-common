@@ -19,3 +19,5 @@ void save_byte_from_hash_table(const struct aws_hash_table *map,
 
 void assert_hash_table_unchanged(const struct aws_hash_table *map,
                                  const struct store_byte_from_buffer *storage);
+
+void uninterpreted_destroy_fn(void *key_or_val);
