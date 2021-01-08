@@ -11,6 +11,7 @@ add_library(
   string_helper.c
   priority_queue_helper.c
   ring_buffer_helper.c
+  hash_table_helper.c
   utils.c
   proof_allocators.c
   sea_allocators.c
