@@ -32,4 +32,5 @@ int main(void) {
                   iter.status == AWS_HASH_ITER_STATUS_DONE));
   sassert(aws_hash_table_is_valid(&map));
   assert_hash_table_unchanged(&map, &old_byte);
+  return 0;
 }
