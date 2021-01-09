@@ -3,6 +3,7 @@
 
 #include <seahorn/seahorn.h>
 
+#include <config.h>
 #include <hash_table_helper.h>
 #include <proof_allocators.h>
 #include <utils.h>
@@ -33,4 +34,5 @@ int main(void) {
     assert_all_zeroes((uint8_t *)&impl->slots[0],
                       impl->size * sizeof(impl->slots[0]));
   }
+  return 0;
 }
