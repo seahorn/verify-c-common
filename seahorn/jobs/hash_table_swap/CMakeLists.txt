@@ -1,0 +1,6 @@
+add_executable(hash_table_swap
+  aws_hash_table_swap_harness.c)
+sea_link_libraries(hash_table_swap hash_table.opt.ir)
+sea_overlink_libraries(hash_table_swap hash_table_state_is_valid_bounded.ir)
+sea_attach_bc_link(hash_table_swap)
+sea_add_unsat_test(hash_table_swap)
