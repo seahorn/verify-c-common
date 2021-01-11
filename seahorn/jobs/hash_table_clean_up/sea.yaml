@@ -1,0 +1,3 @@
+verify_options:
+  bound: "@MAX_TABLE_SIZE@"
+  horn-array-sym-memcpy-unroll-count: "@MEMCPY_UNROLL_BND@" 
