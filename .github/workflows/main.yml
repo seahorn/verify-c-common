@@ -26,7 +26,7 @@ jobs:
        
       - name: Get exclude test
         id: exclude_files
-        run: (test -f ".github/workflows/blacklist.${{steps.type.outputs.type}}.txt" && echo ::set-output name=exclude_files::"($(cat ".github/workflows/blacklist.${{steps.type.outputs.type}}.txt" | tr '\n' '|'))" ) || (echo ::set-output name=exclude_files::" ")
+        run: (test -f ".github/workflows/blacklist.${{steps.type.outputs.type}}.txt" && echo ::set-output name=exclude_files::"($(cut -f 1 ".github/workflows/blacklist.${{steps.type.outputs.type}}.txt" | head -c -1 | tr '\n' '|'))" ) || (echo ::set-output name=exclude_files::" ")
      
       - name: Docker 
         run: docker build -t verify-c-common . --file docker/verify-c-common.Dockerfile
