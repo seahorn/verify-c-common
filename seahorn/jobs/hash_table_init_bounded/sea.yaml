@@ -1,0 +1,2 @@
+verify_options:
+  horn-array-sym-memcpy-unroll-count: "@MEMCPY_UNROLL_BND@"
