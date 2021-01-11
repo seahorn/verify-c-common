@@ -334,6 +334,7 @@ add_subdirectory(jobs/nospec_mask)
 
 add_subdirectory(jobs/ptr_eq)
 
+add_subdirectory(jobs/array_eq)
 add_subdirectory(jobs/array_eq_c_str)
 add_subdirectory(jobs/array_eq_c_str_ignore_case)
 add_subdirectory(jobs/array_eq_ignore_case)
