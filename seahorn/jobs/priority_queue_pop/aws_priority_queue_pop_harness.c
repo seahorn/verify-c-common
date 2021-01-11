@@ -15,6 +15,12 @@ int main() {
   initialize_priority_queue(&queue);
 
   /* Assumptions */
+  #ifdef __KLEE__
+    // Inside aws_priority_queue_is_valid, the priority queue require the following be True
+    // Use the following code to exclude unqualified program path
+    if (!(queue.backpointers.item_size == sizeof(struct aws_priority_queue_node *)))
+      return 0;
+  #endif
   assume(aws_priority_queue_is_bounded(&queue, MAX_INITIAL_ITEM_ALLOCATION,
                                        MAX_ITEM_SIZE));
   assume(aws_priority_queue_is_valid(&queue));

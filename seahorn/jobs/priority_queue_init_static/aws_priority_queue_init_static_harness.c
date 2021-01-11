@@ -5,6 +5,7 @@
 #include <nondet.h>
 #include <priority_queue_helper.h>
 #include <sea_allocators.h>
+#include <proof_allocators.h>
 #include <seahorn/seahorn.h>
 #include <utils.h>
 /**
@@ -22,13 +23,20 @@ int main(void) {
   uint8_t *raw_array;
 
   /* assumptions */
+  KLEE_ASSUME(__builtin_mul_overflow(initial_item_allocation, 
+        item_size, &len) == 0 && len <= KLEE_MAX_SIZE);
   assume(initial_item_allocation > 0 &&
          initial_item_allocation <= MAX_INITIAL_ITEM_ALLOCATION);
   assume(item_size > 0 && item_size <= MAX_ITEM_SIZE);
   assume(!aws_mul_size_checked(initial_item_allocation, item_size, &len));
 
   /* perform operation under verification */
-  raw_array = sea_malloc_safe(sizeof(uint8_t *) * len);
+  #ifdef __KLEE__
+    raw_array = bounded_malloc(sizeof(uint8_t) * len);
+    if (!raw_array) return 0; // assume(raw_array)
+  #else 
+    raw_array = sea_malloc_safe(sizeof(uint8_t) * len);
+  #endif
   aws_priority_queue_init_static(&queue, raw_array, initial_item_allocation,
                                  item_size, nondet_compare);
 
