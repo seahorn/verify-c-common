@@ -44,6 +44,7 @@ add_library(
   klee_byte_buf_helper.c
   linked_list_helper.c
   klee_string_helper.c
+  klee_priority_queue_helper.c
   utils.c
   klee_allocators.c
   sea_allocators.c
