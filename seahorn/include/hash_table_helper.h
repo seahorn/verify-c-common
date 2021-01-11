@@ -21,3 +21,8 @@ void assert_hash_table_unchanged(const struct aws_hash_table *map,
                                  const struct store_byte_from_buffer *storage);
 
 void uninterpreted_destroy_fn(void *key_or_val);
+
+void ensure_hash_table_has_valid_destroy_functions(struct aws_hash_table *map);
+bool aws_hash_table_has_an_empty_slot(const struct aws_hash_table *const map,
+                                      size_t *const rval);
+void hash_proof_destroy_noop(void *p);

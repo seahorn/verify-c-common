@@ -11,21 +11,6 @@
 #include <proof_allocators.h>
 #include <utils.h>
 
-bool hash_table_state_has_an_empty_slot(
-    const struct hash_table_state *const state, size_t *const rval) {
-  assume(state->entry_count > 0);
-  size_t empty_slot_idx = nd_size_t();
-  assume(empty_slot_idx < state->size);
-  *rval = empty_slot_idx;
-  return state->slots[empty_slot_idx].hash_code == 0;
-}
-bool aws_hash_table_has_an_empty_slot(const struct aws_hash_table *const map,
-                                      size_t *const rval) {
-  return hash_table_state_has_an_empty_slot(map->p_impl, rval);
-}
-
-void hash_proof_destroy_noop(void *p) {}
-
 int main(void) {
   struct aws_hash_table map;
   initialize_bounded_aws_hash_table(&map, MAX_TABLE_SIZE);

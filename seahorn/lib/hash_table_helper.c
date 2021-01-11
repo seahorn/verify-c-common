@@ -6,6 +6,9 @@
 #include <hash_table_helper.h>
 #include <proof_allocators.h>
 
+extern uint64_t nd_hash_fn(const void *key);
+extern bool nd_hash_equals_fn(const void *a, const void *b);
+void hash_proof_destroy_noop(void *p) {}
 void initialize_bounded_aws_hash_table(struct aws_hash_table *map,
                                        size_t max_table_entries) {
   size_t num_entries = nd_size_t();
@@ -18,6 +21,19 @@ void initialize_bounded_aws_hash_table(struct aws_hash_table *map,
          AWS_OP_SUCCESS);
   struct hash_table_state *impl = bounded_malloc(required_bytes);
   impl->size = num_entries;
+  impl->mask = num_entries - 1;
+  impl->max_load_factor = 0.95;
+  impl->alloc = sea_allocator();
+  impl->hash_fn = &nd_hash_fn;
+  impl->equals_fn = &nd_hash_equals_fn;
+#ifdef EXPLICIT_HASH_INIT
+  /** hash_table_state is implicitly initializaed by memhavoc() inside bounded_malloc() */
+  impl->destroy_key_fn = &hash_proof_destroy_noop;
+  impl->destroy_value_fn = &hash_proof_destroy_noop;
+  impl->entry_count = nd_size_t();
+  impl->max_load = nd_size_t();
+#endif
+
   map->p_impl = impl;
 }
 
@@ -53,4 +69,21 @@ void assert_hash_table_unchanged(const struct aws_hash_table *map,
   assert_byte_from_buffer_matches((uint8_t *)state, storage);
 }
 
-void uninterpreted_destroy_fn(void *key_or_val);
+void ensure_hash_table_has_valid_destroy_functions(struct aws_hash_table *map) {
+  map->p_impl->destroy_key_fn = nd_bool() ? NULL : hash_proof_destroy_noop;
+  map->p_impl->destroy_value_fn = nd_bool() ? NULL : hash_proof_destroy_noop;
+}
+
+bool hash_table_state_has_an_empty_slot(
+    const struct hash_table_state *const state, size_t *const rval) {
+  assume(state->entry_count > 0);
+  size_t empty_slot_idx = nd_size_t();
+  assume(empty_slot_idx < state->size);
+  *rval = empty_slot_idx;
+  return state->slots[empty_slot_idx].hash_code == 0;
+}
+
+bool aws_hash_table_has_an_empty_slot(const struct aws_hash_table *const map,
+                                      size_t *const rval) {
+  return hash_table_state_has_an_empty_slot(map->p_impl, rval);
+}
