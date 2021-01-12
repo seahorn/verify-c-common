@@ -10,10 +10,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#ifndef __KLEE__ // define macros for KLEE
-#define __KLEE__ 0
-#endif
-
 #ifdef __KLEE__ // define macros for KLEE_ASSUME, the assumption for KLEE only
 #define KLEE_ASSUME(X) __VERIFIER_assume(X)
 #else 
