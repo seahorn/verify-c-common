@@ -3,7 +3,6 @@ add_executable(array_list_set_at
   aws_array_list_set_at_harness.c)
 target_compile_definitions(array_list_set_at
   PUBLIC MAX_ITEM_SIZE=${MAX_ITEM_SIZE}
-  KLEE_MAX_SIZE=${KLEE_MAX_SIZE} # only use for compilation
   MAX_INITIAL_ITEM_ALLOCATION=${MAX_INITIAL_ITEM_ALLOCATION})
 sea_attach_bc_link(array_list_set_at)
 configure_file(sea.yaml sea.yaml @ONLY)
