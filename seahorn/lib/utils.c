@@ -102,3 +102,11 @@ void assert_byte_cursor_equivalence(
 }
 
 bool uninterpreted_predicate_fn(uint8_t value);
+
+bool nondet_equals(const void *const a, const void *const b) {
+  sassert(a != NULL);
+  sassert(b != NULL);
+  return nd_bool();
+}
+
+uint64_t uninterpreted_hasher(const void *a) { return nd_uint64_t(); }

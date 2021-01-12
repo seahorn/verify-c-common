@@ -421,7 +421,6 @@ add_subdirectory(jobs/hash_c_string)
 add_subdirectory(jobs/hash_callback_string_eq)
 add_subdirectory(jobs/hash_callback_c_str_eq)
 add_subdirectory(jobs/hash_callback_string_destroy)
-add_subdirectory(jobs/hash_iter_begin)
 add_subdirectory(jobs/hash_iter_next)
 add_subdirectory(jobs/hash_iter_done)
 add_subdirectory(jobs/hash_iter_delete)
@@ -490,5 +489,10 @@ if(${SEA_WITH_BLEEDING_EDGE})
   add_subdirectory(jobs/ring_buffer_acquire)
   add_subdirectory(jobs/ring_buffer_buf_belongs_to_pool)
   add_subdirectory(jobs/ring_buffer_acquire_up_to)
+
+  # possibly real sat cases
+  add_subdirectory(jobs/hash_iter_begin)
+  add_subdirectory(jobs/hash_table_foreach)
+
 
 endif()
