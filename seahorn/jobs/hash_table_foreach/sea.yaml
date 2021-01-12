@@ -1,2 +1,2 @@
 verify_options:
-  bound: "@MAX_TABLE_SIZE@"
+  bound: "@UNROLL_BOUND@"

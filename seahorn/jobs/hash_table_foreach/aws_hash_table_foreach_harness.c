@@ -16,6 +16,7 @@ int main(void) {
   struct aws_hash_table map;
   initialize_bounded_aws_hash_table(&map, MAX_TABLE_SIZE);
   ensure_hash_table_has_valid_destroy_functions(&map);
+  ensure_aws_hash_table_entry_count_matches(&map);
   map.p_impl->equals_fn = nondet_equals;
   map.p_impl->hash_fn = uninterpreted_hasher;
   assume(aws_hash_table_is_valid(&map));

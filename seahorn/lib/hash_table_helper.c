@@ -87,3 +87,19 @@ bool aws_hash_table_has_an_empty_slot(const struct aws_hash_table *const map,
                                       size_t *const rval) {
   return hash_table_state_has_an_empty_slot(map->p_impl, rval);
 }
+
+size_t aws_hash_table_deep_entry_count(const struct aws_hash_table *const map) {
+  struct hash_table_state *state = map->p_impl;
+  size_t rval = 0;
+  for (size_t i = 0; i < state->size; i++) {
+    struct hash_table_entry *entry = &state->slots[i];
+    if (entry->hash_code){
+      rval++;
+    }
+  }
+  return rval;
+}
+
+void ensure_aws_hash_table_entry_count_matches(const struct aws_hash_table *const map) {
+  assume(map->p_impl->entry_count == aws_hash_table_deep_entry_count(map));
+}
