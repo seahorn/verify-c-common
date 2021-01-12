@@ -28,3 +28,7 @@ bool aws_hash_table_has_an_empty_slot(const struct aws_hash_table *const map,
                                       size_t *const rval);
 
 void hash_proof_destroy_noop(void *p);
+
+size_t aws_hash_table_deep_entry_count(const struct aws_hash_table *const map);
+
+void ensure_aws_hash_table_entry_count_matches(const struct aws_hash_table *const map);

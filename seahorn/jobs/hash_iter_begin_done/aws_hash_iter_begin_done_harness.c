@@ -16,7 +16,7 @@ int main(void) {
 
   initialize_bounded_aws_hash_table(&map, MAX_TABLE_SIZE);
   assume(aws_hash_table_is_valid(&map));
-
+  ensure_aws_hash_table_entry_count_matches(&map);
   struct store_byte_from_buffer old_byte;
   save_byte_from_hash_table(&map, &old_byte);
 
