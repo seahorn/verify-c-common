@@ -14,6 +14,7 @@ int main() {
     struct aws_array_list list;
     initialize_bounded_array_list(&list);
 
+    KLEE_ASSUME(list.item_size != 0);
     void *val = bounded_malloc(list.item_size);
 
     /* assumptions */

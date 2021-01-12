@@ -13,6 +13,12 @@ int main() {
     assume(lhs_len <= MAX_BUFFER_SIZE);
     void *lhs = can_fail_malloc(lhs_len);
 
+    #ifdef __KLEE__
+        // The program path for a failed case which 
+        // lhs = NULL & lhs_len != 0 should be ignored.
+        if (!lhs && lhs_len != 0) return 0;
+    #endif
+
     void *rhs;
     size_t rhs_len = nd_size_t();
     if (nd_bool()) { /* rhs could be equal to lhs */
@@ -22,6 +28,12 @@ int main() {
         assume(rhs_len <= MAX_BUFFER_SIZE);
         rhs = can_fail_malloc(rhs_len);
     }
+
+    #ifdef __KLEE__
+        // The program path for a failed case which 
+        // rhs = NULL & rhs_len != 0 should be ignored.
+        if (!rhs && rhs_len != 0) return 0;
+    #endif
 
     /* save current state of the parameters */
     struct store_byte_from_buffer old_byte_from_lhs;
