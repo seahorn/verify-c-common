@@ -25,6 +25,13 @@ int main(void) {
   sassert(aws_hash_iter_is_valid(&iter));
   sassert(iter.status == AWS_HASH_ITER_STATUS_DONE ||
           iter.status == AWS_HASH_ITER_STATUS_READY_FOR_USE);
+    /* quote header file comment:
+    "...This function cannot fail, but if there are no elements in the table,
+    the returned iterator will return true for aws_hash_iter_done(&iter)."
+    */
+  if (map.p_impl->entry_count == 0) {
+    sassert(aws_hash_iter_done(&iter));
+  }
   sassert(aws_hash_table_is_valid(&map));
   assert_hash_table_unchanged(&map, &old_byte);
   return 0;
