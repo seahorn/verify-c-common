@@ -103,3 +103,13 @@ size_t aws_hash_table_deep_entry_count(const struct aws_hash_table *const map) {
 bool aws_hash_table_entry_count_is_valid(const struct aws_hash_table *const map) {
   return map->p_impl->entry_count == aws_hash_table_deep_entry_count(map);
 }
+
+bool aws_hash_table_deep_is_empty(const struct aws_hash_table *const map) {
+  struct hash_table_state *state = map->p_impl;
+  bool rval = true;
+  for (size_t i = 0; i < state->size; i++) {
+    struct hash_table_entry *entry = &state->slots[i];
+    rval = rval && (entry->hash_code == 0);
+  }
+  return rval;
+}
