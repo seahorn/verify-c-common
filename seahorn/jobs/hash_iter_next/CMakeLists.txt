@@ -6,7 +6,7 @@ add_executable(
 set(MAX_TABLE_SIZE 8)
 target_compile_definitions(hash_iter_next PUBLIC MAX_TABLE_SIZE=${MAX_TABLE_SIZE})
 sea_link_libraries(hash_iter_next hash_table.opt.ir)
-sea_overlink_libraries(hash_iter_next hash_table_state_is_valid_bounded.ir)
+sea_overlink_libraries(hash_iter_next hash_table_state_is_valid_override.ir)
 sea_attach_bc_link(hash_iter_next)
 configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(hash_iter_next)
