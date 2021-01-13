@@ -5,6 +5,12 @@ import csv
 import glob
 import math
 import subprocess
+import argparse
+
+# Args for this script
+parser = argparse.ArgumentParser(description='Present debug flag if using debug mode.')
+parser.add_argument('--debug', action='store_true', default=False)
+args=parser.parse_args()
 
 builddir = '../build/'
 buildabspath = os.path.abspath(builddir)
@@ -135,7 +141,8 @@ def compute_loc_of_func(data, name, total_loc):
                 # print(name, call_name, debug_name)
                 compute_loc_of_func(data, call_name, total_loc)
             curr_loc = current_func_loc(data, name)
-            # print(total_loc, name, curr_loc)
+            if args.debug:
+                print(f'tot. {total_loc}, func <{name}> with loc: {curr_loc}')
             total_loc[0] += curr_loc
             break
 
@@ -146,6 +153,8 @@ def read_output_from_file(file_name, bench_name):
     except BaseException:
         sys.exit("human readable bitcode (.ll) file does not exits. Exit!")
     data = file.readlines()
+    if args.debug:
+        print(f'start compute loc for harness <{bench_name}>')
     main_regexp, main_debug_regexp = get_regex_based_on_func_name('main')
     res_data = ['', '']
     plain_data = data
@@ -155,7 +164,8 @@ def read_output_from_file(file_name, bench_name):
     # 2. Add loc for each harness
     compute_loc_of_func(data, 'main', loc)
     res_data[1] = loc[0]
-    # print(bench_name, loc)
+    if args.debug:
+        print(f'har. {bench_name} with loc comp. {res_data[1]}...')
     file.close()
     return res_data
 
