@@ -29,6 +29,12 @@ bool aws_hash_table_has_an_empty_slot(const struct aws_hash_table *const map,
 
 void hash_proof_destroy_noop(void *p);
 
+/* XXX: EXPENSIVE! Iterates through hash_table_state->slots and counts
+    number of entries with hash_code != 0 */
 size_t aws_hash_table_deep_entry_count(const struct aws_hash_table *const map);
 
+/* returns true if map->p_impl->entry_count matches aws_hash_table_deep_entry_count(map) */
 bool aws_hash_table_entry_count_is_valid(const struct aws_hash_table *const map);
+
+/* returns true if hash_code of all entries are 0 */
+bool aws_hash_table_deep_is_empty(const struct aws_hash_table *const map);

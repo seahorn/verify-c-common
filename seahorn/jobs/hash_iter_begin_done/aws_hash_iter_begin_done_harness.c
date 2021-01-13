@@ -16,10 +16,9 @@ int main(void) {
 
   initialize_bounded_aws_hash_table(&map, MAX_TABLE_SIZE);
   assume(aws_hash_table_is_valid(&map));
-  ensure_aws_hash_table_entry_count_matches(&map);
+  assume((map.p_impl->entry_count == 0) == aws_hash_table_deep_is_empty(&map));
   struct store_byte_from_buffer old_byte;
   save_byte_from_hash_table(&map, &old_byte);
-
   struct aws_hash_iter iter = aws_hash_iter_begin(&map);
 
   sassert(aws_hash_iter_is_valid(&iter));
