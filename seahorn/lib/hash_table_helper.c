@@ -100,6 +100,6 @@ size_t aws_hash_table_deep_entry_count(const struct aws_hash_table *const map) {
   return rval;
 }
 
-void ensure_aws_hash_table_entry_count_matches(const struct aws_hash_table *const map) {
-  assume(map->p_impl->entry_count == aws_hash_table_deep_entry_count(map));
+bool aws_hash_table_entry_count_is_valid(const struct aws_hash_table *const map) {
+  return map->p_impl->entry_count == aws_hash_table_deep_entry_count(map);
 }

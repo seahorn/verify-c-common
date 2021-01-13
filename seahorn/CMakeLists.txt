@@ -492,4 +492,6 @@ if(${SEA_WITH_BLEEDING_EDGE})
   add_subdirectory(jobs/ring_buffer_buf_belongs_to_pool)
   add_subdirectory(jobs/ring_buffer_acquire_up_to)
 
+  add_subdirectory(jobs/hash_table_foreach_deep)
+
 endif()
