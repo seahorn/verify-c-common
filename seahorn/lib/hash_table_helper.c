@@ -15,7 +15,7 @@ void initialize_bounded_aws_hash_table(struct aws_hash_table *map,
   assume(num_entries <= max_table_entries);
   assume(aws_is_power_of_two(num_entries));
 
-  size_t required_bytes;
+  size_t required_bytes = nd_size_t();
   /* assume setting required_bytes is successful */
   assume(hash_table_state_required_bytes(num_entries, &required_bytes) ==
          AWS_OP_SUCCESS);
