@@ -28,9 +28,9 @@ int s_expand_table(struct aws_hash_table *map) {
    * values for the entries */
   size_t required_bytes = sizeof(struct hash_table_state) +
                           template.size * sizeof(struct hash_table_entry);
-  /* An empty slot has hashcode 0. So this marks all slots as empty */
   struct hash_table_state *new_state = can_fail_malloc(required_bytes);
 #else
+  /* An empty slot has hashcode 0. So this marks all slots as empty */
   struct hash_table_state *new_state = s_alloc_state(&template);
 #endif
 

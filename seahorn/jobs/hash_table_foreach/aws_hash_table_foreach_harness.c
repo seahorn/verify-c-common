@@ -32,4 +32,5 @@ int main(void) {
    * iterator could have modified the table
    */
   sassert(aws_hash_table_is_valid(&map));
+  return 0;
 }

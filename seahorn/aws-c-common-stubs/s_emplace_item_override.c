@@ -25,7 +25,6 @@ struct hash_table_entry *s_emplace_item(struct hash_table_state *state,
   assume(index < state->size);
   assume(state->slots[index].hash_code == 0);
   state->slots[index] = entry;
-  size_t empty_slot_idx;
   AWS_POSTCONDITION(hash_table_state_is_valid(state),
                     "Output hash_table_state [state] must be valid.");
   return &state->slots[index];
