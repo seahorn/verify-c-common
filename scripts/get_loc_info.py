@@ -7,17 +7,11 @@ import math
 import subprocess
 import argparse
 
-# Args for this script
-parser = argparse.ArgumentParser(description='Present debug flag if using debug mode.')
-parser.add_argument('--debug', action='store_true', default=False)
-args=parser.parse_args()
-
-builddir = '../build/'
-buildabspath = os.path.abspath(builddir)
-dataabspath = os.path.abspath('../') + "/data"
-harness_path = f'{buildabspath}/seahorn/jobs'
-benchsubdirs = sorted(next(os.walk(f'{builddir}/seahorn/jobs'))[1])
-# benchsubdirs = ['add_size_checked', 'array_list_back']
+BUILDDIR = '../build/'
+BUILDABSPATH = os.path.abspath(BUILDDIR)
+DATAABSPATH = os.path.abspath('../') + "/data"
+HARNESS_PATH = f'{BUILDABSPATH}/seahorn/jobs'
+BENCHSUBDIRS = sorted(next(os.walk(f'{BUILDDIR}/seahorn/jobs'))[1])
 
 
 def get_regex_based_on_func_name(func_name):
@@ -42,9 +36,7 @@ def get_line_info(str_info):
     line_loc_regexp = re.compile(r'!DILocation')
     if not line_loc_regexp.search(str_info):
         return -1
-    # print(str_info)
     tmp_str = str_info.split("line: ")[1]
-    # print(tmp_str)
     line = tmp_str.split(",")[0]
     return line
 
@@ -115,32 +107,36 @@ def get_next_func_call(data, name, index):
     return None, None, None
 
 
-def compute_loc_of_func(data, name, total_loc):
+def compute_loc_of_func(data, name, total_loc, func_dict):
     """
      # This function compute line of code of each function started by main
-     # We treat declare function as one line of code, 
+     # We treat declare function as one line of code,
      #      those function will be either simplified code or predefined code on seahorn
      # The function recursively compute each called function on the harness
      # Then it collect loc of current function and store it into total_loc
      # @param data stored data from .ll file.
      # @param name the function name we used
      # @param total_loc the result of loc that we computed
+     # @param func_dict the dictionary to store function name we already computed
      # @return nothing, use call by ref.
     """
     name_regexp, _ = get_regex_based_on_func_name(name)
     for index, plain_d in enumerate(data, start=1):
         if name_regexp.search(plain_d):
             if 'declare' in plain_d:  # no definition, assume one line code
-                total_loc[0] += 1
-                break
-            while True:
-                call_name, debug_name, index = get_next_func_call(
-                    data, name, index + 1)
-                if not call_name and not debug_name:
-                    break
-                # print(name, call_name, debug_name)
-                compute_loc_of_func(data, call_name, total_loc)
-            curr_loc = current_func_loc(data, name)
+                curr_loc = 0 if name in func_dict else 1
+                func_dict[name] = "done"
+            else:
+                while True:
+                    call_name, debug_name, index = get_next_func_call(
+                        data, name, index + 1)
+                    if not call_name and not debug_name:
+                        break
+                    if debug_name in func_dict:
+                        continue
+                    compute_loc_of_func(data, call_name, total_loc, func_dict)
+                    func_dict[debug_name] = "done"
+                curr_loc = current_func_loc(data, name)
             if args.debug:
                 print(f'tot. {total_loc}, func <{name}> with loc: {curr_loc}')
             total_loc[0] += curr_loc
@@ -157,12 +153,12 @@ def read_output_from_file(file_name, bench_name):
         print(f'start compute loc for harness <{bench_name}>')
     main_regexp, main_debug_regexp = get_regex_based_on_func_name('main')
     res_data = ['', '']
-    plain_data = data
     # 1. Add harness name
     res_data[0] = bench_name
     loc = [0]
     # 2. Add loc for each harness
-    compute_loc_of_func(data, 'main', loc)
+    func_dict = {}  # a dictionary to store any funcs we computed
+    compute_loc_of_func(data, 'main', loc, func_dict)
     res_data[1] = loc[0]
     if args.debug:
         print(f'har. {bench_name} with loc comp. {res_data[1]}...')
@@ -179,9 +175,9 @@ def run_llvmdis_for_harness(res_data):
      # @return nothing, use call by ref.
     """
     print("Start making LOC results ...")
-    for benchsubdir in benchsubdirs:
+    for benchsubdir in BENCHSUBDIRS:
         remain_path = f'{benchsubdir}/llvm-ir/{benchsubdir}.ir/{benchsubdir}.ir.bc'
-        file_name = f'{harness_path}/{remain_path}'
+        file_name = f'{HARNESS_PATH}/{remain_path}'
         command_lst = [f'llvm-dis-10 {file_name}']
         cmd_llvmdis = ""
         for strcmd in command_lst:
@@ -208,12 +204,17 @@ def write_data_into_csv(file_name, res_data):
 
 
 def main():
-    os.makedirs(dataabspath, exist_ok=True)
-    os.makedirs(buildabspath, exist_ok=True)
+    os.makedirs(DATAABSPATH, exist_ok=True)
+    os.makedirs(BUILDABSPATH, exist_ok=True)
     res_data = []
     run_llvmdis_for_harness(res_data)
     write_data_into_csv("../data/{file}".format(file='loc.csv'), res_data)
 
 
 if __name__ == "__main__":
+    # Args for this script
+    parser = argparse.ArgumentParser(
+        description='Present debug flag if using debug mode.')
+    parser.add_argument('--debug', action='store_true', default=False)
+    args = parser.parse_args()
     main()
