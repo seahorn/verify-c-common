@@ -22,6 +22,7 @@
 #include <nondet.h>
 #include <seahorn/seahorn.h>
 
+#include <hash_table_helper.h>
 #include <stdlib.h>
 
 int s_update_template_size(struct hash_table_state *template,
