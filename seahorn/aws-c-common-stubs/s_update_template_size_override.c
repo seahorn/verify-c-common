@@ -7,7 +7,13 @@
  * point multiplication with nd_size_t;
  * max_load = min { max_load_factor * size, size - 1 }
  * so its ok to just set it to a non-det int such that:
- * entry_count <= max_load < size
+ * max_load < size
+ * and max_load > entry_count
+ * not that new max_load needs to be strictly greater than current
+ * entry_count since it's possible for hash_table functions to increase
+ * entry_count after updating template size; in fact, a common use case
+ * for this function is to expand the size and max_load of a hash_table,
+ * so it's wrong to have max_load >= entry_count as a post-condition
  */
 
 #include <aws/common/hash_table.h>
@@ -37,7 +43,7 @@ int s_update_template_size(struct hash_table_state *template,
   template->size = size;
   template->max_load = nd_size_t();
   assume(template->max_load < size);
-  assume(template->max_load >= template->entry_count);
+  assume(template->max_load > template->entry_count);
 #else
   template->max_load =
       (size_t)(template->max_load_factor * (double)template->size);
