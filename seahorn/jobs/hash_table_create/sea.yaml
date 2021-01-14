@@ -1,0 +1,3 @@
+verify_options:
+  bound: "@UNROLL_BOUND@"
+  horn-bmc-tactic: smtfd
