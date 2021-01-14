@@ -38,3 +38,6 @@ bool aws_hash_table_entry_count_is_valid(const struct aws_hash_table *const map)
 
 /* returns true if hash_code of all entries are 0 */
 bool aws_hash_table_deep_is_empty(const struct aws_hash_table *const map);
+
+int s_update_template_size(struct hash_table_state *template,
+                           size_t expected_elements);

@@ -32,6 +32,18 @@ llvmir_attach_opt_pass_target(TARGET hash_table.opt.ir DEPENDS hash_table.ir
 add_library(update_template_size_override s_update_template_size_override.c)
 sea_attach_bc(update_template_size_override)
 
+add_library(safe_eq_check_override s_safe_eq_check_override.c)
+sea_attach_bc(safe_eq_check_override)
+
+add_library(emplace_item_override s_emplace_item_override.c)
+sea_attach_bc(emplace_item_override)
+
+add_library(expand_table_override s_expand_table_override.c)
+sea_attach_bc(expand_table_override)
+
+add_library(hash_for_override s_hash_for_override.c)
+sea_attach_bc(hash_for_override)
+
 add_library(hash_table_state_is_valid_override hash_table_state_is_valid_override.c)
 sea_attach_bc(hash_table_state_is_valid_override)
 
