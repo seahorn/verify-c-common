@@ -49,3 +49,6 @@ sea_attach_bc(hash_table_state_is_valid_override)
 
 add_library(hash_table_state_is_valid_ignore_entry_count_override hash_table_state_is_valid_ignore_entry_count_override.c)
 sea_attach_bc(hash_table_state_is_valid_ignore_entry_count_override)
+
+add_library(aws_hash_iter_overrides aws_hash_iter_overrides.c)
+sea_attach_bc(aws_hash_iter_overrides)

@@ -5,8 +5,8 @@
 #include <seahorn/seahorn.h>
 #include <utils.h>
 
-/** Version of hash_table_foreach with stubbed hash_iter_* functions; loops
- * are replaced with non-det jumps
+/** No-stubbing version of hash_table_foreach with precise pre-condition
+ *  that entry_count matches actual number of empty slot.
  */
 
 int hash_table_foreach_proof_callback(void *context,
@@ -20,7 +20,7 @@ int main(void) {
   struct aws_hash_table map;
   initialize_bounded_aws_hash_table(&map, MAX_TABLE_SIZE);
   ensure_hash_table_has_valid_destroy_functions(&map);
-//   assume(aws_hash_table_entry_count_is_valid(&map));
+  assume(aws_hash_table_entry_count_is_valid(&map));
   map.p_impl->equals_fn = nondet_equals;
   map.p_impl->hash_fn = uninterpreted_hasher;
   assume(aws_hash_table_is_valid(&map));
