@@ -5,9 +5,7 @@ add_executable(
 )
 target_compile_definitions(
   priority_queue_remove
-  PUBLIC MAX_ITEM_SIZE=2
-  MAX_INITIAL_ITEM_ALLOCATION=9223372036854775808ULL
-  MAX_PRIORITY_QUEUE_ITEMS=5
+  PUBLIC MAX_PRIORITY_QUEUE_ITEMS=5
   MAX_HEAP_HEIGHT=3
 )
 sea_link_libraries(priority_queue_remove priority_queue.opt.ir)

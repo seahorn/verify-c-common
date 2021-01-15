@@ -250,14 +250,7 @@ macro(sea_add_klee_bc name)
 
   set(TARGET_KLEE "${name}.klee")
   add_executable(${TARGET_KLEE} ${ARG_UNPARSED_ARGUMENTS})
-  target_compile_definitions(${TARGET_KLEE} PUBLIC 
-    MAX_BUFFER_SIZE=${MAX_BUFFER_SIZE}
-    MAX_STRING_LEN=${MAX_STRING_LEN}
-    KLEE_MAX_SIZE=${KLEE_MAX_SIZE}
-    MAX_ITEM_SIZE=${MAX_ITEM_SIZE}
-    MAX_INITIAL_ITEM_ALLOCATION=${MAX_INITIAL_ITEM_ALLOCATION}
-    __KLEE__=1
-    )
+  target_compile_definitions(${TARGET_KLEE} PRIVATE __KLEE__)
   klee_attach_bc_link(${TARGET_KLEE})
 endmacro()
 
@@ -272,8 +265,6 @@ endfunction()
 if(SEA_ENABLE_KLEE)
   add_subset_test_target("klee_test" "klee_" "klee")
   add_subset_test_target("sea_test" "unsat_test" "seahorn")
-  # The next line of code sets up a subset of unit testing for new harness files (*.klee.c)
-  # add_subset_test_target("sea_temp_test" "unsat_temp_" "temp seahorn")
 endif()
 
 function(sea_add_klee_test TARGET)
@@ -313,6 +304,8 @@ add_definitions(
   -DMAX_STRING_LEN=${MAX_STRING_LEN}
   -DMAX_LINKED_LIST_ITEM_ALLOCATION_SIZE=${MAX_LINKED_LIST_ITEM_ALLOCATION_SIZE}
   -DMAX_TABLE_SIZE=${MAX_TABLE_SIZE}
+  -DMAX_ITEM_SIZE=${MAX_ITEM_SIZE}
+  -DMAX_INITIAL_ITEM_ALLOCATION=${MAX_INITIAL_ITEM_ALLOCATION}
   -DKLEE_MAX_SIZE=${KLEE_MAX_SIZE}
   )
 
