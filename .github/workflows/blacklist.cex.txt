@@ -8,3 +8,5 @@ ring_buffer_clean_up_unsat_test
 linked_list_pop_front_unsat_test
 string_eq_c_str_unsat_test
 hash_table_create_unsat_test
+hash_table_remove_unsat_test
+hash_table_put_unsat_test
