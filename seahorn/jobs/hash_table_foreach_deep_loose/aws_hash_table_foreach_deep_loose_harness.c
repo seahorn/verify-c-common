@@ -5,7 +5,8 @@
 #include <seahorn/seahorn.h>
 #include <utils.h>
 
-/* pre-condition that entry_count matches actual number of empty slot
+/** No-stubbing version of hash_table_foreach with loose pre-cond. & post-cond.
+    pre-condition that entry_count matches actual number of non-empty slot
     is too expensive to check, so this job will use a stub of
     hash_table_state_is_valid that ignores entry_count
  */
@@ -21,7 +22,7 @@ int main(void) {
   struct aws_hash_table map;
   initialize_bounded_aws_hash_table(&map, MAX_TABLE_SIZE);
   ensure_hash_table_has_valid_destroy_functions(&map);
-  assume(aws_hash_table_entry_count_is_valid(&map));
+  //   assume(aws_hash_table_entry_count_is_valid(&map));
   map.p_impl->equals_fn = nondet_equals;
   map.p_impl->hash_fn = uninterpreted_hasher;
   assume(aws_hash_table_is_valid(&map));

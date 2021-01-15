@@ -10,3 +10,4 @@ string_eq_c_str_unsat_test
 hash_table_create_unsat_test
 hash_table_remove_unsat_test
 hash_table_put_unsat_test
+hash_table_foreach_unsat_test
