@@ -10,8 +10,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
+extern void klee_assume(uintptr_t condition);
+
 #ifdef __KLEE__ // define macros for KLEE_ASSUME, the assumption for KLEE only
-#define KLEE_ASSUME(X) __VERIFIER_assume(X)
+#define KLEE_ASSUME(X) klee_assume(X)
 #else 
 #define KLEE_ASSUME(X) 
 #endif

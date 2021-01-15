@@ -24,7 +24,6 @@ void initialize_array_list(struct aws_array_list *const list) {
 
 void initialize_bounded_array_list(struct aws_array_list *const list) {
   list->current_size = nd_size_t();
-  // No need for seahorn of assume(list->current_size <= SIZE_MAX);
   list->item_size = nd_size_t();
   list->length = nd_size_t();
   list->data = can_fail_malloc(list->current_size);
