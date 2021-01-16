@@ -14,14 +14,17 @@
 int main() {
     /* data structure */
     struct aws_array_list list;
-    initialize_array_list(&list);
+    initialize_bounded_array_list(&list);
 
     /* parameters */
     struct aws_allocator *allocator = sea_allocator(); /* Precondition: allocator is non-null */
 
     size_t item_size = nd_size_t();
-    assume(item_size > 0 && item_size <= MAX_ITEM_SIZE);
     size_t initial_item_allocation = nd_size_t();
+    size_t required_size = 0;
+    KLEE_ASSUME(__builtin_mul_overflow(initial_item_allocation, 
+        item_size, &required_size) == 0 && required_size <= KLEE_MAX_SIZE);
+    assume(item_size > 0 && item_size <= MAX_ITEM_SIZE);
     assume(initial_item_allocation <= MAX_INITIAL_ITEM_ALLOCATION);
 
     /* perform operation under verification */

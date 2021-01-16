@@ -1,0 +1,24 @@
+# workflow to run KLEE tests
+name: KLEE CI
+# Controls when the action will run
+on:
+  push: # temporary allow CI working on push step
+    branches: klee
+  schedule:
+    - cron: 0 0 * * *  # run every day at UTC 00:00
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Out Repo 
+        uses: actions/checkout@v2
+        with:
+          ref: klee  # only checkout klee
+
+      - name: Docker 
+        run: docker build -t verify-c-common . --file docker/verify-c-common-klee.Dockerfile
+
+      - name: Run Tests 
+        run: docker run -t verify-c-common /bin/bash -c "cd build && ctest -R klee_ --timeout 2000"

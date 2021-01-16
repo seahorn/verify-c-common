@@ -34,7 +34,7 @@ if(SEA_ENABLE_KLEE)
   set(SEA_SCPT ${CMAKE_SOURCE_DIR}/seahorn/scripts)
   add_custom_target(
     klee_malloc ALL
-    COMMAND python3 ${SEA_SCPT}/create_alloce_size_switch.py -path ${SEA_LIB} -size ${MAX_BUFFER_SIZE}
+    COMMAND python3 ${SEA_SCPT}/create_alloce_size_switch.py -path ${SEA_LIB} -size ${KLEE_MAX_SIZE}
   )
 endif()
 

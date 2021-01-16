@@ -9,7 +9,9 @@ int main(void) {
   size_t size;
   sea_nd_init_aws_linked_list_from_head(&list, &size);
   struct saved_aws_linked_list to_save = {.saved_size = 0};
-  assume(size > 0);
+  #ifdef __KLEE__
+    if (size == 0) return 0;
+  #endif
 
   /* Keep the old last node of the linked list */
   struct aws_linked_list_node *to_pop = list.head.next;

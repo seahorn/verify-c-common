@@ -16,9 +16,9 @@ size_t sea_max_buffer_size(void);
 size_t sea_max_string_len(void);
 
 /**
-   Returns the current upper bound on array list initial size
+   Returns the current upper bound on memory allocation size for klee
  */
-size_t sea_max_array_list_initial_size(void);
+size_t klee_max_memory_size(void);
 
 /**
    Returns the current upper bound on array list item size

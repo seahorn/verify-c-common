@@ -11,11 +11,7 @@ void initialize_array_list(struct aws_array_list *const list);
 /*
  * Initialize a bounded array list by given a max_initial_size
  */
-void initialize_bounded_array_list(
-    struct aws_array_list *const list,
-    const size_t max_initial_size,
-    const size_t max_initial_item_allocation,
-    const size_t max_item_size);
+void initialize_bounded_array_list(struct aws_array_list *const list);
 
 /*
  * Checks whether aws_array_list is bounded by max_initial_item_allocation and max_item_size

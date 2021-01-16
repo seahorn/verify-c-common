@@ -24,18 +24,18 @@ def create_big_switch():
 def write_switch_into_line(switch_str):
     header_str = "\n#include <klee_switch.h>\n\n"
     try:
-        file = open(klee_switch_file, 'w')
+        with open(klee_switch_file, 'w') as file:
+            file.write(header_str+switch_str)
     except:
         sys.exit("output klee switch file does not exits. Exit!")
-    file.write(header_str+switch_str)
 
 def check_switch_is_consist():
     try:
-        file = open(klee_switch_file, 'r')
+        with open(klee_switch_file, 'r') as file:
+            count = sum(1 for line in file)
+        return max_initial_size > count - 4
     except:
         sys.exit("input klee switch file does not exits. Exit!")
-    count = sum(1 for line in file)
-    return max_initial_size > count - 4
 
 def main():
     if check_switch_is_consist():

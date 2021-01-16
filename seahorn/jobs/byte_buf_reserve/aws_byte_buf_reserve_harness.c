@@ -15,7 +15,11 @@ int main() {
 
     //struct aws_byte_buf old = buf;
     size_t requested_capacity = MAX_BUFFER_SIZE;//nd_size_t();
-    assume(buf.capacity < MAX_BUFFER_SIZE);
+    #ifdef __KLEE__
+        if (buf.capacity >= MAX_BUFFER_SIZE) return 0;
+    #else 
+        assume(buf.capacity < MAX_BUFFER_SIZE);
+    #endif
 
     if (aws_byte_buf_reserve(&buf, requested_capacity) == AWS_OP_SUCCESS) {
         sassert(buf.capacity >= requested_capacity);

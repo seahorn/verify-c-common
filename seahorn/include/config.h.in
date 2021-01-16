@@ -13,8 +13,8 @@
 #define MAX_STRING_LEN @MAX_STRING_LEN@
 #endif
 
-#ifndef MAX_INITIAL_SIZE
-#define MAX_INITIAL_SIZE @MAX_INITIAL_SIZE@
+#ifndef KLEE_MAX_SIZE
+#define KLEE_MAX_SIZE @KLEE_MAX_SIZE@
 #endif
 
 #ifndef MAX_ITEM_SIZE
