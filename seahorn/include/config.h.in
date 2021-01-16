@@ -29,4 +29,12 @@
 #define MAX_TABLE_SIZE @MAX_TABLE_SIZE@
 #endif
 
+#ifndef MAX_PRIORITY_QUEUE_ITEMS
+#define MAX_PRIORITY_QUEUE_ITEMS @MAX_PRIORITY_QUEUE_ITEMS@
+#endif
+
+#ifndef MAX_HEAP_HEIGHT
+#define MAX_HEAP_HEIGHT @MAX_HEAP_HEIGHT@
+#endif
+
 /* clang-format on */
