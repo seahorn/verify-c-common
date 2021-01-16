@@ -297,6 +297,8 @@ set(KLEE_MAX_SIZE 3) # Temporary set the maximum size of array list is 3 due to 
 set(MAX_ITEM_SIZE 2)
 set(MAX_INITIAL_ITEM_ALLOCATION 9223372036854775808ULL)
 set(MAX_TABLE_SIZE 4)
+set(MAX_PRIORITY_QUEUE_ITEMS 5)
+set(MAX_HEAP_HEIGHT 3)
 
 # Compile-time definitions
 add_definitions(
@@ -307,6 +309,8 @@ add_definitions(
   -DMAX_ITEM_SIZE=${MAX_ITEM_SIZE}
   -DMAX_INITIAL_ITEM_ALLOCATION=${MAX_INITIAL_ITEM_ALLOCATION}
   -DKLEE_MAX_SIZE=${KLEE_MAX_SIZE}
+  -DMAX_PRIORITY_QUEUE_ITEMS=${MAX_PRIORITY_QUEUE_ITEMS}
+  -DMAX_HEAP_HEIGHT=${MAX_HEAP_HEIGHT}
   )
 
 configure_file(include/config.h.in ${PROJECT_BINARY_DIR}/include/config.h)
