@@ -3,6 +3,7 @@ project(verify-c-common C CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/llvmir)
 include(LLVMIRUtil)
+include(CTest)
 
 enable_testing()
 
