@@ -8,6 +8,12 @@
 #include <byte_buf_helper.h>
 #include <utils.h>
 
+#ifdef __KLEE__
+bool uninterpreted_predicate_fn(uint8_t value) {
+    return nd_bool();
+}
+#endif
+
 int main() {
     /* parameters */
     struct aws_byte_cursor cur;
