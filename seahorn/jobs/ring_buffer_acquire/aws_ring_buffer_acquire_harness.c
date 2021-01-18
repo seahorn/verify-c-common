@@ -12,6 +12,7 @@
 #include <proof_allocators.h>
 #include <ring_buffer_helper.h>
 #include <seahorn/seahorn.h>
+#include <utils.h>
 
 int main(void) {
   /* parameters */
@@ -24,6 +25,7 @@ int main(void) {
   initialize_ring_buffer(&ring_buf, ring_buf_size);
 
   size_t requested_size = nd_size_t();
+  KLEE_ASSUME(requested_size <= KLEE_MAX_SIZE);
 
   /* assumptions */
   assume(aws_ring_buffer_is_valid(&ring_buf));

@@ -12,6 +12,7 @@
 #include <proof_allocators.h>
 #include <ring_buffer_helper.h>
 #include <seahorn/seahorn.h>
+#include <utils.h>
 
 int main(void) {
   /* parameters */
@@ -25,6 +26,7 @@ int main(void) {
 
   size_t minimum_size = nd_size_t();
   size_t requested_size = nd_size_t();
+  KLEE_ASSUME(requested_size <= KLEE_MAX_SIZE);
 
   /* assumptions */
   assume(requested_size >= minimum_size);

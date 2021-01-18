@@ -5,6 +5,7 @@
 #include <nondet.h>
 #include <seahorn/seahorn.h>
 #include <proof_allocators.h>
+#include <utils.h>
 
 int main(void) {
   /* parameters */
@@ -13,6 +14,7 @@ int main(void) {
   size_t size;
   size = nd_size_t();
   assume(size > 0); /* Precondition */
+  KLEE_ASSUME(size <= KLEE_MAX_SIZE);
 
   if (aws_ring_buffer_init(&ring_buf, allocator, size) == AWS_OP_SUCCESS) {
     /* assertions */
