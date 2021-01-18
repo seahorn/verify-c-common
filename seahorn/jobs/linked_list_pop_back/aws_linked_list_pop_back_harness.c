@@ -11,6 +11,8 @@ int main(void) {
   struct saved_aws_linked_list to_save = {.saved_size = 0};
   #ifdef __KLEE__
     if (size == 0) return 0;
+  #else
+    assume(size > 0);
   #endif
 
   /* Keep the old last node of the linked list */
