@@ -46,6 +46,7 @@ add_library(
   klee_string_helper.c
   klee_priority_queue_helper.c
   utils.c
+  klee_ring_buffer_helper.c
   klee_allocators.c
   sea_allocators.c
   allocator_override.c

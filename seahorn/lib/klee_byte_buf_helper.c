@@ -63,3 +63,11 @@ void ensure_byte_buf_has_allocated_buffer_member(
 bool aws_byte_buf_has_allocator(const struct aws_byte_buf *const buf) {
     return (buf->allocator == sea_allocator());
 }
+
+bool byte_bufs_are_equal(struct aws_byte_buf *b1, struct aws_byte_buf *b2) {
+  if (!b1 || !b2)
+    return b1 == b2;
+
+  return b1->len == b2->len && b1->buffer == b2->buffer &&
+         b1->capacity == b2->capacity && b1->allocator == b2->allocator;
+}
