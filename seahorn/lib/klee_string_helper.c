@@ -22,6 +22,15 @@ struct aws_string *ensure_string_is_allocated_bounded_length(size_t max_size) {
   return ensure_string_is_allocated(len);
 }
 
+struct aws_string *ensure_string_is_allocated_nondet_length(void) {
+  /* Considers any size up to the maximum possible size for the array [bytes] in
+   * aws_string. However, for klee, we need to concretize symbolic size before allocation
+   * set 256 as temporary solution
+   */
+  return ensure_string_is_allocated_bounded_length(KLEE_MAX_STRING_SIZE - 1 -
+                                                   sizeof(struct aws_string));
+}
+
 static const char *_ensure_c_str_is_nd_allocated(size_t max_size, size_t *len,
                                           bool safe) {
     size_t alloc_size;
