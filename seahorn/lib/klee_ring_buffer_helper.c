@@ -24,6 +24,15 @@ void initialize_ring_buffer(struct aws_ring_buffer *ring_buf,
   ring_buf->allocation_end = ring_buf->allocation + size;
 }
 
+/* the function required byte buf passed
+ * points to ring buffer within range [lo,hi]
+ * Klee requires more work to strengthen capacity and length
+ * because byte->buffer is now changed compared with initialization
+ * However, to ensure byte buffer is not NULL
+ * The capacity of new buffer must be greater than 0
+ * The symb exec will failed if assign a new symb value by nd_size_t()
+ * Only allow capacity is a maximum one.
+ */
 void ensure_byte_buf_has_allocated_buffer_member_in_range(
     struct aws_byte_buf *buf, uint8_t *lo, uint8_t *hi) {
   sassert(lo < hi);
@@ -33,7 +42,11 @@ void ensure_byte_buf_has_allocated_buffer_member_in_range(
   buf->buffer = lo + pos;
   size_t max_capacity = hi - buf->buffer;
   sassert(0 < max_capacity);
+  buf->capacity = max_capacity;
   assume(0 < buf->capacity && buf->capacity <= max_capacity);
+  size_t len = nd_size_t();
+  assume(len <= buf->capacity);
+  buf->len = len;
 }
 
 void ensure_byte_buf_has_allocated_buffer_member_in_ring_buf(

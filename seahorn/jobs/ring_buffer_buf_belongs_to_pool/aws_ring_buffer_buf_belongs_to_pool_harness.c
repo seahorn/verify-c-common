@@ -26,7 +26,16 @@ int main(void) {
   /* nondet assignment required to force true/false */
   bool is_member = nd_bool();
   if (is_member) {
-    assume(!aws_ring_buffer_is_empty(&ring_buf));
+    #ifdef __KLEE__
+    /* Inside ensure_byte_buf_has_allocated_buffer_member_in_ring_buf, 
+     * the ring buffer requires the following be True
+     * Use the following code to exclude unqualified program path
+     */
+    if (aws_ring_buffer_is_empty(&ring_buf))
+        return 0;
+    #else
+      assume(!aws_ring_buffer_is_empty(&ring_buf));
+    #endif
     ensure_byte_buf_has_allocated_buffer_member_in_ring_buf(&buf, &ring_buf);
   } else {
     ensure_byte_buf_has_allocated_buffer_member(&buf);
