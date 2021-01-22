@@ -19,6 +19,11 @@ int main(void) {
   bool nondet_parameter = nd_bool();
   aws_string_destroy_secure(nondet_parameter ? str : NULL);
   if (nondet_parameter) {
+    #ifdef __KLEE__
+    // str (even bytes) becomes a dangling pointer used after free
+    // klee does not allow to access memory after free.
+    bytes = NULL;
+    #endif
     assert_all_zeroes(bytes, len);
   }
   return 0;

@@ -303,6 +303,7 @@ endfunction()
 set(MAX_LINKED_LIST_ITEM_ALLOCATION_SIZE 5)
 set(MAX_BUFFER_SIZE 10)
 set(MAX_STRING_LEN 16)
+set(KLEE_MAX_STRING_SIZE 256)
 set(KLEE_MAX_SIZE 3) # Temporary set the maximum size of array list is 3 due to KLEE timeout
 set(MAX_ITEM_SIZE 2)
 set(MAX_ITEM_SIZE_FUZZ 256)
@@ -325,6 +326,7 @@ add_definitions(
   -DKLEE_MAX_SIZE=${KLEE_MAX_SIZE}
   -DMAX_PRIORITY_QUEUE_ITEMS=${MAX_PRIORITY_QUEUE_ITEMS}
   -DMAX_HEAP_HEIGHT=${MAX_HEAP_HEIGHT}
+  -DKLEE_MAX_STRING_SIZE=${KLEE_MAX_STRING_SIZE}
   )
 
 configure_file(include/config.h.in ${PROJECT_BINARY_DIR}/include/config.h)
