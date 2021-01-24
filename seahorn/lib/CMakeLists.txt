@@ -61,8 +61,9 @@ add_library(
   sea_fuzz
   nd_fuzz.c
   fuzz_allocators.c
+  fuzz_byte_buf_helper.c
   fuzz_string_helper.c
   bounds.c
   utils.c
 )
-target_compile_options(sea_fuzz PUBLIC -fdeclspec)
+target_compile_options(sea_fuzz PUBLIC -fdeclspec -fsanitize=fuzzer-no-link,address,undefined -fprofile-instr-generate -fcoverage-mapping)
