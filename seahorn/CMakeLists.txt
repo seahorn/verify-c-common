@@ -223,7 +223,7 @@ macro(sea_add_fuzz_executable name)
   target_link_libraries(${EXE_NAME} PRIVATE AWS::aws-c-common )
   target_link_libraries(${EXE_NAME} PRIVATE sea_fuzz)
 
-  target_compile_options(${EXE_NAME} PRIVATE -fsanitize=fuzzer,address,undefined)
+  target_compile_options(${EXE_NAME} PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fprofile-instr-generate -fcoverage-mapping)
   target_link_libraries(${EXE_NAME} PRIVATE -fsanitize=fuzzer,address,undefined
     -fprofile-instr-generate -fcoverage-mapping)
 endmacro()
@@ -241,6 +241,7 @@ endfunction()
 macro(sea_add_fuzz)
   if(SEA_ENABLE_FUZZ)
     sea_add_fuzz_executable(${ARGV})
+    sea_add_fuzz_test(${ARGV})
   endif()
 endmacro()
 
@@ -287,6 +288,14 @@ function(sea_add_unsat_test TARGET)
   add_test(NAME "${TARGET}_unsat_test" COMMAND ${VERIFY_CMD} ${VERIFY_FLAGS} --expect=unsat ${BC})
 endfunction()
 
+set(FUZZ_FLAGS corpus -use_value_profile=1 -detect_leaks=0 -runs=50000 CACHE STRING "Flags for fuzzing")
+separate_arguments(FUZZ_FLAGS)
+
+function(sea_add_fuzz_test TARGET)
+  add_custom_target("${TARGET}_corpus" ALL COMMAND ${CMAKE_COMMAND} -E make_directory corpus)
+  add_test(NAME "${TARGET}_fuzz_test"
+    COMMAND ${CMAKE_COMMAND} -E env ASAN_OPTIONS=detect_leaks=0 "./${TARGET}_fuzz" ${FUZZ_FLAGS})
+endfunction()
 
 
 # Set upper bound on data structures
