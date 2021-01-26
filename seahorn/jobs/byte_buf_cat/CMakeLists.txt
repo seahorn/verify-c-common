@@ -10,3 +10,5 @@ set_tests_properties(byte_buf_cat_unsat_test PROPERTIES WILL_FAIL ON)
 # Klee will get timeout on this test
 # sea_add_klee(byte_buf_cat ${AWS_C_COMMON_ROOT}/source/byte_buf.c
 #   aws_byte_buf_cat_harness.c)
+
+sea_add_fuzz(byte_buf_cat aws_byte_buf_cat_harness.c)

@@ -8,3 +8,5 @@ sea_add_unsat_test(byte_buf_init_copy)
 # klee
 sea_add_klee(byte_buf_init_copy ${AWS_C_COMMON_ROOT}/source/byte_buf.c
 aws_byte_buf_init_copy_harness.c)
+
+sea_add_fuzz(byte_buf_init_copy aws_byte_buf_init_copy_harness.c)

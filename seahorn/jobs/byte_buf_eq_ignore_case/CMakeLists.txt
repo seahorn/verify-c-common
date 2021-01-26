@@ -5,3 +5,5 @@ sea_attach_bc_link(byte_buf_eq_ignore_case)
 configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(byte_buf_eq_ignore_case)
 
+sea_add_fuzz(byte_buf_eq_ignore_case
+  aws_byte_buf_eq_ignore_case_harness.c)
