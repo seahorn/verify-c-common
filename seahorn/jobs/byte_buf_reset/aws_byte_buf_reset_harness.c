@@ -14,7 +14,7 @@ int main() {
     assume(aws_byte_buf_is_valid(&buf));
 
     struct aws_byte_buf old = buf;
-    bool zero_contents = false;//nd_bool();
+    bool zero_contents = nd_bool();
     aws_byte_buf_reset(&buf, zero_contents);
     sassert(buf.len == 0);
     sassert(buf.allocator == old.allocator);
