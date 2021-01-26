@@ -6,6 +6,9 @@
 
 #include <aws/common/array_list.h>
 #include <aws/common/byte_buf.h>
+
+#include <seahorn/seahorn.h>
+
 #include <nondet.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -14,8 +17,8 @@ extern void klee_assume(uintptr_t condition);
 
 #ifdef __KLEE__ // define macros for KLEE_ASSUME, the assumption for KLEE only
 #define KLEE_ASSUME(X) klee_assume(X)
-#else 
-#define KLEE_ASSUME(X) 
+#else
+#define KLEE_ASSUME(X) assume(X)
 #endif
 
 extern __declspec(noalias) void sea_printf(const char *format, ...);

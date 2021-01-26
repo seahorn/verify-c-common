@@ -223,7 +223,7 @@ macro(sea_add_fuzz_executable name)
   target_link_libraries(${EXE_NAME} PRIVATE AWS::aws-c-common )
   target_link_libraries(${EXE_NAME} PRIVATE sea_fuzz)
 
-  target_compile_options(${EXE_NAME} PRIVATE -fsanitize=fuzzer-no-link,address,undefined -fprofile-instr-generate -fcoverage-mapping)
+  target_compile_options(${EXE_NAME} PRIVATE -fsanitize=fuzzer,address,undefined -fprofile-instr-generate -fcoverage-mapping)
   target_link_libraries(${EXE_NAME} PRIVATE -fsanitize=fuzzer,address,undefined
     -fprofile-instr-generate -fcoverage-mapping)
 endmacro()
@@ -288,7 +288,7 @@ function(sea_add_unsat_test TARGET)
   add_test(NAME "${TARGET}_unsat_test" COMMAND ${VERIFY_CMD} ${VERIFY_FLAGS} --expect=unsat ${BC})
 endfunction()
 
-set(FUZZ_FLAGS corpus -use_value_profile=1 -detect_leaks=0 -runs=5000000 CACHE STRING "Flags for fuzzing")
+set(FUZZ_FLAGS corpus -use_value_profile=1 -detect_leaks=0 -runs=50000 allocator_may_return_null=1 CACHE STRING "Flags for fuzzing")
 separate_arguments(FUZZ_FLAGS)
 
 function(sea_add_fuzz_test TARGET)
