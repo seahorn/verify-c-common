@@ -482,6 +482,7 @@ add_subdirectory(jobs/priority_queue_init_static)
 add_subdirectory(jobs/priority_queue_init_dynamic)
 add_subdirectory(jobs/priority_queue_clean_up)
 add_subdirectory(jobs/ring_buffer_clean_up)
+add_subdirectory(jobs2/byte_buf_eq2)
 
 add_subdirectory(jobs/ring_buffer_init)
 if(${SEA_WITH_BLEEDING_EDGE})
