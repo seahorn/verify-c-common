@@ -33,11 +33,11 @@ void initialize_bounded_array_list(struct aws_array_list *const list) {
   /* length <= max_initial_item_allocation */
   list->length = nd_size_t();
   list->length %= max_initial_item_allocation;
-  list->length = (list->length == 0) ? 1 : list->length;
+  // list->length = (list->length == 0) ? 1 : list->length;
 
   list->current_size = list->item_size * list->length;
 
-  list->data = can_fail_malloc(list->current_size);
+  list->data = (list->current_size == 0) ? NULL : can_fail_malloc(list->current_size);
   list->alloc = sea_allocator();
 }
 
