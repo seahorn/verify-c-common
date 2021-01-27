@@ -2,11 +2,12 @@
  *
  */
 
-#include <seahorn/seahorn.h>
-#include <aws/common/array_list.h>
 #include <array_list_helper.h>
-#include <utils.h>
+#include <aws/common/array_list.h>
+#include <config.h>
 #include <proof_allocators.h>
+#include <seahorn/seahorn.h>
+#include <utils.h>
 
 /**
  * Runtime: 7s
