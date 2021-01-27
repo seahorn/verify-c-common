@@ -16,6 +16,9 @@ void initialize_byte_buf(struct aws_byte_buf *const buf) {
   buf->len = len;
   buf->capacity = cap;
   buf->buffer = can_fail_malloc(cap * sizeof(*(buf->buffer)));
+  if (buf->buffer) {
+    memhavoc(buf->buffer, cap * sizeof(*(buf->buffer)));
+  }
   buf->allocator = sea_allocator();
 }
 
