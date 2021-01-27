@@ -14,10 +14,12 @@ int main() {
     assume(aws_byte_buf_is_valid(&buf));
 
     //struct aws_byte_buf old = buf;
-    size_t requested_capacity = MAX_BUFFER_SIZE;//nd_size_t();
+    size_t requested_capacity = nd_size_t();
     #ifdef __KLEE__
+        if (requested_capacity > MAX_BUFFER_SIZE) return 0;
         if (buf.capacity >= MAX_BUFFER_SIZE) return 0;
     #else 
+        assume(requested_capacity <= MAX_BUFFER_SIZE);
         assume(buf.capacity < MAX_BUFFER_SIZE);
     #endif
 

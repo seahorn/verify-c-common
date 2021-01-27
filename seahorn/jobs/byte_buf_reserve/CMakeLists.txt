@@ -4,6 +4,7 @@ add_executable(byte_buf_reserve
 target_compile_definitions(byte_buf_reserve 
   PUBLIC MAX_BUFFER_SIZE=${MAX_BUFFER_SIZE})
 sea_attach_bc_link(byte_buf_reserve)
+configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(byte_buf_reserve)
 
 # klee
