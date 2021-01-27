@@ -14,6 +14,7 @@ ALL_FUZZ_FILENAME = 'all_fuzz.info'
 LLVM_COV = shutil.which('llvm-cov-10')
 LLVM_PROFDATA = shutil.which('llvm-profdata-10')
 LCOV = shutil.which('lcov')
+GENHTML = shutil.which('genhtml')
 
 
 def _generate_coverage_data(fuzz_binary, out_dir):
@@ -107,8 +108,18 @@ def main(args):
   if len(lcov_cmd) == 1:
     print("no trace files found, exiting...")
     return
-  lcov_cmd.extend(['-o', os.path.join(coverage_dir, ALL_FUZZ_FILENAME)])
+  all_fuzz_file = os.path.join(coverage_dir, ALL_FUZZ_FILENAME)
+  lcov_cmd.extend(['-o', all_fuzz_file])
   subprocess.check_call(lcov_cmd)
+
+  if args.html_dir is None:
+    return
+  html_dir = os.path.abspath(args.html_dir)
+  os.makedirs(html_dir, exist_ok=True)
+  genhtml_cmd = [GENHTML, '-o', html_dir, all_fuzz_file]
+  print("outputing html reports in {}".format(html_dir))
+  subprocess.check_call(genhtml_cmd)
+
 
 
 
@@ -117,9 +128,13 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser(
     description="Full path to build directory, defaults to <vcc_root>/build"
   )
-  parser.add_argument('--build_dir', '-d',
+  parser.add_argument('--build-dir', '-d',
     type=str,
     help="path to build directory of Verify C Common",
+    dest='build_dir',
     default=DEFAULT_BUILD_DIR)
+  parser.add_argument('--html-dir', type=str, dest='html_dir',
+    help="if provided, create html reports in specified directory",
+    default=None)
   args = parser.parse_args()
   main(args)
