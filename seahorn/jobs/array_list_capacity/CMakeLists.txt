@@ -7,3 +7,5 @@ sea_add_unsat_test(array_list_capacity)
 # klee
 sea_add_klee(array_list_capacity ${AWS_C_COMMON_ROOT}/source/array_list.c
 aws_array_list_capacity_harness.c)
+
+sea_add_fuzz(array_list_capacity aws_array_list_capacity_harness.c)

@@ -30,4 +30,14 @@ size_t sea_max_array_list_item_size(void);
  */
 size_t sea_max_array_list_len(void);
 
+/**
+   Returns the current upper bound on array list item size for fuzzing
+ */
+size_t fuzz_max_array_list_item_size(void);
+
+/**
+   Returns the current upper bound on array list length for fuzzing
+ */
+size_t fuzz_max_array_list_len(void);
+
 SEAHORN_EXTERN_C_END
