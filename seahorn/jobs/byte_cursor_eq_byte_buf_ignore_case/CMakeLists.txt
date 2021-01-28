@@ -9,3 +9,6 @@ sea_add_unsat_test(byte_cursor_eq_byte_buf_ignore_case)
 sea_add_klee(byte_cursor_eq_byte_buf_ignore_case
   ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   aws_byte_cursor_eq_byte_buf_ignore_case_harness.c)
+
+sea_add_fuzz(byte_cursor_eq_byte_buf_ignore_case
+  aws_byte_cursor_eq_byte_buf_ignore_case_harness.c)

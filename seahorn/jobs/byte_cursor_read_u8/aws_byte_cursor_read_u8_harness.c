@@ -14,6 +14,7 @@ int main() {
     initialize_byte_cursor(&cur);
     size_t length = nd_size_t();
     assume(length >= 1);
+    assume(length < MAX_BUFFER_SIZE);
     uint8_t *dest = bounded_malloc(length);
 
     /* assumptions */
@@ -41,4 +42,5 @@ int main() {
         sassert(cur.ptr == old_cur.ptr + 1);
         sassert(cur.len == old_cur.len - 1);
     }
+    return 0;
 }

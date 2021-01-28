@@ -41,4 +41,5 @@ int main() {
     sassert(aws_byte_buf_is_valid(&buf));
     sassert(aws_byte_cursor_is_valid(&src));
     assert_byte_cursor_equivalence(&src, &src_old, &old_byte_from_src);
+    return 0;
 }
