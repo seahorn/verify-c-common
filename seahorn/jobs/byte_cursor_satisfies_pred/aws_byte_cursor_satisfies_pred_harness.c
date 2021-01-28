@@ -8,7 +8,7 @@
 #include <byte_buf_helper.h>
 #include <utils.h>
 
-#ifdef __KLEE__
+#if defined(__KLEE__) || defined(__FUZZ__)
 bool uninterpreted_predicate_fn(uint8_t value) {
     return nd_bool();
 }
@@ -35,4 +35,5 @@ int main() {
     if (cur.len > 0) {
         assert_byte_from_buffer_matches(cur.ptr, &old_byte_from_cur);
     }
+    return 0;
 }

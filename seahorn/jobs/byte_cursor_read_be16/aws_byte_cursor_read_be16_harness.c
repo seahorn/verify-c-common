@@ -43,4 +43,5 @@ int main() {
         sassert(cur.ptr == old_cur.ptr + 2);
         sassert(cur.len == old_cur.len - 2);
     }
+    return 0;
 }

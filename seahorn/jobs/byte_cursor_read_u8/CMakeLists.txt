@@ -5,3 +5,6 @@ sea_overlink_libraries(byte_cursor_read_u8 byte_cursor_advance_nospec_override.i
 sea_attach_bc_link(byte_cursor_read_u8)
 configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(byte_cursor_read_u8)
+
+sea_add_fuzz(byte_cursor_read_u8
+  aws_byte_cursor_read_u8_harness.c)
