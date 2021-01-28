@@ -23,6 +23,18 @@ extern void klee_assume(uintptr_t condition);
 #define KLEE_ASSUME(X)
 #endif
 
+#ifdef __FUZZ__
+#define FUZZ_ASSUME(X) assume(X)
+#else
+#define FUZZ_ASSUME(X)
+#endif
+
+#ifdef __FUZZ__ // set upper bound of X to Y during fuzzing
+#define FUZZ_ASSUME_LT(X, Y) X %= Y
+#else
+#define FUZZ_ASSUME_LT(X, Y)
+#endif
+
 extern __declspec(noalias) void sea_printf(const char *format, ...);
 
 #define IMPLIES(a, b) (!(a) || (b))
