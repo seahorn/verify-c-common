@@ -22,9 +22,9 @@ int main(void) {
     #ifdef __KLEE__
     // str (even bytes) becomes a dangling pointer used after free
     // klee does not allow to access memory after free.
-    bytes = NULL;
-    #endif
+    #else
     assert_all_zeroes(bytes, len);
+    #endif
   }
   return 0;
 }
