@@ -14,7 +14,7 @@ int main() {
     initialize_byte_cursor(&cur);
     size_t length = nd_size_t();
     assume(length >= 1);
-    assume(length < MAX_BUFFER_SIZE);
+    FUZZ_ASSUME_LT(length, MAX_BUFFER_SIZE);
     uint8_t *dest = bounded_malloc(length);
 
     /* assumptions */
