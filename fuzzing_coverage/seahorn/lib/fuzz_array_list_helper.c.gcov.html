@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - seahorn/lib/fuzz_array_list_helper.c</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">seahorn/lib</a> - fuzz_array_list_helper.c<span style="font-size: 80%;"> (source / <a href="fuzz_array_list_helper.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">18</td>
+            <td class="headerCovTableEntry">31</td>
+            <td class="headerCovTableEntryLo">58.1 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-01-29 15:52:26</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntryLo">33.3 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  * aws_array_list helpers but for fuzzing
+<span class="lineNum">       3 </span>            :  */
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            : #include &lt;array_list_helper.h&gt;
+<span class="lineNum">       6 </span>            : #include &lt;aws/common/array_list.h&gt;
+<span class="lineNum">       7 </span>            : #include &lt;aws/common/common.h&gt;
+<span class="lineNum">       8 </span>            : #include &lt;bounds.h&gt;
+<span class="lineNum">       9 </span>            : #include &lt;limits.h&gt;
+<span class="lineNum">      10 </span>            : #include &lt;nondet.h&gt;
+<span class="lineNum">      11 </span>            : #include &lt;proof_allocators.h&gt;
+<span class="lineNum">      12 </span>            : #include &lt;seahorn/seahorn.h&gt;
+<span class="lineNum">      13 </span>            : #include &lt;stdint.h&gt;
+<a name="14"><span class="lineNum">      14 </span>            : #include &lt;stdlib.h&gt;</a>
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span><span class="lineNoCov">          0 : void initialize_array_list(struct aws_array_list *const list) {</span>
+<span class="lineNum">      17 </span><span class="lineNoCov">          0 :   list-&gt;current_size = nd_size_t();</span>
+<span class="lineNum">      18 </span><span class="lineNoCov">          0 :   list-&gt;length = nd_size_t();</span>
+<span class="lineNum">      19 </span><span class="lineNoCov">          0 :   list-&gt;item_size = nd_size_t();</span>
+<span class="lineNum">      20 </span><span class="lineNoCov">          0 :   /// XXX Cannot do this for now</span>
+<span class="lineNum">      21 </span><span class="lineNoCov">          0 :   list-&gt;data = can_fail_malloc(list-&gt;current_size);</span>
+<span class="lineNum">      22 </span><span class="lineNoCov">          0 :   list-&gt;alloc = sea_allocator();</span>
+<a name="23"><span class="lineNum">      23 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      24 </span>            : 
+<span class="lineNum">      25 </span><span class="lineCov">    3590302 : void initialize_bounded_array_list(struct aws_array_list *const list) {</span>
+<span class="lineNum">      26 </span><span class="lineCov">    3590302 :   size_t max_item_size = fuzz_max_array_list_item_size();</span>
+<span class="lineNum">      27 </span><span class="lineCov">    3590302 :   size_t max_initial_item_allocation = fuzz_max_array_list_len();</span>
+<span class="lineNum">      28 </span><span class="lineCov">    3590302 : </span>
+<span class="lineNum">      29 </span><span class="lineCov">    3590302 :   /* item_size &lt;= max_item_size */</span>
+<span class="lineNum">      30 </span><span class="lineCov">    3590302 :   list-&gt;item_size = nd_size_t();</span>
+<span class="lineNum">      31 </span><span class="lineCov">    3590302 :   list-&gt;item_size %= max_item_size;</span>
+<span class="lineNum">      32 </span><span class="lineCov">    3590302 :   list-&gt;item_size = (list-&gt;item_size == 0) ? 1 : list-&gt;item_size;</span>
+<span class="lineNum">      33 </span><span class="lineCov">    3590302 :   /* length &lt;= max_initial_item_allocation */</span>
+<span class="lineNum">      34 </span><span class="lineCov">    3590302 :   list-&gt;length = nd_size_t();</span>
+<span class="lineNum">      35 </span><span class="lineCov">    3590302 :   list-&gt;length %= max_initial_item_allocation;</span>
+<span class="lineNum">      36 </span><span class="lineCov">    3590302 :   // list-&gt;length = (list-&gt;length == 0) ? 1 : list-&gt;length;</span>
+<span class="lineNum">      37 </span><span class="lineCov">    3590302 : </span>
+<span class="lineNum">      38 </span><span class="lineCov">    3590302 :   list-&gt;current_size = list-&gt;item_size * list-&gt;length;</span>
+<span class="lineNum">      39 </span><span class="lineCov">    3590302 : </span>
+<span class="lineNum">      40 </span><span class="lineCov">    3590302 :   list-&gt;data = (list-&gt;current_size == 0) ? NULL : can_fail_malloc(list-&gt;current_size);</span>
+<span class="lineNum">      41 </span><span class="lineCov">    3590302 :   list-&gt;alloc = sea_allocator();</span>
+<span class="lineNum">      42 </span><span class="lineCov">    3590302 : }</span>
+<span class="lineNum">      43 </span>            : 
+<a name="44"><span class="lineNum">      44 </span>            : bool aws_array_list_is_bounded(const struct aws_array_list *const list,</a>
+<span class="lineNum">      45 </span>            :                                const size_t max_initial_item_allocation,
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :                                const size_t max_item_size) {</span>
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :   bool item_size_is_bounded = list-&gt;item_size &lt;= max_item_size;</span>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :   bool length_is_bounded = list-&gt;length &lt;= max_initial_item_allocation;</span>
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 :   return item_size_is_bounded &amp;&amp; length_is_bounded;</span>
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

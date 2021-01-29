@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - seahorn/jobs/array_eq_c_str/aws_array_eq_c_str_harness.c</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../index.html">top level</a> - <a href="index.html">seahorn/jobs/array_eq_c_str</a> - aws_array_eq_c_str_harness.c<span style="font-size: 80%;"> (source / <a href="aws_array_eq_c_str_harness.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">39</td>
+            <td class="headerCovTableEntry">39</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-01-29 15:52:26</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  * 
+<span class="lineNum">       3 </span>            :  */
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            : #include &quot;nondet.h&quot;
+<span class="lineNum">       6 </span>            : #include &lt;seahorn/seahorn.h&gt;
+<span class="lineNum">       7 </span>            : #include &lt;aws/common/byte_buf.h&gt;
+<span class="lineNum">       8 </span>            : #include &lt;proof_allocators.h&gt;
+<span class="lineNum">       9 </span>            : #include &lt;string_helper.h&gt;
+<a name="10"><span class="lineNum">      10 </span>            : #include &lt;utils.h&gt;</a>
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span><span class="lineCov">     150000 : int main() {</span>
+<span class="lineNum">      13 </span><span class="lineCov">     150000 :   /* assumptions */</span>
+<span class="lineNum">      14 </span><span class="lineCov">     150000 :   size_t array_len = nd_size_t();</span>
+<span class="lineNum">      15 </span><span class="lineCov">     150000 :   assume(array_len &lt;= MAX_BUFFER_SIZE);</span>
+<span class="lineNum">      16 </span><span class="lineCov">     150000 :   uint8_t *array = bounded_malloc(array_len);</span>
+<span class="lineNum">      17 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      18 </span><span class="lineCov">     150000 :   size_t str_len = 0;</span>
+<span class="lineNum">      19 </span><span class="lineCov">     150000 :   const char *c_str =</span>
+<span class="lineNum">      20 </span><span class="lineCov">     150000 :       ensure_c_str_is_nd_allocated_safe(MAX_BUFFER_SIZE, &amp;str_len);</span>
+<span class="lineNum">      21 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      22 </span><span class="lineCov">     150000 :   /* save current state of the parameters */</span>
+<span class="lineNum">      23 </span><span class="lineCov">     150000 :   struct store_byte_from_buffer old_byte_from_array;</span>
+<span class="lineNum">      24 </span><span class="lineCov">     150000 :   save_byte_from_array(array, array_len, &amp;old_byte_from_array);</span>
+<span class="lineNum">      25 </span><span class="lineCov">     150000 :   struct store_byte_from_buffer old_byte_from_str;</span>
+<span class="lineNum">      26 </span><span class="lineCov">     150000 :   save_byte_from_array((uint8_t *)c_str, str_len, &amp;old_byte_from_str);</span>
+<span class="lineNum">      27 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      28 </span><span class="lineCov">     150000 :   /* pre-conditions */</span>
+<span class="lineNum">      29 </span><span class="lineCov">     150000 :   assume(array || (array_len == 0));</span>
+<span class="lineNum">      30 </span><span class="lineCov">     150000 :   assume(c_str);</span>
+<span class="lineNum">      31 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      32 </span><span class="lineCov">     150000 :   /* operation under verification */</span>
+<span class="lineNum">      33 </span><span class="lineCov">     150000 :     if (aws_array_eq_c_str(array, array_len, c_str)) {</span>
+<span class="lineNum">      34 </span><span class="lineCov">      11721 :         /* asserts equivalence */</span>
+<span class="lineNum">      35 </span><span class="lineCov">      11721 :         sassert(array_len == str_len);</span>
+<span class="lineNum">      36 </span><span class="lineCov">      11721 :         if (array_len &gt; 0) {</span>
+<span class="lineNum">      37 </span><span class="lineCov">       3852 :             assert_bytes_match(array, (uint8_t *)c_str, array_len);</span>
+<span class="lineNum">      38 </span><span class="lineCov">       3852 :         }</span>
+<span class="lineNum">      39 </span><span class="lineCov">      11721 :     }</span>
+<span class="lineNum">      40 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      41 </span><span class="lineCov">     150000 :     /* asserts both parameters remain unchanged */</span>
+<span class="lineNum">      42 </span><span class="lineCov">     150000 :     if (array_len &gt; 0) {</span>
+<span class="lineNum">      43 </span><span class="lineCov">       6802 :         assert_byte_from_buffer_matches(array, &amp;old_byte_from_array);</span>
+<span class="lineNum">      44 </span><span class="lineCov">       6802 :     }</span>
+<span class="lineNum">      45 </span><span class="lineCov">     150000 :     if (str_len &gt; 0) {</span>
+<span class="lineNum">      46 </span><span class="lineCov">       9087 :         assert_byte_from_buffer_matches((uint8_t *)c_str, &amp;old_byte_from_str);</span>
+<span class="lineNum">      47 </span><span class="lineCov">       9087 :     }</span>
+<span class="lineNum">      48 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      49 </span><span class="lineCov">     150000 :     return 0;</span>
+<span class="lineNum">      50 </span><span class="lineCov">     150000 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
