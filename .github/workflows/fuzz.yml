@@ -4,23 +4,32 @@ name: Fuzz CI
 on:
   pull_request:
     branches: master
+  push:
+    branches: master
   schedule:
     - cron: 0 0 * * *  # run every day at UTC 00:00
   workflow_dispatch: # temp manual trigger
 
 jobs:
-  build:
+  build-and-fuzz:
     runs-on: ubuntu-latest
 
     steps:
       - name: Check Out Repo 
         uses: actions/checkout@v2
+        with:
+          persist-credentials: false
 
       - name: Docker
         run: docker build -t verify-c-common:fuzz . --file docker/verify-c-common-fuzz.Dockerfile
 
       - name: Run Tests and collect coverage
-        run: docker run -v $(pwd):/host verify-c-common:fuzz /bin/bash -c "cd build && ctest -R fuzz --timeout 2000 && python3 /home/usea/verify-c-common/scripts/get_fuzzing_coverage.py && mv /home/usea/verify-c-common/data/fuzz_coverage/all_fuzz.info /host"
+        run: docker run -v $(pwd):/host verify-c-common:fuzz /bin/bash -c \
+          "mkdir /home/usea/verify-c-common/docs && \
+          cd build && ctest -R fuzz --timeout 2000 && \
+          python3 /home/usea/verify-c-common/scripts/get_fuzzing_coverage.py --html-dir=/home/usea/verify-c-common/docs && \
+          mv /home/usea/verify-c-common/data/fuzz_coverage/all_fuzz.info /host && \
+          cp -r /home/usea/verify-c-common/docs /host/docs"
 
       - name: Upload coverage
         uses: codecov/codecov-action@v1
@@ -30,3 +39,13 @@ jobs:
           name: codecov-verify-c-common
           fail_ci_if_error: true
           verbose: true
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        # if: ${{ github.event.type == "PushEvent" }} # only deploy when change merged into master
+        if: ${{ github.event.type == "PullRequestEvent" }} # test
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: docs # The folder the action should deploy.
+          CLEAN: true
