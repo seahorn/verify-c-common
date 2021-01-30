@@ -2,6 +2,6 @@ build
 build_fuzz
 debug
 cex
-aws-c-common
+aws-c-common/*
 compile_commands.json
 data
