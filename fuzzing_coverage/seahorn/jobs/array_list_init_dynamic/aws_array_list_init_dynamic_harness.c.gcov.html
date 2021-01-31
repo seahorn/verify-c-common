@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:34:31</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -91,16 +91,16 @@
 <span class="lineNum">      29 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      30 </span><span class="lineCov">      50000 :     /* perform operation under verification */</span>
 <span class="lineNum">      31 </span><span class="lineCov">      50000 :     if (aws_array_list_init_dynamic(&amp;list, allocator, initial_item_allocation, item_size) == AWS_OP_SUCCESS) {</span>
-<span class="lineNum">      32 </span><span class="lineCov">         53 :         /* assertions */</span>
-<span class="lineNum">      33 </span><span class="lineCov">         53 :         sassert(aws_array_list_is_valid(&amp;list));</span>
-<span class="lineNum">      34 </span><span class="lineCov">         53 :         sassert(list.alloc == allocator);</span>
-<span class="lineNum">      35 </span><span class="lineCov">         53 :         sassert(list.item_size == item_size);</span>
-<span class="lineNum">      36 </span><span class="lineCov">         53 :         sassert(list.length == 0);</span>
-<span class="lineNum">      37 </span><span class="lineCov">         53 :         sassert(list.current_size == item_size * initial_item_allocation);</span>
-<span class="lineNum">      38 </span><span class="lineCov">      49947 :     } else {</span>
-<span class="lineNum">      39 </span><span class="lineCov">      49947 :         /*assertions */</span>
-<span class="lineNum">      40 </span><span class="lineCov">      49947 :         sassert(AWS_IS_ZEROED(list));</span>
-<span class="lineNum">      41 </span><span class="lineCov">      49947 :     }</span>
+<span class="lineNum">      32 </span><span class="lineCov">        114 :         /* assertions */</span>
+<span class="lineNum">      33 </span><span class="lineCov">        114 :         sassert(aws_array_list_is_valid(&amp;list));</span>
+<span class="lineNum">      34 </span><span class="lineCov">        114 :         sassert(list.alloc == allocator);</span>
+<span class="lineNum">      35 </span><span class="lineCov">        114 :         sassert(list.item_size == item_size);</span>
+<span class="lineNum">      36 </span><span class="lineCov">        114 :         sassert(list.length == 0);</span>
+<span class="lineNum">      37 </span><span class="lineCov">        114 :         sassert(list.current_size == item_size * initial_item_allocation);</span>
+<span class="lineNum">      38 </span><span class="lineCov">      49886 :     } else {</span>
+<span class="lineNum">      39 </span><span class="lineCov">      49886 :         /*assertions */</span>
+<span class="lineNum">      40 </span><span class="lineCov">      49886 :         sassert(AWS_IS_ZEROED(list));</span>
+<span class="lineNum">      41 </span><span class="lineCov">      49886 :     }</span>
 <span class="lineNum">      42 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      43 </span><span class="lineCov">      50000 :     return 0;</span>
 <span class="lineNum">      44 </span><span class="lineCov">      50000 : }</span>

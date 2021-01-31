@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - aws-c-common/include/aws/common/zero.inl</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../index.html">top level</a> - <a href="index.html">aws-c-common/include/aws/common</a> - zero.inl<span style="font-size: 80%;"> (source / <a href="zero.inl.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">21</td>
+            <td class="headerCovTableEntry">27</td>
+            <td class="headerCovTableEntryMed">77.8 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">101</td>
+            <td class="headerCovTableEntryLo">1.0 %</td>
+          </tr>
+          <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #ifndef AWS_COMMON_ZERO_INL</a>
+<span class="lineNum">       2 </span>            : #define AWS_COMMON_ZERO_INL
+<span class="lineNum">       3 </span>            : 
+<span class="lineNum">       4 </span>            : /**
+<span class="lineNum">       5 </span>            :  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+<span class="lineNum">       6 </span>            :  * SPDX-License-Identifier: Apache-2.0.
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            : #include &lt;aws/common/stdbool.h&gt;
+<span class="lineNum">      10 </span>            : #include &lt;aws/common/stdint.h&gt;
+<span class="lineNum">      11 </span>            : #include &lt;aws/common/zero.h&gt;
+<span class="lineNum">      12 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : AWS_EXTERN_C_BEGIN
+<span class="lineNum">      15 </span>            : /**
+<span class="lineNum">      16 </span>            :  * Returns whether each byte is zero.
+<a name="17"><span class="lineNum">      17 </span>            :  */</a>
+<span class="lineNum">      18 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      19 </span><span class="lineCov">      33737 : bool aws_is_mem_zeroed(const void *buf, size_t bufsize) {</span>
+<span class="lineNum">      20 </span><span class="lineCov">      33737 :     /* Optimization idea: vectorized instructions to check more than 64 bits at a time. */</span>
+<span class="lineNum">      21 </span><span class="lineCov">      33737 : </span>
+<span class="lineNum">      22 </span><span class="lineCov">      33737 :     /* Check 64 bits at a time */</span>
+<span class="lineNum">      23 </span><span class="lineCov">      33737 :     const uint64_t *buf_u64 = (const uint64_t *)buf;</span>
+<span class="lineNum">      24 </span><span class="lineCov">      33737 :     const size_t num_u64_checks = bufsize / 8;</span>
+<span class="lineNum">      25 </span><span class="lineCov">      33737 :     size_t i;</span>
+<span class="lineNum">      26 </span><span class="lineCov">     202422 :     for (i = 0; i &lt; num_u64_checks; ++i) {</span>
+<span class="lineNum">      27 </span><span class="lineCov">     168685 :         if (buf_u64[i]) {</span>
+<span class="lineNum">      28 </span><span class="lineNoCov">          0 :             return false;</span>
+<span class="lineNum">      29 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">      30 </span><span class="lineCov">     168685 :     }</span>
+<span class="lineNum">      31 </span><span class="lineCov">      33737 : </span>
+<span class="lineNum">      32 </span><span class="lineCov">      33737 :     /* Update buf to where u64 checks left off */</span>
+<span class="lineNum">      33 </span><span class="lineCov">      33737 :     buf = buf_u64 + num_u64_checks;</span>
+<span class="lineNum">      34 </span><span class="lineCov">      33737 :     bufsize = bufsize % 8;</span>
+<span class="lineNum">      35 </span><span class="lineCov">      33737 : </span>
+<span class="lineNum">      36 </span><span class="lineCov">      33737 :     /* Check 8 bits at a time */</span>
+<span class="lineNum">      37 </span><span class="lineCov">      33737 :     const uint8_t *buf_u8 = (const uint8_t *)buf;</span>
+<span class="lineNum">      38 </span><span class="lineCov">      33737 :     for (i = 0; i &lt; bufsize; ++i) {</span>
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :         if (buf_u8[i]) {</span>
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 :             return false;</span>
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      43 </span><span class="lineCov">      33737 : </span>
+<span class="lineNum">      44 </span><span class="lineCov">      33737 :     return true;</span>
+<span class="lineNum">      45 </span><span class="lineCov">      33737 : }</span>
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            : AWS_EXTERN_C_END
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span>            : #endif /* AWS_COMMON_ZERO_INL */
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

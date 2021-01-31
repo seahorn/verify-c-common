@@ -1,0 +1,378 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - aws-c-common/source/posix/thread.c</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../index.html">top level</a> - <a href="index.html">aws-c-common/source/posix</a> - thread.c<span style="font-size: 80%;"> (source / <a href="thread.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">233</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /**</a>
+<span class="lineNum">       2 </span>            :  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+<span class="lineNum">       3 </span>            :  * SPDX-License-Identifier: Apache-2.0.
+<span class="lineNum">       4 </span>            :  */
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : #if !defined(__MACH__)
+<span class="lineNum">       7 </span>            : #    define _GNU_SOURCE
+<span class="lineNum">       8 </span>            : #endif
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            : #include &lt;aws/common/clock.h&gt;
+<span class="lineNum">      11 </span>            : #include &lt;aws/common/logging.h&gt;
+<span class="lineNum">      12 </span>            : #include &lt;aws/common/private/dlloads.h&gt;
+<span class="lineNum">      13 </span>            : #include &lt;aws/common/thread.h&gt;
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span>            : #include &lt;dlfcn.h&gt;
+<span class="lineNum">      16 </span>            : #include &lt;errno.h&gt;
+<span class="lineNum">      17 </span>            : #include &lt;inttypes.h&gt;
+<span class="lineNum">      18 </span>            : #include &lt;limits.h&gt;
+<span class="lineNum">      19 </span>            : #include &lt;sched.h&gt;
+<span class="lineNum">      20 </span>            : #include &lt;time.h&gt;
+<span class="lineNum">      21 </span>            : #include &lt;unistd.h&gt;
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : #if defined(__FreeBSD__) || defined(__NETBSD__)
+<span class="lineNum">      24 </span>            : #    include &lt;pthread_np.h&gt;
+<span class="lineNum">      25 </span>            : typedef cpuset_t cpu_set_t;
+<span class="lineNum">      26 </span>            : #endif
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : static struct aws_thread_options s_default_options = {
+<span class="lineNum">      29 </span>            :     /* this will make sure platform default stack size is used. */
+<span class="lineNum">      30 </span>            :     .stack_size = 0,
+<span class="lineNum">      31 </span>            :     .cpu_id = -1,
+<span class="lineNum">      32 </span>            : };
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : struct thread_atexit_callback {
+<span class="lineNum">      35 </span>            :     aws_thread_atexit_fn *callback;
+<span class="lineNum">      36 </span>            :     void *user_data;
+<span class="lineNum">      37 </span>            :     struct thread_atexit_callback *next;
+<span class="lineNum">      38 </span>            : };
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            : struct thread_wrapper {
+<span class="lineNum">      41 </span>            :     struct aws_allocator *allocator;
+<span class="lineNum">      42 </span>            :     void (*func)(void *arg);
+<span class="lineNum">      43 </span>            :     void *arg;
+<span class="lineNum">      44 </span>            :     struct thread_atexit_callback *atexit;
+<span class="lineNum">      45 </span>            :     void (*call_once)(void *);
+<span class="lineNum">      46 </span>            :     void *once_arg;
+<span class="lineNum">      47 </span>            :     struct aws_thread *thread;
+<span class="lineNum">      48 </span>            :     bool membind;
+<span class="lineNum">      49 </span>            : };
+<span class="lineNum">      50 </span>            : 
+<a name="51"><span class="lineNum">      51 </span>            : static AWS_THREAD_LOCAL struct thread_wrapper *tl_wrapper = NULL;</a>
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 : static void *thread_fn(void *arg) {</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :     struct thread_wrapper wrapper = *(struct thread_wrapper *)arg;</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :     struct aws_allocator *allocator = wrapper.allocator;</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :     tl_wrapper = &amp;wrapper;</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :     if (wrapper.membind &amp;&amp; g_set_mempolicy_ptr) {</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :         AWS_LOGF_INFO(</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :             AWS_LS_COMMON_THREAD,</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :             &quot;id=%p: a cpu affinity was specified when launching this thread and set_mempolicy() is available on this &quot;</span>
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :             &quot;system. Setting the memory policy to MPOL_PREFERRED&quot;,</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :             (void *)tl_wrapper-&gt;thread);</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :         /* if a user set a cpu id in their thread options, we're going to make sure the numa policy honors that</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :          * and makes sure the numa node of the cpu we launched this thread on is where memory gets allocated. However,</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :          * we don't want to fail the application if this fails, so make the call, and ignore the result. */</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :         long resp = g_set_mempolicy_ptr(AWS_MPOL_PREFERRED_ALIAS, NULL, 0);</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         if (resp) {</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :             AWS_LOGF_WARN(</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :                 AWS_LS_COMMON_THREAD,</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :                 &quot;id=%p: call to set_mempolicy() failed with errno %d&quot;,</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :                 (void *)wrapper.thread,</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :                 errno);</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :     wrapper.func(wrapper.arg);</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :     struct thread_atexit_callback *exit_callback_data = wrapper.atexit;</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :     aws_mem_release(allocator, arg);</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :     while (exit_callback_data) {</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :         aws_thread_atexit_fn *exit_callback = exit_callback_data-&gt;callback;</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :         void *exit_callback_user_data = exit_callback_data-&gt;user_data;</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :         struct thread_atexit_callback *next_exit_callback_data = exit_callback_data-&gt;next;</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :         aws_mem_release(allocator, exit_callback_data);</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :         exit_callback(exit_callback_user_data);</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :         exit_callback_data = next_exit_callback_data;</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     tl_wrapper = NULL;</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :     return NULL;</span>
+<a name="93"><span class="lineNum">      93 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 : const struct aws_thread_options *aws_default_thread_options(void) {</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     return &amp;s_default_options;</span>
+<a name="97"><span class="lineNum">      97 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 : void aws_thread_clean_up(struct aws_thread *thread) {</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :     if (thread-&gt;detach_state == AWS_THREAD_JOINABLE) {</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :         pthread_detach(thread-&gt;thread_id);</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :     }</span>
+<a name="103"><span class="lineNum">     103 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     104 </span>            : 
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 : static void s_call_once(void) {</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :     tl_wrapper-&gt;call_once(tl_wrapper-&gt;once_arg);</span>
+<a name="107"><span class="lineNum">     107 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 : void aws_thread_call_once(aws_thread_once *flag, void (*call_once)(void *), void *user_data) {</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :     // If this is a non-aws_thread, then gin up a temp thread wrapper</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :     struct thread_wrapper temp_wrapper;</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :     if (!tl_wrapper) {</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :         tl_wrapper = &amp;temp_wrapper;</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :     tl_wrapper-&gt;call_once = call_once;</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :     tl_wrapper-&gt;once_arg = user_data;</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :     pthread_once(flag, s_call_once);</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :     if (tl_wrapper == &amp;temp_wrapper) {</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :         tl_wrapper = NULL;</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :     }</span>
+<a name="123"><span class="lineNum">     123 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 : int aws_thread_init(struct aws_thread *thread, struct aws_allocator *allocator) {</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :     *thread = (struct aws_thread){.allocator = allocator, .detach_state = AWS_THREAD_NOT_CREATED};</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :     return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span>            : int aws_thread_launch(
+<span class="lineNum">     132 </span>            :     struct aws_thread *thread,
+<a name="133"><span class="lineNum">     133 </span>            :     void (*func)(void *arg),</a>
+<span class="lineNum">     134 </span>            :     void *arg,
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :     const struct aws_thread_options *options) {</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :     pthread_attr_t attributes;</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :     pthread_attr_t *attributes_ptr = NULL;</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :     int attr_return = 0;</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :     int allocation_failed = 0;</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :     if (options) {</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :         attr_return = pthread_attr_init(&amp;attributes);</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :         if (attr_return) {</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :             goto cleanup;</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :         attributes_ptr = &amp;attributes;</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :         if (options-&gt;stack_size &gt; PTHREAD_STACK_MIN) {</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :             attr_return = pthread_attr_setstacksize(attributes_ptr, options-&gt;stack_size);</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :             if (attr_return) {</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :                 goto cleanup;</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 : /* AFAIK you can't set thread affinity on apple platforms, and it doesn't really matter since all memory</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :  * NUMA or not is setup in interleave mode.</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :  * Thread afinity is also not supported on Android systems, and honestly, if you're running android on a NUMA</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :  * configuration, you've got bigger problems. */</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 : #if !defined(__MACH__) &amp;&amp; !defined(__ANDROID__)</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :         if (options-&gt;cpu_id &gt;= 0) {</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :             AWS_LOGF_INFO(</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :                 AWS_LS_COMMON_THREAD,</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :                 &quot;id=%p: cpu affinity of cpu_id %d was specified, attempting to honor the value.&quot;,</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :                 (void *)thread,</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :                 options-&gt;cpu_id);</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :             cpu_set_t cpuset;</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :             CPU_ZERO(&amp;cpuset);</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :             CPU_SET((uint32_t)options-&gt;cpu_id, &amp;cpuset);</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :             attr_return = pthread_attr_setaffinity_np(attributes_ptr, sizeof(cpuset), &amp;cpuset);</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :             if (attr_return) {</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :                 AWS_LOGF_ERROR(</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :                     AWS_LS_COMMON_THREAD,</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :                     &quot;id=%p: pthread_attr_setaffinity_np() failed with %d.&quot;,</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :                     (void *)thread,</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :                     errno);</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :                 goto cleanup;</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 : #endif /* !defined(__MACH__) &amp;&amp; !defined(__ANDROID__) */</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :     struct thread_wrapper *wrapper =</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :         (struct thread_wrapper *)aws_mem_calloc(thread-&gt;allocator, 1, sizeof(struct thread_wrapper));</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :     if (!wrapper) {</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :         allocation_failed = 1;</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :         goto cleanup;</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :     if (options &amp;&amp; options-&gt;cpu_id &gt;= 0) {</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :         wrapper-&gt;membind = true;</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :     wrapper-&gt;thread = thread;</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :     wrapper-&gt;allocator = thread-&gt;allocator;</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :     wrapper-&gt;func = func;</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :     wrapper-&gt;arg = arg;</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :     attr_return = pthread_create(&amp;thread-&gt;thread_id, attributes_ptr, thread_fn, (void *)wrapper);</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :     if (attr_return) {</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :         goto cleanup;</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :     thread-&gt;detach_state = AWS_THREAD_JOINABLE;</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 : cleanup:</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :     if (attributes_ptr) {</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :         pthread_attr_destroy(attributes_ptr);</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :     if (attr_return == EINVAL) {</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :         return aws_raise_error(AWS_ERROR_THREAD_INVALID_SETTINGS);</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :     if (attr_return == EAGAIN) {</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :         return aws_raise_error(AWS_ERROR_THREAD_INSUFFICIENT_RESOURCE);</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :     if (attr_return == EPERM) {</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :         return aws_raise_error(AWS_ERROR_THREAD_NO_PERMISSIONS);</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :     if (allocation_failed || attr_return == ENOMEM) {</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :         return aws_raise_error(AWS_ERROR_OOM);</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :     return AWS_OP_SUCCESS;</span>
+<a name="235"><span class="lineNum">     235 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     236 </span>            : 
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 : aws_thread_id_t aws_thread_get_id(struct aws_thread *thread) {</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :     return thread-&gt;thread_id;</span>
+<a name="239"><span class="lineNum">     239 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     240 </span>            : 
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 : enum aws_thread_detach_state aws_thread_get_detach_state(struct aws_thread *thread) {</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :     return thread-&gt;detach_state;</span>
+<a name="243"><span class="lineNum">     243 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     244 </span>            : 
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 : int aws_thread_join(struct aws_thread *thread) {</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :     if (thread-&gt;detach_state == AWS_THREAD_JOINABLE) {</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :         int err_no = pthread_join(thread-&gt;thread_id, 0);</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :         if (err_no) {</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :             if (err_no == EINVAL) {</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :                 return aws_raise_error(AWS_ERROR_THREAD_NOT_JOINABLE);</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :             if (err_no == ESRCH) {</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :                 return aws_raise_error(AWS_ERROR_THREAD_NO_SUCH_THREAD_ID);</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :             if (err_no == EDEADLK) {</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :                 return aws_raise_error(AWS_ERROR_THREAD_DEADLOCK_DETECTED);</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :         thread-&gt;detach_state = AWS_THREAD_JOIN_COMPLETED;</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :     return AWS_OP_SUCCESS;</span>
+<a name="265"><span class="lineNum">     265 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     266 </span>            : 
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 : aws_thread_id_t aws_thread_current_thread_id(void) {</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :     return pthread_self();</span>
+<a name="269"><span class="lineNum">     269 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     270 </span>            : 
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 : bool aws_thread_thread_id_equal(aws_thread_id_t t1, aws_thread_id_t t2) {</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :     return pthread_equal(t1, t2) != 0;</span>
+<a name="273"><span class="lineNum">     273 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     274 </span>            : 
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 : void aws_thread_current_sleep(uint64_t nanos) {</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :     uint64_t nano = 0;</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :     time_t seconds = (time_t)aws_timestamp_convert(nanos, AWS_TIMESTAMP_NANOS, AWS_TIMESTAMP_SECS, &amp;nano);</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :     struct timespec tm = {</span>
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :         .tv_sec = seconds,</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :         .tv_nsec = (long)nano,</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :     };</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :     struct timespec output;</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :     nanosleep(&amp;tm, &amp;output);</span>
+<a name="286"><span class="lineNum">     286 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     287 </span>            : 
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 : int aws_thread_current_at_exit(aws_thread_atexit_fn *callback, void *user_data) {</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :     if (!tl_wrapper) {</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :         return aws_raise_error(AWS_ERROR_THREAD_NOT_JOINABLE);</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :     struct thread_atexit_callback *cb = aws_mem_calloc(tl_wrapper-&gt;allocator, 1, sizeof(struct thread_atexit_callback));</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :     if (!cb) {</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :         return AWS_OP_ERR;</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :     cb-&gt;callback = callback;</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :     cb-&gt;user_data = user_data;</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :     cb-&gt;next = tl_wrapper-&gt;atexit;</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :     tl_wrapper-&gt;atexit = cb;</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :     return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

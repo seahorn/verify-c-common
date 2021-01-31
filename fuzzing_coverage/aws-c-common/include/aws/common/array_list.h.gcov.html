@@ -1,0 +1,291 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - aws-c-common/include/aws/common/array_list.h</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../index.html">top level</a> - <a href="index.html">aws-c-common/include/aws/common</a> - array_list.h<span style="font-size: 80%;"> (source / <a href="array_list.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #ifndef AWS_COMMON_ARRAY_LIST_H</a>
+<span class="lineNum">       2 </span>            : #define AWS_COMMON_ARRAY_LIST_H
+<span class="lineNum">       3 </span>            : 
+<span class="lineNum">       4 </span>            : /**
+<span class="lineNum">       5 </span>            :  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+<span class="lineNum">       6 </span>            :  * SPDX-License-Identifier: Apache-2.0.
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : #include &lt;aws/common/common.h&gt;
+<span class="lineNum">       9 </span>            : #include &lt;aws/common/math.h&gt;
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span><span class="lineCov">       4856 : #define AWS_ARRAY_LIST_DEBUG_FILL 0xDD</span>
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span>            : struct aws_array_list {
+<span class="lineNum">      16 </span>            :     struct aws_allocator *alloc;
+<span class="lineNum">      17 </span>            :     size_t current_size;
+<span class="lineNum">      18 </span>            :     size_t length;
+<span class="lineNum">      19 </span>            :     size_t item_size;
+<span class="lineNum">      20 </span>            :     void *data;
+<span class="lineNum">      21 </span>            : };
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : /**
+<span class="lineNum">      24 </span>            :  * Prototype for a comparator function for sorting elements.
+<span class="lineNum">      25 </span>            :  *
+<span class="lineNum">      26 </span>            :  * a and b should be cast to pointers to the element type held in the list
+<span class="lineNum">      27 </span>            :  * before being dereferenced. The function should compare the elements and
+<span class="lineNum">      28 </span>            :  * return a positive number if a &gt; b, zero if a = b, and a negative number
+<span class="lineNum">      29 </span>            :  * if a &lt; b.
+<span class="lineNum">      30 </span>            :  */
+<span class="lineNum">      31 </span>            : typedef int(aws_array_list_comparator_fn)(const void *a, const void *b);
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : AWS_EXTERN_C_BEGIN
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span>            : /**
+<span class="lineNum">      36 </span>            :  * Initializes an array list with an array of size initial_item_allocation * item_size. In this mode, the array size
+<span class="lineNum">      37 </span>            :  * will grow by a factor of 2 upon insertion if space is not available. initial_item_allocation is the number of
+<span class="lineNum">      38 </span>            :  * elements you want space allocated for. item_size is the size of each element in bytes. Mixing items types is not
+<span class="lineNum">      39 </span>            :  * supported by this API.
+<span class="lineNum">      40 </span>            :  */
+<span class="lineNum">      41 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      42 </span>            : int aws_array_list_init_dynamic(
+<span class="lineNum">      43 </span>            :     struct aws_array_list *AWS_RESTRICT list,
+<span class="lineNum">      44 </span>            :     struct aws_allocator *alloc,
+<span class="lineNum">      45 </span>            :     size_t initial_item_allocation,
+<span class="lineNum">      46 </span>            :     size_t item_size);
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            : /**
+<span class="lineNum">      49 </span>            :  * Initializes an array list with a preallocated array of void *. item_count is the number of elements in the array,
+<span class="lineNum">      50 </span>            :  * and item_size is the size in bytes of each element. Mixing items types is not supported
+<span class="lineNum">      51 </span>            :  * by this API. Once this list is full, new items will be rejected.
+<span class="lineNum">      52 </span>            :  */
+<span class="lineNum">      53 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      54 </span>            : void aws_array_list_init_static(
+<span class="lineNum">      55 </span>            :     struct aws_array_list *AWS_RESTRICT list,
+<span class="lineNum">      56 </span>            :     void *raw_array,
+<span class="lineNum">      57 </span>            :     size_t item_count,
+<span class="lineNum">      58 </span>            :     size_t item_size);
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span>            : /**
+<span class="lineNum">      61 </span>            :  * Set of properties of a valid aws_array_list.
+<span class="lineNum">      62 </span>            :  */
+<span class="lineNum">      63 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      64 </span>            : bool aws_array_list_is_valid(const struct aws_array_list *AWS_RESTRICT list);
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span>            : /**
+<span class="lineNum">      67 </span>            :  * Deallocates any memory that was allocated for this list, and resets list for reuse or deletion.
+<span class="lineNum">      68 </span>            :  */
+<span class="lineNum">      69 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      70 </span>            : void aws_array_list_clean_up(struct aws_array_list *AWS_RESTRICT list);
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span>            : /**
+<span class="lineNum">      73 </span>            :  * Erases and then deallocates any memory that was allocated for this list, and resets list for reuse or deletion.
+<span class="lineNum">      74 </span>            :  */
+<span class="lineNum">      75 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      76 </span>            : void aws_array_list_clean_up_secure(struct aws_array_list *AWS_RESTRICT list);
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span>            : /**
+<span class="lineNum">      79 </span>            :  * Pushes the memory pointed to by val onto the end of internal list
+<span class="lineNum">      80 </span>            :  */
+<span class="lineNum">      81 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      82 </span>            : int aws_array_list_push_back(struct aws_array_list *AWS_RESTRICT list, const void *val);
+<span class="lineNum">      83 </span>            : 
+<span class="lineNum">      84 </span>            : /**
+<span class="lineNum">      85 </span>            :  * Copies the element at the front of the list if it exists. If list is empty, AWS_ERROR_LIST_EMPTY will be raised
+<span class="lineNum">      86 </span>            :  */
+<span class="lineNum">      87 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      88 </span>            : int aws_array_list_front(const struct aws_array_list *AWS_RESTRICT list, void *val);
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span>            : /**
+<span class="lineNum">      91 </span>            :  * Deletes the element at the front of the list if it exists. If list is empty, AWS_ERROR_LIST_EMPTY will be raised.
+<span class="lineNum">      92 </span>            :  * This call results in shifting all of the elements at the end of the array to the front. Avoid this call unless that
+<span class="lineNum">      93 </span>            :  * is intended behavior.
+<span class="lineNum">      94 </span>            :  */
+<span class="lineNum">      95 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      96 </span>            : int aws_array_list_pop_front(struct aws_array_list *AWS_RESTRICT list);
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span>            : /**
+<span class="lineNum">      99 </span>            :  * Delete N elements from the front of the list.
+<span class="lineNum">     100 </span>            :  * Remaining elements are shifted to the front of the list.
+<span class="lineNum">     101 </span>            :  * If the list has less than N elements, the list is cleared.
+<span class="lineNum">     102 </span>            :  * This call is more efficient than calling aws_array_list_pop_front() N times.
+<span class="lineNum">     103 </span>            :  */
+<span class="lineNum">     104 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     105 </span>            : void aws_array_list_pop_front_n(struct aws_array_list *AWS_RESTRICT list, size_t n);
+<span class="lineNum">     106 </span>            : 
+<span class="lineNum">     107 </span>            : /**
+<span class="lineNum">     108 </span>            :  * Deletes the element this index in the list if it exists.
+<span class="lineNum">     109 </span>            :  * If element does not exist, AWS_ERROR_INVALID_INDEX will be raised.
+<span class="lineNum">     110 </span>            :  * This call results in shifting all remaining elements towards the front.
+<span class="lineNum">     111 </span>            :  * Avoid this call unless that is intended behavior.
+<span class="lineNum">     112 </span>            :  */
+<span class="lineNum">     113 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     114 </span>            : int aws_array_list_erase(struct aws_array_list *AWS_RESTRICT list, size_t index);
+<span class="lineNum">     115 </span>            : 
+<span class="lineNum">     116 </span>            : /**
+<span class="lineNum">     117 </span>            :  * Copies the element at the end of the list if it exists. If list is empty, AWS_ERROR_LIST_EMPTY will be raised.
+<span class="lineNum">     118 </span>            :  */
+<span class="lineNum">     119 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     120 </span>            : int aws_array_list_back(const struct aws_array_list *AWS_RESTRICT list, void *val);
+<span class="lineNum">     121 </span>            : 
+<span class="lineNum">     122 </span>            : /**
+<span class="lineNum">     123 </span>            :  * Deletes the element at the end of the list if it exists. If list is empty, AWS_ERROR_LIST_EMPTY will be raised.
+<span class="lineNum">     124 </span>            :  */
+<span class="lineNum">     125 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     126 </span>            : int aws_array_list_pop_back(struct aws_array_list *AWS_RESTRICT list);
+<span class="lineNum">     127 </span>            : 
+<span class="lineNum">     128 </span>            : /**
+<span class="lineNum">     129 </span>            :  * Clears all elements in the array and resets length to zero. Size does not change in this operation.
+<span class="lineNum">     130 </span>            :  */
+<span class="lineNum">     131 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     132 </span>            : void aws_array_list_clear(struct aws_array_list *AWS_RESTRICT list);
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span>            : /**
+<span class="lineNum">     135 </span>            :  * If in dynamic mode, shrinks the allocated array size to the minimum amount necessary to store its elements.
+<span class="lineNum">     136 </span>            :  */
+<span class="lineNum">     137 </span>            : AWS_COMMON_API
+<span class="lineNum">     138 </span>            : int aws_array_list_shrink_to_fit(struct aws_array_list *AWS_RESTRICT list);
+<span class="lineNum">     139 </span>            : 
+<span class="lineNum">     140 </span>            : /**
+<span class="lineNum">     141 </span>            :  * Copies the elements from from to to. If to is in static mode, it must at least be the same length as from. Any data
+<span class="lineNum">     142 </span>            :  * in to will be overwritten in this copy.
+<span class="lineNum">     143 </span>            :  */
+<span class="lineNum">     144 </span>            : AWS_COMMON_API
+<span class="lineNum">     145 </span>            : int aws_array_list_copy(const struct aws_array_list *AWS_RESTRICT from, struct aws_array_list *AWS_RESTRICT to);
+<span class="lineNum">     146 </span>            : 
+<span class="lineNum">     147 </span>            : /**
+<span class="lineNum">     148 </span>            :  * Swap contents between two dynamic lists. Both lists must use the same allocator.
+<span class="lineNum">     149 </span>            :  */
+<span class="lineNum">     150 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     151 </span>            : void aws_array_list_swap_contents(
+<span class="lineNum">     152 </span>            :     struct aws_array_list *AWS_RESTRICT list_a,
+<span class="lineNum">     153 </span>            :     struct aws_array_list *AWS_RESTRICT list_b);
+<span class="lineNum">     154 </span>            : 
+<span class="lineNum">     155 </span>            : /**
+<span class="lineNum">     156 </span>            :  * Returns the number of elements that can fit in the internal array. If list is initialized in dynamic mode,
+<span class="lineNum">     157 </span>            :  * the capacity changes over time.
+<span class="lineNum">     158 </span>            :  */
+<span class="lineNum">     159 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     160 </span>            : size_t aws_array_list_capacity(const struct aws_array_list *AWS_RESTRICT list);
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span>            : /**
+<span class="lineNum">     163 </span>            :  * Returns the number of elements in the internal array.
+<span class="lineNum">     164 </span>            :  */
+<span class="lineNum">     165 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     166 </span>            : size_t aws_array_list_length(const struct aws_array_list *AWS_RESTRICT list);
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span>            : /**
+<span class="lineNum">     169 </span>            :  * Copies the memory at index to val. If element does not exist, AWS_ERROR_INVALID_INDEX will be raised.
+<span class="lineNum">     170 </span>            :  */
+<span class="lineNum">     171 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     172 </span>            : int aws_array_list_get_at(const struct aws_array_list *AWS_RESTRICT list, void *val, size_t index);
+<span class="lineNum">     173 </span>            : 
+<span class="lineNum">     174 </span>            : /**
+<span class="lineNum">     175 </span>            :  * Copies the memory address of the element at index to *val. If element does not exist, AWS_ERROR_INVALID_INDEX will be
+<span class="lineNum">     176 </span>            :  * raised.
+<span class="lineNum">     177 </span>            :  */
+<span class="lineNum">     178 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     179 </span>            : int aws_array_list_get_at_ptr(const struct aws_array_list *AWS_RESTRICT list, void **val, size_t index);
+<span class="lineNum">     180 </span>            : 
+<span class="lineNum">     181 </span>            : /**
+<span class="lineNum">     182 </span>            :  * Ensures that the array list has enough capacity to store a value at the specified index. If there is not already
+<span class="lineNum">     183 </span>            :  * enough capacity, and the list is in dynamic mode, this function will attempt to allocate more memory, expanding the
+<span class="lineNum">     184 </span>            :  * list. In static mode, if 'index' is beyond the maximum index, AWS_ERROR_INVALID_INDEX will be raised.
+<span class="lineNum">     185 </span>            :  */
+<span class="lineNum">     186 </span>            : AWS_COMMON_API
+<span class="lineNum">     187 </span>            : int aws_array_list_ensure_capacity(struct aws_array_list *AWS_RESTRICT list, size_t index);
+<span class="lineNum">     188 </span>            : 
+<span class="lineNum">     189 </span>            : /**
+<span class="lineNum">     190 </span>            :  * Copies the the memory pointed to by val into the array at index. If in dynamic mode, the size will grow by a factor
+<span class="lineNum">     191 </span>            :  * of two when the array is full. In static mode, AWS_ERROR_INVALID_INDEX will be raised if the index is past the bounds
+<span class="lineNum">     192 </span>            :  * of the array.
+<span class="lineNum">     193 </span>            :  */
+<span class="lineNum">     194 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     195 </span>            : int aws_array_list_set_at(struct aws_array_list *AWS_RESTRICT list, const void *val, size_t index);
+<span class="lineNum">     196 </span>            : 
+<span class="lineNum">     197 </span>            : /**
+<span class="lineNum">     198 </span>            :  * Swap elements at the specified indices, which must be within the bounds of the array.
+<span class="lineNum">     199 </span>            :  */
+<span class="lineNum">     200 </span>            : AWS_COMMON_API
+<span class="lineNum">     201 </span>            : void aws_array_list_swap(struct aws_array_list *AWS_RESTRICT list, size_t a, size_t b);
+<span class="lineNum">     202 </span>            : 
+<span class="lineNum">     203 </span>            : /**
+<span class="lineNum">     204 </span>            :  * Sort elements in the list in-place according to the comparator function.
+<span class="lineNum">     205 </span>            :  */
+<span class="lineNum">     206 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     207 </span>            : void aws_array_list_sort(struct aws_array_list *AWS_RESTRICT list, aws_array_list_comparator_fn *compare_fn);
+<span class="lineNum">     208 </span>            : 
+<span class="lineNum">     209 </span>            : #ifndef AWS_NO_STATIC_IMPL
+<span class="lineNum">     210 </span>            : #    include &lt;aws/common/array_list.inl&gt;
+<span class="lineNum">     211 </span>            : #endif /* AWS_NO_STATIC_IMPL */
+<span class="lineNum">     212 </span>            : 
+<span class="lineNum">     213 </span>            : AWS_EXTERN_C_END
+<span class="lineNum">     214 </span>            : 
+<span class="lineNum">     215 </span>            : #endif /* AWS_COMMON_ARRAY_LIST_H */
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:34:31</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -81,12 +81,12 @@
 <span class="lineNum">      19 </span><span class="lineCov">      50000 :     KLEE_ASSUME(capacity &lt;= KLEE_MAX_SIZE);</span>
 <span class="lineNum">      20 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      21 </span><span class="lineCov">      50000 :     if (aws_byte_buf_init(&amp;buf, allocator, capacity) == AWS_OP_SUCCESS) {</span>
-<span class="lineNum">      22 </span><span class="lineCov">       1325 :         /* assertions */</span>
-<span class="lineNum">      23 </span><span class="lineCov">       1325 :         sassert(aws_byte_buf_is_valid(&amp;buf));</span>
-<span class="lineNum">      24 </span><span class="lineCov">       1325 :         sassert(buf.allocator == allocator);</span>
-<span class="lineNum">      25 </span><span class="lineCov">       1325 :         sassert(buf.len == 0);</span>
-<span class="lineNum">      26 </span><span class="lineCov">       1325 :         sassert(buf.capacity == capacity);</span>
-<span class="lineNum">      27 </span><span class="lineCov">       1325 :     }</span>
+<span class="lineNum">      22 </span><span class="lineCov">       1412 :         /* assertions */</span>
+<span class="lineNum">      23 </span><span class="lineCov">       1412 :         sassert(aws_byte_buf_is_valid(&amp;buf));</span>
+<span class="lineNum">      24 </span><span class="lineCov">       1412 :         sassert(buf.allocator == allocator);</span>
+<span class="lineNum">      25 </span><span class="lineCov">       1412 :         sassert(buf.len == 0);</span>
+<span class="lineNum">      26 </span><span class="lineCov">       1412 :         sassert(buf.capacity == capacity);</span>
+<span class="lineNum">      27 </span><span class="lineCov">       1412 :     }</span>
 <span class="lineNum">      28 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      29 </span><span class="lineCov">      50000 :     return 0;</span>
 <span class="lineNum">      30 </span><span class="lineCov">      50000 : }</span>

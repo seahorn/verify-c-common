@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:34:31</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -110,14 +110,14 @@
 <span class="lineNum">      48 </span>            : #endif
 <span class="lineNum">      49 </span>            : 
 <span class="lineNum">      50 </span>            : /* Convenience macros */
-<span class="lineNum">      51 </span><span class="lineCov">    9064281 : #define assume __VERIFIER_assume</span>
+<span class="lineNum">      51 </span><span class="lineCov">    9073986 : #define assume __VERIFIER_assume</span>
 <span class="lineNum">      52 </span>            : 
 <span class="lineNum">      53 </span>            : /* See https://github.com/seahorn/seahorn/projects/5 for details */
 <span class="lineNum">      54 </span>            : #ifdef VACCHECK
 <span class="lineNum">      55 </span>            : #define sassert(X)                                                             \
 <span class="lineNum">      56 </span>            :   (void)((__VERIFIER_assert(X), (X)) || (__VERIFIER_error(), 0))
 <span class="lineNum">      57 </span>            : #else
-<span class="lineNum">      58 </span><span class="lineCov">   10736908 : #define sassert(X) (void)((X) || (__VERIFIER_error(), 0))</span>
+<span class="lineNum">      58 </span><span class="lineCov">   10712527 : #define sassert(X) (void)((X) || (__VERIFIER_error(), 0))</span>
 <span class="lineNum">      59 </span>            : #endif
 <span class="lineNum">      60 </span>            : 
 <span class="lineNum">      61 </span>            : #endif

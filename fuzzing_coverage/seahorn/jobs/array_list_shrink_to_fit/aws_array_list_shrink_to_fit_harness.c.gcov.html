@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:34:31</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -92,13 +92,13 @@
 <span class="lineNum">      30 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      31 </span><span class="lineCov">      50000 :     /* perform operation under verification and assertions */</span>
 <span class="lineNum">      32 </span><span class="lineCov">      50000 :     if (!aws_array_list_shrink_to_fit(&amp;list)) {</span>
-<span class="lineNum">      33 </span><span class="lineCov">       5126 :         sassert(</span>
-<span class="lineNum">      34 </span><span class="lineCov">       5126 :             (list.current_size == 0 &amp;&amp; list.data == NULL) ||</span>
-<span class="lineNum">      35 </span><span class="lineCov">       5126 :             (list.data != NULL &amp;&amp; list.current_size == list.length * list.item_size));</span>
-<span class="lineNum">      36 </span><span class="lineCov">      44874 :     } else {</span>
-<span class="lineNum">      37 </span><span class="lineCov">      44874 :         /* In the case aws_array_list_shrink_to_fit is not successful, the list must not change */</span>
-<span class="lineNum">      38 </span><span class="lineCov">      44874 :         assert_array_list_equivalence(&amp;list, &amp;old, &amp;old_byte);</span>
-<span class="lineNum">      39 </span><span class="lineCov">      44874 :     }</span>
+<span class="lineNum">      33 </span><span class="lineCov">       5776 :         sassert(</span>
+<span class="lineNum">      34 </span><span class="lineCov">       5776 :             (list.current_size == 0 &amp;&amp; list.data == NULL) ||</span>
+<span class="lineNum">      35 </span><span class="lineCov">       5776 :             (list.data != NULL &amp;&amp; list.current_size == list.length * list.item_size));</span>
+<span class="lineNum">      36 </span><span class="lineCov">      44224 :     } else {</span>
+<span class="lineNum">      37 </span><span class="lineCov">      44224 :         /* In the case aws_array_list_shrink_to_fit is not successful, the list must not change */</span>
+<span class="lineNum">      38 </span><span class="lineCov">      44224 :         assert_array_list_equivalence(&amp;list, &amp;old, &amp;old_byte);</span>
+<span class="lineNum">      39 </span><span class="lineCov">      44224 :     }</span>
 <span class="lineNum">      40 </span><span class="lineCov">      50000 :     sassert(aws_array_list_is_valid(&amp;list));</span>
 <span class="lineNum">      41 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      42 </span><span class="lineCov">      50000 :     return 0;</span>

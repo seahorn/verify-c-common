@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - aws-c-common/include/aws/common/macros.h</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../index.html">top level</a> - <a href="index.html">aws-c-common/include/aws/common</a> - macros.h<span style="font-size: 80%;"> (source / <a href="macros.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #ifndef AWS_COMMON_MACROS_H</a>
+<span class="lineNum">       2 </span>            : #define AWS_COMMON_MACROS_H
+<span class="lineNum">       3 </span>            : /**
+<span class="lineNum">       4 </span>            :  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+<span class="lineNum">       5 </span>            :  * SPDX-License-Identifier: Apache-2.0.
+<span class="lineNum">       6 </span>            :  */
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : #ifdef __cplusplus
+<span class="lineNum">       9 </span>            : #    define AWS_EXTERN_C_BEGIN extern &quot;C&quot; {
+<span class="lineNum">      10 </span>            : #    define AWS_EXTERN_C_END }
+<span class="lineNum">      11 </span>            : #else
+<span class="lineNum">      12 </span>            : #    define AWS_EXTERN_C_BEGIN
+<span class="lineNum">      13 </span>            : #    define AWS_EXTERN_C_END
+<span class="lineNum">      14 </span>            : #endif /*  __cplusplus */
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            : #define AWS_CONCAT(A, B) A##B
+<span class="lineNum">      17 </span>            : #define AWS_STATIC_ASSERT0(cond, msg) typedef char AWS_CONCAT(static_assertion_, msg)[(!!(cond)) * 2 - 1]
+<span class="lineNum">      18 </span>            : #define AWS_STATIC_ASSERT1(cond, line) AWS_STATIC_ASSERT0(cond, AWS_CONCAT(at_line_, line))
+<span class="lineNum">      19 </span>            : #define AWS_STATIC_ASSERT(cond) AWS_STATIC_ASSERT1(cond, __LINE__)
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span>            : /* https://stackoverflow.com/questions/9183993/msvc-variadic-macro-expansion */
+<span class="lineNum">      22 </span><span class="lineCov">    3662709 : #define GLUE(x, y) x y</span>
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            : #define RETURN_ARG_COUNT(_1_, _2_, _3_, _4_, _5_, count, ...) count
+<span class="lineNum">      25 </span>            : #define EXPAND_ARGS(args) RETURN_ARG_COUNT args
+<span class="lineNum">      26 </span>            : #define COUNT_ARGS_MAX5(...) EXPAND_ARGS((__VA_ARGS__, 5, 4, 3, 2, 1, 0))
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : #define OVERLOAD_MACRO2(name, count) name##count
+<span class="lineNum">      29 </span>            : #define OVERLOAD_MACRO1(name, count) OVERLOAD_MACRO2(name, count)
+<span class="lineNum">      30 </span>            : #define OVERLOAD_MACRO(name, count) OVERLOAD_MACRO1(name, count)
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span><span class="lineCov">    3639621 : #define CALL_OVERLOAD(name, ...) GLUE(OVERLOAD_MACRO(name, COUNT_ARGS_MAX5(__VA_ARGS__)), (__VA_ARGS__))</span>
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : #define CALL_OVERLOAD_TEST1(x) x
+<span class="lineNum">      35 </span>            : #define CALL_OVERLOAD_TEST2(x, y) y
+<span class="lineNum">      36 </span>            : #define CALL_OVERLOAD_TEST3(x, y, z) z
+<span class="lineNum">      37 </span>            : #define CALL_OVERLOAD_TEST(...) CALL_OVERLOAD(CALL_OVERLOAD_TEST, __VA_ARGS__)
+<span class="lineNum">      38 </span>            : AWS_STATIC_ASSERT(CALL_OVERLOAD_TEST(1) == 1);
+<span class="lineNum">      39 </span>            : AWS_STATIC_ASSERT(CALL_OVERLOAD_TEST(1, 2) == 2);
+<span class="lineNum">      40 </span>            : AWS_STATIC_ASSERT(CALL_OVERLOAD_TEST(1, 2, 3) == 3);
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            : #define AWS_CACHE_LINE 64
+<span class="lineNum">      43 </span>            : /**
+<span class="lineNum">      44 </span>            :  * Format macro for strings of a specified length.
+<span class="lineNum">      45 </span>            :  * Allows non null-terminated strings to be used with the printf family of functions.
+<span class="lineNum">      46 </span>            :  * Ex: printf(&quot;scheme is &quot; PRInSTR, 4, &quot;http://example.org&quot;); // ouputs: &quot;scheme is http&quot;
+<span class="lineNum">      47 </span>            :  */
+<span class="lineNum">      48 </span>            : #define PRInSTR &quot;%.*s&quot;
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span>            : #if defined(_MSC_VER)
+<span class="lineNum">      51 </span>            : #    include &lt;malloc.h&gt;
+<span class="lineNum">      52 </span>            : #    define AWS_ALIGNED_TYPEDEF(from, to, alignment) typedef __declspec(align(alignment)) from to
+<span class="lineNum">      53 </span>            : #    define AWS_LIKELY(x) x
+<span class="lineNum">      54 </span>            : #    define AWS_UNLIKELY(x) x
+<span class="lineNum">      55 </span>            : #    define AWS_FORCE_INLINE __forceinline
+<span class="lineNum">      56 </span>            : #    define AWS_NO_INLINE __declspec(noinline)
+<span class="lineNum">      57 </span>            : #    define AWS_VARIABLE_LENGTH_ARRAY(type, name, length) type *name = _alloca(sizeof(type) * (length))
+<span class="lineNum">      58 </span>            : #    define AWS_DECLSPEC_NORETURN __declspec(noreturn)
+<span class="lineNum">      59 </span>            : #    define AWS_ATTRIBUTE_NORETURN
+<span class="lineNum">      60 </span>            : #else
+<span class="lineNum">      61 </span>            : #    if defined(__GNUC__) || defined(__clang__)
+<span class="lineNum">      62 </span>            : #        define AWS_ALIGNED_TYPEDEF(from, to, alignment) typedef from to __attribute__((aligned(alignment)))
+<span class="lineNum">      63 </span>            : #        define AWS_TYPE_OF(a) __typeof__(a)
+<span class="lineNum">      64 </span><span class="lineCov">      21398 : #        define AWS_LIKELY(x) __builtin_expect(!!(x), 1)</span>
+<span class="lineNum">      65 </span><span class="lineCov">      33969 : #        define AWS_UNLIKELY(x) __builtin_expect(!!(x), 0)</span>
+<span class="lineNum">      66 </span>            : #        define AWS_FORCE_INLINE __attribute__((always_inline))
+<span class="lineNum">      67 </span>            : #        define AWS_NO_INLINE __attribute__((noinline))
+<span class="lineNum">      68 </span>            : #        define AWS_DECLSPEC_NORETURN
+<span class="lineNum">      69 </span>            : #        define AWS_ATTRIBUTE_NORETURN __attribute__((noreturn))
+<span class="lineNum">      70 </span>            : #        if defined(__cplusplus)
+<span class="lineNum">      71 </span>            : #            define AWS_VARIABLE_LENGTH_ARRAY(type, name, length) type *name = alloca(sizeof(type) * (length))
+<span class="lineNum">      72 </span>            : #        else
+<span class="lineNum">      73 </span>            : #            define AWS_VARIABLE_LENGTH_ARRAY(type, name, length) type name[length];
+<span class="lineNum">      74 </span>            : #        endif /* defined(__cplusplus) */
+<span class="lineNum">      75 </span>            : #    endif     /*  defined(__GNUC__) || defined(__clang__) */
+<span class="lineNum">      76 </span>            : #endif         /*  defined(_MSC_VER) */
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span>            : /* If this is C++, restrict isn't supported. If this is not at least C99 on gcc and clang, it isn't supported.
+<span class="lineNum">      79 </span>            :  * If visual C++ building in C mode, the restrict definition is __restrict.
+<span class="lineNum">      80 </span>            :  * This just figures all of that out based on who's including this header file. */
+<span class="lineNum">      81 </span>            : #if defined(__cplusplus)
+<span class="lineNum">      82 </span>            : #    define AWS_RESTRICT
+<span class="lineNum">      83 </span>            : #else
+<span class="lineNum">      84 </span>            : #    if defined(_MSC_VER)
+<span class="lineNum">      85 </span>            : #        define AWS_RESTRICT __restrict
+<span class="lineNum">      86 </span>            : #    else
+<span class="lineNum">      87 </span>            : #        if defined(__STDC_VERSION__) &amp;&amp; __STDC_VERSION__ &gt;= 199901L
+<span class="lineNum">      88 </span>            : #            define AWS_RESTRICT restrict
+<span class="lineNum">      89 </span>            : #        else
+<span class="lineNum">      90 </span>            : #            define AWS_RESTRICT
+<span class="lineNum">      91 </span>            : #        endif /* defined(__STDC_VERSION__) &amp;&amp; __STDC_VERSION__ &gt;= 199901L */
+<span class="lineNum">      92 </span>            : #    endif     /* defined(_MSC_VER) */
+<span class="lineNum">      93 </span>            : #endif         /* defined(__cplusplus) */
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span>            : #if defined(_MSC_VER)
+<span class="lineNum">      96 </span>            : #    define AWS_THREAD_LOCAL __declspec(thread)
+<span class="lineNum">      97 </span>            : #else
+<span class="lineNum">      98 </span>            : #    define AWS_THREAD_LOCAL __thread
+<span class="lineNum">      99 </span>            : #endif
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span>            : #define AWS_ARRAY_SIZE(array) (sizeof(array) / sizeof((array)[0]))
+<span class="lineNum">     102 </span>            : /**
+<span class="lineNum">     103 </span>            :  * from a pointer and a type of the struct containing the node
+<span class="lineNum">     104 </span>            :  * this will get you back to the pointer of the object. member is the name of
+<span class="lineNum">     105 </span>            :  * the instance of struct aws_linked_list_node in your struct.
+<span class="lineNum">     106 </span>            :  */
+<span class="lineNum">     107 </span>            : #define AWS_CONTAINER_OF(ptr, type, member) ((type *)((uint8_t *)(ptr)-offsetof(type, member)))
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span>            : #endif /* AWS_COMMON_MACROS_H */
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

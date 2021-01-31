@@ -1,0 +1,554 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - aws-c-common/source/posix/system_info.c</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../index.html">top level</a> - <a href="index.html">aws-c-common/source/posix</a> - system_info.c<span style="font-size: 80%;"> (source / <a href="system_info.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">316</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /**</a>
+<span class="lineNum">       2 </span>            :  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+<span class="lineNum">       3 </span>            :  * SPDX-License-Identifier: Apache-2.0.
+<span class="lineNum">       4 </span>            :  */
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : #include &lt;aws/common/system_info.h&gt;
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : #include &lt;aws/common/byte_buf.h&gt;
+<span class="lineNum">       9 </span>            : #include &lt;aws/common/logging.h&gt;
+<span class="lineNum">      10 </span>            : #include &lt;aws/common/platform.h&gt;
+<span class="lineNum">      11 </span>            : #include &lt;aws/common/private/dlloads.h&gt;
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            : #if defined(__FreeBSD__) || defined(__NetBSD__)
+<span class="lineNum">      14 </span>            : #    define __BSD_VISIBLE 1
+<span class="lineNum">      15 </span>            : #endif
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            : #include &lt;unistd.h&gt;
+<a name="18"><span class="lineNum">      18 </span>            : </a>
+<span class="lineNum">      19 </span>            : #if defined(HAVE_SYSCONF)
+<span class="lineNum">      20 </span><span class="lineNoCov">          0 : size_t aws_system_info_processor_count(void) {</span>
+<span class="lineNum">      21 </span><span class="lineNoCov">          0 :     long nprocs = sysconf(_SC_NPROCESSORS_ONLN);</span>
+<span class="lineNum">      22 </span><span class="lineNoCov">          0 :     if (AWS_LIKELY(nprocs &gt;= 0)) {</span>
+<span class="lineNum">      23 </span><span class="lineNoCov">          0 :         return (size_t)nprocs;</span>
+<span class="lineNum">      24 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      25 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      26 </span><span class="lineNoCov">          0 :     AWS_FATAL_POSTCONDITION(nprocs &gt;= 0);</span>
+<span class="lineNum">      27 </span><span class="lineNoCov">          0 :     return 0;</span>
+<span class="lineNum">      28 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">      29 </span>            : #else
+<span class="lineNum">      30 </span>            : size_t aws_system_info_processor_count(void) {
+<span class="lineNum">      31 </span>            : #    if defined(AWS_NUM_CPU_CORES)
+<span class="lineNum">      32 </span>            :     AWS_FATAL_PRECONDITION(AWS_NUM_CPU_CORES &gt; 0);
+<span class="lineNum">      33 </span>            :     return AWS_NUM_CPU_CORES;
+<span class="lineNum">      34 </span>            : #    else
+<span class="lineNum">      35 </span>            :     return 1;
+<span class="lineNum">      36 </span>            : #    endif
+<span class="lineNum">      37 </span>            : }
+<span class="lineNum">      38 </span>            : #endif
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            : #include &lt;ctype.h&gt;
+<a name="41"><span class="lineNum">      41 </span>            : #include &lt;fcntl.h&gt;</a>
+<span class="lineNum">      42 </span>            : 
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 : uint16_t aws_get_cpu_group_count(void) {</span>
+<span class="lineNum">      44 </span><span class="lineNoCov">          0 :     if (g_numa_num_configured_nodes_ptr) {</span>
+<span class="lineNum">      45 </span><span class="lineNoCov">          0 :         return (uint16_t)g_numa_num_configured_nodes_ptr();</span>
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :     return 1u;</span>
+<a name="49"><span class="lineNum">      49 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 : size_t aws_get_cpu_count_for_group(uint16_t group_idx) {</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :     if (g_numa_node_of_cpu_ptr) {</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :         size_t total_cpus = aws_system_info_processor_count();</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :         uint16_t cpu_count = 0;</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :         for (size_t i = 0; i &lt; total_cpus; ++i) {</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :             if (group_idx == g_numa_node_of_cpu_ptr((int)i)) {</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :                 cpu_count++;</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :         return cpu_count;</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :     return aws_system_info_processor_count();</span>
+<a name="65"><span class="lineNum">      65 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 : void aws_get_cpu_ids_for_group(uint16_t group_idx, struct aws_cpu_info *cpu_ids_array, size_t cpu_ids_array_length) {</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(cpu_ids_array);</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :     if (!cpu_ids_array_length) {</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     /* go ahead and initialize everything. */</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :     for (size_t i = 0; i &lt; cpu_ids_array_length; ++i) {</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :         cpu_ids_array[i].cpu_id = -1;</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :         cpu_ids_array[i].suspected_hyper_thread = false;</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :     if (g_numa_node_of_cpu_ptr) {</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :         size_t total_cpus = aws_system_info_processor_count();</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :         size_t current_array_idx = 0;</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :         for (size_t i = 0; i &lt; total_cpus &amp;&amp; current_array_idx &lt; cpu_ids_array_length; ++i) {</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :             if ((int)group_idx == g_numa_node_of_cpu_ptr((int)i)) {</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :                 cpu_ids_array[current_array_idx].cpu_id = (int32_t)i;</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :                 /* looking for an index jump is a more reliable way to find these. If they're in the group and then</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :                  * the index jumps, say from 17 to 36, we're most-likely in hyper-thread land. Also, inside a node,</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :                  * once we find the first hyper-thread, the remaining cores are also likely hyper threads. */</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :                 if (current_array_idx &gt; 0 &amp;&amp; (cpu_ids_array[current_array_idx - 1].suspected_hyper_thread ||</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :                                               cpu_ids_array[current_array_idx - 1].cpu_id &lt; ((int)i - 1))) {</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :                     cpu_ids_array[current_array_idx].suspected_hyper_thread = true;</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :                 }</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :                 current_array_idx += 1;</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :     /* a crude hint, but hyper-threads are numbered as the second half of the cpu id listing. The assumption if you</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :      * hit here is that this is just listing all cpus on the system. */</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :     size_t hyper_thread_hint = cpu_ids_array_length / 2 - 1;</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :     for (size_t i = 0; i &lt; cpu_ids_array_length; ++i) {</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :         cpu_ids_array[i].cpu_id = (int32_t)i;</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :         cpu_ids_array[i].suspected_hyper_thread = i &gt; hyper_thread_hint;</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :     }</span>
+<a name="109"><span class="lineNum">     109 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 : bool aws_is_debugger_present(void) {</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :     /* Open the status file */</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :     const int status_fd = open(&quot;/proc/self/status&quot;, O_RDONLY);</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :     if (status_fd == -1) {</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :         return false;</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :     /* Read its contents */</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :     char buf[4096];</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :     const ssize_t num_read = read(status_fd, buf, sizeof(buf) - 1);</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     close(status_fd);</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :     if (num_read &lt;= 0) {</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :         return false;</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :     buf[num_read] = '\0';</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :     /* Search for the TracerPid field, which will indicate the debugger process */</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :     const char tracerPidString[] = &quot;TracerPid:&quot;;</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :     const char *tracer_pid = strstr(buf, tracerPidString);</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :     if (!tracer_pid) {</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :         return false;</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     /* If it's not 0, then there's a debugger */</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :     for (const char *cur = tracer_pid + sizeof(tracerPidString) - 1; cur &lt;= buf + num_read; ++cur) {</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :         if (!aws_isspace(*cur)) {</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :             return aws_isdigit(*cur) &amp;&amp; *cur != '0';</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :     return false;</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     143 </span>            : 
+<span class="lineNum">     144 </span>            : #include &lt;signal.h&gt;
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span>            : #ifndef __has_builtin
+<span class="lineNum">     147 </span>            : #    define __has_builtin(x) 0
+<a name="148"><span class="lineNum">     148 </span>            : #endif</a>
+<span class="lineNum">     149 </span>            : 
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 : void aws_debug_break(void) {</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 : #ifdef DEBUG_BUILD</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :     if (aws_is_debugger_present()) {</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 : #    if __has_builtin(__builtin_debugtrap)</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :         __builtin_debugtrap();</span>
+<span class="lineNum">     155 </span>            : #    else
+<span class="lineNum">     156 </span>            :         raise(SIGTRAP);
+<span class="lineNum">     157 </span>            : #    endif
+<span class="lineNum">     158 </span>            :     }
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 : #endif /* DEBUG_BUILD */</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span>            : #if defined(AWS_HAVE_EXECINFO)
+<span class="lineNum">     163 </span>            : #    include &lt;execinfo.h&gt;
+<span class="lineNum">     164 </span>            : #    include &lt;limits.h&gt;
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 : #    define AWS_BACKTRACE_DEPTH 128</span>
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span>            : struct aws_stack_frame_info {
+<span class="lineNum">     169 </span>            :     char exe[PATH_MAX];
+<span class="lineNum">     170 </span>            :     char addr[32];
+<span class="lineNum">     171 </span>            :     char base[32]; /* base addr for dylib/exe */
+<span class="lineNum">     172 </span>            :     char function[128];
+<span class="lineNum">     173 </span>            : };
+<span class="lineNum">     174 </span>            : 
+<span class="lineNum">     175 </span>            : /* Ensure only safe characters in a path buffer in case someone tries to
+<a name="176"><span class="lineNum">     176 </span>            :    rename the exe and trigger shell execution via the sub commands used to</a>
+<span class="lineNum">     177 </span>            :    resolve symbols */
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 : char *s_whitelist_chars(char *path) {</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :     char *cur = path;</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :     while (*cur) {</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :         bool whitelisted = aws_isalnum(*cur) || aws_isspace(*cur) || *cur == '/' || *cur == '_' || *cur == '.' ||</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :                            (cur &gt; path &amp;&amp; *cur == '-');</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :         if (!whitelisted) {</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :             *cur = '_';</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :         ++cur;</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :     return path;</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     190 </span>            : 
+<span class="lineNum">     191 </span>            : #    if defined(__APPLE__)
+<span class="lineNum">     192 </span>            : #        include &lt;ctype.h&gt;
+<span class="lineNum">     193 </span>            : #        include &lt;dlfcn.h&gt;
+<span class="lineNum">     194 </span>            : #        include &lt;mach-o/dyld.h&gt;
+<span class="lineNum">     195 </span>            : static char s_exe_path[PATH_MAX];
+<span class="lineNum">     196 </span>            : const char *s_get_executable_path() {
+<span class="lineNum">     197 </span>            :     static const char *s_exe = NULL;
+<span class="lineNum">     198 </span>            :     if (AWS_LIKELY(s_exe)) {
+<span class="lineNum">     199 </span>            :         return s_exe;
+<span class="lineNum">     200 </span>            :     }
+<span class="lineNum">     201 </span>            :     uint32_t len = sizeof(s_exe_path);
+<span class="lineNum">     202 </span>            :     if (!_NSGetExecutablePath(s_exe_path, &amp;len)) {
+<span class="lineNum">     203 </span>            :         s_exe = s_exe_path;
+<span class="lineNum">     204 </span>            :     }
+<span class="lineNum">     205 </span>            :     return s_exe;
+<span class="lineNum">     206 </span>            : }
+<span class="lineNum">     207 </span>            : int s_parse_symbol(const char *symbol, void *addr, struct aws_stack_frame_info *frame) {
+<span class="lineNum">     208 </span>            :     /* symbols look like: &lt;frame_idx&gt;   &lt;exe-or-shared-lib&gt;         &lt;addr&gt; &lt;function&gt; + &lt;offset&gt;
+<span class="lineNum">     209 </span>            :      */
+<span class="lineNum">     210 </span>            :     const char *current_exe = s_get_executable_path();
+<span class="lineNum">     211 </span>            :     /* parse exe/shared lib */
+<span class="lineNum">     212 </span>            :     const char *exe_start = strstr(symbol, &quot; &quot;);
+<span class="lineNum">     213 </span>            :     while (aws_isspace(*exe_start)) {
+<span class="lineNum">     214 </span>            :         ++exe_start;
+<span class="lineNum">     215 </span>            :     }
+<span class="lineNum">     216 </span>            :     const char *exe_end = strstr(exe_start, &quot; &quot;);
+<span class="lineNum">     217 </span>            :     strncpy(frame-&gt;exe, exe_start, exe_end - exe_start);
+<span class="lineNum">     218 </span>            :     /* executables get basename'd, so restore the path */
+<span class="lineNum">     219 </span>            :     if (strstr(current_exe, frame-&gt;exe)) {
+<span class="lineNum">     220 </span>            :         strncpy(frame-&gt;exe, current_exe, strlen(current_exe));
+<span class="lineNum">     221 </span>            :     }
+<span class="lineNum">     222 </span>            :     s_whitelist_chars(frame-&gt;exe);
+<span class="lineNum">     223 </span>            : 
+<span class="lineNum">     224 </span>            :     /* parse addr */
+<span class="lineNum">     225 </span>            :     const char *addr_start = strstr(exe_end, &quot;0x&quot;);
+<span class="lineNum">     226 </span>            :     const char *addr_end = strstr(addr_start, &quot; &quot;);
+<span class="lineNum">     227 </span>            :     strncpy(frame-&gt;addr, addr_start, addr_end - addr_start);
+<span class="lineNum">     228 </span>            : 
+<span class="lineNum">     229 </span>            :     /* parse function */
+<span class="lineNum">     230 </span>            :     const char *function_start = strstr(addr_end, &quot; &quot;) + 1;
+<span class="lineNum">     231 </span>            :     const char *function_end = strstr(function_start, &quot; &quot;);
+<span class="lineNum">     232 </span>            :     /* truncate function name if needed */
+<span class="lineNum">     233 </span>            :     size_t function_len = function_end - function_start;
+<span class="lineNum">     234 </span>            :     if (function_len &gt;= (sizeof(frame-&gt;function) - 1)) {
+<span class="lineNum">     235 </span>            :         function_len = sizeof(frame-&gt;function) - 1;
+<span class="lineNum">     236 </span>            :     }
+<span class="lineNum">     237 </span>            :     strncpy(frame-&gt;function, function_start, function_end - function_start);
+<span class="lineNum">     238 </span>            : 
+<span class="lineNum">     239 </span>            :     /* find base addr for library/exe */
+<span class="lineNum">     240 </span>            :     Dl_info addr_info;
+<span class="lineNum">     241 </span>            :     dladdr(addr, &amp;addr_info);
+<span class="lineNum">     242 </span>            :     snprintf(frame-&gt;base, sizeof(frame-&gt;base), &quot;0x%p&quot;, addr_info.dli_fbase);
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span>            :     return AWS_OP_SUCCESS;
+<span class="lineNum">     245 </span>            : }
+<span class="lineNum">     246 </span>            : 
+<span class="lineNum">     247 </span>            : void s_resolve_cmd(char *cmd, size_t len, struct aws_stack_frame_info *frame) {
+<span class="lineNum">     248 </span>            :     snprintf(cmd, len, &quot;atos -o %s -l %s %s&quot;, frame-&gt;exe, frame-&gt;base, frame-&gt;addr);
+<a name="249"><span class="lineNum">     249 </span>            : }</a>
+<span class="lineNum">     250 </span>            : #    else
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 : int s_parse_symbol(const char *symbol, void *addr, struct aws_stack_frame_info *frame) {</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :     /* symbols look like: &lt;exe-or-shared-lib&gt;(&lt;function&gt;+&lt;addr&gt;) [0x&lt;addr&gt;]</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :      *                or: &lt;exe-or-shared-lib&gt; [0x&lt;addr&gt;]</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :      *                or: [0x&lt;addr&gt;]</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :      */</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :     (void)addr;</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :     const char *open_paren = strstr(symbol, &quot;(&quot;);</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :     const char *close_paren = strstr(symbol, &quot;)&quot;);</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :     const char *exe_end = open_paren;</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :     /* there may not be a function in parens, or parens at all */</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :     if (open_paren == NULL || close_paren == NULL) {</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :         exe_end = strstr(symbol, &quot;[&quot;);</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :         if (!exe_end) {</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :             return AWS_OP_ERR;</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :         /* if exe_end == symbol, there's no exe */</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :         if (exe_end != symbol) {</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :             exe_end -= 1;</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :     ptrdiff_t exe_len = exe_end - symbol;</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :     if (exe_len &gt; 0) {</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :         strncpy(frame-&gt;exe, symbol, exe_len);</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :     s_whitelist_chars(frame-&gt;exe);</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :     long function_len = (open_paren &amp;&amp; close_paren) ? close_paren - open_paren - 1 : 0;</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :     if (function_len &gt; 0) { /* dynamic symbol was found */</span>
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :         /* there might be (&lt;function&gt;+&lt;addr&gt;) or just (&lt;function&gt;) */</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :         const char *function_start = open_paren + 1;</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :         const char *plus = strstr(function_start, &quot;+&quot;);</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :         const char *function_end = (plus) ? plus : close_paren;</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :         if (function_end &gt; function_start) {</span>
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :             function_len = function_end - function_start;</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :             strncpy(frame-&gt;function, function_start, function_len);</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :         } else if (plus) {</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :             long addr_len = close_paren - plus - 1;</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :             strncpy(frame-&gt;addr, plus + 1, addr_len);</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :     if (frame-&gt;addr[0] == 0) {</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :         /* use the address in []'s, since it's all we have */</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :         const char *addr_start = strstr(exe_end, &quot;[&quot;) + 1;</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :         char *addr_end = strstr(addr_start, &quot;]&quot;);</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :         if (!addr_end) {</span>
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :             return AWS_OP_ERR;</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :         strncpy(frame-&gt;addr, addr_start, addr_end - addr_start);</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 : </span>
+<a name="302"><span class="lineNum">     302 </span><span class="lineNoCov">          0 :     return AWS_OP_SUCCESS;</span></a>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 : void s_resolve_cmd(char *cmd, size_t len, struct aws_stack_frame_info *frame) {</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :     snprintf(cmd, len, &quot;addr2line -afips -e %s %s&quot;, frame-&gt;exe, frame-&gt;addr);</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 : }</span>
+<a name="307"><span class="lineNum">     307 </span>            : #    endif</a>
+<span class="lineNum">     308 </span>            : 
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 : size_t aws_backtrace(void **stack_frames, size_t num_frames) {</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :     return backtrace(stack_frames, (int)aws_min_size(num_frames, INT_MAX));</span>
+<a name="311"><span class="lineNum">     311 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     312 </span>            : 
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 : char **aws_backtrace_symbols(void *const *stack_frames, size_t stack_depth) {</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :     return backtrace_symbols(stack_frames, (int)aws_min_size(stack_depth, INT_MAX));</span>
+<a name="315"><span class="lineNum">     315 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     316 </span>            : 
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 : char **aws_backtrace_addr2line(void *const *stack_frames, size_t stack_depth) {</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :     char **symbols = aws_backtrace_symbols(stack_frames, stack_depth);</span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :     AWS_FATAL_ASSERT(symbols);</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :     struct aws_byte_buf lines;</span>
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :     aws_byte_buf_init(&amp;lines, aws_default_allocator(), stack_depth * 256);</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :     /* insert pointers for each stack entry */</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :     memset(lines.buffer, 0, stack_depth * sizeof(void *));</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :     lines.len += stack_depth * sizeof(void *);</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :     /* symbols look like: &lt;exe-or-shared-lib&gt;(&lt;function&gt;+&lt;addr&gt;) [0x&lt;addr&gt;]</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :      *                or: &lt;exe-or-shared-lib&gt; [0x&lt;addr&gt;]</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :      * start at 1 to skip the current frame (this function) */</span>
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :     for (size_t frame_idx = 0; frame_idx &lt; stack_depth; ++frame_idx) {</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :         struct aws_stack_frame_info frame;</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :         AWS_ZERO_STRUCT(frame);</span>
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :         const char *symbol = symbols[frame_idx];</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :         if (s_parse_symbol(symbol, stack_frames[frame_idx], &amp;frame)) {</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :             goto parse_failed;</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :         /* TODO: Emulate libunwind */</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :         char cmd[sizeof(struct aws_stack_frame_info)] = {0};</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :         s_resolve_cmd(cmd, sizeof(cmd), &amp;frame);</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         FILE *out = popen(cmd, &quot;r&quot;);</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :         if (!out) {</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :             goto parse_failed;</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :         char output[1024];</span>
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :         if (fgets(output, sizeof(output), out)) {</span>
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :             /* if addr2line or atos don't know what to do with an address, they just echo it */</span>
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :             /* if there are spaces in the output, then they resolved something */</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :             if (strstr(output, &quot; &quot;)) {</span>
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :                 symbol = output;</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :         pclose(out);</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :     parse_failed:</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :         /* record the pointer to where the symbol will be */</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :         *((char **)&amp;lines.buffer[frame_idx * sizeof(void *)]) = (char *)lines.buffer + lines.len;</span>
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :         struct aws_byte_cursor line_cursor = aws_byte_cursor_from_c_str(symbol);</span>
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :         line_cursor.len += 1; /* strings must be null terminated, make sure we copy the null */</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :         aws_byte_buf_append_dynamic(&amp;lines, &amp;line_cursor);</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :     free(symbols);</span>
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :     return (char **)lines.buffer; /* caller is responsible for freeing */</span>
+<a name="364"><span class="lineNum">     364 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     365 </span>            : 
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 : void aws_backtrace_print(FILE *fp, void *call_site_data) {</span>
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :     siginfo_t *siginfo = call_site_data;</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :     if (siginfo) {</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :         fprintf(fp, &quot;Signal received: %d, errno: %d\n&quot;, siginfo-&gt;si_signo, siginfo-&gt;si_errno);</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :         if (siginfo-&gt;si_signo == SIGSEGV) {</span>
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :             fprintf(fp, &quot;  SIGSEGV @ 0x%p\n&quot;, siginfo-&gt;si_addr);</span>
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :     void *stack_frames[AWS_BACKTRACE_DEPTH];</span>
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :     size_t stack_depth = aws_backtrace(stack_frames, AWS_BACKTRACE_DEPTH);</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :     char **symbols = aws_backtrace_symbols(stack_frames, stack_depth);</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :     if (symbols == NULL) {</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :         fprintf(fp, &quot;Unable to decode backtrace via backtrace_symbols\n&quot;);</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :     fprintf(fp, &quot;################################################################################\n&quot;);</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :     fprintf(fp, &quot;Resolved stacktrace:\n&quot;);</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :     fprintf(fp, &quot;################################################################################\n&quot;);</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :     /* symbols look like: &lt;exe-or-shared-lib&gt;(&lt;function&gt;+&lt;addr&gt;) [0x&lt;addr&gt;]</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :      *                or: &lt;exe-or-shared-lib&gt; [0x&lt;addr&gt;]</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :      *                or: [0x&lt;addr&gt;]</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :      * start at 1 to skip the current frame (this function) */</span>
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :     for (size_t frame_idx = 1; frame_idx &lt; stack_depth; ++frame_idx) {</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :         struct aws_stack_frame_info frame;</span>
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :         AWS_ZERO_STRUCT(frame);</span>
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :         const char *symbol = symbols[frame_idx];</span>
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 :         if (s_parse_symbol(symbol, stack_frames[frame_idx], &amp;frame)) {</span>
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 :             goto parse_failed;</span>
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :         /* TODO: Emulate libunwind */</span>
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :         char cmd[sizeof(struct aws_stack_frame_info)] = {0};</span>
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 :         s_resolve_cmd(cmd, sizeof(cmd), &amp;frame);</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :         FILE *out = popen(cmd, &quot;r&quot;);</span>
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :         if (!out) {</span>
+<span class="lineNum">     403 </span><span class="lineNoCov">          0 :             goto parse_failed;</span>
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     405 </span><span class="lineNoCov">          0 :         char output[1024];</span>
+<span class="lineNum">     406 </span><span class="lineNoCov">          0 :         if (fgets(output, sizeof(output), out)) {</span>
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 :             /* if addr2line or atos don't know what to do with an address, they just echo it */</span>
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 :             /* if there are spaces in the output, then they resolved something */</span>
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :             if (strstr(output, &quot; &quot;)) {</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :                 symbol = output;</span>
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 :         pclose(out);</span>
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :     parse_failed:</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :         fprintf(fp, &quot;%s%s&quot;, symbol, (symbol == symbols[frame_idx]) ? &quot;\n&quot; : &quot;&quot;);</span>
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :     fprintf(fp, &quot;################################################################################\n&quot;);</span>
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :     fprintf(fp, &quot;Raw stacktrace:\n&quot;);</span>
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :     fprintf(fp, &quot;################################################################################\n&quot;);</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :     for (size_t frame_idx = 1; frame_idx &lt; stack_depth; ++frame_idx) {</span>
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :         const char *symbol = symbols[frame_idx];</span>
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 :         fprintf(fp, &quot;%s\n&quot;, symbol);</span>
+<span class="lineNum">     425 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     426 </span><span class="lineNoCov">          0 :     fflush(fp);</span>
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :     free(symbols);</span>
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     430 </span>            : 
+<span class="lineNum">     431 </span>            : #else
+<span class="lineNum">     432 </span>            : void aws_backtrace_print(FILE *fp, void *call_site_data) {
+<span class="lineNum">     433 </span>            :     (void)call_site_data;
+<span class="lineNum">     434 </span>            :     fprintf(fp, &quot;No call stack information available\n&quot;);
+<span class="lineNum">     435 </span>            : }
+<span class="lineNum">     436 </span>            : 
+<span class="lineNum">     437 </span>            : size_t aws_backtrace(void **stack_frames, size_t size) {
+<span class="lineNum">     438 </span>            :     (void)stack_frames;
+<span class="lineNum">     439 </span>            :     (void)size;
+<span class="lineNum">     440 </span>            :     return 0;
+<span class="lineNum">     441 </span>            : }
+<span class="lineNum">     442 </span>            : 
+<span class="lineNum">     443 </span>            : char **aws_backtrace_symbols(void *const *stack_frames, size_t stack_depth) {
+<span class="lineNum">     444 </span>            :     (void)stack_frames;
+<span class="lineNum">     445 </span>            :     (void)stack_depth;
+<span class="lineNum">     446 </span>            :     return NULL;
+<span class="lineNum">     447 </span>            : }
+<span class="lineNum">     448 </span>            : 
+<span class="lineNum">     449 </span>            : char **aws_backtrace_addr2line(void *const *stack_frames, size_t stack_depth) {
+<span class="lineNum">     450 </span>            :     (void)stack_frames;
+<span class="lineNum">     451 </span>            :     (void)stack_depth;
+<span class="lineNum">     452 </span>            :     return NULL;
+<span class="lineNum">     453 </span>            : }
+<a name="454"><span class="lineNum">     454 </span>            : #endif /* AWS_HAVE_EXECINFO */</a>
+<span class="lineNum">     455 </span>            : 
+<span class="lineNum">     456 </span><span class="lineNoCov">          0 : void aws_backtrace_log() {</span>
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :     void *stack_frames[1024];</span>
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :     size_t num_frames = aws_backtrace(stack_frames, 1024);</span>
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :     if (!num_frames) {</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :     char **symbols = aws_backtrace_addr2line(stack_frames, num_frames);</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :     for (size_t line = 0; line &lt; num_frames; ++line) {</span>
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 :         const char *symbol = symbols[line];</span>
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :         AWS_LOGF_TRACE(AWS_LS_COMMON_GENERAL, &quot;%s&quot;, symbol);</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :     free(symbols);</span>
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     469 </span>            : 
+<span class="lineNum">     470 </span>            : #if defined(AWS_OS_APPLE)
+<span class="lineNum">     471 </span>            : enum aws_platform_os aws_get_platform_build_os(void) {
+<span class="lineNum">     472 </span>            :     return AWS_PLATFORM_OS_MAC;
+<a name="473"><span class="lineNum">     473 </span>            : }</a>
+<span class="lineNum">     474 </span>            : #else
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 : enum aws_platform_os aws_get_platform_build_os(void) {</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :     return AWS_PLATFORM_OS_UNIX;</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     478 </span>            : #endif /* AWS_OS_APPLE */
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

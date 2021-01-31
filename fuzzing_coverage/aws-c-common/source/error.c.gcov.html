@@ -1,0 +1,280 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - aws-c-common/source/error.c</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">aws-c-common/source</a> - error.c<span style="font-size: 80%;"> (source / <a href="error.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntry">161</td>
+            <td class="headerCovTableEntryLo">3.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntryLo">7.1 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /**</a>
+<span class="lineNum">       2 </span>            :  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+<span class="lineNum">       3 </span>            :  * SPDX-License-Identifier: Apache-2.0.
+<span class="lineNum">       4 </span>            :  */
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : #include &lt;aws/common/error.h&gt;
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : #include &lt;aws/common/common.h&gt;
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            : #include &lt;errno.h&gt;
+<span class="lineNum">      11 </span>            : #include &lt;stdio.h&gt;
+<span class="lineNum">      12 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : static AWS_THREAD_LOCAL int tl_last_error = 0;
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            : static aws_error_handler_fn *s_global_handler = NULL;
+<span class="lineNum">      17 </span>            : static void *s_global_error_context = NULL;
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            : static AWS_THREAD_LOCAL aws_error_handler_fn *tl_thread_handler = NULL;
+<span class="lineNum">      20 </span>            : AWS_THREAD_LOCAL void *tl_thread_handler_context = NULL;
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span>            : /* Since slot size is 00000100 00000000, to divide, we need to shift right by 10
+<span class="lineNum">      23 </span>            :  * bits to find the slot, and to find the modulus, we use a binary and with
+<span class="lineNum">      24 </span>            :  * 00000011 11111111 to find the index in that slot.
+<span class="lineNum">      25 </span>            :  */
+<span class="lineNum">      26 </span><span class="lineNoCov">          0 : #define SLOT_MASK (AWS_ERROR_ENUM_STRIDE - 1)</span>
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : static const int MAX_ERROR_CODE = AWS_ERROR_ENUM_STRIDE * AWS_PACKAGE_SLOTS;
+<span class="lineNum">      29 </span>            : 
+<a name="30"><span class="lineNum">      30 </span>            : static const struct aws_error_info_list *volatile ERROR_SLOTS[AWS_PACKAGE_SLOTS] = {0};</a>
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span><span class="lineNoCov">          0 : int aws_last_error(void) {</span>
+<span class="lineNum">      33 </span><span class="lineNoCov">          0 :     return tl_last_error;</span>
+<a name="34"><span class="lineNum">      34 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 : static const struct aws_error_info *get_error_by_code(int err) {</span>
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :     if (err &gt;= MAX_ERROR_CODE || err &lt; 0) {</span>
+<span class="lineNum">      38 </span><span class="lineNoCov">          0 :         return NULL;</span>
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 :     uint32_t slot_index = (uint32_t)err &gt;&gt; AWS_ERROR_ENUM_STRIDE_BITS;</span>
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 :     uint32_t error_index = (uint32_t)err &amp; SLOT_MASK;</span>
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      44 </span><span class="lineNoCov">          0 :     const struct aws_error_info_list *error_slot = ERROR_SLOTS[slot_index];</span>
+<span class="lineNum">      45 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :     if (!error_slot || error_index &gt;= error_slot-&gt;count) {</span>
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :         return NULL;</span>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :     return &amp;error_slot-&gt;error_list[error_index];</span>
+<a name="51"><span class="lineNum">      51 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 : const char *aws_error_str(int err) {</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :     const struct aws_error_info *error_info = get_error_by_code(err);</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :     if (error_info) {</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :         return error_info-&gt;error_str;</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :     return &quot;Unknown Error Code&quot;;</span>
+<a name="61"><span class="lineNum">      61 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 : const char *aws_error_name(int err) {</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :     const struct aws_error_info *error_info = get_error_by_code(err);</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :     if (error_info) {</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         return error_info-&gt;literal_name;</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :     return &quot;Unknown Error Code&quot;;</span>
+<a name="71"><span class="lineNum">      71 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 : const char *aws_error_lib_name(int err) {</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     const struct aws_error_info *error_info = get_error_by_code(err);</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :     if (error_info) {</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :         return error_info-&gt;lib_name;</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :     return &quot;Unknown Error Code&quot;;</span>
+<a name="81"><span class="lineNum">      81 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 : const char *aws_error_debug_str(int err) {</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :     const struct aws_error_info *error_info = get_error_by_code(err);</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :     if (error_info) {</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :         return error_info-&gt;formatted_name;</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     return &quot;Unknown Error Code&quot;;</span>
+<a name="91"><span class="lineNum">      91 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span><span class="lineCov">      96170 : void aws_raise_error_private(int err) {</span>
+<span class="lineNum">      94 </span><span class="lineCov">      96170 :     tl_last_error = err;</span>
+<span class="lineNum">      95 </span><span class="lineCov">      96170 : </span>
+<span class="lineNum">      96 </span><span class="lineCov">      96170 :     if (tl_thread_handler) {</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :         tl_thread_handler(tl_last_error, tl_thread_handler_context);</span>
+<span class="lineNum">      98 </span><span class="lineCov">      96170 :     } else if (s_global_handler) {</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :         s_global_handler(tl_last_error, s_global_error_context);</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :     }</span>
+<a name="101"><span class="lineNum">     101 </span><span class="lineCov">      96170 : }</span></a>
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 : void aws_reset_error(void) {</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :     tl_last_error = 0;</span>
+<a name="105"><span class="lineNum">     105 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     106 </span>            : 
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 : void aws_restore_error(int err) {</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :     tl_last_error = err;</span>
+<a name="109"><span class="lineNum">     109 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 : aws_error_handler_fn *aws_set_global_error_handler_fn(aws_error_handler_fn *handler, void *ctx) {</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :     aws_error_handler_fn *old_handler = s_global_handler;</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :     s_global_handler = handler;</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :     s_global_error_context = ctx;</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :     return old_handler;</span>
+<a name="117"><span class="lineNum">     117 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     118 </span>            : 
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 : aws_error_handler_fn *aws_set_thread_local_error_handler_fn(aws_error_handler_fn *handler, void *ctx) {</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :     aws_error_handler_fn *old_handler = tl_thread_handler;</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     tl_thread_handler = handler;</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :     tl_thread_handler_context = ctx;</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :     return old_handler;</span>
+<a name="125"><span class="lineNum">     125 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     126 </span>            : 
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 : void aws_register_error_info(const struct aws_error_info_list *error_info) {</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :     /*</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :      * We're not so worried about these asserts being removed in an NDEBUG build</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :      * - we'll either segfault immediately (for the first two) or for the count</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :      * assert, the registration will be ineffective.</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :      */</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :     AWS_FATAL_ASSERT(error_info);</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     AWS_FATAL_ASSERT(error_info-&gt;error_list);</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :     AWS_FATAL_ASSERT(error_info-&gt;count);</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :     const int min_range = error_info-&gt;error_list[0].error_code;</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :     const int slot_index = min_range &gt;&gt; AWS_ERROR_ENUM_STRIDE_BITS;</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :     if (slot_index &gt;= AWS_PACKAGE_SLOTS || slot_index &lt; 0) {</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :         /* This is an NDEBUG build apparently. Kill the process rather than</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :          * corrupting heap. */</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :         fprintf(stderr, &quot;Bad error slot index %d\n&quot;, slot_index);</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :         AWS_FATAL_ASSERT(false);</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 : #if DEBUG_BUILD</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :     /* Assert that error info entries are in the right order. */</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :     for (int i = 1; i &lt; error_info-&gt;count; ++i) {</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :         const int expected_code = min_range + i;</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :         const struct aws_error_info *info = &amp;error_info-&gt;error_list[i];</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :         if (info-&gt;error_code != expected_code) {</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :             if (info-&gt;error_code) {</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :                 fprintf(stderr, &quot;Error %s is at wrong index of error info list.\n&quot;, info-&gt;literal_name);</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :             } else {</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :                 fprintf(stderr, &quot;Error %d is missing from error info list.\n&quot;, expected_code);</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :             AWS_FATAL_ASSERT(0);</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 : #endif /* DEBUG_BUILD */</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :     ERROR_SLOTS[slot_index] = error_info;</span>
+<a name="164"><span class="lineNum">     164 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 : void aws_unregister_error_info(const struct aws_error_info_list *error_info) {</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :     AWS_FATAL_ASSERT(error_info);</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :     AWS_FATAL_ASSERT(error_info-&gt;error_list);</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :     AWS_FATAL_ASSERT(error_info-&gt;count);</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :     const int min_range = error_info-&gt;error_list[0].error_code;</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :     const int slot_index = min_range &gt;&gt; AWS_ERROR_ENUM_STRIDE_BITS;</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :     if (slot_index &gt;= AWS_PACKAGE_SLOTS || slot_index &lt; 0) {</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :         /* This is an NDEBUG build apparently. Kill the process rather than</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :          * corrupting heap. */</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :         fprintf(stderr, &quot;Bad error slot index %d\n&quot;, slot_index);</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :         AWS_FATAL_ASSERT(0);</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :     ERROR_SLOTS[slot_index] = NULL;</span>
+<a name="182"><span class="lineNum">     182 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     183 </span>            : 
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 : int aws_translate_and_raise_io_error(int error_no) {</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :     switch (error_no) {</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :         case EINVAL:</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :             return aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :         case ESPIPE:</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :             return aws_raise_error(AWS_ERROR_STREAM_UNSEEKABLE);</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :         case EPERM:</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :         case EACCES:</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :             return aws_raise_error(AWS_ERROR_NO_PERMISSION);</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :         case EISDIR:</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :         case ENAMETOOLONG:</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :         case ENOENT:</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :             return aws_raise_error(AWS_ERROR_FILE_INVALID_PATH);</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :         case ENFILE:</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :             return aws_raise_error(AWS_ERROR_MAX_FDS_EXCEEDED);</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :         case ENOMEM:</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :             return aws_raise_error(AWS_ERROR_OOM);</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :         default:</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :             return aws_raise_error(AWS_ERROR_SYS_CALL_FAILURE);</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

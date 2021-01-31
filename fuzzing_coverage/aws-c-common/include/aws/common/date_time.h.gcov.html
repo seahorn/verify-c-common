@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - aws-c-common/include/aws/common/date_time.h</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../index.html">top level</a> - <a href="index.html">aws-c-common/include/aws/common</a> - date_time.h<span style="font-size: 80%;"> (source / <a href="date_time.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #ifndef AWS_COMMON_DATE_TIME_H</a>
+<span class="lineNum">       2 </span>            : #define AWS_COMMON_DATE_TIME_H
+<span class="lineNum">       3 </span>            : /**
+<span class="lineNum">       4 </span>            :  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+<span class="lineNum">       5 </span>            :  * SPDX-License-Identifier: Apache-2.0.
+<span class="lineNum">       6 </span>            :  */
+<span class="lineNum">       7 </span>            : #include &lt;aws/common/common.h&gt;
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            : #include &lt;time.h&gt;
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span><span class="lineNoCov">          0 : #define AWS_DATE_TIME_STR_MAX_LEN 100</span>
+<span class="lineNum">      12 </span>            : #define AWS_DATE_TIME_STR_MAX_BASIC_LEN 20
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : struct aws_byte_buf;
+<span class="lineNum">      15 </span>            : struct aws_byte_cursor;
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            : enum aws_date_format {
+<span class="lineNum">      18 </span>            :     AWS_DATE_FORMAT_RFC822,
+<span class="lineNum">      19 </span>            :     AWS_DATE_FORMAT_ISO_8601,
+<span class="lineNum">      20 </span>            :     AWS_DATE_FORMAT_ISO_8601_BASIC,
+<span class="lineNum">      21 </span>            :     AWS_DATE_FORMAT_AUTO_DETECT,
+<span class="lineNum">      22 </span>            : };
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            : enum aws_date_month {
+<span class="lineNum">      25 </span>            :     AWS_DATE_MONTH_JANUARY = 0,
+<span class="lineNum">      26 </span>            :     AWS_DATE_MONTH_FEBRUARY,
+<span class="lineNum">      27 </span>            :     AWS_DATE_MONTH_MARCH,
+<span class="lineNum">      28 </span>            :     AWS_DATE_MONTH_APRIL,
+<span class="lineNum">      29 </span>            :     AWS_DATE_MONTH_MAY,
+<span class="lineNum">      30 </span>            :     AWS_DATE_MONTH_JUNE,
+<span class="lineNum">      31 </span>            :     AWS_DATE_MONTH_JULY,
+<span class="lineNum">      32 </span>            :     AWS_DATE_MONTH_AUGUST,
+<span class="lineNum">      33 </span>            :     AWS_DATE_MONTH_SEPTEMBER,
+<span class="lineNum">      34 </span>            :     AWS_DATE_MONTH_OCTOBER,
+<span class="lineNum">      35 </span>            :     AWS_DATE_MONTH_NOVEMBER,
+<span class="lineNum">      36 </span>            :     AWS_DATE_MONTH_DECEMBER,
+<span class="lineNum">      37 </span>            : };
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            : enum aws_date_day_of_week {
+<span class="lineNum">      40 </span>            :     AWS_DATE_DAY_OF_WEEK_SUNDAY = 0,
+<span class="lineNum">      41 </span>            :     AWS_DATE_DAY_OF_WEEK_MONDAY,
+<span class="lineNum">      42 </span>            :     AWS_DATE_DAY_OF_WEEK_TUESDAY,
+<span class="lineNum">      43 </span>            :     AWS_DATE_DAY_OF_WEEK_WEDNESDAY,
+<span class="lineNum">      44 </span>            :     AWS_DATE_DAY_OF_WEEK_THURSDAY,
+<span class="lineNum">      45 </span>            :     AWS_DATE_DAY_OF_WEEK_FRIDAY,
+<span class="lineNum">      46 </span>            :     AWS_DATE_DAY_OF_WEEK_SATURDAY,
+<span class="lineNum">      47 </span>            : };
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span>            : struct aws_date_time {
+<span class="lineNum">      50 </span>            :     time_t timestamp;
+<span class="lineNum">      51 </span>            :     char tz[6];
+<span class="lineNum">      52 </span>            :     struct tm gmt_time;
+<span class="lineNum">      53 </span>            :     struct tm local_time;
+<span class="lineNum">      54 </span>            :     bool utc_assumed;
+<span class="lineNum">      55 </span>            : };
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            : AWS_EXTERN_C_BEGIN
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span>            : /**
+<span class="lineNum">      60 </span>            :  * Initializes dt to be the current system time.
+<span class="lineNum">      61 </span>            :  */
+<span class="lineNum">      62 </span>            : AWS_COMMON_API void aws_date_time_init_now(struct aws_date_time *dt);
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            : /**
+<span class="lineNum">      65 </span>            :  * Initializes dt to be the time represented in milliseconds since unix epoch.
+<span class="lineNum">      66 </span>            :  */
+<span class="lineNum">      67 </span>            : AWS_COMMON_API void aws_date_time_init_epoch_millis(struct aws_date_time *dt, uint64_t ms_since_epoch);
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span>            : /**
+<span class="lineNum">      70 </span>            :  * Initializes dt to be the time represented in seconds.millis since unix epoch.
+<span class="lineNum">      71 </span>            :  */
+<span class="lineNum">      72 </span>            : AWS_COMMON_API void aws_date_time_init_epoch_secs(struct aws_date_time *dt, double sec_ms);
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span>            : /**
+<span class="lineNum">      75 </span>            :  * Initializes dt to be the time represented by date_str in format 'fmt'. Returns AWS_OP_SUCCESS if the
+<span class="lineNum">      76 </span>            :  * string was successfully parsed, returns  AWS_OP_ERR if parsing failed.
+<span class="lineNum">      77 </span>            :  *
+<span class="lineNum">      78 </span>            :  * Notes for AWS_DATE_FORMAT_RFC822:
+<span class="lineNum">      79 </span>            :  * If no time zone information is provided, it is assumed to be local time (please don't do this).
+<span class="lineNum">      80 </span>            :  *
+<span class="lineNum">      81 </span>            :  * If the time zone is something other than something indicating Universal Time (e.g. Z, UT, UTC, or GMT) or an offset
+<span class="lineNum">      82 </span>            :  * from UTC (e.g. +0100, -0700), parsing will fail.
+<span class="lineNum">      83 </span>            :  *
+<span class="lineNum">      84 </span>            :  * Really, it's just better if you always use Universal Time.
+<span class="lineNum">      85 </span>            :  */
+<span class="lineNum">      86 </span>            : AWS_COMMON_API int aws_date_time_init_from_str(
+<span class="lineNum">      87 </span>            :     struct aws_date_time *dt,
+<span class="lineNum">      88 </span>            :     const struct aws_byte_buf *date_str,
+<span class="lineNum">      89 </span>            :     enum aws_date_format fmt);
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span>            : /**
+<span class="lineNum">      92 </span>            :  * aws_date_time_init variant that takes a byte_cursor rather than a byte_buf
+<span class="lineNum">      93 </span>            :  */
+<span class="lineNum">      94 </span>            : AWS_COMMON_API int aws_date_time_init_from_str_cursor(
+<span class="lineNum">      95 </span>            :     struct aws_date_time *dt,
+<span class="lineNum">      96 </span>            :     const struct aws_byte_cursor *date_str_cursor,
+<span class="lineNum">      97 </span>            :     enum aws_date_format fmt);
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span>            : /**
+<span class="lineNum">     100 </span>            :  * Copies the current time as a formatted date string in local time into output_buf. If buffer is too small, it will
+<span class="lineNum">     101 </span>            :  * return AWS_OP_ERR. A good size suggestion is AWS_DATE_TIME_STR_MAX_LEN bytes. AWS_DATE_FORMAT_AUTO_DETECT is not
+<span class="lineNum">     102 </span>            :  * allowed.
+<span class="lineNum">     103 </span>            :  */
+<span class="lineNum">     104 </span>            : AWS_COMMON_API int aws_date_time_to_local_time_str(
+<span class="lineNum">     105 </span>            :     const struct aws_date_time *dt,
+<span class="lineNum">     106 </span>            :     enum aws_date_format fmt,
+<span class="lineNum">     107 </span>            :     struct aws_byte_buf *output_buf);
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span>            : /**
+<span class="lineNum">     110 </span>            :  * Copies the current time as a formatted date string in utc time into output_buf. If buffer is too small, it will
+<span class="lineNum">     111 </span>            :  * return AWS_OP_ERR. A good size suggestion is AWS_DATE_TIME_STR_MAX_LEN bytes. AWS_DATE_FORMAT_AUTO_DETECT is not
+<span class="lineNum">     112 </span>            :  * allowed.
+<span class="lineNum">     113 </span>            :  */
+<span class="lineNum">     114 </span>            : AWS_COMMON_API int aws_date_time_to_utc_time_str(
+<span class="lineNum">     115 </span>            :     const struct aws_date_time *dt,
+<span class="lineNum">     116 </span>            :     enum aws_date_format fmt,
+<span class="lineNum">     117 </span>            :     struct aws_byte_buf *output_buf);
+<span class="lineNum">     118 </span>            : 
+<span class="lineNum">     119 </span>            : /**
+<span class="lineNum">     120 </span>            :  * Copies the current time as a formatted short date string in local time into output_buf. If buffer is too small, it
+<span class="lineNum">     121 </span>            :  * will return AWS_OP_ERR. A good size suggestion is AWS_DATE_TIME_STR_MAX_LEN bytes. AWS_DATE_FORMAT_AUTO_DETECT is not
+<span class="lineNum">     122 </span>            :  * allowed.
+<span class="lineNum">     123 </span>            :  */
+<span class="lineNum">     124 </span>            : AWS_COMMON_API int aws_date_time_to_local_time_short_str(
+<span class="lineNum">     125 </span>            :     const struct aws_date_time *dt,
+<span class="lineNum">     126 </span>            :     enum aws_date_format fmt,
+<span class="lineNum">     127 </span>            :     struct aws_byte_buf *output_buf);
+<span class="lineNum">     128 </span>            : 
+<span class="lineNum">     129 </span>            : /**
+<span class="lineNum">     130 </span>            :  * Copies the current time as a formatted short date string in utc time into output_buf. If buffer is too small, it will
+<span class="lineNum">     131 </span>            :  * return AWS_OP_ERR. A good size suggestion is AWS_DATE_TIME_STR_MAX_LEN bytes. AWS_DATE_FORMAT_AUTO_DETECT is not
+<span class="lineNum">     132 </span>            :  * allowed.
+<span class="lineNum">     133 </span>            :  */
+<span class="lineNum">     134 </span>            : AWS_COMMON_API int aws_date_time_to_utc_time_short_str(
+<span class="lineNum">     135 </span>            :     const struct aws_date_time *dt,
+<span class="lineNum">     136 </span>            :     enum aws_date_format fmt,
+<span class="lineNum">     137 </span>            :     struct aws_byte_buf *output_buf);
+<span class="lineNum">     138 </span>            : 
+<span class="lineNum">     139 </span>            : AWS_COMMON_API double aws_date_time_as_epoch_secs(const struct aws_date_time *dt);
+<span class="lineNum">     140 </span>            : AWS_COMMON_API uint64_t aws_date_time_as_nanos(const struct aws_date_time *dt);
+<span class="lineNum">     141 </span>            : AWS_COMMON_API uint64_t aws_date_time_as_millis(const struct aws_date_time *dt);
+<span class="lineNum">     142 </span>            : AWS_COMMON_API uint16_t aws_date_time_year(const struct aws_date_time *dt, bool local_time);
+<span class="lineNum">     143 </span>            : AWS_COMMON_API enum aws_date_month aws_date_time_month(const struct aws_date_time *dt, bool local_time);
+<span class="lineNum">     144 </span>            : AWS_COMMON_API uint8_t aws_date_time_month_day(const struct aws_date_time *dt, bool local_time);
+<span class="lineNum">     145 </span>            : AWS_COMMON_API enum aws_date_day_of_week aws_date_time_day_of_week(const struct aws_date_time *dt, bool local_time);
+<span class="lineNum">     146 </span>            : AWS_COMMON_API uint8_t aws_date_time_hour(const struct aws_date_time *dt, bool local_time);
+<span class="lineNum">     147 </span>            : AWS_COMMON_API uint8_t aws_date_time_minute(const struct aws_date_time *dt, bool local_time);
+<span class="lineNum">     148 </span>            : AWS_COMMON_API uint8_t aws_date_time_second(const struct aws_date_time *dt, bool local_time);
+<span class="lineNum">     149 </span>            : AWS_COMMON_API bool aws_date_time_dst(const struct aws_date_time *dt, bool local_time);
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span>            : /**
+<span class="lineNum">     152 </span>            :  * returns the difference of a and b (a - b) in seconds.
+<span class="lineNum">     153 </span>            :  */
+<span class="lineNum">     154 </span>            : AWS_COMMON_API time_t aws_date_time_diff(const struct aws_date_time *a, const struct aws_date_time *b);
+<span class="lineNum">     155 </span>            : 
+<span class="lineNum">     156 </span>            : AWS_EXTERN_C_END
+<span class="lineNum">     157 </span>            : 
+<span class="lineNum">     158 </span>            : #endif /* AWS_COMMON_DATE_TIME_H */
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

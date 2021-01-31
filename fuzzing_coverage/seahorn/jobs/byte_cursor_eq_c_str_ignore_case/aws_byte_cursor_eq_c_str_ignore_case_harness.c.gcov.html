@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:34:31</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -90,17 +90,17 @@
 <span class="lineNum">      28 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      29 </span><span class="lineCov">      50000 :   /* operation under verification */</span>
 <span class="lineNum">      30 </span><span class="lineCov">      50000 :     if (aws_byte_cursor_eq_c_str_ignore_case(&amp;cur, c_str)) {</span>
-<span class="lineNum">      31 </span><span class="lineCov">       1306 :         sassert(cur.len == str_len);</span>
-<span class="lineNum">      32 </span><span class="lineCov">       1306 :     }</span>
+<span class="lineNum">      31 </span><span class="lineCov">       1146 :         sassert(cur.len == str_len);</span>
+<span class="lineNum">      32 </span><span class="lineCov">       1146 :     }</span>
 <span class="lineNum">      33 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      34 </span><span class="lineCov">      50000 :     /* asserts both parameters remain unchanged */</span>
 <span class="lineNum">      35 </span><span class="lineCov">      50000 :     sassert(aws_byte_cursor_is_valid(&amp;cur));</span>
 <span class="lineNum">      36 </span><span class="lineCov">      50000 :     if (cur.len &gt; 0) {</span>
-<span class="lineNum">      37 </span><span class="lineCov">       2301 :         assert_byte_from_buffer_matches(cur.ptr, &amp;old_byte_from_cursor);</span>
-<span class="lineNum">      38 </span><span class="lineCov">       2301 :     }</span>
+<span class="lineNum">      37 </span><span class="lineCov">       1791 :         assert_byte_from_buffer_matches(cur.ptr, &amp;old_byte_from_cursor);</span>
+<span class="lineNum">      38 </span><span class="lineCov">       1791 :     }</span>
 <span class="lineNum">      39 </span><span class="lineCov">      50000 :     if (str_len &gt; 0) {</span>
-<span class="lineNum">      40 </span><span class="lineCov">       1923 :         assert_byte_from_buffer_matches((uint8_t *)c_str, &amp;old_byte_from_str);</span>
-<span class="lineNum">      41 </span><span class="lineCov">       1923 :     }</span>
+<span class="lineNum">      40 </span><span class="lineCov">       1434 :         assert_byte_from_buffer_matches((uint8_t *)c_str, &amp;old_byte_from_str);</span>
+<span class="lineNum">      41 </span><span class="lineCov">       1434 :     }</span>
 <span class="lineNum">      42 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      43 </span><span class="lineCov">      50000 :     return 0;</span>
 <span class="lineNum">      44 </span><span class="lineCov">      50000 : }</span>

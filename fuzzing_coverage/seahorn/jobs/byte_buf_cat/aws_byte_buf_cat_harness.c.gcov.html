@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:34:31</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -103,10 +103,10 @@
 <span class="lineNum">      41 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      42 </span><span class="lineCov">      50000 :     /* operation under verification */</span>
 <span class="lineNum">      43 </span><span class="lineCov">      50000 :     if (aws_byte_buf_cat(&amp;dest, number_of_args, &amp;buffer1, &amp;buffer2, &amp;buffer3) == AWS_OP_SUCCESS) {</span>
-<span class="lineNum">      44 </span><span class="lineCov">       1260 :         sassert((old_dest.capacity - old_dest.len) &gt;= (buffer1.len + buffer2.len + buffer3.len));</span>
-<span class="lineNum">      45 </span><span class="lineCov">      48740 :     } else {</span>
-<span class="lineNum">      46 </span><span class="lineCov">      48740 :         sassert((old_dest.capacity - old_dest.len) &lt; (buffer1.len + buffer2.len + buffer3.len));</span>
-<span class="lineNum">      47 </span><span class="lineCov">      48740 :     }</span>
+<span class="lineNum">      44 </span><span class="lineCov">        717 :         sassert((old_dest.capacity - old_dest.len) &gt;= (buffer1.len + buffer2.len + buffer3.len));</span>
+<span class="lineNum">      45 </span><span class="lineCov">      49283 :     } else {</span>
+<span class="lineNum">      46 </span><span class="lineCov">      49283 :         sassert((old_dest.capacity - old_dest.len) &lt; (buffer1.len + buffer2.len + buffer3.len));</span>
+<span class="lineNum">      47 </span><span class="lineCov">      49283 :     }</span>
 <span class="lineNum">      48 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      49 </span><span class="lineCov">      50000 :     /* assertions */</span>
 <span class="lineNum">      50 </span><span class="lineCov">      50000 :     sassert(aws_byte_buf_is_valid(&amp;buffer1));</span>

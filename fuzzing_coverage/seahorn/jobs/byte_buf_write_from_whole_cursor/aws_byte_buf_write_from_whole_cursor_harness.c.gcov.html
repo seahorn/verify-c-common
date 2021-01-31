@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:34:31</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -90,15 +90,15 @@
 <span class="lineNum">      28 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      29 </span><span class="lineCov">      50000 :     /* operation under verification */</span>
 <span class="lineNum">      30 </span><span class="lineCov">      50000 :     if (aws_byte_buf_write_from_whole_cursor(&amp;buf, src)) {</span>
-<span class="lineNum">      31 </span><span class="lineCov">       3661 :         sassert(buf.len == buf_old.len + src.len);</span>
-<span class="lineNum">      32 </span><span class="lineCov">       3661 :         sassert(buf_old.capacity == buf.capacity);</span>
-<span class="lineNum">      33 </span><span class="lineCov">       3661 :         sassert(buf_old.allocator == buf.allocator);</span>
-<span class="lineNum">      34 </span><span class="lineCov">       3661 :         if (src.len &gt; 0 &amp;&amp; buf.len &gt; 0) {</span>
-<span class="lineNum">      35 </span><span class="lineCov">       2179 :             assert_bytes_match(buf.buffer + buf_old.len, src.ptr, src.len);</span>
-<span class="lineNum">      36 </span><span class="lineCov">       2179 :         }</span>
-<span class="lineNum">      37 </span><span class="lineCov">      46339 :     } else {</span>
-<span class="lineNum">      38 </span><span class="lineCov">      46339 :         assert_byte_buf_equivalence(&amp;buf, &amp;buf_old, &amp;old_byte_from_buf);</span>
-<span class="lineNum">      39 </span><span class="lineCov">      46339 :     }</span>
+<span class="lineNum">      31 </span><span class="lineCov">       4237 :         sassert(buf.len == buf_old.len + src.len);</span>
+<span class="lineNum">      32 </span><span class="lineCov">       4237 :         sassert(buf_old.capacity == buf.capacity);</span>
+<span class="lineNum">      33 </span><span class="lineCov">       4237 :         sassert(buf_old.allocator == buf.allocator);</span>
+<span class="lineNum">      34 </span><span class="lineCov">       4237 :         if (src.len &gt; 0 &amp;&amp; buf.len &gt; 0) {</span>
+<span class="lineNum">      35 </span><span class="lineCov">       2303 :             assert_bytes_match(buf.buffer + buf_old.len, src.ptr, src.len);</span>
+<span class="lineNum">      36 </span><span class="lineCov">       2303 :         }</span>
+<span class="lineNum">      37 </span><span class="lineCov">      45763 :     } else {</span>
+<span class="lineNum">      38 </span><span class="lineCov">      45763 :         assert_byte_buf_equivalence(&amp;buf, &amp;buf_old, &amp;old_byte_from_buf);</span>
+<span class="lineNum">      39 </span><span class="lineCov">      45763 :     }</span>
 <span class="lineNum">      40 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      41 </span><span class="lineCov">      50000 :     sassert(aws_byte_buf_is_valid(&amp;buf));</span>
 <span class="lineNum">      42 </span><span class="lineCov">      50000 :     sassert(aws_byte_cursor_is_valid(&amp;src));</span>

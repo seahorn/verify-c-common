@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:34:31</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -95,12 +95,12 @@
 <span class="lineNum">      33 </span><span class="lineCov">      50000 :     memhavoc(lookup_table, sizeof(lookup_table));</span>
 <span class="lineNum">      34 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      35 </span><span class="lineCov">      50000 :     if (aws_byte_buf_append_with_lookup(&amp;to, &amp;from, lookup_table) == AWS_OP_SUCCESS) {</span>
-<span class="lineNum">      36 </span><span class="lineCov">       2627 :         sassert(to.len == to_old.len + from.len);</span>
-<span class="lineNum">      37 </span><span class="lineCov">      47373 :     } else {</span>
-<span class="lineNum">      38 </span><span class="lineCov">      47373 :         /* if the operation return an error, to must not change */</span>
-<span class="lineNum">      39 </span><span class="lineCov">      47373 :         assert_bytes_match(to_old.buffer, to.buffer, to.len);</span>
-<span class="lineNum">      40 </span><span class="lineCov">      47373 :         sassert(to_old.len == to.len);</span>
-<span class="lineNum">      41 </span><span class="lineCov">      47373 :     }</span>
+<span class="lineNum">      36 </span><span class="lineCov">       1992 :         sassert(to.len == to_old.len + from.len);</span>
+<span class="lineNum">      37 </span><span class="lineCov">      48008 :     } else {</span>
+<span class="lineNum">      38 </span><span class="lineCov">      48008 :         /* if the operation return an error, to must not change */</span>
+<span class="lineNum">      39 </span><span class="lineCov">      48008 :         assert_bytes_match(to_old.buffer, to.buffer, to.len);</span>
+<span class="lineNum">      40 </span><span class="lineCov">      48008 :         sassert(to_old.len == to.len);</span>
+<span class="lineNum">      41 </span><span class="lineCov">      48008 :     }</span>
 <span class="lineNum">      42 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      43 </span><span class="lineCov">      50000 :     sassert(aws_byte_buf_is_valid(&amp;to));</span>
 <span class="lineNum">      44 </span><span class="lineCov">      50000 :     sassert(aws_byte_cursor_is_valid(&amp;from));</span>

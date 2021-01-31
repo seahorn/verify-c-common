@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - aws-c-common/source/posix/condition_variable.c</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../index.html">top level</a> - <a href="index.html">aws-c-common/source/posix</a> - condition_variable.c<span style="font-size: 80%;"> (source / <a href="condition_variable.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">90</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /**</a>
+<span class="lineNum">       2 </span>            :  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+<span class="lineNum">       3 </span>            :  * SPDX-License-Identifier: Apache-2.0.
+<span class="lineNum">       4 </span>            :  */
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : #include &lt;aws/common/condition_variable.h&gt;
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : #include &lt;aws/common/clock.h&gt;
+<span class="lineNum">       9 </span>            : #include &lt;aws/common/mutex.h&gt;
+<span class="lineNum">      10 </span>            : 
+<a name="11"><span class="lineNum">      11 </span>            : #include &lt;errno.h&gt;</a>
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span><span class="lineNoCov">          0 : static int process_error_code(int err) {</span>
+<span class="lineNum">      14 </span><span class="lineNoCov">          0 :     switch (err) {</span>
+<span class="lineNum">      15 </span><span class="lineNoCov">          0 :         case ENOMEM:</span>
+<span class="lineNum">      16 </span><span class="lineNoCov">          0 :             return aws_raise_error(AWS_ERROR_OOM);</span>
+<span class="lineNum">      17 </span><span class="lineNoCov">          0 :         case ETIMEDOUT:</span>
+<span class="lineNum">      18 </span><span class="lineNoCov">          0 :             return aws_raise_error(AWS_ERROR_COND_VARIABLE_TIMED_OUT);</span>
+<span class="lineNum">      19 </span><span class="lineNoCov">          0 :         default:</span>
+<span class="lineNum">      20 </span><span class="lineNoCov">          0 :             return aws_raise_error(AWS_ERROR_COND_VARIABLE_ERROR_UNKNOWN);</span>
+<span class="lineNum">      21 </span><span class="lineNoCov">          0 :     }</span>
+<a name="22"><span class="lineNum">      22 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span><span class="lineNoCov">          0 : int aws_condition_variable_init(struct aws_condition_variable *condition_variable) {</span>
+<span class="lineNum">      25 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(condition_variable);</span>
+<span class="lineNum">      26 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      27 </span><span class="lineNoCov">          0 :     if (pthread_cond_init(&amp;condition_variable-&gt;condition_handle, NULL)) {</span>
+<span class="lineNum">      28 </span><span class="lineNoCov">          0 :         AWS_ZERO_STRUCT(*condition_variable);</span>
+<span class="lineNum">      29 </span><span class="lineNoCov">          0 :         return aws_raise_error(AWS_ERROR_COND_VARIABLE_INIT_FAILED);</span>
+<span class="lineNum">      30 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      31 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      32 </span><span class="lineNoCov">          0 :     condition_variable-&gt;initialized = true;</span>
+<span class="lineNum">      33 </span><span class="lineNoCov">          0 :     return AWS_OP_SUCCESS;</span>
+<a name="34"><span class="lineNum">      34 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 : void aws_condition_variable_clean_up(struct aws_condition_variable *condition_variable) {</span>
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(condition_variable);</span>
+<span class="lineNum">      38 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :     if (condition_variable-&gt;initialized) {</span>
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 :         pthread_cond_destroy(&amp;condition_variable-&gt;condition_handle);</span>
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 :     AWS_ZERO_STRUCT(*condition_variable);</span>
+<a name="44"><span class="lineNum">      44 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 : int aws_condition_variable_notify_one(struct aws_condition_variable *condition_variable) {</span>
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(condition_variable &amp;&amp; condition_variable-&gt;initialized);</span>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 :     int err_code = pthread_cond_signal(&amp;condition_variable-&gt;condition_handle);</span>
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :     if (err_code) {</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :         return process_error_code(err_code);</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :     return AWS_OP_SUCCESS;</span>
+<a name="56"><span class="lineNum">      56 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 : int aws_condition_variable_notify_all(struct aws_condition_variable *condition_variable) {</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(condition_variable &amp;&amp; condition_variable-&gt;initialized);</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :     int err_code = pthread_cond_broadcast(&amp;condition_variable-&gt;condition_handle);</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :     if (err_code) {</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :         return process_error_code(err_code);</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :     return AWS_OP_SUCCESS;</span>
+<a name="68"><span class="lineNum">      68 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 : int aws_condition_variable_wait(struct aws_condition_variable *condition_variable, struct aws_mutex *mutex) {</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(condition_variable &amp;&amp; condition_variable-&gt;initialized);</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(mutex &amp;&amp; mutex-&gt;initialized);</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     int err_code = pthread_cond_wait(&amp;condition_variable-&gt;condition_handle, &amp;mutex-&gt;mutex_handle);</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :     if (err_code) {</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :         return process_error_code(err_code);</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :     return AWS_OP_SUCCESS;</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span>            : int aws_condition_variable_wait_for(
+<a name="84"><span class="lineNum">      84 </span>            :     struct aws_condition_variable *condition_variable,</a>
+<span class="lineNum">      85 </span>            :     struct aws_mutex *mutex,
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :     int64_t time_to_wait) {</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(condition_variable &amp;&amp; condition_variable-&gt;initialized);</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(mutex &amp;&amp; mutex-&gt;initialized);</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :     uint64_t current_sys_time = 0;</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :     if (aws_sys_clock_get_ticks(&amp;current_sys_time)) {</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :         return AWS_OP_ERR;</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     time_to_wait += current_sys_time;</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :     struct timespec ts;</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :     uint64_t remainder = 0;</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :     ts.tv_sec =</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :         (time_t)aws_timestamp_convert((uint64_t)time_to_wait, AWS_TIMESTAMP_NANOS, AWS_TIMESTAMP_SECS, &amp;remainder);</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :     ts.tv_nsec = (long)remainder;</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :     int err_code = pthread_cond_timedwait(&amp;condition_variable-&gt;condition_handle, &amp;mutex-&gt;mutex_handle, &amp;ts);</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :     if (err_code) {</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :         return process_error_code(err_code);</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :     return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

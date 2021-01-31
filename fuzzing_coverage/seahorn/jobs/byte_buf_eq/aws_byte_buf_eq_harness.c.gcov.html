@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:34:31</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -79,10 +79,10 @@
 <span class="lineNum">      17 </span><span class="lineCov">      50000 :     /* assumptions */</span>
 <span class="lineNum">      18 </span><span class="lineCov">      50000 :     assume(aws_byte_buf_is_valid(&amp;lhs));</span>
 <span class="lineNum">      19 </span><span class="lineCov">      50000 :     if (nd_bool()) {</span>
-<span class="lineNum">      20 </span><span class="lineCov">       8765 :         rhs = lhs;</span>
-<span class="lineNum">      21 </span><span class="lineCov">      41235 :     } else {</span>
-<span class="lineNum">      22 </span><span class="lineCov">      41235 :         assume(aws_byte_buf_is_valid(&amp;rhs));</span>
-<span class="lineNum">      23 </span><span class="lineCov">      41235 :     }</span>
+<span class="lineNum">      20 </span><span class="lineCov">      14013 :         rhs = lhs;</span>
+<span class="lineNum">      21 </span><span class="lineCov">      35987 :     } else {</span>
+<span class="lineNum">      22 </span><span class="lineCov">      35987 :         assume(aws_byte_buf_is_valid(&amp;rhs));</span>
+<span class="lineNum">      23 </span><span class="lineCov">      35987 :     }</span>
 <span class="lineNum">      24 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      25 </span><span class="lineCov">      50000 :     /* save current state of the data structure */</span>
 <span class="lineNum">      26 </span><span class="lineCov">      50000 :     struct aws_byte_buf old_lhs = lhs;</span>
@@ -94,11 +94,11 @@
 <span class="lineNum">      32 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      33 </span><span class="lineCov">      50000 :     /* operation under verification */</span>
 <span class="lineNum">      34 </span><span class="lineCov">      50000 :     if (aws_byte_buf_eq(&amp;lhs, &amp;rhs)) {</span>
-<span class="lineNum">      35 </span><span class="lineCov">       3236 :         sassert(lhs.len == rhs.len);</span>
-<span class="lineNum">      36 </span><span class="lineCov">       3236 :         if (lhs.len &gt; 0) {</span>
-<span class="lineNum">      37 </span><span class="lineCov">        181 :             assert_bytes_match(lhs.buffer, rhs.buffer, lhs.len);</span>
-<span class="lineNum">      38 </span><span class="lineCov">        181 :         }</span>
-<span class="lineNum">      39 </span><span class="lineCov">       3236 :     }</span>
+<span class="lineNum">      35 </span><span class="lineCov">       3805 :         sassert(lhs.len == rhs.len);</span>
+<span class="lineNum">      36 </span><span class="lineCov">       3805 :         if (lhs.len &gt; 0) {</span>
+<span class="lineNum">      37 </span><span class="lineCov">        295 :             assert_bytes_match(lhs.buffer, rhs.buffer, lhs.len);</span>
+<span class="lineNum">      38 </span><span class="lineCov">        295 :         }</span>
+<span class="lineNum">      39 </span><span class="lineCov">       3805 :     }</span>
 <span class="lineNum">      40 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      41 </span><span class="lineCov">      50000 :     /* assertions */</span>
 <span class="lineNum">      42 </span><span class="lineCov">      50000 :     sassert(aws_byte_buf_is_valid(&amp;lhs));</span>

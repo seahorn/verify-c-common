@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:34:31</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -93,13 +93,13 @@
 <span class="lineNum">      31 </span><span class="lineCov">      50000 :     /* assertions */</span>
 <span class="lineNum">      32 </span><span class="lineCov">      50000 :     sassert(aws_array_list_is_valid(&amp;list));</span>
 <span class="lineNum">      33 </span><span class="lineCov">      50000 :     if (n == 0) {</span>
-<span class="lineNum">      34 </span><span class="lineCov">       1483 :         assert_array_list_equivalence(&amp;list, &amp;old, &amp;old_byte);</span>
-<span class="lineNum">      35 </span><span class="lineCov">      48517 :     } else {</span>
-<span class="lineNum">      36 </span><span class="lineCov">      48517 :         sassert(list.alloc == old.alloc);</span>
-<span class="lineNum">      37 </span><span class="lineCov">      48517 :         sassert(list.current_size == old.current_size);</span>
-<span class="lineNum">      38 </span><span class="lineCov">      48517 :         sassert(list.item_size == old.item_size);</span>
-<span class="lineNum">      39 </span><span class="lineCov">      48517 :         (n &gt;= old.length) ? sassert(list.length == 0) : sassert(list.length == old.length - n);</span>
-<span class="lineNum">      40 </span><span class="lineCov">      48517 :     }</span>
+<span class="lineNum">      34 </span><span class="lineCov">       1004 :         assert_array_list_equivalence(&amp;list, &amp;old, &amp;old_byte);</span>
+<span class="lineNum">      35 </span><span class="lineCov">      48996 :     } else {</span>
+<span class="lineNum">      36 </span><span class="lineCov">      48996 :         sassert(list.alloc == old.alloc);</span>
+<span class="lineNum">      37 </span><span class="lineCov">      48996 :         sassert(list.current_size == old.current_size);</span>
+<span class="lineNum">      38 </span><span class="lineCov">      48996 :         sassert(list.item_size == old.item_size);</span>
+<span class="lineNum">      39 </span><span class="lineCov">      48996 :         (n &gt;= old.length) ? sassert(list.length == 0) : sassert(list.length == old.length - n);</span>
+<span class="lineNum">      40 </span><span class="lineCov">      48996 :     }</span>
 <span class="lineNum">      41 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      42 </span><span class="lineCov">      50000 :     return 0;</span>
 <span class="lineNum">      43 </span><span class="lineCov">      50000 : }</span>

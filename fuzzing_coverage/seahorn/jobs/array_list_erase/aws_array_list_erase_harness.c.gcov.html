@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:34:31</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -86,14 +86,14 @@
 <span class="lineNum">      24 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      25 </span><span class="lineCov">      50000 :     /* perform operation under verification */</span>
 <span class="lineNum">      26 </span><span class="lineCov">      50000 :     if (aws_array_list_erase(&amp;list, index) == AWS_OP_SUCCESS) {</span>
-<span class="lineNum">      27 </span><span class="lineCov">       1373 :         sassert(list.length == old.length - 1);</span>
-<span class="lineNum">      28 </span><span class="lineCov">       1373 :         sassert(list.item_size == old.item_size);</span>
-<span class="lineNum">      29 </span><span class="lineCov">       1373 :         sassert(list.alloc == old.alloc);</span>
-<span class="lineNum">      30 </span><span class="lineCov">       1373 :         sassert(list.current_size == old.current_size);</span>
-<span class="lineNum">      31 </span><span class="lineCov">       1373 :         sassert(index &lt; old.length);</span>
-<span class="lineNum">      32 </span><span class="lineCov">      48627 :     } else {</span>
-<span class="lineNum">      33 </span><span class="lineCov">      48627 :         assert_array_list_equivalence(&amp;list, &amp;old, &amp;old_byte);</span>
-<span class="lineNum">      34 </span><span class="lineCov">      48627 :     }</span>
+<span class="lineNum">      27 </span><span class="lineCov">       1231 :         sassert(list.length == old.length - 1);</span>
+<span class="lineNum">      28 </span><span class="lineCov">       1231 :         sassert(list.item_size == old.item_size);</span>
+<span class="lineNum">      29 </span><span class="lineCov">       1231 :         sassert(list.alloc == old.alloc);</span>
+<span class="lineNum">      30 </span><span class="lineCov">       1231 :         sassert(list.current_size == old.current_size);</span>
+<span class="lineNum">      31 </span><span class="lineCov">       1231 :         sassert(index &lt; old.length);</span>
+<span class="lineNum">      32 </span><span class="lineCov">      48769 :     } else {</span>
+<span class="lineNum">      33 </span><span class="lineCov">      48769 :         assert_array_list_equivalence(&amp;list, &amp;old, &amp;old_byte);</span>
+<span class="lineNum">      34 </span><span class="lineCov">      48769 :     }</span>
 <span class="lineNum">      35 </span><span class="lineCov">      50000 :     sassert(aws_array_list_is_valid(&amp;list));</span>
 <span class="lineNum">      36 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      37 </span><span class="lineCov">      50000 :     return 0;</span>

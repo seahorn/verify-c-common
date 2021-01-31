@@ -1,0 +1,465 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - aws-c-common/include/aws/common/array_list.inl</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../index.html">top level</a> - <a href="index.html">aws-c-common/include/aws/common</a> - array_list.inl<span style="font-size: 80%;"> (source / <a href="array_list.inl.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">219</td>
+            <td class="headerCovTableEntry">319</td>
+            <td class="headerCovTableEntryLo">68.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">64</td>
+            <td class="headerCovTableEntry">1869</td>
+            <td class="headerCovTableEntryLo">3.4 %</td>
+          </tr>
+          <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #ifndef AWS_COMMON_ARRAY_LIST_INL</a>
+<span class="lineNum">       2 </span>            : #define AWS_COMMON_ARRAY_LIST_INL
+<span class="lineNum">       3 </span>            : 
+<span class="lineNum">       4 </span>            : /**
+<span class="lineNum">       5 </span>            :  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+<span class="lineNum">       6 </span>            :  * SPDX-License-Identifier: Apache-2.0.
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            : /* This is implicitly included, but helps with editor highlighting */
+<span class="lineNum">      10 </span>            : #include &lt;aws/common/array_list.h&gt;
+<span class="lineNum">      11 </span>            : /*
+<span class="lineNum">      12 </span>            :  * Do not add system headers here; add them to array_list.h. This file is included under extern &quot;C&quot; guards,
+<span class="lineNum">      13 </span>            :  * which might break system headers.
+<span class="lineNum">      14 </span>            :  */
+<span class="lineNum">      15 </span>            : AWS_EXTERN_C_BEGIN
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      18 </span>            : int aws_array_list_init_dynamic(
+<span class="lineNum">      19 </span>            :     struct aws_array_list *AWS_RESTRICT list,
+<a name="20"><span class="lineNum">      20 </span>            :     struct aws_allocator *alloc,</a>
+<span class="lineNum">      21 </span>            :     size_t initial_item_allocation,
+<span class="lineNum">      22 </span><span class="lineCov">        114 :     size_t item_size) {</span>
+<span class="lineNum">      23 </span><span class="lineCov">        114 : </span>
+<span class="lineNum">      24 </span><span class="lineCov">        114 :     AWS_FATAL_PRECONDITION(list != NULL);</span>
+<span class="lineNum">      25 </span><span class="lineCov">        114 :     AWS_FATAL_PRECONDITION(alloc != NULL);</span>
+<span class="lineNum">      26 </span><span class="lineCov">        114 :     AWS_FATAL_PRECONDITION(item_size &gt; 0);</span>
+<span class="lineNum">      27 </span><span class="lineCov">        114 : </span>
+<span class="lineNum">      28 </span><span class="lineCov">        114 :     AWS_ZERO_STRUCT(*list);</span>
+<span class="lineNum">      29 </span><span class="lineCov">        114 : </span>
+<span class="lineNum">      30 </span><span class="lineCov">        114 :     size_t allocation_size;</span>
+<span class="lineNum">      31 </span><span class="lineCov">        114 :     if (aws_mul_size_checked(initial_item_allocation, item_size, &amp;allocation_size)) {</span>
+<span class="lineNum">      32 </span><span class="lineNoCov">          0 :         goto error;</span>
+<span class="lineNum">      33 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      34 </span><span class="lineCov">        114 : </span>
+<span class="lineNum">      35 </span><span class="lineCov">        114 :     if (allocation_size &gt; 0) {</span>
+<span class="lineNum">      36 </span><span class="lineCov">         23 :         list-&gt;data = aws_mem_acquire(alloc, allocation_size);</span>
+<span class="lineNum">      37 </span><span class="lineCov">         23 :         if (!list-&gt;data) {</span>
+<span class="lineNum">      38 </span><span class="lineNoCov">          0 :             goto error;</span>
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 : #ifdef DEBUG_BUILD</span>
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 :         memset(list-&gt;data, AWS_ARRAY_LIST_DEBUG_FILL, allocation_size);</span>
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 : #endif</span>
+<span class="lineNum">      44 </span><span class="lineCov">         23 :         list-&gt;current_size = allocation_size;</span>
+<span class="lineNum">      45 </span><span class="lineCov">         23 :     }</span>
+<span class="lineNum">      46 </span><span class="lineCov">        114 :     list-&gt;item_size = item_size;</span>
+<span class="lineNum">      47 </span><span class="lineCov">        114 :     list-&gt;alloc = alloc;</span>
+<span class="lineNum">      48 </span><span class="lineCov">        114 : </span>
+<span class="lineNum">      49 </span><span class="lineCov">        114 :     AWS_FATAL_POSTCONDITION(list-&gt;current_size == 0 || list-&gt;data);</span>
+<span class="lineNum">      50 </span><span class="lineCov">        114 :     AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">      51 </span><span class="lineCov">        114 :     return AWS_OP_SUCCESS;</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 : error:</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(AWS_IS_ZEROED(*list));</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :     return AWS_OP_ERR;</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      59 </span>            : void aws_array_list_init_static(
+<span class="lineNum">      60 </span>            :     struct aws_array_list *AWS_RESTRICT list,
+<a name="61"><span class="lineNum">      61 </span>            :     void *raw_array,</a>
+<span class="lineNum">      62 </span>            :     size_t item_count,
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :     size_t item_size) {</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :     AWS_FATAL_PRECONDITION(list != NULL);</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :     AWS_FATAL_PRECONDITION(raw_array != NULL);</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :     AWS_FATAL_PRECONDITION(item_count &gt; 0);</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :     AWS_FATAL_PRECONDITION(item_size &gt; 0);</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :     list-&gt;alloc = NULL;</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :     int no_overflow = !aws_mul_size_checked(item_count, item_size, &amp;list-&gt;current_size);</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :     AWS_FATAL_PRECONDITION(no_overflow);</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :     list-&gt;item_size = item_size;</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :     list-&gt;length = 0;</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :     list-&gt;data = raw_array;</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 : }</span>
+<a name="80"><span class="lineNum">      80 </span>            : </a>
+<span class="lineNum">      81 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      82 </span><span class="lineCov">    1189390 : bool aws_array_list_is_valid(const struct aws_array_list *AWS_RESTRICT list) {</span>
+<span class="lineNum">      83 </span><span class="lineCov">    1189390 :     if (!list) {</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :         return false;</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      86 </span><span class="lineCov">    1189390 :     size_t required_size = 0;</span>
+<span class="lineNum">      87 </span><span class="lineCov">    1189390 :     bool required_size_is_valid =</span>
+<span class="lineNum">      88 </span><span class="lineCov">    1189390 :         (aws_mul_size_checked(list-&gt;length, list-&gt;item_size, &amp;required_size) == AWS_OP_SUCCESS);</span>
+<span class="lineNum">      89 </span><span class="lineCov">    1189390 :     bool current_size_is_valid = (list-&gt;current_size &gt;= required_size);</span>
+<span class="lineNum">      90 </span><span class="lineCov">    1189390 :     bool data_is_valid = AWS_IMPLIES(list-&gt;current_size == 0, list-&gt;data == NULL) &amp;&amp;</span>
+<span class="lineNum">      91 </span><span class="lineCov">    1189390 :                          AWS_IMPLIES(list-&gt;current_size != 0, AWS_MEM_IS_WRITABLE(list-&gt;data, list-&gt;current_size));</span>
+<span class="lineNum">      92 </span><span class="lineCov">    1189390 :     bool item_size_is_valid = (list-&gt;item_size != 0);</span>
+<span class="lineNum">      93 </span><span class="lineCov">    1189390 :     return required_size_is_valid &amp;&amp; current_size_is_valid &amp;&amp; data_is_valid &amp;&amp; item_size_is_valid;</span>
+<span class="lineNum">      94 </span><span class="lineCov">    1189390 : }</span>
+<a name="95"><span class="lineNum">      95 </span>            : </a>
+<span class="lineNum">      96 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 : void aws_array_list_debug_print(const struct aws_array_list *list) {</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :     printf(</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :         &quot;arraylist %p. Alloc %p. current_size %zu. length %zu. item_size %zu. data %p\n&quot;,</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :         (void *)list,</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :         (void *)list-&gt;alloc,</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :         list-&gt;current_size,</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :         list-&gt;length,</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         list-&gt;item_size,</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :         (void *)list-&gt;data);</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 : }</span>
+<a name="107"><span class="lineNum">     107 </span>            : </a>
+<span class="lineNum">     108 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     109 </span><span class="lineCov">      33737 : void aws_array_list_clean_up(struct aws_array_list *AWS_RESTRICT list) {</span>
+<span class="lineNum">     110 </span><span class="lineCov">      33737 :     AWS_PRECONDITION(AWS_IS_ZEROED(*list) || aws_array_list_is_valid(list));</span>
+<span class="lineNum">     111 </span><span class="lineCov">      33737 :     if (list-&gt;alloc &amp;&amp; list-&gt;data) {</span>
+<span class="lineNum">     112 </span><span class="lineCov">      28416 :         aws_mem_release(list-&gt;alloc, list-&gt;data);</span>
+<span class="lineNum">     113 </span><span class="lineCov">      28416 :     }</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     115 </span><span class="lineCov">      33737 :     AWS_ZERO_STRUCT(*list);</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 : }</span>
+<a name="117"><span class="lineNum">     117 </span>            : </a>
+<span class="lineNum">     118 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 : void aws_array_list_clean_up_secure(struct aws_array_list *AWS_RESTRICT list) {</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(AWS_IS_ZEROED(*list) || aws_array_list_is_valid(list));</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     if (list-&gt;alloc &amp;&amp; list-&gt;data) {</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :         aws_secure_zero((void *)list-&gt;data, list-&gt;current_size);</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :         aws_mem_release(list-&gt;alloc, list-&gt;data);</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :     AWS_ZERO_STRUCT(*list);</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 : }</span>
+<a name="128"><span class="lineNum">     128 </span>            : </a>
+<span class="lineNum">     129 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     130 </span><span class="lineCov">       4551 : int aws_array_list_push_back(struct aws_array_list *AWS_RESTRICT list, const void *val) {</span>
+<span class="lineNum">     131 </span><span class="lineCov">       4551 :     AWS_PRECONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :         val &amp;&amp; AWS_MEM_IS_READABLE(val, list-&gt;item_size),</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :         &quot;Input pointer [val] must point writable memory of [list-&gt;item_size] bytes.&quot;);</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :     int err_code = aws_array_list_set_at(list, val, aws_array_list_length(list));</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     138 </span><span class="lineCov">       4551 :     if (err_code &amp;&amp; aws_last_error() == AWS_ERROR_INVALID_INDEX &amp;&amp; !list-&gt;alloc) {</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :         AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :         return aws_raise_error(AWS_ERROR_LIST_EXCEEDS_MAX_SIZE);</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     142 </span><span class="lineCov">       4551 : </span>
+<span class="lineNum">     143 </span><span class="lineCov">       4551 :     AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :     return err_code;</span>
+<span class="lineNum">     145 </span><span class="lineCov">       4551 : }</span>
+<a name="146"><span class="lineNum">     146 </span>            : </a>
+<span class="lineNum">     147 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     148 </span><span class="lineCov">       7401 : int aws_array_list_front(const struct aws_array_list *AWS_RESTRICT list, void *val) {</span>
+<span class="lineNum">     149 </span><span class="lineCov">       7401 :     AWS_PRECONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     150 </span><span class="lineCov">       7401 :     AWS_PRECONDITION(</span>
+<span class="lineNum">     151 </span><span class="lineCov">       7401 :         val &amp;&amp; AWS_MEM_IS_WRITABLE(val, list-&gt;item_size),</span>
+<span class="lineNum">     152 </span><span class="lineCov">       7401 :         &quot;Input pointer [val] must point writable memory of [list-&gt;item_size] bytes.&quot;);</span>
+<span class="lineNum">     153 </span><span class="lineCov">       7401 :     if (aws_array_list_length(list) &gt; 0) {</span>
+<span class="lineNum">     154 </span><span class="lineCov">       2314 :         memcpy(val, list-&gt;data, list-&gt;item_size);</span>
+<span class="lineNum">     155 </span><span class="lineCov">       2314 :         AWS_POSTCONDITION(AWS_BYTES_EQ(val, list-&gt;data, list-&gt;item_size));</span>
+<span class="lineNum">     156 </span><span class="lineCov">       2314 :         AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     157 </span><span class="lineCov">       2314 :         return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     158 </span><span class="lineCov">       2314 :     }</span>
+<span class="lineNum">     159 </span><span class="lineCov">       5087 : </span>
+<span class="lineNum">     160 </span><span class="lineCov">       5087 :     AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     161 </span><span class="lineCov">       5087 :     return aws_raise_error(AWS_ERROR_LIST_EMPTY);</span>
+<span class="lineNum">     162 </span><span class="lineCov">       5087 : }</span>
+<a name="163"><span class="lineNum">     163 </span>            : </a>
+<span class="lineNum">     164 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     165 </span><span class="lineCov">       8709 : int aws_array_list_pop_front(struct aws_array_list *AWS_RESTRICT list) {</span>
+<span class="lineNum">     166 </span><span class="lineCov">       8709 :     AWS_PRECONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     167 </span><span class="lineCov">       8709 :     if (aws_array_list_length(list) &gt; 0) {</span>
+<span class="lineNum">     168 </span><span class="lineCov">       4094 :         aws_array_list_pop_front_n(list, 1);</span>
+<span class="lineNum">     169 </span><span class="lineCov">       4094 :         AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     170 </span><span class="lineCov">       4094 :         return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     171 </span><span class="lineCov">       4094 :     }</span>
+<span class="lineNum">     172 </span><span class="lineCov">       4615 : </span>
+<span class="lineNum">     173 </span><span class="lineCov">       4615 :     AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     174 </span><span class="lineCov">       4615 :     return aws_raise_error(AWS_ERROR_LIST_EMPTY);</span>
+<span class="lineNum">     175 </span><span class="lineCov">       4615 : }</span>
+<a name="176"><span class="lineNum">     176 </span>            : </a>
+<span class="lineNum">     177 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     178 </span><span class="lineCov">      49784 : void aws_array_list_pop_front_n(struct aws_array_list *AWS_RESTRICT list, size_t n) {</span>
+<span class="lineNum">     179 </span><span class="lineCov">      49784 :     AWS_PRECONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     180 </span><span class="lineCov">      49784 :     if (n &gt;= aws_array_list_length(list)) {</span>
+<span class="lineNum">     181 </span><span class="lineCov">      43177 :         aws_array_list_clear(list);</span>
+<span class="lineNum">     182 </span><span class="lineCov">      43177 :         AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     183 </span><span class="lineCov">      43177 :         return;</span>
+<span class="lineNum">     184 </span><span class="lineCov">      43177 :     }</span>
+<span class="lineNum">     185 </span><span class="lineCov">       6607 : </span>
+<span class="lineNum">     186 </span><span class="lineCov">       6607 :     if (n &gt; 0) {</span>
+<span class="lineNum">     187 </span><span class="lineCov">       4873 :         size_t popping_bytes = list-&gt;item_size * n;</span>
+<span class="lineNum">     188 </span><span class="lineCov">       4873 :         size_t remaining_items = aws_array_list_length(list) - n;</span>
+<span class="lineNum">     189 </span><span class="lineCov">       4873 :         size_t remaining_bytes = remaining_items * list-&gt;item_size;</span>
+<span class="lineNum">     190 </span><span class="lineCov">       4873 :         memmove(list-&gt;data, (uint8_t *)list-&gt;data + popping_bytes, remaining_bytes);</span>
+<span class="lineNum">     191 </span><span class="lineCov">       4873 :         list-&gt;length = remaining_items;</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 : #ifdef DEBUG_BUILD</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :         memset((uint8_t *)list-&gt;data + remaining_bytes, AWS_ARRAY_LIST_DEBUG_FILL, popping_bytes);</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 : #endif</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     196 </span><span class="lineCov">       6607 :     AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<a name="197"><span class="lineNum">     197 </span><span class="lineCov">       6607 : }</span></a>
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span><span class="lineCov">       8798 : int aws_array_list_erase(struct aws_array_list *AWS_RESTRICT list, size_t index) {</span>
+<span class="lineNum">     200 </span><span class="lineCov">       8798 :     AWS_PRECONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     201 </span><span class="lineCov">       8798 : </span>
+<span class="lineNum">     202 </span><span class="lineCov">       8798 :     const size_t length = aws_array_list_length(list);</span>
+<span class="lineNum">     203 </span><span class="lineCov">       8798 : </span>
+<span class="lineNum">     204 </span><span class="lineCov">       8798 :     if (index &gt;= length) {</span>
+<span class="lineNum">     205 </span><span class="lineCov">       7567 :         AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     206 </span><span class="lineCov">       7567 :         return aws_raise_error(AWS_ERROR_INVALID_INDEX);</span>
+<span class="lineNum">     207 </span><span class="lineCov">       7567 :     }</span>
+<span class="lineNum">     208 </span><span class="lineCov">       1231 : </span>
+<span class="lineNum">     209 </span><span class="lineCov">       1231 :     if (index == 0) {</span>
+<span class="lineNum">     210 </span><span class="lineCov">        657 :         /* Removing front element */</span>
+<span class="lineNum">     211 </span><span class="lineCov">        657 :         aws_array_list_pop_front(list);</span>
+<span class="lineNum">     212 </span><span class="lineCov">        657 :     } else if (index == (length - 1)) {</span>
+<span class="lineNum">     213 </span><span class="lineCov">         82 :         /* Removing back element */</span>
+<span class="lineNum">     214 </span><span class="lineCov">         82 :         aws_array_list_pop_back(list);</span>
+<span class="lineNum">     215 </span><span class="lineCov">        492 :     } else {</span>
+<span class="lineNum">     216 </span><span class="lineCov">        492 :         /* Removing middle element */</span>
+<span class="lineNum">     217 </span><span class="lineCov">        492 :         uint8_t *item_ptr = (uint8_t *)list-&gt;data + (index * list-&gt;item_size);</span>
+<span class="lineNum">     218 </span><span class="lineCov">        492 :         uint8_t *next_item_ptr = item_ptr + list-&gt;item_size;</span>
+<span class="lineNum">     219 </span><span class="lineCov">        492 :         size_t trailing_items = (length - index) - 1;</span>
+<span class="lineNum">     220 </span><span class="lineCov">        492 :         size_t trailing_bytes = trailing_items * list-&gt;item_size;</span>
+<span class="lineNum">     221 </span><span class="lineCov">        492 :         memmove(item_ptr, next_item_ptr, trailing_bytes);</span>
+<span class="lineNum">     222 </span><span class="lineCov">        492 : </span>
+<span class="lineNum">     223 </span><span class="lineCov">        492 :         aws_array_list_pop_back(list);</span>
+<span class="lineNum">     224 </span><span class="lineCov">        492 :     }</span>
+<span class="lineNum">     225 </span><span class="lineCov">       1231 : </span>
+<span class="lineNum">     226 </span><span class="lineCov">       1231 :     AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     227 </span><span class="lineCov">       1231 :     return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     228 </span><span class="lineCov">       1231 : }</span>
+<a name="229"><span class="lineNum">     229 </span>            : </a>
+<span class="lineNum">     230 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     231 </span><span class="lineCov">       8888 : int aws_array_list_back(const struct aws_array_list *AWS_RESTRICT list, void *val) {</span>
+<span class="lineNum">     232 </span><span class="lineCov">       8888 :     AWS_PRECONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     233 </span><span class="lineCov">       8888 :     AWS_PRECONDITION(</span>
+<span class="lineNum">     234 </span><span class="lineCov">       8888 :         val &amp;&amp; AWS_MEM_IS_WRITABLE(val, list-&gt;item_size),</span>
+<span class="lineNum">     235 </span><span class="lineCov">       8888 :         &quot;Input pointer [val] must point writable memory of [list-&gt;item_size] bytes.&quot;);</span>
+<span class="lineNum">     236 </span><span class="lineCov">       8888 :     if (aws_array_list_length(list) &gt; 0) {</span>
+<span class="lineNum">     237 </span><span class="lineCov">       3530 :         size_t last_item_offset = list-&gt;item_size * (aws_array_list_length(list) - 1);</span>
+<span class="lineNum">     238 </span><span class="lineCov">       3530 : </span>
+<span class="lineNum">     239 </span><span class="lineCov">       3530 :         memcpy(val, (void *)((uint8_t *)list-&gt;data + last_item_offset), list-&gt;item_size);</span>
+<span class="lineNum">     240 </span><span class="lineCov">       3530 :         AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     241 </span><span class="lineCov">       3530 :         return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     242 </span><span class="lineCov">       3530 :     }</span>
+<span class="lineNum">     243 </span><span class="lineCov">       5358 : </span>
+<span class="lineNum">     244 </span><span class="lineCov">       5358 :     AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     245 </span><span class="lineCov">       5358 :     return aws_raise_error(AWS_ERROR_LIST_EMPTY);</span>
+<span class="lineNum">     246 </span><span class="lineCov">       5358 : }</span>
+<a name="247"><span class="lineNum">     247 </span>            : </a>
+<span class="lineNum">     248 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     249 </span><span class="lineCov">       9626 : int aws_array_list_pop_back(struct aws_array_list *AWS_RESTRICT list) {</span>
+<span class="lineNum">     250 </span><span class="lineCov">       9626 :     AWS_PRECONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     251 </span><span class="lineCov">       9626 :     if (aws_array_list_length(list) &gt; 0) {</span>
+<span class="lineNum">     252 </span><span class="lineCov">       4495 : </span>
+<span class="lineNum">     253 </span><span class="lineCov">       4495 :         AWS_FATAL_PRECONDITION(list-&gt;data);</span>
+<span class="lineNum">     254 </span><span class="lineCov">       4495 : </span>
+<span class="lineNum">     255 </span><span class="lineCov">       4495 :         size_t last_item_offset = list-&gt;item_size * (aws_array_list_length(list) - 1);</span>
+<span class="lineNum">     256 </span><span class="lineCov">       4495 : </span>
+<span class="lineNum">     257 </span><span class="lineCov">       4495 :         memset((void *)((uint8_t *)list-&gt;data + last_item_offset), 0, list-&gt;item_size);</span>
+<span class="lineNum">     258 </span><span class="lineCov">       4495 :         list-&gt;length--;</span>
+<span class="lineNum">     259 </span><span class="lineCov">       4495 :         AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     260 </span><span class="lineCov">       4495 :         return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     261 </span><span class="lineCov">       5131 :     }</span>
+<span class="lineNum">     262 </span><span class="lineCov">       5131 : </span>
+<span class="lineNum">     263 </span><span class="lineCov">       5131 :     AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     264 </span><span class="lineCov">       5131 :     return aws_raise_error(AWS_ERROR_LIST_EMPTY);</span>
+<span class="lineNum">     265 </span><span class="lineCov">       5131 : }</span>
+<a name="266"><span class="lineNum">     266 </span>            : </a>
+<span class="lineNum">     267 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     268 </span><span class="lineCov">      78197 : void aws_array_list_clear(struct aws_array_list *AWS_RESTRICT list) {</span>
+<span class="lineNum">     269 </span><span class="lineCov">      78197 :     AWS_PRECONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     270 </span><span class="lineCov">      78197 :     if (list-&gt;data) {</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 : #ifdef DEBUG_BUILD</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :         memset(list-&gt;data, AWS_ARRAY_LIST_DEBUG_FILL, list-&gt;current_size);</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 : #endif</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :         list-&gt;length = 0;</span>
+<span class="lineNum">     275 </span><span class="lineCov">      63477 :     }</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     278 </span>            : 
+<span class="lineNum">     279 </span>            : AWS_STATIC_IMPL
+<a name="280"><span class="lineNum">     280 </span>            : void aws_array_list_swap_contents(</a>
+<span class="lineNum">     281 </span>            :     struct aws_array_list *AWS_RESTRICT list_a,
+<span class="lineNum">     282 </span><span class="lineCov">       1116 :     struct aws_array_list *AWS_RESTRICT list_b) {</span>
+<span class="lineNum">     283 </span><span class="lineCov">       1116 :     AWS_FATAL_PRECONDITION(list_a-&gt;alloc);</span>
+<span class="lineNum">     284 </span><span class="lineCov">       1116 :     AWS_FATAL_PRECONDITION(list_a-&gt;alloc == list_b-&gt;alloc);</span>
+<span class="lineNum">     285 </span><span class="lineCov">       1116 :     AWS_FATAL_PRECONDITION(list_a-&gt;item_size == list_b-&gt;item_size);</span>
+<span class="lineNum">     286 </span><span class="lineCov">       1116 :     AWS_FATAL_PRECONDITION(list_a != list_b);</span>
+<span class="lineNum">     287 </span><span class="lineCov">       1116 :     AWS_PRECONDITION(aws_array_list_is_valid(list_a));</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(aws_array_list_is_valid(list_b));</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :     struct aws_array_list tmp = *list_a;</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :     *list_a = *list_b;</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :     *list_b = tmp;</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_array_list_is_valid(list_a));</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_array_list_is_valid(list_b));</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 : }</span>
+<a name="296"><span class="lineNum">     296 </span>            : </a>
+<span class="lineNum">     297 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     298 </span><span class="lineCov">       8708 : size_t aws_array_list_capacity(const struct aws_array_list *AWS_RESTRICT list) {</span>
+<span class="lineNum">     299 </span><span class="lineCov">       8708 :     AWS_FATAL_PRECONDITION(list-&gt;item_size);</span>
+<span class="lineNum">     300 </span><span class="lineCov">       8708 :     AWS_PRECONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     301 </span><span class="lineCov">       8708 :     size_t capacity = list-&gt;current_size / list-&gt;item_size;</span>
+<span class="lineNum">     302 </span><span class="lineCov">       8708 :     AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     303 </span><span class="lineCov">       8708 :     return capacity;</span>
+<span class="lineNum">     304 </span><span class="lineCov">       8708 : }</span>
+<a name="305"><span class="lineNum">     305 </span>            : </a>
+<span class="lineNum">     306 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     307 </span><span class="lineCov">     192977 : size_t aws_array_list_length(const struct aws_array_list *AWS_RESTRICT list) {</span>
+<span class="lineNum">     308 </span><span class="lineCov">     192977 :     /*</span>
+<span class="lineNum">     309 </span><span class="lineCov">     192977 :      * This assert teaches clang-tidy and friends that list-&gt;data cannot be null in a non-empty</span>
+<span class="lineNum">     310 </span><span class="lineCov">     192977 :      * list.</span>
+<span class="lineNum">     311 </span><span class="lineCov">     192977 :      */</span>
+<span class="lineNum">     312 </span><span class="lineCov">     192977 :     AWS_FATAL_PRECONDITION(!list-&gt;length || list-&gt;data);</span>
+<span class="lineNum">     313 </span><span class="lineCov">     191257 :     AWS_PRECONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     314 </span><span class="lineCov">       1720 :     size_t len = list-&gt;length;</span>
+<span class="lineNum">     315 </span><span class="lineCov">       1720 :     AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     316 </span><span class="lineCov">       1720 :     return len;</span>
+<span class="lineNum">     317 </span><span class="lineCov">       1720 : }</span>
+<a name="318"><span class="lineNum">     318 </span>            : </a>
+<span class="lineNum">     319 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     320 </span><span class="lineCov">      11625 : int aws_array_list_get_at(const struct aws_array_list *AWS_RESTRICT list, void *val, size_t index) {</span>
+<span class="lineNum">     321 </span><span class="lineCov">      11625 :     AWS_PRECONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :         val &amp;&amp; AWS_MEM_IS_WRITABLE(val, list-&gt;item_size),</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :         &quot;Input pointer [val] must point writable memory of [list-&gt;item_size] bytes.&quot;);</span>
+<span class="lineNum">     325 </span><span class="lineCov">      11625 :     if (aws_array_list_length(list) &gt; index) {</span>
+<span class="lineNum">     326 </span><span class="lineCov">       1191 :         memcpy(val, (void *)((uint8_t *)list-&gt;data + (list-&gt;item_size * index)), list-&gt;item_size);</span>
+<span class="lineNum">     327 </span><span class="lineCov">       1191 :         AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     328 </span><span class="lineCov">       1191 :         return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     330 </span><span class="lineCov">      10434 :     AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :     return aws_raise_error(AWS_ERROR_INVALID_INDEX);</span>
+<span class="lineNum">     332 </span><span class="lineCov">      10434 : }</span>
+<a name="333"><span class="lineNum">     333 </span>            : </a>
+<span class="lineNum">     334 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     335 </span><span class="lineCov">      11669 : int aws_array_list_get_at_ptr(const struct aws_array_list *AWS_RESTRICT list, void **val, size_t index) {</span>
+<span class="lineNum">     336 </span><span class="lineCov">      11669 :     AWS_PRECONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     337 </span><span class="lineCov">       1720 :     AWS_PRECONDITION(val != NULL);</span>
+<span class="lineNum">     338 </span><span class="lineCov">      11669 :     if (aws_array_list_length(list) &gt; index) {</span>
+<span class="lineNum">     339 </span><span class="lineCov">       2484 :         *val = (void *)((uint8_t *)list-&gt;data + (list-&gt;item_size * index));</span>
+<span class="lineNum">     340 </span><span class="lineCov">       2484 :         AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     341 </span><span class="lineCov">       2484 :         return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     343 </span><span class="lineCov">       9185 :     AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :     return aws_raise_error(AWS_ERROR_INVALID_INDEX);</span>
+<span class="lineNum">     345 </span><span class="lineCov">       9185 : }</span>
+<a name="346"><span class="lineNum">     346 </span>            : </a>
+<span class="lineNum">     347 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     348 </span><span class="lineCov">       6424 : int aws_array_list_set_at(struct aws_array_list *AWS_RESTRICT list, const void *val, size_t index) {</span>
+<span class="lineNum">     349 </span><span class="lineCov">       6424 :     AWS_PRECONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :         val &amp;&amp; AWS_MEM_IS_READABLE(val, list-&gt;item_size),</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :         &quot;Input pointer [val] must point readable memory of [list-&gt;item_size] bytes.&quot;);</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     354 </span><span class="lineCov">       6424 :     if (aws_array_list_ensure_capacity(list, index)) {</span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :         AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :         return AWS_OP_ERR;</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     358 </span><span class="lineCov">       6424 : </span>
+<span class="lineNum">     359 </span><span class="lineCov">       6424 :     AWS_FATAL_PRECONDITION(list-&gt;data);</span>
+<span class="lineNum">     360 </span><span class="lineCov">       6424 : </span>
+<span class="lineNum">     361 </span><span class="lineCov">       6424 :     memcpy((void *)((uint8_t *)list-&gt;data + (list-&gt;item_size * index)), val, list-&gt;item_size);</span>
+<span class="lineNum">     362 </span><span class="lineCov">       6424 : </span>
+<span class="lineNum">     363 </span><span class="lineCov">       6424 :     /*</span>
+<span class="lineNum">     364 </span><span class="lineCov">       6424 :      * This isn't perfect, but its the best I can come up with for detecting</span>
+<span class="lineNum">     365 </span><span class="lineCov">       6424 :      * length changes.</span>
+<span class="lineNum">     366 </span><span class="lineCov">       6424 :      */</span>
+<span class="lineNum">     367 </span><span class="lineCov">       6424 :     if (index &gt;= aws_array_list_length(list)) {</span>
+<span class="lineNum">     368 </span><span class="lineCov">       4856 :         if (aws_add_size_checked(index, 1, &amp;list-&gt;length)) {</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :             AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :             return AWS_OP_ERR;</span>
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     372 </span><span class="lineCov">       6424 :     }</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     375 </span><span class="lineCov">       6424 :     return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     376 </span><span class="lineCov">       6424 : }</span>
+<a name="377"><span class="lineNum">     377 </span>            : </a>
+<span class="lineNum">     378 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     379 </span><span class="lineCov">      10267 : void aws_array_list_sort(struct aws_array_list *AWS_RESTRICT list, aws_array_list_comparator_fn *compare_fn) {</span>
+<span class="lineNum">     380 </span><span class="lineCov">      10267 :     AWS_PRECONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     381 </span><span class="lineCov">      10267 :     if (list-&gt;data) {</span>
+<span class="lineNum">     382 </span><span class="lineCov">       5596 :         qsort(list-&gt;data, aws_array_list_length(list), list-&gt;item_size, compare_fn);</span>
+<span class="lineNum">     383 </span><span class="lineCov">       5596 :     }</span>
+<span class="lineNum">     384 </span><span class="lineCov">      10267 :     AWS_POSTCONDITION(aws_array_list_is_valid(list));</span>
+<span class="lineNum">     385 </span><span class="lineCov">      10267 : }</span>
+<span class="lineNum">     386 </span>            : 
+<span class="lineNum">     387 </span>            : AWS_EXTERN_C_END
+<span class="lineNum">     388 </span>            : 
+<span class="lineNum">     389 </span>            : #endif /*  AWS_COMMON_ARRAY_LIST_INL */
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

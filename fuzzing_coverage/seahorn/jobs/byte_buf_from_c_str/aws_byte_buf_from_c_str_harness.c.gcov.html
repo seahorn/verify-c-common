@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:34:31</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -83,16 +83,16 @@
 <span class="lineNum">      21 </span><span class="lineCov">      50000 :     sassert(aws_byte_buf_is_valid(&amp;buf));</span>
 <span class="lineNum">      22 </span><span class="lineCov">      50000 :     sassert(buf.allocator == NULL);</span>
 <span class="lineNum">      23 </span><span class="lineCov">      50000 :     if (buf.buffer) {</span>
-<span class="lineNum">      24 </span><span class="lineCov">      33054 :         sassert(buf.len == str_len);</span>
-<span class="lineNum">      25 </span><span class="lineCov">      33054 :         sassert(buf.capacity == buf.len);</span>
-<span class="lineNum">      26 </span><span class="lineCov">      33054 :         assert_bytes_match(buf.buffer, (uint8_t *)c_str, buf.len);</span>
-<span class="lineNum">      27 </span><span class="lineCov">      33054 :     } else {</span>
-<span class="lineNum">      28 </span><span class="lineCov">      16946 :         if (c_str) {</span>
-<span class="lineNum">      29 </span><span class="lineCov">       3505 :             sassert(str_len == 0);</span>
-<span class="lineNum">      30 </span><span class="lineCov">       3505 :         }</span>
-<span class="lineNum">      31 </span><span class="lineCov">      16946 :         sassert(buf.len == 0);</span>
-<span class="lineNum">      32 </span><span class="lineCov">      16946 :         sassert(buf.capacity == 0);</span>
-<span class="lineNum">      33 </span><span class="lineCov">      16946 :     }</span>
+<span class="lineNum">      24 </span><span class="lineCov">      32944 :         sassert(buf.len == str_len);</span>
+<span class="lineNum">      25 </span><span class="lineCov">      32944 :         sassert(buf.capacity == buf.len);</span>
+<span class="lineNum">      26 </span><span class="lineCov">      32944 :         assert_bytes_match(buf.buffer, (uint8_t *)c_str, buf.len);</span>
+<span class="lineNum">      27 </span><span class="lineCov">      32944 :     } else {</span>
+<span class="lineNum">      28 </span><span class="lineCov">      17056 :         if (c_str) {</span>
+<span class="lineNum">      29 </span><span class="lineCov">       3610 :             sassert(str_len == 0);</span>
+<span class="lineNum">      30 </span><span class="lineCov">       3610 :         }</span>
+<span class="lineNum">      31 </span><span class="lineCov">      17056 :         sassert(buf.len == 0);</span>
+<span class="lineNum">      32 </span><span class="lineCov">      17056 :         sassert(buf.capacity == 0);</span>
+<span class="lineNum">      33 </span><span class="lineCov">      17056 :     }</span>
 <span class="lineNum">      34 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      35 </span><span class="lineCov">      50000 :     return 0;</span>
 <span class="lineNum">      36 </span><span class="lineCov">      50000 : }</span>

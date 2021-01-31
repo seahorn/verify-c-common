@@ -1,0 +1,373 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - aws-c-common/source/log_formatter.c</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">aws-c-common/source</a> - log_formatter.c<span style="font-size: 80%;"> (source / <a href="log_formatter.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">224</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /**</a>
+<span class="lineNum">       2 </span>            :  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+<span class="lineNum">       3 </span>            :  * SPDX-License-Identifier: Apache-2.0.
+<span class="lineNum">       4 </span>            :  */
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : #include &lt;aws/common/log_formatter.h&gt;
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : #include &lt;aws/common/date_time.h&gt;
+<span class="lineNum">       9 </span>            : #include &lt;aws/common/string.h&gt;
+<span class="lineNum">      10 </span>            : #include &lt;aws/common/thread.h&gt;
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span>            : #include &lt;inttypes.h&gt;
+<span class="lineNum">      13 </span>            : #include &lt;stdarg.h&gt;
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span>            : /*
+<span class="lineNum">      16 </span>            :  * Default formatter implementation
+<span class="lineNum">      17 </span>            :  */
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            : #if _MSC_VER
+<span class="lineNum">      20 </span>            : #    pragma warning(disable : 4204) /* non-constant aggregate initializer */
+<span class="lineNum">      21 </span>            : #endif
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : /* (max) strlen of &quot;[&lt;LogLevel&gt;]&quot; */
+<span class="lineNum">      24 </span><span class="lineNoCov">          0 : #define LOG_LEVEL_PREFIX_PADDING 7</span>
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            : /* (max) strlen of &quot;[&lt;ThreadId&gt;]&quot; */
+<span class="lineNum">      27 </span><span class="lineNoCov">          0 : #define THREAD_ID_PREFIX_PADDING 22</span>
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : /* strlen of (user-content separator) &quot; - &quot; + &quot;\n&quot; + spaces between prefix fields + brackets around timestamp + 1 +
+<span class="lineNum">      30 </span>            :    subject_name padding */
+<span class="lineNum">      31 </span><span class="lineNoCov">          0 : #define MISC_PADDING 15</span>
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : #define MAX_LOG_LINE_PREFIX_SIZE                                                                                       \
+<a name="34"><span class="lineNum">      34 </span><span class="lineNoCov">          0 :     (LOG_LEVEL_PREFIX_PADDING + THREAD_ID_PREFIX_PADDING + MISC_PADDING + AWS_DATE_TIME_STR_MAX_LEN)</span></a>
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 : static size_t s_advance_and_clamp_index(size_t current_index, int amount, size_t maximum) {</span>
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :     size_t next_index = current_index + amount;</span>
+<span class="lineNum">      38 </span><span class="lineNoCov">          0 :     if (next_index &gt; maximum) {</span>
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :         next_index = maximum;</span>
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 :     return next_index;</span>
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span>            : /* Thread-local string representation of current thread id */
+<span class="lineNum">      46 </span>            : AWS_THREAD_LOCAL struct {
+<span class="lineNum">      47 </span>            :     bool is_valid;
+<span class="lineNum">      48 </span>            :     char repr[AWS_THREAD_ID_T_REPR_BUFSZ];
+<a name="49"><span class="lineNum">      49 </span>            : } tl_logging_thread_id = {.is_valid = false};</a>
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 : int aws_format_standard_log_line(struct aws_logging_standard_formatting_data *formatting_data, va_list args) {</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :     size_t current_index = 0;</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :     /*</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :      * Begin the log line with &quot;[&lt;Log Level&gt;] [&quot;</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :      */</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :     const char *level_string = NULL;</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :     if (aws_log_level_to_string(formatting_data-&gt;level, &amp;level_string)) {</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :         return AWS_OP_ERR;</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :     if (formatting_data-&gt;total_length == 0) {</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :         return aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :     /*</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :      * Use this length for all but the last write, so we guarantee room for the newline even if we get truncated</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :      */</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :     size_t fake_total_length = formatting_data-&gt;total_length - 1;</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :     int log_level_length = snprintf(formatting_data-&gt;log_line_buffer, fake_total_length, &quot;[%s] [&quot;, level_string);</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :     if (log_level_length &lt; 0) {</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :         return AWS_OP_ERR;</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :     current_index = s_advance_and_clamp_index(current_index, log_level_length, fake_total_length);</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :     if (current_index &lt; fake_total_length) {</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :         /*</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :          * Add the timestamp.  To avoid copies and allocations, do some byte buffer tomfoolery.</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :          *</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :          * First, make a byte_buf that points to the current position in the output string</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :          */</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :         struct aws_byte_buf timestamp_buffer = {</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :             .allocator = formatting_data-&gt;allocator,</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :             .buffer = (uint8_t *)formatting_data-&gt;log_line_buffer + current_index,</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :             .capacity = fake_total_length - current_index,</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :             .len = 0,</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :         };</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :         /*</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :          * Output the current time to the byte_buf</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :          */</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :         struct aws_date_time current_time;</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :         aws_date_time_init_now(&amp;current_time);</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :         int result = aws_date_time_to_utc_time_str(&amp;current_time, formatting_data-&gt;date_format, &amp;timestamp_buffer);</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :         if (result != AWS_OP_SUCCESS) {</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :             return aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :         current_index = s_advance_and_clamp_index(current_index, (int)timestamp_buffer.len, fake_total_length);</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :     if (current_index &lt; fake_total_length) {</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :         /*</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :          * Add thread id and user content separator (&quot; - &quot;)</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :          */</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :         if (!tl_logging_thread_id.is_valid) {</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :             aws_thread_id_t current_thread_id = aws_thread_current_thread_id();</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :             if (aws_thread_id_t_to_string(current_thread_id, tl_logging_thread_id.repr, AWS_THREAD_ID_T_REPR_BUFSZ)) {</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :                 return AWS_OP_ERR;</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :             tl_logging_thread_id.is_valid = true;</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :         int thread_id_written = snprintf(</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :             formatting_data-&gt;log_line_buffer + current_index,</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :             fake_total_length - current_index,</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :             &quot;] [%s] &quot;,</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :             tl_logging_thread_id.repr);</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :         if (thread_id_written &lt; 0) {</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :             return aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :         current_index = s_advance_and_clamp_index(current_index, thread_id_written, fake_total_length);</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :     if (current_index &lt; fake_total_length) {</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :         /* output subject name */</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :         if (formatting_data-&gt;subject_name) {</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :             int subject_written = snprintf(</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :                 formatting_data-&gt;log_line_buffer + current_index,</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :                 fake_total_length - current_index,</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :                 &quot;[%s]&quot;,</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :                 formatting_data-&gt;subject_name);</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :             if (subject_written &lt; 0) {</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :                 return aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :             current_index = s_advance_and_clamp_index(current_index, subject_written, fake_total_length);</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :     if (current_index &lt; fake_total_length) {</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :         int separator_written =</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :             snprintf(formatting_data-&gt;log_line_buffer + current_index, fake_total_length - current_index, &quot; - &quot;);</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :         current_index = s_advance_and_clamp_index(current_index, separator_written, fake_total_length);</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :     if (current_index &lt; fake_total_length) {</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :         /*</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :          * Now write the actual data requested by the user</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :          */</span>
+<span class="lineNum">     154 </span>            : #ifdef _WIN32
+<span class="lineNum">     155 </span>            :         int written_count = vsnprintf_s(
+<span class="lineNum">     156 </span>            :             formatting_data-&gt;log_line_buffer + current_index,
+<span class="lineNum">     157 </span>            :             fake_total_length - current_index,
+<span class="lineNum">     158 </span>            :             _TRUNCATE,
+<span class="lineNum">     159 </span>            :             formatting_data-&gt;format,
+<span class="lineNum">     160 </span>            :             args);
+<span class="lineNum">     161 </span>            : #else
+<span class="lineNum">     162 </span>            :         int written_count = vsnprintf(
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :             formatting_data-&gt;log_line_buffer + current_index,</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :             fake_total_length - current_index,</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :             formatting_data-&gt;format,</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :             args);</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 : #endif /* _WIN32 */</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :         if (written_count &lt; 0) {</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :             return aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :         current_index = s_advance_and_clamp_index(current_index, written_count, fake_total_length);</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :     /*</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :      * End with a newline.</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :      */</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :     int newline_written_count =</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :         snprintf(formatting_data-&gt;log_line_buffer + current_index, formatting_data-&gt;total_length - current_index, &quot;\n&quot;);</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :     if (newline_written_count &lt; 0) {</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :         return aws_raise_error(AWS_ERROR_UNKNOWN); /* we saved space, so this would be crazy */</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :     formatting_data-&gt;amount_written = current_index + newline_written_count;</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :     return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     188 </span>            : 
+<span class="lineNum">     189 </span>            : struct aws_default_log_formatter_impl {
+<span class="lineNum">     190 </span>            :     enum aws_date_format date_format;
+<span class="lineNum">     191 </span>            : };
+<span class="lineNum">     192 </span>            : 
+<span class="lineNum">     193 </span>            : static int s_default_aws_log_formatter_format(
+<span class="lineNum">     194 </span>            :     struct aws_log_formatter *formatter,
+<span class="lineNum">     195 </span>            :     struct aws_string **formatted_output,
+<span class="lineNum">     196 </span>            :     enum aws_log_level level,
+<a name="197"><span class="lineNum">     197 </span>            :     aws_log_subject_t subject,</a>
+<span class="lineNum">     198 </span>            :     const char *format,
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :     va_list args) {</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :     (void)subject;</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :     struct aws_default_log_formatter_impl *impl = formatter-&gt;impl;</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :     if (formatted_output == NULL) {</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :         return AWS_OP_ERR;</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :     /*</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :      * Calculate how much room we'll need to build the full log line.</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :      * You cannot consume a va_list twice, so we have to copy it.</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :      */</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :     va_list tmp_args;</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :     va_copy(tmp_args, args);</span>
+<span class="lineNum">     215 </span>            : #ifdef _WIN32
+<span class="lineNum">     216 </span>            :     int required_length = _vscprintf(format, tmp_args) + 1;
+<span class="lineNum">     217 </span>            : #else
+<span class="lineNum">     218 </span>            :     int required_length = vsnprintf(NULL, 0, format, tmp_args) + 1;
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 : #endif</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :     va_end(tmp_args);</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :     /*</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :      * Allocate enough room to hold the line.  Then we'll (unsafely) do formatted IO directly into the aws_string</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :      * memory.</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :      */</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :     const char *subject_name = aws_log_subject_name(subject);</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :     int subject_name_len = 0;</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :     if (subject_name) {</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :         subject_name_len = (int)strlen(subject_name);</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :     int total_length = required_length + MAX_LOG_LINE_PREFIX_SIZE + subject_name_len;</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :     struct aws_string *raw_string = aws_mem_calloc(formatter-&gt;allocator, 1, sizeof(struct aws_string) + total_length);</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :     if (raw_string == NULL) {</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :         goto error_clean_up;</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :     struct aws_logging_standard_formatting_data format_data = {</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :         .log_line_buffer = (char *)raw_string-&gt;bytes,</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :         .total_length = total_length,</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :         .level = level,</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :         .subject_name = subject_name,</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :         .format = format,</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :         .date_format = impl-&gt;date_format,</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :         .allocator = formatter-&gt;allocator,</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :         .amount_written = 0,</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :     };</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :     if (aws_format_standard_log_line(&amp;format_data, args)) {</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :         goto error_clean_up;</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :     *(struct aws_allocator **)(&amp;raw_string-&gt;allocator) = formatter-&gt;allocator;</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :     *(size_t *)(&amp;raw_string-&gt;len) = format_data.amount_written;</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :     *formatted_output = raw_string;</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :     return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 : error_clean_up:</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :     if (raw_string != NULL) {</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :         aws_mem_release(formatter-&gt;allocator, raw_string);</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :     return AWS_OP_ERR;</span>
+<a name="268"><span class="lineNum">     268 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     269 </span>            : 
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 : static void s_default_aws_log_formatter_clean_up(struct aws_log_formatter *formatter) {</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :     aws_mem_release(formatter-&gt;allocator, formatter-&gt;impl);</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     273 </span>            : 
+<span class="lineNum">     274 </span>            : static struct aws_log_formatter_vtable s_default_log_formatter_vtable = {
+<span class="lineNum">     275 </span>            :     .format = s_default_aws_log_formatter_format,
+<span class="lineNum">     276 </span>            :     .clean_up = s_default_aws_log_formatter_clean_up,
+<span class="lineNum">     277 </span>            : };
+<span class="lineNum">     278 </span>            : 
+<span class="lineNum">     279 </span>            : int aws_log_formatter_init_default(
+<a name="280"><span class="lineNum">     280 </span>            :     struct aws_log_formatter *formatter,</a>
+<span class="lineNum">     281 </span>            :     struct aws_allocator *allocator,
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :     struct aws_log_formatter_standard_options *options) {</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :     struct aws_default_log_formatter_impl *impl =</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :         aws_mem_calloc(allocator, 1, sizeof(struct aws_default_log_formatter_impl));</span>
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :     impl-&gt;date_format = options-&gt;date_format;</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :     formatter-&gt;vtable = &amp;s_default_log_formatter_vtable;</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :     formatter-&gt;allocator = allocator;</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :     formatter-&gt;impl = impl;</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :     return AWS_OP_SUCCESS;</span>
+<a name="292"><span class="lineNum">     292 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     293 </span>            : 
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 : void aws_log_formatter_clean_up(struct aws_log_formatter *formatter) {</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :     AWS_ASSERT(formatter-&gt;vtable-&gt;clean_up);</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :     (formatter-&gt;vtable-&gt;clean_up)(formatter);</span>
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:34:31</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">6</td>
@@ -65,70 +65,70 @@
 <span class="lineNum">       3 </span>            : #include &lt;string_helper.h&gt;
 <a name="4"><span class="lineNum">       4 </span>            : #include &lt;assert.h&gt;</a>
 <span class="lineNum">       5 </span>            : 
-<span class="lineNum">       6 </span><span class="lineCov">     118244 : struct aws_string *ensure_string_is_allocated(size_t len) {</span>
-<span class="lineNum">       7 </span><span class="lineCov">     118244 :   struct aws_string *str = malloc(sizeof(struct aws_string) + len + 1);</span>
-<span class="lineNum">       8 </span><span class="lineCov">     118244 :   memhavoc(str, sizeof(struct aws_string) + len);</span>
-<span class="lineNum">       9 </span><span class="lineCov">     118244 : </span>
-<span class="lineNum">      10 </span><span class="lineCov">     118244 :   if (str) {</span>
-<span class="lineNum">      11 </span><span class="lineCov">      78002 :     /* Fields are declared const, so we need to copy them in like this */</span>
-<span class="lineNum">      12 </span><span class="lineCov">      78002 :     *(struct aws_allocator **)(&amp;str-&gt;allocator) =</span>
-<span class="lineNum">      13 </span><span class="lineCov">      78002 :         nd_bool() ? sea_allocator() : NULL;</span>
-<span class="lineNum">      14 </span><span class="lineCov">      78002 :     *(size_t *)(&amp;str-&gt;len) = len;</span>
-<span class="lineNum">      15 </span><span class="lineCov">      78002 :     *(uint8_t *)&amp;str-&gt;bytes[len] = '\0';</span>
-<span class="lineNum">      16 </span><span class="lineCov">      78002 :   }</span>
-<span class="lineNum">      17 </span><span class="lineCov">     118244 :   return str;</span>
-<a name="18"><span class="lineNum">      18 </span><span class="lineCov">     118244 : }</span></a>
+<span class="lineNum">       6 </span><span class="lineCov">     122299 : struct aws_string *ensure_string_is_allocated(size_t len) {</span>
+<span class="lineNum">       7 </span><span class="lineCov">     122299 :   struct aws_string *str = malloc(sizeof(struct aws_string) + len + 1);</span>
+<span class="lineNum">       8 </span><span class="lineCov">     122299 :   memhavoc(str, sizeof(struct aws_string) + len);</span>
+<span class="lineNum">       9 </span><span class="lineCov">     122299 : </span>
+<span class="lineNum">      10 </span><span class="lineCov">     122299 :   if (str) {</span>
+<span class="lineNum">      11 </span><span class="lineCov">      84280 :     /* Fields are declared const, so we need to copy them in like this */</span>
+<span class="lineNum">      12 </span><span class="lineCov">      84280 :     *(struct aws_allocator **)(&amp;str-&gt;allocator) =</span>
+<span class="lineNum">      13 </span><span class="lineCov">      84280 :         nd_bool() ? sea_allocator() : NULL;</span>
+<span class="lineNum">      14 </span><span class="lineCov">      84280 :     *(size_t *)(&amp;str-&gt;len) = len;</span>
+<span class="lineNum">      15 </span><span class="lineCov">      84280 :     *(uint8_t *)&amp;str-&gt;bytes[len] = '\0';</span>
+<span class="lineNum">      16 </span><span class="lineCov">      84280 :   }</span>
+<span class="lineNum">      17 </span><span class="lineCov">     122299 :   return str;</span>
+<a name="18"><span class="lineNum">      18 </span><span class="lineCov">     122299 : }</span></a>
 <span class="lineNum">      19 </span>            : 
-<span class="lineNum">      20 </span><span class="lineCov">     130168 : struct aws_string *ensure_string_is_allocated_bounded_length(size_t max_size) {</span>
-<span class="lineNum">      21 </span><span class="lineCov">     130168 :   size_t len = nd_size_t();</span>
-<span class="lineNum">      22 </span><span class="lineCov">     130168 :   // len &lt; max_size</span>
-<span class="lineNum">      23 </span><span class="lineCov">     130168 :   len %= max_size;</span>
-<span class="lineNum">      24 </span><span class="lineCov">     130168 :   return ensure_string_is_allocated(len);</span>
-<span class="lineNum">      25 </span><span class="lineCov">     130168 : }</span>
+<span class="lineNum">      20 </span><span class="lineCov">     132304 : struct aws_string *ensure_string_is_allocated_bounded_length(size_t max_size) {</span>
+<span class="lineNum">      21 </span><span class="lineCov">     132304 :   size_t len = nd_size_t();</span>
+<span class="lineNum">      22 </span><span class="lineCov">     132304 :   // len &lt; max_size</span>
+<span class="lineNum">      23 </span><span class="lineCov">     132304 :   len %= max_size;</span>
+<span class="lineNum">      24 </span><span class="lineCov">     132304 :   return ensure_string_is_allocated(len);</span>
+<span class="lineNum">      25 </span><span class="lineCov">     132304 : }</span>
 <a name="26"><span class="lineNum">      26 </span>            : </a>
 <span class="lineNum">      27 </span>            : static const char *_ensure_c_str_is_nd_allocated(size_t max_size, size_t *len,
-<span class="lineNum">      28 </span><span class="lineCov">     289242 :                                                  bool safe) {</span>
-<span class="lineNum">      29 </span><span class="lineCov">     289242 :   bool should_fail = nd_bool();</span>
-<span class="lineNum">      30 </span><span class="lineCov">     289242 :   if (!safe &amp;&amp; should_fail) {</span>
-<span class="lineNum">      31 </span><span class="lineCov">      11861 :     return NULL;</span>
-<span class="lineNum">      32 </span><span class="lineCov">      11861 :   }</span>
-<span class="lineNum">      33 </span><span class="lineCov">     277381 :   size_t alloc_size;</span>
-<span class="lineNum">      34 </span><span class="lineCov">     277381 :   alloc_size = nd_size_t();</span>
-<span class="lineNum">      35 </span><span class="lineCov">     277381 : </span>
-<span class="lineNum">      36 </span><span class="lineCov">     277381 :   // 1 &lt;= alloc_size &lt;= max_size + 1</span>
-<span class="lineNum">      37 </span><span class="lineCov">     277381 :   alloc_size %= max_size;</span>
-<span class="lineNum">      38 </span><span class="lineCov">     277381 :   ++alloc_size;</span>
-<span class="lineNum">      39 </span><span class="lineCov">     277381 : </span>
-<span class="lineNum">      40 </span><span class="lineCov">     277381 :   char *str = malloc(alloc_size);</span>
-<span class="lineNum">      41 </span><span class="lineCov">     277381 :   // safe allocation</span>
-<span class="lineNum">      42 </span><span class="lineCov">     277381 :   assert(str);</span>
-<span class="lineNum">      43 </span><span class="lineCov">     277381 : </span>
-<span class="lineNum">      44 </span><span class="lineCov">     277381 :   *len = alloc_size - 1;</span>
-<span class="lineNum">      45 </span><span class="lineCov">     277381 :   // -- zero terminated</span>
-<span class="lineNum">      46 </span><span class="lineCov">     277381 :   str[*len] = '\0';</span>
-<span class="lineNum">      47 </span><span class="lineCov">     277381 :   // -- initialized</span>
-<span class="lineNum">      48 </span><span class="lineCov">     277381 :   memhavoc(str, *len);</span>
-<span class="lineNum">      49 </span><span class="lineCov">     277381 : </span>
-<span class="lineNum">      50 </span><span class="lineCov">     277381 :   // -- remove any spurious 1</span>
-<span class="lineNum">      51 </span><span class="lineCov">    1045392 :   for (unsigned i = 0; i &lt; *len; ++i) {</span>
-<span class="lineNum">      52 </span><span class="lineCov">     768011 :     if (str[i] == 0) str[i] = 1;</span>
-<span class="lineNum">      53 </span><span class="lineCov">     768011 :   }</span>
-<span class="lineNum">      54 </span><span class="lineCov">     277381 : </span>
-<span class="lineNum">      55 </span><span class="lineCov">     277381 :   return str;</span>
-<span class="lineNum">      56 </span><span class="lineCov">     277381 : }</span>
+<span class="lineNum">      28 </span><span class="lineCov">     290698 :                                                  bool safe) {</span>
+<span class="lineNum">      29 </span><span class="lineCov">     290698 :   bool should_fail = nd_bool();</span>
+<span class="lineNum">      30 </span><span class="lineCov">     290698 :   if (!safe &amp;&amp; should_fail) {</span>
+<span class="lineNum">      31 </span><span class="lineCov">      11548 :     return NULL;</span>
+<span class="lineNum">      32 </span><span class="lineCov">      11548 :   }</span>
+<span class="lineNum">      33 </span><span class="lineCov">     279150 :   size_t alloc_size;</span>
+<span class="lineNum">      34 </span><span class="lineCov">     279150 :   alloc_size = nd_size_t();</span>
+<span class="lineNum">      35 </span><span class="lineCov">     279150 : </span>
+<span class="lineNum">      36 </span><span class="lineCov">     279150 :   // 1 &lt;= alloc_size &lt;= max_size + 1</span>
+<span class="lineNum">      37 </span><span class="lineCov">     279150 :   alloc_size %= max_size;</span>
+<span class="lineNum">      38 </span><span class="lineCov">     279150 :   ++alloc_size;</span>
+<span class="lineNum">      39 </span><span class="lineCov">     279150 : </span>
+<span class="lineNum">      40 </span><span class="lineCov">     279150 :   char *str = malloc(alloc_size);</span>
+<span class="lineNum">      41 </span><span class="lineCov">     279150 :   // safe allocation</span>
+<span class="lineNum">      42 </span><span class="lineCov">     279150 :   assert(str);</span>
+<span class="lineNum">      43 </span><span class="lineCov">     279150 : </span>
+<span class="lineNum">      44 </span><span class="lineCov">     279150 :   *len = alloc_size - 1;</span>
+<span class="lineNum">      45 </span><span class="lineCov">     279150 :   // -- zero terminated</span>
+<span class="lineNum">      46 </span><span class="lineCov">     279150 :   str[*len] = '\0';</span>
+<span class="lineNum">      47 </span><span class="lineCov">     279150 :   // -- initialized</span>
+<span class="lineNum">      48 </span><span class="lineCov">     279150 :   memhavoc(str, *len);</span>
+<span class="lineNum">      49 </span><span class="lineCov">     279150 : </span>
+<span class="lineNum">      50 </span><span class="lineCov">     279150 :   // -- remove any spurious 1</span>
+<span class="lineNum">      51 </span><span class="lineCov">    1077904 :   for (unsigned i = 0; i &lt; *len; ++i) {</span>
+<span class="lineNum">      52 </span><span class="lineCov">     798754 :     if (str[i] == 0) str[i] = 1;</span>
+<span class="lineNum">      53 </span><span class="lineCov">     798754 :   }</span>
+<span class="lineNum">      54 </span><span class="lineCov">     279150 : </span>
+<span class="lineNum">      55 </span><span class="lineCov">     279150 :   return str;</span>
+<span class="lineNum">      56 </span><span class="lineCov">     279150 : }</span>
 <a name="57"><span class="lineNum">      57 </span>            : </a>
 <span class="lineNum">      58 </span>            : /// Allocate a randomly initialized string
-<span class="lineNum">      59 </span><span class="lineCov">     189242 : const char *ensure_c_str_is_nd_allocated_safe(size_t max_size, size_t *len) {</span>
-<span class="lineNum">      60 </span><span class="lineCov">     189242 :   return _ensure_c_str_is_nd_allocated(max_size, len, true);</span>
-<a name="61"><span class="lineNum">      61 </span><span class="lineCov">     189242 : }</span></a>
+<span class="lineNum">      59 </span><span class="lineCov">     190698 : const char *ensure_c_str_is_nd_allocated_safe(size_t max_size, size_t *len) {</span>
+<span class="lineNum">      60 </span><span class="lineCov">     190698 :   return _ensure_c_str_is_nd_allocated(max_size, len, true);</span>
+<a name="61"><span class="lineNum">      61 </span><span class="lineCov">     190698 : }</span></a>
 <span class="lineNum">      62 </span>            : 
 <span class="lineNum">      63 </span><span class="lineCov">     100000 : const char *ensure_c_str_is_nd_allocated(size_t max_size, size_t *len) {</span>
 <span class="lineNum">      64 </span><span class="lineCov">     100000 :   return _ensure_c_str_is_nd_allocated(max_size, len, false);</span>
 <a name="65"><span class="lineNum">      65 </span><span class="lineCov">     100000 : }</span></a>
 <span class="lineNum">      66 </span>            : 
-<span class="lineNum">      67 </span><span class="lineCov">      50051 : bool aws_byte_buf_has_allocator(const struct aws_byte_buf *const buf) {</span>
-<span class="lineNum">      68 </span><span class="lineCov">      50051 :   return (buf-&gt;allocator == sea_allocator());</span>
-<span class="lineNum">      69 </span><span class="lineCov">      50051 : }</span>
+<span class="lineNum">      67 </span><span class="lineCov">      48786 : bool aws_byte_buf_has_allocator(const struct aws_byte_buf *const buf) {</span>
+<span class="lineNum">      68 </span><span class="lineCov">      48786 :   return (buf-&gt;allocator == sea_allocator());</span>
+<span class="lineNum">      69 </span><span class="lineCov">      48786 : }</span>
 </pre>
       </td>
     </tr>

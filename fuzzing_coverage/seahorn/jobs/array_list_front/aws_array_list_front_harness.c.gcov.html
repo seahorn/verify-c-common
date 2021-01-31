@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:34:31</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -93,11 +93,11 @@
 <span class="lineNum">      31 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      32 </span><span class="lineCov">      50000 :     /* perform operation under verification */</span>
 <span class="lineNum">      33 </span><span class="lineCov">      50000 :     if (!aws_array_list_front(&amp;list, val)) {</span>
-<span class="lineNum">      34 </span><span class="lineCov">       2577 :         /* In the case aws_array_list_front is successful, we can ensure the list isn't empty */</span>
-<span class="lineNum">      35 </span><span class="lineCov">       2577 :         sassert(AWS_BYTES_EQ(val, list.data, list.item_size));</span>
-<span class="lineNum">      36 </span><span class="lineCov">       2577 :         sassert(list.data);</span>
-<span class="lineNum">      37 </span><span class="lineCov">       2577 :         sassert(list.length);</span>
-<span class="lineNum">      38 </span><span class="lineCov">       2577 :     }</span>
+<span class="lineNum">      34 </span><span class="lineCov">       2314 :         /* In the case aws_array_list_front is successful, we can ensure the list isn't empty */</span>
+<span class="lineNum">      35 </span><span class="lineCov">       2314 :         sassert(AWS_BYTES_EQ(val, list.data, list.item_size));</span>
+<span class="lineNum">      36 </span><span class="lineCov">       2314 :         sassert(list.data);</span>
+<span class="lineNum">      37 </span><span class="lineCov">       2314 :         sassert(list.length);</span>
+<span class="lineNum">      38 </span><span class="lineCov">       2314 :     }</span>
 <span class="lineNum">      39 </span><span class="lineCov">      50000 : </span>
 <span class="lineNum">      40 </span><span class="lineCov">      50000 :     /* assertions */</span>
 <span class="lineNum">      41 </span><span class="lineCov">      50000 :     sassert(aws_array_list_is_valid(&amp;list));</span>

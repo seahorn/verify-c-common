@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:34:31</td>
+            <td class="headerValue">2021-01-31 00:52:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">2</td>
@@ -71,9 +71,9 @@
 <span class="lineNum">       9 </span>            : #include &lt;utils.h&gt;
 <a name="10"><span class="lineNum">      10 </span>            : </a>
 <span class="lineNum">      11 </span>            : #if defined(__KLEE__) || defined(__FUZZ__)
-<span class="lineNum">      12 </span><span class="lineCov">       8562 : bool uninterpreted_predicate_fn(uint8_t value) {</span>
-<span class="lineNum">      13 </span><span class="lineCov">       8562 :     return nd_bool();</span>
-<span class="lineNum">      14 </span><span class="lineCov">       8562 : }</span>
+<span class="lineNum">      12 </span><span class="lineCov">      11251 : bool uninterpreted_predicate_fn(uint8_t value) {</span>
+<span class="lineNum">      13 </span><span class="lineCov">      11251 :     return nd_bool();</span>
+<span class="lineNum">      14 </span><span class="lineCov">      11251 : }</span>
 <a name="15"><span class="lineNum">      15 </span>            : #endif</a>
 <span class="lineNum">      16 </span>            : 
 <span class="lineNum">      17 </span><span class="lineCov">      50000 : int main() {</span>
@@ -95,8 +95,8 @@
 <span class="lineNum">      33 </span><span class="lineCov">      50000 :     /* assertions */</span>
 <span class="lineNum">      34 </span><span class="lineCov">      50000 :     sassert(aws_byte_cursor_is_valid(&amp;cur));</span>
 <span class="lineNum">      35 </span><span class="lineCov">      50000 :     if (cur.len &gt; 0) {</span>
-<span class="lineNum">      36 </span><span class="lineCov">       4369 :         assert_byte_from_buffer_matches(cur.ptr, &amp;old_byte_from_cur);</span>
-<span class="lineNum">      37 </span><span class="lineCov">       4369 :     }</span>
+<span class="lineNum">      36 </span><span class="lineCov">       5394 :         assert_byte_from_buffer_matches(cur.ptr, &amp;old_byte_from_cur);</span>
+<span class="lineNum">      37 </span><span class="lineCov">       5394 :     }</span>
 <span class="lineNum">      38 </span><span class="lineCov">      50000 :     return 0;</span>
 <span class="lineNum">      39 </span><span class="lineCov">      50000 : }</span>
 </pre>
