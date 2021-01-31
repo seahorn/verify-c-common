@@ -42,9 +42,9 @@ jobs:
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@3.7.1
-        if: ${{ github.event_name == 'push' }} # only deploy when change merged into master
+        # if: ${{ github.event_name == 'push' }} # only deploy when change merged into master
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAGE_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
           FOLDER: fuzzing_coverage # The folder the action should deploy.
           TARGET_FOLDER: fuzzing_coverage
