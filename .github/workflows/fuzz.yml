@@ -15,9 +15,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check Out Repo 
+      - name: Check Out Repo
         uses: actions/checkout@v2
         with:
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Docker
@@ -31,6 +32,16 @@ jobs:
           mv /home/usea/verify-c-common/data/fuzz_coverage/all_fuzz.info /host &&
           cp -r /home/usea/verify-c-common/fuzzing_coverage /host/fuzzing_coverage"
 
+      - name: Push and deploy
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git checkout -b coverage-pages
+          git add fuzzing_coverage
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git commit -m "Update fuzzing coverage in gh actions"
+          git push -f origin HEAD:gh-pages
+
       - name: Upload coverage
         uses: codecov/codecov-action@v1
         with:
@@ -39,13 +50,3 @@ jobs:
           name: codecov-verify-c-common
           fail_ci_if_error: true
           verbose: true
-
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        # if: ${{ github.event_name == 'push' }} # only deploy when change merged into master
-        with:
-          GITHUB_TOKEN: ${{ secrets.GH_PAGE_TOKEN }}
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: fuzzing_coverage # The folder the action should deploy.
-          TARGET_FOLDER: fuzzing_coverage
-          CLEAN: true
