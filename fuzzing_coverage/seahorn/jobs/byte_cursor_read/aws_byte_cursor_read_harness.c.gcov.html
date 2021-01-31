@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-29 15:52:26</td>
+            <td class="headerValue">2021-01-31 00:34:31</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -70,45 +70,45 @@
 <span class="lineNum">       8 </span>            : #include &lt;byte_buf_helper.h&gt;
 <a name="9"><span class="lineNum">       9 </span>            : #include &lt;utils.h&gt;</a>
 <span class="lineNum">      10 </span>            : 
-<span class="lineNum">      11 </span><span class="lineCov">     150000 : int main() {</span>
-<span class="lineNum">      12 </span><span class="lineCov">     150000 :     /* parameters */</span>
-<span class="lineNum">      13 </span><span class="lineCov">     150000 :     struct aws_byte_cursor cur;</span>
-<span class="lineNum">      14 </span><span class="lineCov">     150000 :     initialize_byte_cursor(&amp;cur);</span>
-<span class="lineNum">      15 </span><span class="lineCov">     150000 :     size_t length = nd_size_t();</span>
-<span class="lineNum">      16 </span><span class="lineCov">     150000 :     assume(length &lt;= MAX_BUFFER_SIZE);</span>
-<span class="lineNum">      17 </span><span class="lineCov">     150000 :     void *dest = bounded_malloc(length);</span>
-<span class="lineNum">      18 </span><span class="lineCov">     150000 : </span>
-<span class="lineNum">      19 </span><span class="lineCov">     150000 :     /* assumptions */</span>
-<span class="lineNum">      20 </span><span class="lineCov">     150000 :     assume(aws_byte_cursor_is_valid(&amp;cur));</span>
-<span class="lineNum">      21 </span><span class="lineCov">     150000 : </span>
-<span class="lineNum">      22 </span><span class="lineCov">     150000 :     /* precondition */</span>
-<span class="lineNum">      23 </span><span class="lineCov">     150000 :     assume(AWS_MEM_IS_WRITABLE(dest, length));</span>
-<span class="lineNum">      24 </span><span class="lineCov">     150000 : </span>
-<span class="lineNum">      25 </span><span class="lineCov">     150000 :     /* save current state of the data structure */</span>
-<span class="lineNum">      26 </span><span class="lineCov">     150000 :     struct aws_byte_cursor old_cur = cur;</span>
-<span class="lineNum">      27 </span><span class="lineCov">     150000 :     struct store_byte_from_buffer old_byte_from_cur;</span>
-<span class="lineNum">      28 </span><span class="lineCov">     150000 :     save_byte_from_array(cur.ptr, cur.len, &amp;old_byte_from_cur);</span>
-<span class="lineNum">      29 </span><span class="lineCov">     150000 : </span>
-<span class="lineNum">      30 </span><span class="lineCov">     150000 :     /* operation under verification */</span>
-<span class="lineNum">      31 </span><span class="lineCov">     150000 :     if (aws_byte_cursor_read(&amp;cur, dest, length)) {</span>
-<span class="lineNum">      32 </span><span class="lineCov">      27588 :         assert_bytes_match(old_cur.ptr, dest, length);</span>
-<span class="lineNum">      33 </span><span class="lineCov">      27588 :     }</span>
-<span class="lineNum">      34 </span><span class="lineCov">     150000 : </span>
-<span class="lineNum">      35 </span><span class="lineCov">     150000 :     /* assertions */</span>
-<span class="lineNum">      36 </span><span class="lineCov">     150000 :     sassert(aws_byte_cursor_is_valid(&amp;cur));</span>
-<span class="lineNum">      37 </span><span class="lineCov">     150000 :     /* the following assertions are included, because aws_byte_cursor_read internally uses</span>
-<span class="lineNum">      38 </span><span class="lineCov">     150000 :      * aws_byte_cursor_advance_nospec and it copies the bytes from the advanced cursor to *dest</span>
-<span class="lineNum">      39 </span><span class="lineCov">     150000 :      */</span>
-<span class="lineNum">      40 </span><span class="lineCov">     150000 :     if (old_cur.len &gt; (SIZE_MAX &gt;&gt; 1) || length &gt; (SIZE_MAX &gt;&gt; 1) || length &gt; old_cur.len) {</span>
-<span class="lineNum">      41 </span><span class="lineCov">       2127 :         if (old_cur.len != 0) {</span>
-<span class="lineNum">      42 </span><span class="lineCov">        853 :             assert_byte_from_buffer_matches(cur.ptr, &amp;old_byte_from_cur);</span>
-<span class="lineNum">      43 </span><span class="lineCov">        853 :         }</span>
-<span class="lineNum">      44 </span><span class="lineCov">     147873 :     } else {</span>
-<span class="lineNum">      45 </span><span class="lineCov">     147873 :         sassert(cur.ptr == old_cur.ptr + length);</span>
-<span class="lineNum">      46 </span><span class="lineCov">     147873 :         sassert(cur.len == old_cur.len - length);</span>
-<span class="lineNum">      47 </span><span class="lineCov">     147873 :     }</span>
-<span class="lineNum">      48 </span><span class="lineCov">     150000 :     return 0;</span>
-<span class="lineNum">      49 </span><span class="lineCov">     150000 : }</span>
+<span class="lineNum">      11 </span><span class="lineCov">      50000 : int main() {</span>
+<span class="lineNum">      12 </span><span class="lineCov">      50000 :     /* parameters */</span>
+<span class="lineNum">      13 </span><span class="lineCov">      50000 :     struct aws_byte_cursor cur;</span>
+<span class="lineNum">      14 </span><span class="lineCov">      50000 :     initialize_byte_cursor(&amp;cur);</span>
+<span class="lineNum">      15 </span><span class="lineCov">      50000 :     size_t length = nd_size_t();</span>
+<span class="lineNum">      16 </span><span class="lineCov">      50000 :     assume(length &lt;= MAX_BUFFER_SIZE);</span>
+<span class="lineNum">      17 </span><span class="lineCov">      50000 :     void *dest = bounded_malloc(length);</span>
+<span class="lineNum">      18 </span><span class="lineCov">      50000 : </span>
+<span class="lineNum">      19 </span><span class="lineCov">      50000 :     /* assumptions */</span>
+<span class="lineNum">      20 </span><span class="lineCov">      50000 :     assume(aws_byte_cursor_is_valid(&amp;cur));</span>
+<span class="lineNum">      21 </span><span class="lineCov">      50000 : </span>
+<span class="lineNum">      22 </span><span class="lineCov">      50000 :     /* precondition */</span>
+<span class="lineNum">      23 </span><span class="lineCov">      50000 :     assume(AWS_MEM_IS_WRITABLE(dest, length));</span>
+<span class="lineNum">      24 </span><span class="lineCov">      50000 : </span>
+<span class="lineNum">      25 </span><span class="lineCov">      50000 :     /* save current state of the data structure */</span>
+<span class="lineNum">      26 </span><span class="lineCov">      50000 :     struct aws_byte_cursor old_cur = cur;</span>
+<span class="lineNum">      27 </span><span class="lineCov">      50000 :     struct store_byte_from_buffer old_byte_from_cur;</span>
+<span class="lineNum">      28 </span><span class="lineCov">      50000 :     save_byte_from_array(cur.ptr, cur.len, &amp;old_byte_from_cur);</span>
+<span class="lineNum">      29 </span><span class="lineCov">      50000 : </span>
+<span class="lineNum">      30 </span><span class="lineCov">      50000 :     /* operation under verification */</span>
+<span class="lineNum">      31 </span><span class="lineCov">      50000 :     if (aws_byte_cursor_read(&amp;cur, dest, length)) {</span>
+<span class="lineNum">      32 </span><span class="lineCov">       2460 :         assert_bytes_match(old_cur.ptr, dest, length);</span>
+<span class="lineNum">      33 </span><span class="lineCov">       2460 :     }</span>
+<span class="lineNum">      34 </span><span class="lineCov">      50000 : </span>
+<span class="lineNum">      35 </span><span class="lineCov">      50000 :     /* assertions */</span>
+<span class="lineNum">      36 </span><span class="lineCov">      50000 :     sassert(aws_byte_cursor_is_valid(&amp;cur));</span>
+<span class="lineNum">      37 </span><span class="lineCov">      50000 :     /* the following assertions are included, because aws_byte_cursor_read internally uses</span>
+<span class="lineNum">      38 </span><span class="lineCov">      50000 :      * aws_byte_cursor_advance_nospec and it copies the bytes from the advanced cursor to *dest</span>
+<span class="lineNum">      39 </span><span class="lineCov">      50000 :      */</span>
+<span class="lineNum">      40 </span><span class="lineCov">      50000 :     if (old_cur.len &gt; (SIZE_MAX &gt;&gt; 1) || length &gt; (SIZE_MAX &gt;&gt; 1) || length &gt; old_cur.len) {</span>
+<span class="lineNum">      41 </span><span class="lineCov">        482 :         if (old_cur.len != 0) {</span>
+<span class="lineNum">      42 </span><span class="lineCov">        223 :             assert_byte_from_buffer_matches(cur.ptr, &amp;old_byte_from_cur);</span>
+<span class="lineNum">      43 </span><span class="lineCov">        223 :         }</span>
+<span class="lineNum">      44 </span><span class="lineCov">      49518 :     } else {</span>
+<span class="lineNum">      45 </span><span class="lineCov">      49518 :         sassert(cur.ptr == old_cur.ptr + length);</span>
+<span class="lineNum">      46 </span><span class="lineCov">      49518 :         sassert(cur.len == old_cur.len - length);</span>
+<span class="lineNum">      47 </span><span class="lineCov">      49518 :     }</span>
+<span class="lineNum">      48 </span><span class="lineCov">      50000 :     return 0;</span>
+<span class="lineNum">      49 </span><span class="lineCov">      50000 : }</span>
 </pre>
       </td>
     </tr>

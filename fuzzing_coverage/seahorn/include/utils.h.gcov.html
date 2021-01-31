@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-29 15:52:26</td>
+            <td class="headerValue">2021-01-31 00:34:31</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -80,7 +80,7 @@
 <span class="lineNum">      18 </span>            : #ifdef __KLEE__ // define macros for KLEE_ASSUME, the assumption for KLEE only
 <span class="lineNum">      19 </span>            : #define KLEE_ASSUME(X) klee_assume(X)
 <span class="lineNum">      20 </span>            : #elif __FUZZ__
-<span class="lineNum">      21 </span><span class="lineCov">    1538329 : #define KLEE_ASSUME(X) assume(X)</span>
+<span class="lineNum">      21 </span><span class="lineCov">     510631 : #define KLEE_ASSUME(X) assume(X)</span>
 <span class="lineNum">      22 </span>            : #else
 <span class="lineNum">      23 </span>            : #define KLEE_ASSUME(X)
 <span class="lineNum">      24 </span>            : #endif

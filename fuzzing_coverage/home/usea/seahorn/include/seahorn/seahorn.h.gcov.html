@@ -4,22 +4,22 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>LCOV - all_fuzz.info - /home/x245zhou/seahorn/devbuild/run/include/seahorn/seahorn.h</title>
-  <link rel="stylesheet" type="text/css" href="../../../../../../../gcov.css">
+  <title>LCOV - all_fuzz.info - /home/usea/seahorn/include/seahorn/seahorn.h</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../gcov.css">
 </head>
 
 <body>
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="title">LCOV - code coverage report</td></tr>
-    <tr><td class="ruler"><img src="../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="ruler"><img src="../../../../../glass.png" width=3 height=3 alt=""></td></tr>
 
     <tr>
       <td width="100%">
         <table cellpadding=1 border=0 width="100%">
           <tr>
             <td width="10%" class="headerItem">Current view:</td>
-            <td width="35%" class="headerValue"><a href="../../../../../../../index.html">top level</a> - <a href="index.html">home/x245zhou/seahorn/devbuild/run/include/seahorn</a> - seahorn.h<span style="font-size: 80%;"> (source / <a href="seahorn.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="35%" class="headerValue"><a href="../../../../../index.html">top level</a> - <a href="index.html">home/usea/seahorn/include/seahorn</a> - seahorn.h<span style="font-size: 80%;"> (source / <a href="seahorn.h.func-sort-c.html">functions</a>)</span></td>
             <td width="5%"></td>
             <td width="15%"></td>
             <td width="10%" class="headerCovTableHead">Hit</td>
@@ -37,19 +37,19 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-29 15:52:26</td>
+            <td class="headerValue">2021-01-31 00:34:31</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
             <td class="headerCovTableEntry">0</td>
             <td class="headerCovTableEntryHi">-</td>
           </tr>
-          <tr><td><img src="../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+          <tr><td><img src="../../../../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
       </td>
     </tr>
 
-    <tr><td class="ruler"><img src="../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="ruler"><img src="../../../../../glass.png" width=3 height=3 alt=""></td></tr>
   </table>
 
   <table cellpadding=0 cellspacing=0 border=0>
@@ -92,23 +92,35 @@
 <span class="lineNum">      30 </span>            :  */
 <span class="lineNum">      31 </span>            : extern bool sea_is_dereferenceable(void *ptr, intptr_t offset);
 <span class="lineNum">      32 </span>            : extern void sea_assert_if(bool, bool);
-<span class="lineNum">      33 </span>            : 
-<span class="lineNum">      34 </span>            : #ifdef __cplusplus
-<span class="lineNum">      35 </span>            : }
-<span class="lineNum">      36 </span>            : #endif
-<span class="lineNum">      37 </span>            : 
-<span class="lineNum">      38 </span>            : /* Convenience macros */
-<span class="lineNum">      39 </span><span class="lineCov">   29833404 : #define assume __VERIFIER_assume</span>
-<span class="lineNum">      40 </span>            : 
-<span class="lineNum">      41 </span>            : /* See https://github.com/seahorn/seahorn/projects/5 for details */
-<span class="lineNum">      42 </span>            : #ifdef VACCHECK
-<span class="lineNum">      43 </span>            : #define sassert(X)                                                             \
-<span class="lineNum">      44 </span>            :   (void)((__VERIFIER_assert(X), (X)) || (__VERIFIER_error(), 0))
-<span class="lineNum">      45 </span>            : #else
-<span class="lineNum">      46 </span><span class="lineCov">   37704555 : #define sassert(X) (void)((X) || (__VERIFIER_error(), 0))</span>
-<span class="lineNum">      47 </span>            : #endif
-<span class="lineNum">      48 </span>            : 
-<span class="lineNum">      49 </span>            : #endif
+<span class="lineNum">      33 </span>            : /* returns true if memory pointed to by arg has been modified from
+<span class="lineNum">      34 </span>            :  * 1. allocation OR
+<span class="lineNum">      35 </span>            :  * 2. reset_modified OR
+<span class="lineNum">      36 </span>            :  * 3. sea_tracking_on
+<span class="lineNum">      37 </span>            :  * whichever is the latest event.
+<span class="lineNum">      38 </span>            :  */
+<span class="lineNum">      39 </span>            : extern bool sea_is_modified(char *);
+<span class="lineNum">      40 </span>            : /* tracking is set to on for subsequent program till exit or sea_tracking_off */
+<span class="lineNum">      41 </span>            : extern void sea_tracking_on();
+<span class="lineNum">      42 </span>            : /* tracking is set to off for subsequent program till exit or sea_tracking_on */
+<span class="lineNum">      43 </span>            : extern void sea_tracking_off();
+<span class="lineNum">      44 </span>            : /* reset modified metadata for memory pointed to by arg */
+<span class="lineNum">      45 </span>            : extern void sea_reset_modified(char *);
+<span class="lineNum">      46 </span>            : #ifdef __cplusplus
+<span class="lineNum">      47 </span>            : }
+<span class="lineNum">      48 </span>            : #endif
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span>            : /* Convenience macros */
+<span class="lineNum">      51 </span><span class="lineCov">    9064281 : #define assume __VERIFIER_assume</span>
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span>            : /* See https://github.com/seahorn/seahorn/projects/5 for details */
+<span class="lineNum">      54 </span>            : #ifdef VACCHECK
+<span class="lineNum">      55 </span>            : #define sassert(X)                                                             \
+<span class="lineNum">      56 </span>            :   (void)((__VERIFIER_assert(X), (X)) || (__VERIFIER_error(), 0))
+<span class="lineNum">      57 </span>            : #else
+<span class="lineNum">      58 </span><span class="lineCov">   10736908 : #define sassert(X) (void)((X) || (__VERIFIER_error(), 0))</span>
+<span class="lineNum">      59 </span>            : #endif
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span>            : #endif
 </pre>
       </td>
     </tr>
@@ -116,7 +128,7 @@
   <br>
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
-    <tr><td class="ruler"><img src="../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="ruler"><img src="../../../../../glass.png" width=3 height=3 alt=""></td></tr>
     <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
   </table>
   <br>

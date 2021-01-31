@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-29 15:52:26</td>
+            <td class="headerValue">2021-01-31 00:34:31</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -73,37 +73,37 @@
 <span class="lineNum">      11 </span>            : /**
 <a name="12"><span class="lineNum">      12 </span>            :  * Runtime: 6s</a>
 <span class="lineNum">      13 </span>            :  */
-<span class="lineNum">      14 </span><span class="lineCov">     150000 : int main() {</span>
-<span class="lineNum">      15 </span><span class="lineCov">     150000 :     /* data structure */</span>
-<span class="lineNum">      16 </span><span class="lineCov">     150000 :     struct aws_array_list list;</span>
-<span class="lineNum">      17 </span><span class="lineCov">     150000 :     initialize_bounded_array_list(&amp;list);</span>
-<span class="lineNum">      18 </span><span class="lineCov">     150000 : </span>
-<span class="lineNum">      19 </span><span class="lineCov">     150000 :     /* parameters */</span>
-<span class="lineNum">      20 </span><span class="lineCov">     150000 :     struct aws_allocator *allocator = sea_allocator(); /* Precondition: allocator is non-null */</span>
-<span class="lineNum">      21 </span><span class="lineCov">     150000 : </span>
-<span class="lineNum">      22 </span><span class="lineCov">     150000 :     size_t item_size = nd_size_t();</span>
-<span class="lineNum">      23 </span><span class="lineCov">     150000 :     size_t initial_item_allocation = nd_size_t();</span>
-<span class="lineNum">      24 </span><span class="lineCov">     150000 :     size_t required_size = 0;</span>
-<span class="lineNum">      25 </span><span class="lineCov">     150000 :     KLEE_ASSUME(__builtin_mul_overflow(initial_item_allocation, </span>
-<span class="lineNum">      26 </span><span class="lineCov">     150000 :         item_size, &amp;required_size) == 0 &amp;&amp; required_size &lt;= KLEE_MAX_SIZE);</span>
-<span class="lineNum">      27 </span><span class="lineCov">     150000 :     assume(item_size &gt; 0 &amp;&amp; item_size &lt;= MAX_ITEM_SIZE);</span>
-<span class="lineNum">      28 </span><span class="lineCov">     150000 :     assume(initial_item_allocation &lt;= MAX_INITIAL_ITEM_ALLOCATION);</span>
-<span class="lineNum">      29 </span><span class="lineCov">     150000 : </span>
-<span class="lineNum">      30 </span><span class="lineCov">     150000 :     /* perform operation under verification */</span>
-<span class="lineNum">      31 </span><span class="lineCov">     150000 :     if (aws_array_list_init_dynamic(&amp;list, allocator, initial_item_allocation, item_size) == AWS_OP_SUCCESS) {</span>
-<span class="lineNum">      32 </span><span class="lineCov">        573 :         /* assertions */</span>
-<span class="lineNum">      33 </span><span class="lineCov">        573 :         sassert(aws_array_list_is_valid(&amp;list));</span>
-<span class="lineNum">      34 </span><span class="lineCov">        573 :         sassert(list.alloc == allocator);</span>
-<span class="lineNum">      35 </span><span class="lineCov">        573 :         sassert(list.item_size == item_size);</span>
-<span class="lineNum">      36 </span><span class="lineCov">        573 :         sassert(list.length == 0);</span>
-<span class="lineNum">      37 </span><span class="lineCov">        573 :         sassert(list.current_size == item_size * initial_item_allocation);</span>
-<span class="lineNum">      38 </span><span class="lineCov">     149427 :     } else {</span>
-<span class="lineNum">      39 </span><span class="lineCov">     149427 :         /*assertions */</span>
-<span class="lineNum">      40 </span><span class="lineCov">     149427 :         sassert(AWS_IS_ZEROED(list));</span>
-<span class="lineNum">      41 </span><span class="lineCov">     149427 :     }</span>
-<span class="lineNum">      42 </span><span class="lineCov">     150000 : </span>
-<span class="lineNum">      43 </span><span class="lineCov">     150000 :     return 0;</span>
-<span class="lineNum">      44 </span><span class="lineCov">     150000 : }</span>
+<span class="lineNum">      14 </span><span class="lineCov">      50000 : int main() {</span>
+<span class="lineNum">      15 </span><span class="lineCov">      50000 :     /* data structure */</span>
+<span class="lineNum">      16 </span><span class="lineCov">      50000 :     struct aws_array_list list;</span>
+<span class="lineNum">      17 </span><span class="lineCov">      50000 :     initialize_bounded_array_list(&amp;list);</span>
+<span class="lineNum">      18 </span><span class="lineCov">      50000 : </span>
+<span class="lineNum">      19 </span><span class="lineCov">      50000 :     /* parameters */</span>
+<span class="lineNum">      20 </span><span class="lineCov">      50000 :     struct aws_allocator *allocator = sea_allocator(); /* Precondition: allocator is non-null */</span>
+<span class="lineNum">      21 </span><span class="lineCov">      50000 : </span>
+<span class="lineNum">      22 </span><span class="lineCov">      50000 :     size_t item_size = nd_size_t();</span>
+<span class="lineNum">      23 </span><span class="lineCov">      50000 :     size_t initial_item_allocation = nd_size_t();</span>
+<span class="lineNum">      24 </span><span class="lineCov">      50000 :     size_t required_size = 0;</span>
+<span class="lineNum">      25 </span><span class="lineCov">      50000 :     KLEE_ASSUME(__builtin_mul_overflow(initial_item_allocation, </span>
+<span class="lineNum">      26 </span><span class="lineCov">      50000 :         item_size, &amp;required_size) == 0 &amp;&amp; required_size &lt;= KLEE_MAX_SIZE);</span>
+<span class="lineNum">      27 </span><span class="lineCov">      50000 :     assume(item_size &gt; 0 &amp;&amp; item_size &lt;= MAX_ITEM_SIZE);</span>
+<span class="lineNum">      28 </span><span class="lineCov">      50000 :     assume(initial_item_allocation &lt;= MAX_INITIAL_ITEM_ALLOCATION);</span>
+<span class="lineNum">      29 </span><span class="lineCov">      50000 : </span>
+<span class="lineNum">      30 </span><span class="lineCov">      50000 :     /* perform operation under verification */</span>
+<span class="lineNum">      31 </span><span class="lineCov">      50000 :     if (aws_array_list_init_dynamic(&amp;list, allocator, initial_item_allocation, item_size) == AWS_OP_SUCCESS) {</span>
+<span class="lineNum">      32 </span><span class="lineCov">         53 :         /* assertions */</span>
+<span class="lineNum">      33 </span><span class="lineCov">         53 :         sassert(aws_array_list_is_valid(&amp;list));</span>
+<span class="lineNum">      34 </span><span class="lineCov">         53 :         sassert(list.alloc == allocator);</span>
+<span class="lineNum">      35 </span><span class="lineCov">         53 :         sassert(list.item_size == item_size);</span>
+<span class="lineNum">      36 </span><span class="lineCov">         53 :         sassert(list.length == 0);</span>
+<span class="lineNum">      37 </span><span class="lineCov">         53 :         sassert(list.current_size == item_size * initial_item_allocation);</span>
+<span class="lineNum">      38 </span><span class="lineCov">      49947 :     } else {</span>
+<span class="lineNum">      39 </span><span class="lineCov">      49947 :         /*assertions */</span>
+<span class="lineNum">      40 </span><span class="lineCov">      49947 :         sassert(AWS_IS_ZEROED(list));</span>
+<span class="lineNum">      41 </span><span class="lineCov">      49947 :     }</span>
+<span class="lineNum">      42 </span><span class="lineCov">      50000 : </span>
+<span class="lineNum">      43 </span><span class="lineCov">      50000 :     return 0;</span>
+<span class="lineNum">      44 </span><span class="lineCov">      50000 : }</span>
 </pre>
       </td>
     </tr>

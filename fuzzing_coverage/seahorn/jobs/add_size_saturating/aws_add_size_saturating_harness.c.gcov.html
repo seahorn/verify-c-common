@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-29 15:52:26</td>
+            <td class="headerValue">2021-01-31 00:34:31</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -66,28 +66,28 @@
 <span class="lineNum">       4 </span>            : 
 <a name="5"><span class="lineNum">       5 </span>            : /**</a>
 <span class="lineNum">       6 </span>            :  */
-<span class="lineNum">       7 </span><span class="lineCov">     150000 : int main() {</span>
-<span class="lineNum">       8 </span><span class="lineCov">     150000 :     if (nd_bool()) {</span>
-<span class="lineNum">       9 </span><span class="lineCov">     107985 :         uint64_t a = nd_uint64_t();</span>
-<span class="lineNum">      10 </span><span class="lineCov">     107985 :         uint64_t b = nd_uint64_t();</span>
-<span class="lineNum">      11 </span><span class="lineCov">     107985 :         uint64_t r = aws_add_u64_saturating(a, b);</span>
-<span class="lineNum">      12 </span><span class="lineCov">     107985 :         if ((b &gt; 0) &amp;&amp; (a &gt; (UINT64_MAX - b))) {</span>
-<span class="lineNum">      13 </span><span class="lineCov">      40299 :             sassert(r == UINT64_MAX);</span>
-<span class="lineNum">      14 </span><span class="lineCov">      67686 :         } else {</span>
-<span class="lineNum">      15 </span><span class="lineCov">      67686 :             sassert(r == a + b);</span>
-<span class="lineNum">      16 </span><span class="lineCov">      67686 :         }</span>
-<span class="lineNum">      17 </span><span class="lineCov">     107985 :     } else {</span>
-<span class="lineNum">      18 </span><span class="lineCov">      42015 :         uint32_t a = nd_uint32_t();</span>
-<span class="lineNum">      19 </span><span class="lineCov">      42015 :         uint32_t b = nd_uint32_t();</span>
-<span class="lineNum">      20 </span><span class="lineCov">      42015 :         uint32_t r = aws_add_u32_saturating(a, b);</span>
-<span class="lineNum">      21 </span><span class="lineCov">      42015 :         if ((b &gt; 0) &amp;&amp; (a &gt; (UINT32_MAX - b))) {</span>
-<span class="lineNum">      22 </span><span class="lineCov">      13732 :             sassert(r == UINT32_MAX);</span>
-<span class="lineNum">      23 </span><span class="lineCov">      28283 :         } else {</span>
-<span class="lineNum">      24 </span><span class="lineCov">      28283 :             sassert(r == a + b);</span>
-<span class="lineNum">      25 </span><span class="lineCov">      28283 :         }</span>
-<span class="lineNum">      26 </span><span class="lineCov">      42015 :     }</span>
-<span class="lineNum">      27 </span><span class="lineCov">     150000 :     return 0;</span>
-<span class="lineNum">      28 </span><span class="lineCov">     150000 : }</span>
+<span class="lineNum">       7 </span><span class="lineCov">      50000 : int main() {</span>
+<span class="lineNum">       8 </span><span class="lineCov">      50000 :     if (nd_bool()) {</span>
+<span class="lineNum">       9 </span><span class="lineCov">      34300 :         uint64_t a = nd_uint64_t();</span>
+<span class="lineNum">      10 </span><span class="lineCov">      34300 :         uint64_t b = nd_uint64_t();</span>
+<span class="lineNum">      11 </span><span class="lineCov">      34300 :         uint64_t r = aws_add_u64_saturating(a, b);</span>
+<span class="lineNum">      12 </span><span class="lineCov">      34300 :         if ((b &gt; 0) &amp;&amp; (a &gt; (UINT64_MAX - b))) {</span>
+<span class="lineNum">      13 </span><span class="lineCov">      13281 :             sassert(r == UINT64_MAX);</span>
+<span class="lineNum">      14 </span><span class="lineCov">      21019 :         } else {</span>
+<span class="lineNum">      15 </span><span class="lineCov">      21019 :             sassert(r == a + b);</span>
+<span class="lineNum">      16 </span><span class="lineCov">      21019 :         }</span>
+<span class="lineNum">      17 </span><span class="lineCov">      34300 :     } else {</span>
+<span class="lineNum">      18 </span><span class="lineCov">      15700 :         uint32_t a = nd_uint32_t();</span>
+<span class="lineNum">      19 </span><span class="lineCov">      15700 :         uint32_t b = nd_uint32_t();</span>
+<span class="lineNum">      20 </span><span class="lineCov">      15700 :         uint32_t r = aws_add_u32_saturating(a, b);</span>
+<span class="lineNum">      21 </span><span class="lineCov">      15700 :         if ((b &gt; 0) &amp;&amp; (a &gt; (UINT32_MAX - b))) {</span>
+<span class="lineNum">      22 </span><span class="lineCov">       5499 :             sassert(r == UINT32_MAX);</span>
+<span class="lineNum">      23 </span><span class="lineCov">      10201 :         } else {</span>
+<span class="lineNum">      24 </span><span class="lineCov">      10201 :             sassert(r == a + b);</span>
+<span class="lineNum">      25 </span><span class="lineCov">      10201 :         }</span>
+<span class="lineNum">      26 </span><span class="lineCov">      15700 :     }</span>
+<span class="lineNum">      27 </span><span class="lineCov">      50000 :     return 0;</span>
+<span class="lineNum">      28 </span><span class="lineCov">      50000 : }</span>
 </pre>
       </td>
     </tr>

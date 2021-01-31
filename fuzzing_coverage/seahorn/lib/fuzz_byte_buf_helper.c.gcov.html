@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-29 15:52:26</td>
+            <td class="headerValue">2021-01-31 00:34:31</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">4</td>
@@ -65,42 +65,42 @@
 <span class="lineNum">       3 </span>            : #include &lt;byte_buf_helper.h&gt;
 <a name="4"><span class="lineNum">       4 </span>            : #include &lt;proof_allocators.h&gt;</a>
 <span class="lineNum">       5 </span>            : 
-<span class="lineNum">       6 </span><span class="lineCov">    5312248 : void initialize_byte_buf(struct aws_byte_buf *const buf) {</span>
-<span class="lineNum">       7 </span><span class="lineCov">    5312248 :   size_t max_size = sea_max_buffer_size();</span>
-<span class="lineNum">       8 </span><span class="lineCov">    5312248 :   size_t len = nd_size_t();</span>
-<span class="lineNum">       9 </span><span class="lineCov">    5312248 :   size_t cap = nd_size_t();</span>
-<span class="lineNum">      10 </span><span class="lineCov">    5312248 :   // cap &lt;= max_size</span>
-<span class="lineNum">      11 </span><span class="lineCov">    5312248 :   cap %= max_size;</span>
-<span class="lineNum">      12 </span><span class="lineCov">    5312248 :   // len &lt;= cap</span>
-<span class="lineNum">      13 </span><span class="lineCov">    5312248 :   cap = cap == 0 ? 1 : cap;</span>
-<span class="lineNum">      14 </span><span class="lineCov">    5312248 :   len %= cap;</span>
-<span class="lineNum">      15 </span><span class="lineCov">    5312248 : </span>
-<span class="lineNum">      16 </span><span class="lineCov">    5312248 :   buf-&gt;len = len;</span>
-<span class="lineNum">      17 </span><span class="lineCov">    5312248 :   buf-&gt;capacity = cap;</span>
-<span class="lineNum">      18 </span><span class="lineCov">    5312248 :   buf-&gt;buffer = can_fail_malloc(cap * sizeof(*(buf-&gt;buffer)));</span>
-<span class="lineNum">      19 </span><span class="lineCov">    5312248 :   if (buf-&gt;buffer) {</span>
-<span class="lineNum">      20 </span><span class="lineCov">    5169264 :     memhavoc(buf-&gt;buffer, cap * sizeof(*(buf-&gt;buffer)));</span>
-<span class="lineNum">      21 </span><span class="lineCov">    5169264 :   }</span>
-<span class="lineNum">      22 </span><span class="lineCov">    5312248 :   buf-&gt;allocator = sea_allocator();</span>
-<a name="23"><span class="lineNum">      23 </span><span class="lineCov">    5312248 : }</span></a>
+<span class="lineNum">       6 </span><span class="lineCov">    1669224 : void initialize_byte_buf(struct aws_byte_buf *const buf) {</span>
+<span class="lineNum">       7 </span><span class="lineCov">    1669224 :   size_t max_size = sea_max_buffer_size();</span>
+<span class="lineNum">       8 </span><span class="lineCov">    1669224 :   size_t len = nd_size_t();</span>
+<span class="lineNum">       9 </span><span class="lineCov">    1669224 :   size_t cap = nd_size_t();</span>
+<span class="lineNum">      10 </span><span class="lineCov">    1669224 :   // cap &lt;= max_size</span>
+<span class="lineNum">      11 </span><span class="lineCov">    1669224 :   cap %= max_size;</span>
+<span class="lineNum">      12 </span><span class="lineCov">    1669224 :   // len &lt;= cap</span>
+<span class="lineNum">      13 </span><span class="lineCov">    1669224 :   cap = cap == 0 ? 1 : cap;</span>
+<span class="lineNum">      14 </span><span class="lineCov">    1669224 :   len %= cap;</span>
+<span class="lineNum">      15 </span><span class="lineCov">    1669224 : </span>
+<span class="lineNum">      16 </span><span class="lineCov">    1669224 :   buf-&gt;len = len;</span>
+<span class="lineNum">      17 </span><span class="lineCov">    1669224 :   buf-&gt;capacity = cap;</span>
+<span class="lineNum">      18 </span><span class="lineCov">    1669224 :   buf-&gt;buffer = can_fail_malloc(cap * sizeof(*(buf-&gt;buffer)));</span>
+<span class="lineNum">      19 </span><span class="lineCov">    1669224 :   if (buf-&gt;buffer) {</span>
+<span class="lineNum">      20 </span><span class="lineCov">    1426504 :     memhavoc(buf-&gt;buffer, cap * sizeof(*(buf-&gt;buffer)));</span>
+<span class="lineNum">      21 </span><span class="lineCov">    1426504 :   }</span>
+<span class="lineNum">      22 </span><span class="lineCov">    1669224 :   buf-&gt;allocator = sea_allocator();</span>
+<a name="23"><span class="lineNum">      23 </span><span class="lineCov">    1669224 : }</span></a>
 <span class="lineNum">      24 </span>            : 
-<span class="lineNum">      25 </span><span class="lineCov">    3935195 : void initialize_byte_cursor(struct aws_byte_cursor *const cursor) {</span>
-<span class="lineNum">      26 </span><span class="lineCov">    3935195 :   size_t max_buffer_size = sea_max_buffer_size();</span>
-<span class="lineNum">      27 </span><span class="lineCov">    3935195 :   cursor-&gt;len = nd_size_t();</span>
-<span class="lineNum">      28 </span><span class="lineCov">    3935195 :   // cursor-&gt;len &lt;= max_buffer_size</span>
-<span class="lineNum">      29 </span><span class="lineCov">    3935195 :   cursor-&gt;len %= max_buffer_size;</span>
-<span class="lineNum">      30 </span><span class="lineCov">    3935195 :   cursor-&gt;ptr = can_fail_malloc(sizeof(*(cursor-&gt;ptr)) * max_buffer_size);</span>
-<span class="lineNum">      31 </span><span class="lineCov">    3935195 : }</span>
+<span class="lineNum">      25 </span><span class="lineCov">    1264997 : void initialize_byte_cursor(struct aws_byte_cursor *const cursor) {</span>
+<span class="lineNum">      26 </span><span class="lineCov">    1264997 :   size_t max_buffer_size = sea_max_buffer_size();</span>
+<span class="lineNum">      27 </span><span class="lineCov">    1264997 :   cursor-&gt;len = nd_size_t();</span>
+<span class="lineNum">      28 </span><span class="lineCov">    1264997 :   // cursor-&gt;len &lt;= max_buffer_size</span>
+<span class="lineNum">      29 </span><span class="lineCov">    1264997 :   cursor-&gt;len %= max_buffer_size;</span>
+<span class="lineNum">      30 </span><span class="lineCov">    1264997 :   cursor-&gt;ptr = can_fail_malloc(sizeof(*(cursor-&gt;ptr)) * max_buffer_size);</span>
+<span class="lineNum">      31 </span><span class="lineCov">    1264997 : }</span>
 <a name="32"><span class="lineNum">      32 </span>            : </a>
 <span class="lineNum">      33 </span>            : bool aws_byte_buf_is_bounded(const struct aws_byte_buf *const buf,
-<span class="lineNum">      34 </span><span class="lineCov">     147876 :                              const size_t max_size) {</span>
-<span class="lineNum">      35 </span><span class="lineCov">     147876 :   return (buf-&gt;capacity &lt;= max_size);</span>
-<span class="lineNum">      36 </span><span class="lineCov">     147876 : }</span>
+<span class="lineNum">      34 </span><span class="lineCov">      36775 :                              const size_t max_size) {</span>
+<span class="lineNum">      35 </span><span class="lineCov">      36775 :   return (buf-&gt;capacity &lt;= max_size);</span>
+<span class="lineNum">      36 </span><span class="lineCov">      36775 : }</span>
 <a name="37"><span class="lineNum">      37 </span>            : </a>
 <span class="lineNum">      38 </span>            : bool aws_byte_cursor_is_bounded(const struct aws_byte_cursor *const cursor,
-<span class="lineNum">      39 </span><span class="lineCov">     737415 :                                 const size_t max_size) {</span>
-<span class="lineNum">      40 </span><span class="lineCov">     737415 :   return cursor-&gt;len &lt;= max_size;</span>
-<span class="lineNum">      41 </span><span class="lineCov">     737415 : }</span>
+<span class="lineNum">      39 </span><span class="lineCov">     217673 :                                 const size_t max_size) {</span>
+<span class="lineNum">      40 </span><span class="lineCov">     217673 :   return cursor-&gt;len &lt;= max_size;</span>
+<span class="lineNum">      41 </span><span class="lineCov">     217673 : }</span>
 </pre>
       </td>
     </tr>

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-29 15:52:26</td>
+            <td class="headerValue">2021-01-31 00:34:31</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -72,20 +72,20 @@
 <span class="lineNum">      10 </span>            : 
 <a name="11"><span class="lineNum">      11 </span>            : extern void sea_dsa_alias(const void *p, ...);</a>
 <span class="lineNum">      12 </span>            : 
-<span class="lineNum">      13 </span><span class="lineCov">     150000 : int main() {</span>
-<span class="lineNum">      14 </span><span class="lineCov">     150000 :     struct aws_string *str_a = ensure_string_is_allocated_bounded_length(MAX_BUFFER_SIZE);</span>
-<span class="lineNum">      15 </span><span class="lineCov">     150000 :     struct aws_string *str_b = nd_bool() ? str_a : ensure_string_is_allocated_bounded_length(MAX_BUFFER_SIZE);</span>
-<span class="lineNum">      16 </span><span class="lineCov">     150000 : </span>
-<span class="lineNum">      17 </span><span class="lineCov">     150000 :     bool nondet_parameter_a = nd_bool();</span>
-<span class="lineNum">      18 </span><span class="lineCov">     150000 :     bool nondet_parameter_b = nd_bool();</span>
-<span class="lineNum">      19 </span><span class="lineCov">     150000 :     if (aws_array_list_comparator_string(nondet_parameter_a ? &amp;str_a : NULL, nondet_parameter_b ? &amp;str_b : NULL) == 0) {</span>
-<span class="lineNum">      20 </span><span class="lineCov">      73378 :         if (nondet_parameter_a &amp;&amp; nondet_parameter_b) {</span>
-<span class="lineNum">      21 </span><span class="lineCov">      39084 :             assert_bytes_match(str_a-&gt;bytes, str_b-&gt;bytes, str_a-&gt;len);</span>
-<span class="lineNum">      22 </span><span class="lineCov">      39084 :         }</span>
-<span class="lineNum">      23 </span><span class="lineCov">      73378 :     }</span>
-<span class="lineNum">      24 </span><span class="lineCov">     150000 : </span>
-<span class="lineNum">      25 </span><span class="lineCov">     150000 :     return 0;</span>
-<span class="lineNum">      26 </span><span class="lineCov">     150000 : }</span>
+<span class="lineNum">      13 </span><span class="lineCov">      50000 : int main() {</span>
+<span class="lineNum">      14 </span><span class="lineCov">      50000 :     struct aws_string *str_a = ensure_string_is_allocated_bounded_length(MAX_BUFFER_SIZE);</span>
+<span class="lineNum">      15 </span><span class="lineCov">      50000 :     struct aws_string *str_b = nd_bool() ? str_a : ensure_string_is_allocated_bounded_length(MAX_BUFFER_SIZE);</span>
+<span class="lineNum">      16 </span><span class="lineCov">      50000 : </span>
+<span class="lineNum">      17 </span><span class="lineCov">      50000 :     bool nondet_parameter_a = nd_bool();</span>
+<span class="lineNum">      18 </span><span class="lineCov">      50000 :     bool nondet_parameter_b = nd_bool();</span>
+<span class="lineNum">      19 </span><span class="lineCov">      50000 :     if (aws_array_list_comparator_string(nondet_parameter_a ? &amp;str_a : NULL, nondet_parameter_b ? &amp;str_b : NULL) == 0) {</span>
+<span class="lineNum">      20 </span><span class="lineCov">      13230 :         if (nondet_parameter_a &amp;&amp; nondet_parameter_b) {</span>
+<span class="lineNum">      21 </span><span class="lineCov">      10191 :             assert_bytes_match(str_a-&gt;bytes, str_b-&gt;bytes, str_a-&gt;len);</span>
+<span class="lineNum">      22 </span><span class="lineCov">      10191 :         }</span>
+<span class="lineNum">      23 </span><span class="lineCov">      13230 :     }</span>
+<span class="lineNum">      24 </span><span class="lineCov">      50000 : </span>
+<span class="lineNum">      25 </span><span class="lineCov">      50000 :     return 0;</span>
+<span class="lineNum">      26 </span><span class="lineCov">      50000 : }</span>
 </pre>
       </td>
     </tr>
