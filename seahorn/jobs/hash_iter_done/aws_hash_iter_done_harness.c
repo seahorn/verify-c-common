@@ -18,8 +18,13 @@ int main(void) {
 
   struct aws_hash_iter iter;
   mk_valid_aws_hash_iter(&iter, &map);
+  #ifdef __KLEE__
+  if (iter.status == AWS_HASH_ITER_STATUS_DELETE_CALLED)
+       return 0;
+  #else
   assume(iter.status == AWS_HASH_ITER_STATUS_DONE ||
          iter.status == AWS_HASH_ITER_STATUS_READY_FOR_USE);
+  #endif
   enum aws_hash_iter_status old_status = iter.status;
   struct store_byte_from_buffer old_byte;
   save_byte_from_hash_table(&map, &old_byte);

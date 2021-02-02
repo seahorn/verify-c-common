@@ -26,8 +26,13 @@ int main(void) {
   aws_hash_iter_next(&iter);
 
   sassert(aws_hash_iter_is_valid(&iter));
-  sassert(iter.status == AWS_HASH_ITER_STATUS_DONE ||
-          iter.status == AWS_HASH_ITER_STATUS_READY_FOR_USE);
+  #ifdef __KLEE__
+  if (iter.status == AWS_HASH_ITER_STATUS_DELETE_CALLED)
+       return 0;
+  #else
+  assume(iter.status == AWS_HASH_ITER_STATUS_DONE ||
+         iter.status == AWS_HASH_ITER_STATUS_READY_FOR_USE);
+  #endif
   sassert(IMPLIES(old_status == AWS_HASH_ITER_STATUS_DONE,
                   iter.status == AWS_HASH_ITER_STATUS_DONE));
   sassert(aws_hash_table_is_valid(&map));
