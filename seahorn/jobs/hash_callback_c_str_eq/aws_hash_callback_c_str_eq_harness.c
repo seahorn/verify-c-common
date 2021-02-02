@@ -39,6 +39,10 @@ int main(void) {
       nd_bool() ? str1
                 : ensure_c_str_is_nd_allocated(MAX_STRING_LEN, &str2_len);
 
+  #ifdef __KLEE__
+    if (!str1 || !str2)
+      return 0;
+  #endif
   assume(aws_c_string_is_valid(str1));
   assume(aws_c_string_is_valid(str2));
 

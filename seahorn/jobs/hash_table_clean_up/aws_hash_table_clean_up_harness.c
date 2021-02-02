@@ -31,10 +31,14 @@ int main(void) {
 
   // this reads memory that has been freed, but we are not currently modelling
   // freeing memory
+  #ifdef __KLEE__
+    // klee does not allow to access memory after free.
+  #else
   size_t i = nd_size_t();
   size_t len = state->size * sizeof(state->slots[0]);
   assume(i < len);
   uint8_t *bytes = (uint8_t *)&state->slots[0];
   sassert(bytes[i] == 0);
+  #endif
   return 0;
 }

@@ -12,11 +12,23 @@ int main(void) {
   /* There are no loops in the code under test, so use the biggest possible
    * value */
   /* Seahorn: initializing both lhs and rhs since init is non det anyways */
+  #ifdef __KLEE__
+  initialize_bounded_aws_hash_table(&a, MAX_TABLE_SIZE);
+  #else
+  // There are no loops in the code under test, so use the biggest possible
+  // value
   initialize_bounded_aws_hash_table(&a, SIZE_MAX);
+  #endif
   assume(aws_hash_table_is_valid(&a));
   save_byte_from_hash_table(&a, &stored_byte_a);
 
+  #ifdef __KLEE__
+  initialize_bounded_aws_hash_table(&b, MAX_TABLE_SIZE);
+  #else
+  // There are no loops in the code under test, so use the biggest possible
+  // value
   initialize_bounded_aws_hash_table(&b, SIZE_MAX);
+  #endif
   assume(aws_hash_table_is_valid(&b));
   save_byte_from_hash_table(&b, &stored_byte_b);
 

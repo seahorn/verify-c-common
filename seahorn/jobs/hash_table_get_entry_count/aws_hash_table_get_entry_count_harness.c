@@ -10,9 +10,13 @@
 
 int main(void) {
   struct aws_hash_table table;
+  #ifdef __KLEE__
+  initialize_bounded_aws_hash_table(&table, MAX_TABLE_SIZE);
+  #else
   /* There are no loops in the code under test, so use the biggest possible
    * value */
   initialize_bounded_aws_hash_table(&table, SIZE_MAX);
+  #endif
   assume(aws_hash_table_is_valid(&table));
   struct hash_table_state *state = table.p_impl;
 
