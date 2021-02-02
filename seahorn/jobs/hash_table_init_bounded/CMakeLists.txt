@@ -9,3 +9,9 @@ sea_overlink_libraries(hash_table_init_bounded hash_table_state_is_valid_overrid
 sea_attach_bc_link(hash_table_init_bounded)
 configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(hash_table_init_bounded)
+
+# klee
+sea_add_klee(hash_table_init_bounded
+  ${AWS_C_COMMON_ROOT}/source/common.c
+  ${AWS_C_COMMON_ROOT}/source/hash_table.c
+  aws_hash_table_init_bounded_harness.c)
