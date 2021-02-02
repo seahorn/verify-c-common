@@ -13,6 +13,7 @@
 #include <byte_buf_helper.h>
 #include <nondet.h>
 #include <proof_allocators.h>
+#include <sea_allocators.h>
 
 void initialize_byte_buf(struct aws_byte_buf *const buf) {
     size_t cap = nd_size_t();
@@ -35,6 +36,16 @@ void initialize_byte_cursor(struct aws_byte_cursor *const cursor) {
     size_t max_buffer_size = sea_max_buffer_size();
     cursor->ptr = can_fail_malloc(sizeof(*(cursor->ptr)) * max_buffer_size);
     if (cursor->ptr){
+        cursor->len = nd_size_t();
+        assume(cursor->len <= max_buffer_size);
+    }
+    else cursor->len = 0;
+}
+
+void initialize_byte_cursor_aligned(struct aws_byte_cursor *const cursor) {
+    size_t max_buffer_size = sea_max_buffer_size();
+    cursor->ptr = sea_malloc_aligned_havoc(sizeof(*(cursor->ptr)) * max_buffer_size);
+    if (cursor->ptr) {
         cursor->len = nd_size_t();
         assume(cursor->len <= max_buffer_size);
     }
