@@ -2,8 +2,10 @@
 name: KLEE CI
 # Controls when the action will run
 on:
-  push: # temporary allow CI working on push step
-    branches: klee
+  pull_request:
+    branches: master
+  push:
+    branches: master
   schedule:
     - cron: 0 0 * * *  # run every day at UTC 00:00
 
