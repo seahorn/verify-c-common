@@ -48,6 +48,7 @@ add_library(
   utils.c
   klee_ring_buffer_helper.c
   klee_allocators.c
+  klee_hash_table_helper.c
   sea_allocators.c
   allocator_override.c
   sea_string.cc
@@ -55,6 +56,7 @@ add_library(
   nd_klee.c
   klee_switch.c
 )
+target_compile_definitions(sea_symex PRIVATE __KLEE__)
 sea_attach_bc(sea_symex)
 
 add_library(

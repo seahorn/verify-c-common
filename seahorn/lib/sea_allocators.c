@@ -14,7 +14,13 @@ INLINE void *sea_malloc(size_t sz) {
 // from: aws-c-common/source/allocator.c
 #define AWS_ALIGN_ROUND_UP(value, alignment)                                   \
   (((value) + ((alignment)-1)) & ~((alignment)-1))
-
+#ifdef __KLEE__
+INLINE void *klee_malloc_aligned(size_t *sz) {
+  enum { S_ALIGNMENT = sizeof(intmax_t) };
+  *sz = AWS_ALIGN_ROUND_UP(*sz, S_ALIGNMENT);
+  return sea_malloc(*sz);
+}
+#endif
 INLINE void *sea_malloc_aligned(size_t sz) {
   enum { S_ALIGNMENT = sizeof(intmax_t) };
   size_t alloc_sz = AWS_ALIGN_ROUND_UP(sz, S_ALIGNMENT);
@@ -46,11 +52,20 @@ INLINE void *sea_malloc_aligned_safe(size_t sz) {
   return data;
 }
 
+#ifdef __KLEE__
+INLINE void *sea_malloc_aligned_havoc(size_t sz) {
+  void *data = klee_malloc_aligned(&sz);
+  if (data) 
+    memhavoc(data, sz);
+  return data;
+}
+#else
 INLINE void *sea_malloc_aligned_havoc(size_t sz) {
   void *data = sea_malloc_aligned(sz);
   memhavoc(data, sz);
   return data;
 }
+#endif
 
 INLINE void sea_free(void *ptr) { free(ptr); }
 
