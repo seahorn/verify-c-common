@@ -5,7 +5,7 @@
 [![Azure DevOps builds](https://img.shields.io/azure-devops/build/seahorn/verify-c-common/2)](https://dev.azure.com/seahorn/verify-c-common/_build)
 [![CI](https://github.com/seahorn/verify-c-common/workflows/CI/badge.svg)](https://github.com/seahorn/verify-c-common/actions?query=workflow%3ACI)
 [![Fuzzing Coverage](https://img.shields.io/badge/fuzz-coverage-success)](https://seahorn.github.io/verify-c-common/fuzzing_coverage/index.html)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/seahorn/verify-c-common/tree/master/experiment_results.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/seahorn/verify-c-common/blob/master/experiment_results.ipynb)
 
 This repository contains the unit proofs as well as a build system used in the *Verifying Verified Code* case study. *Verified Code* refers to the [aws-c-common](https://github.com/awslabs/aws-c-common) library, which is now being verified by [CBMC](https://www.cprover.org/cbmc/) as part of the library's CI process. Read more about the AWS case study that inspired our work [here
 ](https://dl.acm.org/doi/10.1145/3377813.3381347). Instead of CBMC, our case study uses [SeaHorn](https://github.com/seahorn/seahorn)'s BMC engine for bounded model checking. We also adopted *de facto* semantics in the proofs and specifications, which allows this build system to use same set of unit proofs for different verification tools and techiques. In specific, we enabled symbolic execution with [KLEE](https://klee.github.io/) and fuzzing with [libFuzzer](https://releases.llvm.org/10.0.0/docs/LibFuzzer.html).
