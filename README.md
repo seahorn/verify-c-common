@@ -163,7 +163,7 @@ $ cmake \
    -DCMAKE_C_COMPILER=clang-10 \
    -DCMAKE_CXX_COMPILER=clang++-10 \
    -DSEAHORN_ROOT=<SEAHORN_ROOT> \
-   -DSEA_ENABLE_FUZZ=ON -DSEA_ENABLE_KLEE=ON \
+   -DSEA_ENABLE_KLEE=ON \
    -Daws-c-common_DIR=<AWS_C_COMMON_CMAKE_DIR> \
    ../ -GNinja
 ```
@@ -210,14 +210,14 @@ or
 ```bash
 $ ninja install
 ```
-Enter the verification build directory and reconfigure CMake to enable KLEE:
+Enter the verification build directory and reconfigure CMake to enable fuzzing:
 ```bash
 $ cmake \
    -DSEA_LINK=llvm-link-10 \
    -DCMAKE_C_COMPILER=clang-10 \
    -DCMAKE_CXX_COMPILER=clang++-10 \
    -DSEAHORN_ROOT=<SEAHORN_ROOT> \
-   -DSEA_ENABLE_FUZZ=ON -DSEA_ENABLE_KLEE=ON \
+   -DSEA_ENABLE_FUZZ=ON \
    -Daws-c-common_DIR=<AWS_C_COMMON_CMAKE_DIR> \
    ../ -GNinja
 ```
