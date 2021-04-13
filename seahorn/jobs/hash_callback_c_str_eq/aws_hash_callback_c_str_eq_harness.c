@@ -12,7 +12,13 @@
 #include <string_helper.h>
 #include <utils.h>
 
+#if __FUZZ__
+int nd_int_strcmp(void){
+  return nd_int();
+}
+#else
 extern NONDET_FN_ATTR int nd_int_strcmp(void);
+#endif
 // -- strcmp up to MAX_STRING_LEN, and non-deterministic result otherwise
 int strcmp(const char *str1, const char *str2) {
 

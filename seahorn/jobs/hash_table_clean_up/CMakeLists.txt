@@ -15,3 +15,5 @@ sea_add_klee(hash_table_clean_up
   ${AWS_C_COMMON_ROOT}/source/common.c
   ${AWS_C_COMMON_ROOT}/source/hash_table.c
   aws_hash_table_clean_up_harness.c)
+
+sea_add_fuzz(hash_table_clean_up aws_hash_table_clean_up_harness.c)

@@ -8,4 +8,5 @@ int main(void) {
     /* This function has no pre or post conditions */
     /* passively checks mem safety */
     uint64_t rval = aws_hash_ptr(ptr);
+    return 0;
 }
