@@ -11,3 +11,5 @@ sea_add_klee(hash_table_get_entry_count
   ${AWS_C_COMMON_ROOT}/source/common.c
   ${AWS_C_COMMON_ROOT}/source/hash_table.c
   aws_hash_table_get_entry_count_harness.c)
+
+sea_add_fuzz(hash_table_get_entry_count aws_hash_table_get_entry_count_harness.c)

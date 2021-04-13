@@ -68,7 +68,9 @@ add_library(
   fuzz_string_helper.c
   fuzz_priority_queue_helper.c
   ring_buffer_helper.c
+  fuzz_hash_table_helper.c
   bounds.c
   utils.c
+  sea_allocators.c
 )
 target_compile_options(sea_fuzz PUBLIC -fdeclspec -fsanitize=fuzzer-no-link,address,undefined -fprofile-instr-generate -fcoverage-mapping)

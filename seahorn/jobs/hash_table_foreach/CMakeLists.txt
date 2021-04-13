@@ -12,3 +12,5 @@ sea_overlink_libraries(hash_table_foreach hash_table_state_is_valid_ignore_entry
 sea_attach_bc_link(hash_table_foreach)
 configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(hash_table_foreach)
+
+sea_add_fuzz(hash_table_foreach aws_hash_table_foreach_harness.c)
