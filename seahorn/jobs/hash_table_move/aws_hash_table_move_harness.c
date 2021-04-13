@@ -7,13 +7,13 @@ int main(void) {
   struct aws_hash_table to;
   struct aws_hash_table from;
 
-  #ifdef __KLEE__
+#if defined(__KLEE__) || defined(__FUZZ__)
   initialize_bounded_aws_hash_table(&from, MAX_TABLE_SIZE);
-  #else
+#else
   // There are no loops in the code under test, so use the biggest possible
   // value
   initialize_bounded_aws_hash_table(&from, SIZE_MAX);
-  #endif
+#endif
   assume(aws_hash_table_is_valid(&from));
 
   struct store_byte_from_buffer stored_byte;

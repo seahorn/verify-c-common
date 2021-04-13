@@ -12,7 +12,11 @@ int main(void) {
   /* data structure */
   struct aws_allocator *allocator = sea_allocator();
   size_t size = nd_size_t();
+#ifdef __FUZZ__
+  size %= MAX_TABLE_SIZE;
+#else
   assume(size <= MAX_TABLE_SIZE);
+#endif
   aws_hash_fn *hash_fn;
   hash_fn = uninterpreted_hasher;
   assume(hash_fn);

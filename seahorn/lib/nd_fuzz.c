@@ -102,6 +102,9 @@ void *nd_voidp(void) {
 }
 
 void memhavoc(void *ptr, size_t size) {
+  if (!ptr) {
+    return;
+  }
   if (g_fuzz_data_iterator + size - g_fuzz_data >= g_fuzz_data_size) {
     longjmp(g_jmp_buf, 1);
   }

@@ -16,3 +16,6 @@ sea_add_klee(hash_iter_begin_done
   ${AWS_C_COMMON_ROOT}/source/common.c
   ${AWS_C_COMMON_ROOT}/source/hash_table.c
   aws_hash_iter_begin_done_harness.c)
+
+sea_add_fuzz(hash_iter_begin_done
+  aws_hash_iter_begin_done_harness.c)
