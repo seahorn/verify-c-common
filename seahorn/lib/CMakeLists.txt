@@ -59,6 +59,23 @@ add_library(
 target_compile_definitions(sea_symex PRIVATE __KLEE__)
 sea_attach_bc(sea_symex)
 
+if(SEA_ENABLE_SMACK)
+  add_library(
+    sea_smack
+    sea_allocators.c
+    array_list_helper.c
+    smack_allocators.c
+    allocator_override.c
+    string_helper.c
+    error_override.c
+    nd_smack.c
+    utils.c
+  )
+  target_compile_definitions(sea_smack PRIVATE __SMACK__)
+  target_include_directories(sea_smack PRIVATE ${SMACK_INCLUDE_DIR})
+  sea_attach_bc(sea_smack)
+endif()
+
 add_library(
   sea_fuzz
   nd_fuzz.c
