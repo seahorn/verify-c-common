@@ -14,3 +14,12 @@ sea_add_klee(array_list_comparator_string
 
 sea_add_fuzz(array_list_comparator_string
   aws_array_list_comparator_string_harness.c)
+
+# smack
+if(SEA_ENABLE_SMACK)
+sea_add_smack_bc(array_list_comparator_string
+${AWS_C_COMMON_ROOT}/source/array_list.c
+${AWS_C_COMMON_ROOT}/source/string.c
+aws_array_list_comparator_string_harness.c)
+sea_add_smack_test(array_list_comparator_string --string)
+endif()

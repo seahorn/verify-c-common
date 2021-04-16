@@ -7,3 +7,6 @@ sea_add_fuzz(add_size_saturating aws_add_size_saturating_harness.c)
 
 # klee
 sea_add_klee(add_size_saturating aws_add_size_saturating_harness.c)
+
+# smack
+sea_add_smack(add_size_saturating aws_add_size_saturating_harness.c)
