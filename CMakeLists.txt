@@ -12,6 +12,7 @@ option(SEA_ENABLE_FUZZ "Enable fuzzing" OFF)
 option(SEA_WITH_BLEEDING_EDGE "Enable bleeding edge proofs" OFF)
 
 option(SEA_ENABLE_KLEE "Enable klee" OFF)
+option(SEA_ENABLE_SMACK "Enable SMACK" OFF)
 
 option(SEA_ALLOCATOR_CAN_FAIL "Use can fail allocator" OFF)
 
@@ -24,6 +25,11 @@ endif()
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
     "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
+endif()
+
+if(SEA_ENABLE_SMACK)
+  set(SMACK_INCLUDE_DIR "/usr/local/share/smack/include" CACHE PATH "Path to SMACK include")
+  set(LLVM_DIS "llvm-dis-11" CACHE STRING "Binary for llvm-dis")
 endif()
 
 set(SEAHORN_ROOT "/usr" CACHE PATH "Path to SeaHorn installation")
