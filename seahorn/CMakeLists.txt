@@ -312,7 +312,8 @@ function(sea_add_smack_test TARGET)
   set(LL "${LL}.ll")
   add_custom_target(smack_dis_${TARGET} ALL COMMAND ${LLVM_DIS} -o ${LL} ${BC} DEPENDS ${BC})
   # ${ARGN} expands to additional flags for smack, e.g. --string
-  add_test(NAME "smack_${TARGET}_test" COMMAND smack --verifier boogie --solver z3 ${LL} ${ARGN})
+  # got lots of timeout when adds --integer-encoding bit-vector
+  add_test(NAME "smack_${TARGET}_test" COMMAND smack --verifier boogie --solver z3 ${LL} ${ARGN} --check valid-deref)
 endfunction()
 
 macro(sea_add_smack)
