@@ -29,7 +29,7 @@ endif()
 
 if(SEA_ENABLE_SMACK)
   set(SMACK_INCLUDE_DIR "/usr/local/share/smack/include" CACHE PATH "Path to SMACK include")
-  set(LLVM_DIS "llvm-dis-11" CACHE STRING "Binary for llvm-dis")
+  set(LLVM_DIS "llvm-dis-10" CACHE STRING "Binary for llvm-dis")
 endif()
 
 set(SEAHORN_ROOT "/usr" CACHE PATH "Path to SeaHorn installation")

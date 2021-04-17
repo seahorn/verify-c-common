@@ -72,7 +72,6 @@ if(SEA_ENABLE_SMACK)
     utils.c
   )
   target_compile_definitions(sea_smack PRIVATE __SMACK__)
-  target_include_directories(sea_smack PRIVATE ${SMACK_INCLUDE_DIR})
   sea_attach_bc(sea_smack)
 endif()
 
