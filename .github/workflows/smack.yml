@@ -1,0 +1,24 @@
+# workflow to run SMACK tests
+name: SMACK CI
+# Controls when the action will run
+on:
+  pull_request:
+    branches: master
+  push:
+    branches: master
+  schedule:
+    - cron: 0 0 * * *  # run every day at UTC 00:00
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Out Repo 
+        uses: actions/checkout@v2
+
+      - name: Docker 
+        run: docker build -t verify-c-common . --file docker/verify-c-common-smack.Dockerfile
+
+      - name: Run Tests 
+        run: docker run -t verify-c-common /bin/bash -c "source /home/usea/smack-toolchain/smack.environment && cd build && ctest -R smack_ --output-on-failure --timeout 2000"
