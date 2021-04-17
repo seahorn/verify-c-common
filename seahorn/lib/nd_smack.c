@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "smack.h"
+#include "smack/smack.h"
 
 size_t nd_size_t(void) {
   return __VERIFIER_nondet_unsigned_int();
@@ -42,14 +42,6 @@ uint64_t nd_uint64_t(void) {
 
 void __VERIFIER_error(void) {
   __VERIFIER_assert(0);
-}
-
-/* memhavoc - Special function for memory block initialization. 
-  * initialize memory content as non-deterministic value.
-*/
-void memhavoc(void *ptr, size_t size) {
-  // TODO: Finish implement this
-  return;
 }
 
 void *nd_voidp(void) {
