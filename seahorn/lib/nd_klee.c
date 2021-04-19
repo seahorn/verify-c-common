@@ -110,7 +110,11 @@ void __VERIFIER_assert(bool v) {
   klee_assert(v);
 }
 
-void __VERIFIER_assume(bool v) {
+void __VERIFIER_assume(int v) {
+  klee_assume(v);
+}
+
+void __SEA_assume(bool v) {
   klee_assume(v);
 }
 

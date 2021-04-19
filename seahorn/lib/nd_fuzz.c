@@ -117,12 +117,18 @@ void __VERIFIER_assert(bool v) {
   return assert(v);
 }
 
-void __VERIFIER_assume(bool v) {
+void __VERIFIER_assume(int v) {
+  __SEA_assume(v);
+}
+
+void __SEA_assume(bool v) {
   // -- if assumption fails, jump back to LLVMFuzzerTestOneInput
   if (!v) {
     longjmp(g_jmp_buf, 1);
   }
 }
+
+
 
 void __VERIFIER_error(void) {
   fprintf(stdout, "ERROR REACHED\n");
