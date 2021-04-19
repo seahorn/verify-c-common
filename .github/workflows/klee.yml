@@ -17,7 +17,7 @@ jobs:
       - name: Check Out Repo 
         uses: actions/checkout@v2
         with:
-          ref: klee  # only checkout klee
+          ref: master 
 
       - name: Docker 
         run: docker build -t verify-c-common . --file docker/verify-c-common-klee.Dockerfile
