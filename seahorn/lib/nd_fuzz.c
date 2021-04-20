@@ -152,3 +152,7 @@ int LLVMFuzzerTestOneInput(uint8_t *Data, size_t Size) {
 }
 
 bool nd_malloc_is_fail(void) { return nd_bool(); }
+
+int nondet_compare(const void* a, const void *b) {
+  return nd_int();
+}

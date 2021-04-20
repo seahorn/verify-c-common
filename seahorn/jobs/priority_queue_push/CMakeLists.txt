@@ -10,7 +10,14 @@ configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(priority_queue_push)
 
 # klee
-sea_add_klee(priority_queue_push
+sea_add_klee(
+  priority_queue_push
   ${AWS_C_COMMON_ROOT}/source/array_list.c
   ${AWS_C_COMMON_ROOT}/source/priority_queue.c
-  aws_priority_queue_push_harness.c)
+  aws_priority_queue_push_harness.c
+)
+
+sea_add_fuzz(
+  priority_queue_push
+  aws_priority_queue_push_harness.c
+)

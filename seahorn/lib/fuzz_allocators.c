@@ -3,17 +3,21 @@
  */
 
 #include <proof_allocators.h>
-
 #include <stdarg.h>
 #include <stdlib.h>
 
+// for assume()
+#include <seahorn/seahorn.h> 
 
-
-void *bounded_malloc(size_t size) {
-  return malloc(size);
-}
+void *bounded_malloc(size_t size) { return malloc(size); }
 
 void *can_fail_malloc(size_t size) { return malloc(size); }
+
+void *sea_malloc_safe(size_t sz) {
+  void *p = malloc(sz);
+  assume(p);
+  return p;
+}
 
 /**
  *
@@ -40,4 +44,3 @@ static struct aws_allocator s_allocator_fuzz_static = {
 struct aws_allocator *sea_allocator() {
   return &s_allocator_fuzz_static;
 }
-
