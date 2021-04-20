@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -73,38 +73,38 @@
 <span class="lineNum">      11 </span>            : /**
 <a name="12"><span class="lineNum">      12 </span>            :  * Runtime: 6s</a>
 <span class="lineNum">      13 </span>            :  */
-<span class="lineNum">      14 </span><span class="lineCov">      50000 : int main() {</span>
-<span class="lineNum">      15 </span><span class="lineCov">      50000 :     /* data structure */</span>
-<span class="lineNum">      16 </span><span class="lineCov">      50000 :     struct aws_array_list list;</span>
-<span class="lineNum">      17 </span><span class="lineCov">      50000 :     initialize_bounded_array_list(&amp;list);</span>
-<span class="lineNum">      18 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      19 </span><span class="lineCov">      50000 :     /* assumptions */</span>
-<span class="lineNum">      20 </span><span class="lineCov">      50000 :     assume(aws_array_list_is_valid(&amp;list));</span>
-<span class="lineNum">      21 </span><span class="lineCov">      50000 :     void *val = bounded_malloc(list.item_size);</span>
-<span class="lineNum">      22 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      23 </span><span class="lineCov">      50000 :     /* save current state of the data structure */</span>
-<span class="lineNum">      24 </span><span class="lineCov">      50000 :     struct aws_array_list old = list;</span>
-<span class="lineNum">      25 </span><span class="lineCov">      50000 :     struct store_byte_from_buffer old_byte;</span>
-<span class="lineNum">      26 </span><span class="lineCov">      50000 :     save_byte_from_array((uint8_t *)list.data, list.current_size, &amp;old_byte);</span>
-<span class="lineNum">      27 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      28 </span><span class="lineCov">      50000 :     /* assume preconditions */</span>
-<span class="lineNum">      29 </span><span class="lineCov">      50000 :     assume(aws_array_list_is_valid(&amp;list));</span>
-<span class="lineNum">      30 </span><span class="lineCov">      50000 :     assume(val &amp;&amp; AWS_MEM_IS_WRITABLE(val, list.item_size));</span>
-<span class="lineNum">      31 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      32 </span><span class="lineCov">      50000 :     /* perform operation under verification */</span>
-<span class="lineNum">      33 </span><span class="lineCov">      50000 :     if (!aws_array_list_front(&amp;list, val)) {</span>
-<span class="lineNum">      34 </span><span class="lineCov">       2314 :         /* In the case aws_array_list_front is successful, we can ensure the list isn't empty */</span>
-<span class="lineNum">      35 </span><span class="lineCov">       2314 :         sassert(AWS_BYTES_EQ(val, list.data, list.item_size));</span>
-<span class="lineNum">      36 </span><span class="lineCov">       2314 :         sassert(list.data);</span>
-<span class="lineNum">      37 </span><span class="lineCov">       2314 :         sassert(list.length);</span>
-<span class="lineNum">      38 </span><span class="lineCov">       2314 :     }</span>
-<span class="lineNum">      39 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      40 </span><span class="lineCov">      50000 :     /* assertions */</span>
-<span class="lineNum">      41 </span><span class="lineCov">      50000 :     sassert(aws_array_list_is_valid(&amp;list));</span>
-<span class="lineNum">      42 </span><span class="lineCov">      50000 :     assert_array_list_equivalence(&amp;list, &amp;old, &amp;old_byte);</span>
-<span class="lineNum">      43 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      44 </span><span class="lineCov">      50000 :     return 0;</span>
-<span class="lineNum">      45 </span><span class="lineCov">      50000 : }</span>
+<span class="lineNum">      14 </span><span class="lineCov">     100000 : int main() {</span>
+<span class="lineNum">      15 </span><span class="lineCov">     100000 :     /* data structure */</span>
+<span class="lineNum">      16 </span><span class="lineCov">     100000 :     struct aws_array_list list;</span>
+<span class="lineNum">      17 </span><span class="lineCov">     100000 :     initialize_bounded_array_list(&amp;list);</span>
+<span class="lineNum">      18 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      19 </span><span class="lineCov">     100000 :     /* assumptions */</span>
+<span class="lineNum">      20 </span><span class="lineCov">     100000 :     assume(aws_array_list_is_valid(&amp;list));</span>
+<span class="lineNum">      21 </span><span class="lineCov">     100000 :     void *val = bounded_malloc(list.item_size);</span>
+<span class="lineNum">      22 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      23 </span><span class="lineCov">     100000 :     /* save current state of the data structure */</span>
+<span class="lineNum">      24 </span><span class="lineCov">     100000 :     struct aws_array_list old = list;</span>
+<span class="lineNum">      25 </span><span class="lineCov">     100000 :     struct store_byte_from_buffer old_byte;</span>
+<span class="lineNum">      26 </span><span class="lineCov">     100000 :     save_byte_from_array((uint8_t *)list.data, list.current_size, &amp;old_byte);</span>
+<span class="lineNum">      27 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      28 </span><span class="lineCov">     100000 :     /* assume preconditions */</span>
+<span class="lineNum">      29 </span><span class="lineCov">     100000 :     assume(aws_array_list_is_valid(&amp;list));</span>
+<span class="lineNum">      30 </span><span class="lineCov">     100000 :     assume(val &amp;&amp; AWS_MEM_IS_WRITABLE(val, list.item_size));</span>
+<span class="lineNum">      31 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      32 </span><span class="lineCov">     100000 :     /* perform operation under verification */</span>
+<span class="lineNum">      33 </span><span class="lineCov">     100000 :     if (!aws_array_list_front(&amp;list, val)) {</span>
+<span class="lineNum">      34 </span><span class="lineCov">       5752 :         /* In the case aws_array_list_front is successful, we can ensure the list isn't empty */</span>
+<span class="lineNum">      35 </span><span class="lineCov">       5752 :         sassert(AWS_BYTES_EQ(val, list.data, list.item_size));</span>
+<span class="lineNum">      36 </span><span class="lineCov">       5752 :         sassert(list.data);</span>
+<span class="lineNum">      37 </span><span class="lineCov">       5752 :         sassert(list.length);</span>
+<span class="lineNum">      38 </span><span class="lineCov">       5752 :     }</span>
+<span class="lineNum">      39 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      40 </span><span class="lineCov">     100000 :     /* assertions */</span>
+<span class="lineNum">      41 </span><span class="lineCov">     100000 :     sassert(aws_array_list_is_valid(&amp;list));</span>
+<span class="lineNum">      42 </span><span class="lineCov">     100000 :     assert_array_list_equivalence(&amp;list, &amp;old, &amp;old_byte);</span>
+<span class="lineNum">      43 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      44 </span><span class="lineCov">     100000 :     return 0;</span>
+<span class="lineNum">      45 </span><span class="lineCov">     100000 : }</span>
 </pre>
       </td>
     </tr>

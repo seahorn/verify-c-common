@@ -31,18 +31,18 @@
             <td class="headerValue">all_fuzz.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">53</td>
+            <td class="headerCovTableEntry">174</td>
             <td class="headerCovTableEntry">224</td>
-            <td class="headerCovTableEntryLo">23.7 %</td>
+            <td class="headerCovTableEntryMed">77.7 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">16</td>
             <td class="headerCovTableEntry">21</td>
-            <td class="headerCovTableEntryLo">19.0 %</td>
+            <td class="headerCovTableEntryMed">76.2 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -66,37 +66,37 @@
 <span class="lineNum">       4 </span>            :  */
 <a name="5"><span class="lineNum">       5 </span>            : #include &lt;aws/common/string.h&gt;</a>
 <span class="lineNum">       6 </span>            : 
-<span class="lineNum">       7 </span><span class="lineNoCov">          0 : struct aws_string *aws_string_new_from_c_str(struct aws_allocator *allocator, const char *c_str) {</span>
-<span class="lineNum">       8 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(allocator &amp;&amp; c_str);</span>
-<span class="lineNum">       9 </span><span class="lineNoCov">          0 :     return aws_string_new_from_array(allocator, (const uint8_t *)c_str, strlen(c_str));</span>
-<a name="10"><span class="lineNum">      10 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">       7 </span><span class="lineCov">      92031 : struct aws_string *aws_string_new_from_c_str(struct aws_allocator *allocator, const char *c_str) {</span>
+<span class="lineNum">       8 </span><span class="lineCov">      92031 :     AWS_PRECONDITION(allocator &amp;&amp; c_str);</span>
+<span class="lineNum">       9 </span><span class="lineCov">      92031 :     return aws_string_new_from_array(allocator, (const uint8_t *)c_str, strlen(c_str));</span>
+<a name="10"><span class="lineNum">      10 </span><span class="lineCov">      92031 : }</span></a>
 <span class="lineNum">      11 </span>            : 
-<span class="lineNum">      12 </span><span class="lineNoCov">          0 : struct aws_string *aws_string_new_from_array(struct aws_allocator *allocator, const uint8_t *bytes, size_t len) {</span>
-<span class="lineNum">      13 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(allocator);</span>
-<span class="lineNum">      14 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(AWS_MEM_IS_READABLE(bytes, len));</span>
-<span class="lineNum">      15 </span><span class="lineNoCov">          0 :     size_t malloc_size;</span>
-<span class="lineNum">      16 </span><span class="lineNoCov">          0 :     if (aws_add_size_checked(sizeof(struct aws_string) + 1, len, &amp;malloc_size)) {</span>
+<span class="lineNum">      12 </span><span class="lineCov">     189688 : struct aws_string *aws_string_new_from_array(struct aws_allocator *allocator, const uint8_t *bytes, size_t len) {</span>
+<span class="lineNum">      13 </span><span class="lineCov">     189688 :     AWS_PRECONDITION(allocator);</span>
+<span class="lineNum">      14 </span><span class="lineCov">     189688 :     AWS_PRECONDITION(AWS_MEM_IS_READABLE(bytes, len));</span>
+<span class="lineNum">      15 </span><span class="lineCov">     189688 :     size_t malloc_size;</span>
+<span class="lineNum">      16 </span><span class="lineCov">     189688 :     if (aws_add_size_checked(sizeof(struct aws_string) + 1, len, &amp;malloc_size)) {</span>
 <span class="lineNum">      17 </span><span class="lineNoCov">          0 :         return NULL;</span>
 <span class="lineNum">      18 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">      19 </span><span class="lineNoCov">          0 :     struct aws_string *str = aws_mem_acquire(allocator, malloc_size);</span>
-<span class="lineNum">      20 </span><span class="lineNoCov">          0 :     if (!str) {</span>
+<span class="lineNum">      19 </span><span class="lineCov">     189688 :     struct aws_string *str = aws_mem_acquire(allocator, malloc_size);</span>
+<span class="lineNum">      20 </span><span class="lineCov">     189688 :     if (!str) {</span>
 <span class="lineNum">      21 </span><span class="lineNoCov">          0 :         return NULL;</span>
 <span class="lineNum">      22 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">      23 </span><span class="lineNoCov">          0 : </span>
-<span class="lineNum">      24 </span><span class="lineNoCov">          0 :     /* Fields are declared const, so we need to copy them in like this */</span>
-<span class="lineNum">      25 </span><span class="lineNoCov">          0 :     *(struct aws_allocator **)(&amp;str-&gt;allocator) = allocator;</span>
-<span class="lineNum">      26 </span><span class="lineNoCov">          0 :     *(size_t *)(&amp;str-&gt;len) = len;</span>
-<span class="lineNum">      27 </span><span class="lineNoCov">          0 :     if (len &gt; 0) {</span>
-<span class="lineNum">      28 </span><span class="lineNoCov">          0 :         memcpy((void *)str-&gt;bytes, bytes, len);</span>
-<span class="lineNum">      29 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">      30 </span><span class="lineNoCov">          0 :     *(uint8_t *)&amp;str-&gt;bytes[len] = '\0';</span>
-<span class="lineNum">      31 </span><span class="lineNoCov">          0 :     AWS_RETURN_WITH_POSTCONDITION(str, aws_string_is_valid(str));</span>
-<a name="32"><span class="lineNum">      32 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      23 </span><span class="lineCov">     189688 : </span>
+<span class="lineNum">      24 </span><span class="lineCov">     189688 :     /* Fields are declared const, so we need to copy them in like this */</span>
+<span class="lineNum">      25 </span><span class="lineCov">     189688 :     *(struct aws_allocator **)(&amp;str-&gt;allocator) = allocator;</span>
+<span class="lineNum">      26 </span><span class="lineCov">     189688 :     *(size_t *)(&amp;str-&gt;len) = len;</span>
+<span class="lineNum">      27 </span><span class="lineCov">     189688 :     if (len &gt; 0) {</span>
+<span class="lineNum">      28 </span><span class="lineCov">     172761 :         memcpy((void *)str-&gt;bytes, bytes, len);</span>
+<span class="lineNum">      29 </span><span class="lineCov">     172761 :     }</span>
+<span class="lineNum">      30 </span><span class="lineCov">     189688 :     *(uint8_t *)&amp;str-&gt;bytes[len] = '\0';</span>
+<span class="lineNum">      31 </span><span class="lineCov">     189688 :     AWS_RETURN_WITH_POSTCONDITION(str, aws_string_is_valid(str));</span>
+<a name="32"><span class="lineNum">      32 </span><span class="lineCov">     189688 : }</span></a>
 <span class="lineNum">      33 </span>            : 
-<span class="lineNum">      34 </span><span class="lineNoCov">          0 : struct aws_string *aws_string_new_from_string(struct aws_allocator *allocator, const struct aws_string *str) {</span>
-<span class="lineNum">      35 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(allocator &amp;&amp; aws_string_is_valid(str));</span>
-<span class="lineNum">      36 </span><span class="lineNoCov">          0 :     return aws_string_new_from_array(allocator, str-&gt;bytes, str-&gt;len);</span>
-<a name="37"><span class="lineNum">      37 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      34 </span><span class="lineCov">      82973 : struct aws_string *aws_string_new_from_string(struct aws_allocator *allocator, const struct aws_string *str) {</span>
+<span class="lineNum">      35 </span><span class="lineCov">      82973 :     AWS_PRECONDITION(allocator &amp;&amp; aws_string_is_valid(str));</span>
+<span class="lineNum">      36 </span><span class="lineCov">      82973 :     return aws_string_new_from_array(allocator, str-&gt;bytes, str-&gt;len);</span>
+<a name="37"><span class="lineNum">      37 </span><span class="lineCov">      82973 : }</span></a>
 <span class="lineNum">      38 </span>            : 
 <span class="lineNum">      39 </span><span class="lineNoCov">          0 : struct aws_string *aws_string_new_from_cursor(struct aws_allocator *allocator, const struct aws_byte_cursor *cursor) {</span>
 <span class="lineNum">      40 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(allocator &amp;&amp; aws_byte_cursor_is_valid(cursor));</span>
@@ -108,12 +108,12 @@
 <span class="lineNum">      46 </span><span class="lineNoCov">          0 :     return aws_string_new_from_array(allocator, buf-&gt;buffer, buf-&gt;len);</span>
 <a name="47"><span class="lineNum">      47 </span><span class="lineNoCov">          0 : }</span></a>
 <span class="lineNum">      48 </span>            : 
-<span class="lineNum">      49 </span><span class="lineNoCov">          0 : void aws_string_destroy(struct aws_string *str) {</span>
-<span class="lineNum">      50 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(!str || aws_string_is_valid(str));</span>
-<span class="lineNum">      51 </span><span class="lineNoCov">          0 :     if (str &amp;&amp; str-&gt;allocator) {</span>
-<span class="lineNum">      52 </span><span class="lineNoCov">          0 :         aws_mem_release(str-&gt;allocator, str);</span>
-<span class="lineNum">      53 </span><span class="lineNoCov">          0 :     }</span>
-<a name="54"><span class="lineNum">      54 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      49 </span><span class="lineCov">     163761 : void aws_string_destroy(struct aws_string *str) {</span>
+<span class="lineNum">      50 </span><span class="lineCov">     163761 :     AWS_PRECONDITION(!str || aws_string_is_valid(str));</span>
+<span class="lineNum">      51 </span><span class="lineCov">     163761 :     if (str &amp;&amp; str-&gt;allocator) {</span>
+<span class="lineNum">      52 </span><span class="lineCov">      59481 :         aws_mem_release(str-&gt;allocator, str);</span>
+<span class="lineNum">      53 </span><span class="lineCov">      59481 :     }</span>
+<a name="54"><span class="lineNum">      54 </span><span class="lineCov">     163761 : }</span></a>
 <span class="lineNum">      55 </span>            : 
 <span class="lineNum">      56 </span><span class="lineNoCov">          0 : void aws_string_destroy_secure(struct aws_string *str) {</span>
 <span class="lineNum">      57 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(!str || aws_string_is_valid(str));</span>
@@ -125,188 +125,188 @@
 <span class="lineNum">      63 </span><span class="lineNoCov">          0 :     }</span>
 <a name="64"><span class="lineNum">      64 </span><span class="lineNoCov">          0 : }</span></a>
 <span class="lineNum">      65 </span>            : 
-<span class="lineNum">      66 </span><span class="lineCov">      14130 : int aws_string_compare(const struct aws_string *a, const struct aws_string *b) {</span>
-<span class="lineNum">      67 </span><span class="lineCov">      14130 :     AWS_PRECONDITION(!a || aws_string_is_valid(a));</span>
-<span class="lineNum">      68 </span><span class="lineCov">      14130 :     AWS_PRECONDITION(!b || aws_string_is_valid(b));</span>
-<span class="lineNum">      69 </span><span class="lineCov">      14130 :     if (a == b) {</span>
-<span class="lineNum">      70 </span><span class="lineCov">      11656 :         return 0; /* strings identical */</span>
-<span class="lineNum">      71 </span><span class="lineCov">      11656 :     }</span>
-<span class="lineNum">      72 </span><span class="lineCov">       2474 :     if (a == NULL) {</span>
-<span class="lineNum">      73 </span><span class="lineNoCov">          0 :         return -1;</span>
-<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">      75 </span><span class="lineCov">       2474 :     if (b == NULL) {</span>
-<span class="lineNum">      76 </span><span class="lineNoCov">          0 :         return 1;</span>
-<span class="lineNum">      77 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">      78 </span><span class="lineCov">       2474 : </span>
-<span class="lineNum">      79 </span><span class="lineCov">       2474 :     size_t len_a = a-&gt;len;</span>
-<span class="lineNum">      80 </span><span class="lineCov">       2474 :     size_t len_b = b-&gt;len;</span>
-<span class="lineNum">      81 </span><span class="lineCov">       2474 :     size_t min_len = len_a &lt; len_b ? len_a : len_b;</span>
-<span class="lineNum">      82 </span><span class="lineCov">       2474 : </span>
-<span class="lineNum">      83 </span><span class="lineCov">       2474 :     int ret = memcmp(aws_string_bytes(a), aws_string_bytes(b), min_len);</span>
-<span class="lineNum">      84 </span><span class="lineCov">       2474 :     AWS_POSTCONDITION(aws_string_is_valid(a));</span>
-<span class="lineNum">      85 </span><span class="lineCov">       2474 :     AWS_POSTCONDITION(aws_string_is_valid(b));</span>
-<span class="lineNum">      86 </span><span class="lineCov">       2474 :     if (ret) {</span>
-<span class="lineNum">      87 </span><span class="lineCov">       1776 :         return ret; /* overlapping characters differ */</span>
-<span class="lineNum">      88 </span><span class="lineCov">       1776 :     }</span>
-<span class="lineNum">      89 </span><span class="lineCov">        698 :     if (len_a == len_b) {</span>
-<span class="lineNum">      90 </span><span class="lineCov">        113 :         return 0; /* strings identical */</span>
-<span class="lineNum">      91 </span><span class="lineCov">        113 :     }</span>
-<span class="lineNum">      92 </span><span class="lineCov">        585 :     if (len_a &gt; len_b) {</span>
-<span class="lineNum">      93 </span><span class="lineCov">        372 :         return 1; /* string b is first n characters of string a */</span>
-<span class="lineNum">      94 </span><span class="lineCov">        372 :     }</span>
-<span class="lineNum">      95 </span><span class="lineCov">        213 :     return -1; /* string a is first n characters of string b */</span>
-<a name="96"><span class="lineNum">      96 </span><span class="lineCov">        213 : }</span></a>
+<span class="lineNum">      66 </span><span class="lineCov">     132676 : int aws_string_compare(const struct aws_string *a, const struct aws_string *b) {</span>
+<span class="lineNum">      67 </span><span class="lineCov">     132676 :     AWS_PRECONDITION(!a || aws_string_is_valid(a));</span>
+<span class="lineNum">      68 </span><span class="lineCov">     132676 :     AWS_PRECONDITION(!b || aws_string_is_valid(b));</span>
+<span class="lineNum">      69 </span><span class="lineCov">     132676 :     if (a == b) {</span>
+<span class="lineNum">      70 </span><span class="lineCov">      82972 :         return 0; /* strings identical */</span>
+<span class="lineNum">      71 </span><span class="lineCov">      82972 :     }</span>
+<span class="lineNum">      72 </span><span class="lineCov">      49704 :     if (a == NULL) {</span>
+<span class="lineNum">      73 </span><span class="lineCov">       2449 :         return -1;</span>
+<span class="lineNum">      74 </span><span class="lineCov">       2449 :     }</span>
+<span class="lineNum">      75 </span><span class="lineCov">      47255 :     if (b == NULL) {</span>
+<span class="lineNum">      76 </span><span class="lineCov">       2243 :         return 1;</span>
+<span class="lineNum">      77 </span><span class="lineCov">       2243 :     }</span>
+<span class="lineNum">      78 </span><span class="lineCov">      45012 : </span>
+<span class="lineNum">      79 </span><span class="lineCov">      45012 :     size_t len_a = a-&gt;len;</span>
+<span class="lineNum">      80 </span><span class="lineCov">      45012 :     size_t len_b = b-&gt;len;</span>
+<span class="lineNum">      81 </span><span class="lineCov">      45012 :     size_t min_len = len_a &lt; len_b ? len_a : len_b;</span>
+<span class="lineNum">      82 </span><span class="lineCov">      45012 : </span>
+<span class="lineNum">      83 </span><span class="lineCov">      45012 :     int ret = memcmp(aws_string_bytes(a), aws_string_bytes(b), min_len);</span>
+<span class="lineNum">      84 </span><span class="lineCov">      45012 :     AWS_POSTCONDITION(aws_string_is_valid(a));</span>
+<span class="lineNum">      85 </span><span class="lineCov">      45012 :     AWS_POSTCONDITION(aws_string_is_valid(b));</span>
+<span class="lineNum">      86 </span><span class="lineCov">      45012 :     if (ret) {</span>
+<span class="lineNum">      87 </span><span class="lineCov">      34794 :         return ret; /* overlapping characters differ */</span>
+<span class="lineNum">      88 </span><span class="lineCov">      34794 :     }</span>
+<span class="lineNum">      89 </span><span class="lineCov">      10218 :     if (len_a == len_b) {</span>
+<span class="lineNum">      90 </span><span class="lineCov">        909 :         return 0; /* strings identical */</span>
+<span class="lineNum">      91 </span><span class="lineCov">        909 :     }</span>
+<span class="lineNum">      92 </span><span class="lineCov">       9309 :     if (len_a &gt; len_b) {</span>
+<span class="lineNum">      93 </span><span class="lineCov">       7349 :         return 1; /* string b is first n characters of string a */</span>
+<span class="lineNum">      94 </span><span class="lineCov">       7349 :     }</span>
+<span class="lineNum">      95 </span><span class="lineCov">       1960 :     return -1; /* string a is first n characters of string b */</span>
+<a name="96"><span class="lineNum">      96 </span><span class="lineCov">       1960 : }</span></a>
 <span class="lineNum">      97 </span>            : 
-<span class="lineNum">      98 </span><span class="lineCov">      23273 : int aws_array_list_comparator_string(const void *a, const void *b) {</span>
-<span class="lineNum">      99 </span><span class="lineCov">      23273 :     if (a == b) {</span>
-<span class="lineNum">     100 </span><span class="lineCov">       3604 :         return 0; /* strings identical */</span>
-<span class="lineNum">     101 </span><span class="lineCov">       3604 :     }</span>
-<span class="lineNum">     102 </span><span class="lineCov">      19669 :     if (a == NULL) {</span>
-<span class="lineNum">     103 </span><span class="lineCov">       2441 :         return -1;</span>
-<span class="lineNum">     104 </span><span class="lineCov">       2441 :     }</span>
-<span class="lineNum">     105 </span><span class="lineCov">      17228 :     if (b == NULL) {</span>
-<span class="lineNum">     106 </span><span class="lineCov">       3098 :         return 1;</span>
-<span class="lineNum">     107 </span><span class="lineCov">       3098 :     }</span>
-<span class="lineNum">     108 </span><span class="lineCov">      14130 :     const struct aws_string *str_a = *(const struct aws_string **)a;</span>
-<span class="lineNum">     109 </span><span class="lineCov">      14130 :     const struct aws_string *str_b = *(const struct aws_string **)b;</span>
-<span class="lineNum">     110 </span><span class="lineCov">      14130 :     return aws_string_compare(str_a, str_b);</span>
-<span class="lineNum">     111 </span><span class="lineCov">      14130 : }</span>
+<span class="lineNum">      98 </span><span class="lineCov">      85295 : int aws_array_list_comparator_string(const void *a, const void *b) {</span>
+<span class="lineNum">      99 </span><span class="lineCov">      85295 :     if (a == b) {</span>
+<span class="lineNum">     100 </span><span class="lineCov">      24174 :         return 0; /* strings identical */</span>
+<span class="lineNum">     101 </span><span class="lineCov">      24174 :     }</span>
+<span class="lineNum">     102 </span><span class="lineCov">      61121 :     if (a == NULL) {</span>
+<span class="lineNum">     103 </span><span class="lineCov">       6698 :         return -1;</span>
+<span class="lineNum">     104 </span><span class="lineCov">       6698 :     }</span>
+<span class="lineNum">     105 </span><span class="lineCov">      54423 :     if (b == NULL) {</span>
+<span class="lineNum">     106 </span><span class="lineCov">       7112 :         return 1;</span>
+<span class="lineNum">     107 </span><span class="lineCov">       7112 :     }</span>
+<span class="lineNum">     108 </span><span class="lineCov">      47311 :     const struct aws_string *str_a = *(const struct aws_string **)a;</span>
+<span class="lineNum">     109 </span><span class="lineCov">      47311 :     const struct aws_string *str_b = *(const struct aws_string **)b;</span>
+<span class="lineNum">     110 </span><span class="lineCov">      47311 :     return aws_string_compare(str_a, str_b);</span>
+<span class="lineNum">     111 </span><span class="lineCov">      47311 : }</span>
 <span class="lineNum">     112 </span>            : 
 <span class="lineNum">     113 </span>            : /**
 <a name="114"><span class="lineNum">     114 </span>            :  * Returns true if bytes of string are the same, false otherwise.</a>
 <span class="lineNum">     115 </span>            :  */
-<span class="lineNum">     116 </span><span class="lineNoCov">          0 : bool aws_string_eq(const struct aws_string *a, const struct aws_string *b) {</span>
-<span class="lineNum">     117 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(!a || aws_string_is_valid(a));</span>
-<span class="lineNum">     118 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(!b || aws_string_is_valid(b));</span>
-<span class="lineNum">     119 </span><span class="lineNoCov">          0 :     if (a == b) {</span>
-<span class="lineNum">     120 </span><span class="lineNoCov">          0 :         return true;</span>
-<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     122 </span><span class="lineNoCov">          0 :     if (a == NULL || b == NULL) {</span>
-<span class="lineNum">     123 </span><span class="lineNoCov">          0 :         return false;</span>
-<span class="lineNum">     124 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     125 </span><span class="lineNoCov">          0 :     return aws_array_eq(a-&gt;bytes, a-&gt;len, b-&gt;bytes, b-&gt;len);</span>
-<span class="lineNum">     126 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     116 </span><span class="lineCov">     168742 : bool aws_string_eq(const struct aws_string *a, const struct aws_string *b) {</span>
+<span class="lineNum">     117 </span><span class="lineCov">     168742 :     AWS_PRECONDITION(!a || aws_string_is_valid(a));</span>
+<span class="lineNum">     118 </span><span class="lineCov">     168742 :     AWS_PRECONDITION(!b || aws_string_is_valid(b));</span>
+<span class="lineNum">     119 </span><span class="lineCov">     168742 :     if (a == b) {</span>
+<span class="lineNum">     120 </span><span class="lineCov">      66905 :         return true;</span>
+<span class="lineNum">     121 </span><span class="lineCov">      66905 :     }</span>
+<span class="lineNum">     122 </span><span class="lineCov">     101837 :     if (a == NULL || b == NULL) {</span>
+<span class="lineNum">     123 </span><span class="lineCov">       7586 :         return false;</span>
+<span class="lineNum">     124 </span><span class="lineCov">       7586 :     }</span>
+<span class="lineNum">     125 </span><span class="lineCov">      94251 :     return aws_array_eq(a-&gt;bytes, a-&gt;len, b-&gt;bytes, b-&gt;len);</span>
+<span class="lineNum">     126 </span><span class="lineCov">      94251 : }</span>
 <span class="lineNum">     127 </span>            : 
 <span class="lineNum">     128 </span>            : /**
 <a name="129"><span class="lineNum">     129 </span>            :  * Returns true if bytes of string are equivalent, using a case-insensitive comparison.</a>
 <span class="lineNum">     130 </span>            :  */
-<span class="lineNum">     131 </span><span class="lineNoCov">          0 : bool aws_string_eq_ignore_case(const struct aws_string *a, const struct aws_string *b) {</span>
-<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(!a || aws_string_is_valid(a));</span>
-<span class="lineNum">     133 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(!b || aws_string_is_valid(b));</span>
-<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     if (a == b) {</span>
-<span class="lineNum">     135 </span><span class="lineNoCov">          0 :         return true;</span>
-<span class="lineNum">     136 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     137 </span><span class="lineNoCov">          0 :     if (a == NULL || b == NULL) {</span>
-<span class="lineNum">     138 </span><span class="lineNoCov">          0 :         return false;</span>
-<span class="lineNum">     139 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     140 </span><span class="lineNoCov">          0 :     return aws_array_eq_ignore_case(a-&gt;bytes, a-&gt;len, b-&gt;bytes, b-&gt;len);</span>
-<span class="lineNum">     141 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     131 </span><span class="lineCov">      81934 : bool aws_string_eq_ignore_case(const struct aws_string *a, const struct aws_string *b) {</span>
+<span class="lineNum">     132 </span><span class="lineCov">      81934 :     AWS_PRECONDITION(!a || aws_string_is_valid(a));</span>
+<span class="lineNum">     133 </span><span class="lineCov">      81934 :     AWS_PRECONDITION(!b || aws_string_is_valid(b));</span>
+<span class="lineNum">     134 </span><span class="lineCov">      81934 :     if (a == b) {</span>
+<span class="lineNum">     135 </span><span class="lineCov">      14489 :         return true;</span>
+<span class="lineNum">     136 </span><span class="lineCov">      14489 :     }</span>
+<span class="lineNum">     137 </span><span class="lineCov">      67445 :     if (a == NULL || b == NULL) {</span>
+<span class="lineNum">     138 </span><span class="lineCov">      17821 :         return false;</span>
+<span class="lineNum">     139 </span><span class="lineCov">      17821 :     }</span>
+<span class="lineNum">     140 </span><span class="lineCov">      49624 :     return aws_array_eq_ignore_case(a-&gt;bytes, a-&gt;len, b-&gt;bytes, b-&gt;len);</span>
+<span class="lineNum">     141 </span><span class="lineCov">      49624 : }</span>
 <span class="lineNum">     142 </span>            : 
 <span class="lineNum">     143 </span>            : /**
 <a name="144"><span class="lineNum">     144 </span>            :  * Returns true if bytes of string and cursor are the same, false otherwise.</a>
 <span class="lineNum">     145 </span>            :  */
-<span class="lineNum">     146 </span><span class="lineNoCov">          0 : bool aws_string_eq_byte_cursor(const struct aws_string *str, const struct aws_byte_cursor *cur) {</span>
-<span class="lineNum">     147 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(!str || aws_string_is_valid(str));</span>
-<span class="lineNum">     148 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(!cur || aws_byte_cursor_is_valid(cur));</span>
-<span class="lineNum">     149 </span><span class="lineNoCov">          0 :     if (str == NULL &amp;&amp; cur == NULL) {</span>
-<span class="lineNum">     150 </span><span class="lineNoCov">          0 :         return true;</span>
-<span class="lineNum">     151 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     152 </span><span class="lineNoCov">          0 :     if (str == NULL || cur == NULL) {</span>
-<span class="lineNum">     153 </span><span class="lineNoCov">          0 :         return false;</span>
-<span class="lineNum">     154 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     155 </span><span class="lineNoCov">          0 :     return aws_array_eq(str-&gt;bytes, str-&gt;len, cur-&gt;ptr, cur-&gt;len);</span>
-<span class="lineNum">     156 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     146 </span><span class="lineCov">      89105 : bool aws_string_eq_byte_cursor(const struct aws_string *str, const struct aws_byte_cursor *cur) {</span>
+<span class="lineNum">     147 </span><span class="lineCov">      89105 :     AWS_PRECONDITION(!str || aws_string_is_valid(str));</span>
+<span class="lineNum">     148 </span><span class="lineCov">      89105 :     AWS_PRECONDITION(!cur || aws_byte_cursor_is_valid(cur));</span>
+<span class="lineNum">     149 </span><span class="lineCov">      89105 :     if (str == NULL &amp;&amp; cur == NULL) {</span>
+<span class="lineNum">     150 </span><span class="lineCov">       4205 :         return true;</span>
+<span class="lineNum">     151 </span><span class="lineCov">       4205 :     }</span>
+<span class="lineNum">     152 </span><span class="lineCov">      84900 :     if (str == NULL || cur == NULL) {</span>
+<span class="lineNum">     153 </span><span class="lineCov">      34827 :         return false;</span>
+<span class="lineNum">     154 </span><span class="lineCov">      34827 :     }</span>
+<span class="lineNum">     155 </span><span class="lineCov">      50073 :     return aws_array_eq(str-&gt;bytes, str-&gt;len, cur-&gt;ptr, cur-&gt;len);</span>
+<span class="lineNum">     156 </span><span class="lineCov">      50073 : }</span>
 <span class="lineNum">     157 </span>            : 
 <span class="lineNum">     158 </span>            : /**
 <span class="lineNum">     159 </span>            :  * Returns true if bytes of string and cursor are equivalent, using a case-insensitive comparison.
 <a name="160"><span class="lineNum">     160 </span>            :  */</a>
 <span class="lineNum">     161 </span>            : 
-<span class="lineNum">     162 </span><span class="lineNoCov">          0 : bool aws_string_eq_byte_cursor_ignore_case(const struct aws_string *str, const struct aws_byte_cursor *cur) {</span>
-<span class="lineNum">     163 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(!str || aws_string_is_valid(str));</span>
-<span class="lineNum">     164 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(!cur || aws_byte_cursor_is_valid(cur));</span>
-<span class="lineNum">     165 </span><span class="lineNoCov">          0 :     if (str == NULL &amp;&amp; cur == NULL) {</span>
-<span class="lineNum">     166 </span><span class="lineNoCov">          0 :         return true;</span>
-<span class="lineNum">     167 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     168 </span><span class="lineNoCov">          0 :     if (str == NULL || cur == NULL) {</span>
-<span class="lineNum">     169 </span><span class="lineNoCov">          0 :         return false;</span>
-<span class="lineNum">     170 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     171 </span><span class="lineNoCov">          0 :     return aws_array_eq_ignore_case(str-&gt;bytes, str-&gt;len, cur-&gt;ptr, cur-&gt;len);</span>
-<span class="lineNum">     172 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     162 </span><span class="lineCov">      82707 : bool aws_string_eq_byte_cursor_ignore_case(const struct aws_string *str, const struct aws_byte_cursor *cur) {</span>
+<span class="lineNum">     163 </span><span class="lineCov">      82707 :     AWS_PRECONDITION(!str || aws_string_is_valid(str));</span>
+<span class="lineNum">     164 </span><span class="lineCov">      82707 :     AWS_PRECONDITION(!cur || aws_byte_cursor_is_valid(cur));</span>
+<span class="lineNum">     165 </span><span class="lineCov">      82707 :     if (str == NULL &amp;&amp; cur == NULL) {</span>
+<span class="lineNum">     166 </span><span class="lineCov">       5801 :         return true;</span>
+<span class="lineNum">     167 </span><span class="lineCov">       5801 :     }</span>
+<span class="lineNum">     168 </span><span class="lineCov">      76906 :     if (str == NULL || cur == NULL) {</span>
+<span class="lineNum">     169 </span><span class="lineCov">      36179 :         return false;</span>
+<span class="lineNum">     170 </span><span class="lineCov">      36179 :     }</span>
+<span class="lineNum">     171 </span><span class="lineCov">      40727 :     return aws_array_eq_ignore_case(str-&gt;bytes, str-&gt;len, cur-&gt;ptr, cur-&gt;len);</span>
+<span class="lineNum">     172 </span><span class="lineCov">      40727 : }</span>
 <span class="lineNum">     173 </span>            : 
 <span class="lineNum">     174 </span>            : /**
 <a name="175"><span class="lineNum">     175 </span>            :  * Returns true if bytes of string and buffer are the same, false otherwise.</a>
 <span class="lineNum">     176 </span>            :  */
-<span class="lineNum">     177 </span><span class="lineNoCov">          0 : bool aws_string_eq_byte_buf(const struct aws_string *str, const struct aws_byte_buf *buf) {</span>
-<span class="lineNum">     178 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(!str || aws_string_is_valid(str));</span>
-<span class="lineNum">     179 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(!buf || aws_byte_buf_is_valid(buf));</span>
-<span class="lineNum">     180 </span><span class="lineNoCov">          0 :     if (str == NULL &amp;&amp; buf == NULL) {</span>
-<span class="lineNum">     181 </span><span class="lineNoCov">          0 :         return true;</span>
-<span class="lineNum">     182 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     183 </span><span class="lineNoCov">          0 :     if (str == NULL || buf == NULL) {</span>
-<span class="lineNum">     184 </span><span class="lineNoCov">          0 :         return false;</span>
-<span class="lineNum">     185 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     186 </span><span class="lineNoCov">          0 :     return aws_array_eq(str-&gt;bytes, str-&gt;len, buf-&gt;buffer, buf-&gt;len);</span>
-<span class="lineNum">     187 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     177 </span><span class="lineCov">      87720 : bool aws_string_eq_byte_buf(const struct aws_string *str, const struct aws_byte_buf *buf) {</span>
+<span class="lineNum">     178 </span><span class="lineCov">      87720 :     AWS_PRECONDITION(!str || aws_string_is_valid(str));</span>
+<span class="lineNum">     179 </span><span class="lineCov">      87720 :     AWS_PRECONDITION(!buf || aws_byte_buf_is_valid(buf));</span>
+<span class="lineNum">     180 </span><span class="lineCov">      87720 :     if (str == NULL &amp;&amp; buf == NULL) {</span>
+<span class="lineNum">     181 </span><span class="lineCov">       5852 :         return true;</span>
+<span class="lineNum">     182 </span><span class="lineCov">       5852 :     }</span>
+<span class="lineNum">     183 </span><span class="lineCov">      81868 :     if (str == NULL || buf == NULL) {</span>
+<span class="lineNum">     184 </span><span class="lineCov">      38407 :         return false;</span>
+<span class="lineNum">     185 </span><span class="lineCov">      38407 :     }</span>
+<span class="lineNum">     186 </span><span class="lineCov">      43461 :     return aws_array_eq(str-&gt;bytes, str-&gt;len, buf-&gt;buffer, buf-&gt;len);</span>
+<span class="lineNum">     187 </span><span class="lineCov">      43461 : }</span>
 <span class="lineNum">     188 </span>            : 
 <span class="lineNum">     189 </span>            : /**
 <span class="lineNum">     190 </span>            :  * Returns true if bytes of string and buffer are equivalent, using a case-insensitive comparison.
 <a name="191"><span class="lineNum">     191 </span>            :  */</a>
 <span class="lineNum">     192 </span>            : 
-<span class="lineNum">     193 </span><span class="lineNoCov">          0 : bool aws_string_eq_byte_buf_ignore_case(const struct aws_string *str, const struct aws_byte_buf *buf) {</span>
-<span class="lineNum">     194 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(!str || aws_string_is_valid(str));</span>
-<span class="lineNum">     195 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(!buf || aws_byte_buf_is_valid(buf));</span>
-<span class="lineNum">     196 </span><span class="lineNoCov">          0 :     if (str == NULL &amp;&amp; buf == NULL) {</span>
-<span class="lineNum">     197 </span><span class="lineNoCov">          0 :         return true;</span>
-<span class="lineNum">     198 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     199 </span><span class="lineNoCov">          0 :     if (str == NULL || buf == NULL) {</span>
-<span class="lineNum">     200 </span><span class="lineNoCov">          0 :         return false;</span>
-<span class="lineNum">     201 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     202 </span><span class="lineNoCov">          0 :     return aws_array_eq_ignore_case(str-&gt;bytes, str-&gt;len, buf-&gt;buffer, buf-&gt;len);</span>
-<a name="203"><span class="lineNum">     203 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     193 </span><span class="lineCov">      81622 : bool aws_string_eq_byte_buf_ignore_case(const struct aws_string *str, const struct aws_byte_buf *buf) {</span>
+<span class="lineNum">     194 </span><span class="lineCov">      81622 :     AWS_PRECONDITION(!str || aws_string_is_valid(str));</span>
+<span class="lineNum">     195 </span><span class="lineCov">      81622 :     AWS_PRECONDITION(!buf || aws_byte_buf_is_valid(buf));</span>
+<span class="lineNum">     196 </span><span class="lineCov">      81622 :     if (str == NULL &amp;&amp; buf == NULL) {</span>
+<span class="lineNum">     197 </span><span class="lineCov">       4037 :         return true;</span>
+<span class="lineNum">     198 </span><span class="lineCov">       4037 :     }</span>
+<span class="lineNum">     199 </span><span class="lineCov">      77585 :     if (str == NULL || buf == NULL) {</span>
+<span class="lineNum">     200 </span><span class="lineCov">      28960 :         return false;</span>
+<span class="lineNum">     201 </span><span class="lineCov">      28960 :     }</span>
+<span class="lineNum">     202 </span><span class="lineCov">      48625 :     return aws_array_eq_ignore_case(str-&gt;bytes, str-&gt;len, buf-&gt;buffer, buf-&gt;len);</span>
+<a name="203"><span class="lineNum">     203 </span><span class="lineCov">      48625 : }</span></a>
 <span class="lineNum">     204 </span>            : 
-<span class="lineNum">     205 </span><span class="lineNoCov">          0 : bool aws_string_eq_c_str(const struct aws_string *str, const char *c_str) {</span>
-<span class="lineNum">     206 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(!str || aws_string_is_valid(str));</span>
-<span class="lineNum">     207 </span><span class="lineNoCov">          0 :     if (str == NULL &amp;&amp; c_str == NULL) {</span>
-<span class="lineNum">     208 </span><span class="lineNoCov">          0 :         return true;</span>
-<span class="lineNum">     209 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     210 </span><span class="lineNoCov">          0 :     if (str == NULL || c_str == NULL) {</span>
-<span class="lineNum">     211 </span><span class="lineNoCov">          0 :         return false;</span>
-<span class="lineNum">     212 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     213 </span><span class="lineNoCov">          0 :     return aws_array_eq_c_str(str-&gt;bytes, str-&gt;len, c_str);</span>
-<span class="lineNum">     214 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     205 </span><span class="lineCov">      88545 : bool aws_string_eq_c_str(const struct aws_string *str, const char *c_str) {</span>
+<span class="lineNum">     206 </span><span class="lineCov">      88545 :     AWS_PRECONDITION(!str || aws_string_is_valid(str));</span>
+<span class="lineNum">     207 </span><span class="lineCov">      88545 :     if (str == NULL &amp;&amp; c_str == NULL) {</span>
+<span class="lineNum">     208 </span><span class="lineCov">       2730 :         return true;</span>
+<span class="lineNum">     209 </span><span class="lineCov">       2730 :     }</span>
+<span class="lineNum">     210 </span><span class="lineCov">      85815 :     if (str == NULL || c_str == NULL) {</span>
+<span class="lineNum">     211 </span><span class="lineCov">      24804 :         return false;</span>
+<span class="lineNum">     212 </span><span class="lineCov">      24804 :     }</span>
+<span class="lineNum">     213 </span><span class="lineCov">      61011 :     return aws_array_eq_c_str(str-&gt;bytes, str-&gt;len, c_str);</span>
+<span class="lineNum">     214 </span><span class="lineCov">      61011 : }</span>
 <span class="lineNum">     215 </span>            : 
 <span class="lineNum">     216 </span>            : /**
 <a name="217"><span class="lineNum">     217 </span>            :  * Returns true if bytes of strings are equivalent, using a case-insensitive comparison.</a>
 <span class="lineNum">     218 </span>            :  */
-<span class="lineNum">     219 </span><span class="lineNoCov">          0 : bool aws_string_eq_c_str_ignore_case(const struct aws_string *str, const char *c_str) {</span>
-<span class="lineNum">     220 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(!str || aws_string_is_valid(str));</span>
-<span class="lineNum">     221 </span><span class="lineNoCov">          0 :     if (str == NULL &amp;&amp; c_str == NULL) {</span>
-<span class="lineNum">     222 </span><span class="lineNoCov">          0 :         return true;</span>
-<span class="lineNum">     223 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     224 </span><span class="lineNoCov">          0 :     if (str == NULL || c_str == NULL) {</span>
-<span class="lineNum">     225 </span><span class="lineNoCov">          0 :         return false;</span>
-<span class="lineNum">     226 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     227 </span><span class="lineNoCov">          0 :     return aws_array_eq_c_str_ignore_case(str-&gt;bytes, str-&gt;len, c_str);</span>
-<span class="lineNum">     228 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     219 </span><span class="lineCov">      85540 : bool aws_string_eq_c_str_ignore_case(const struct aws_string *str, const char *c_str) {</span>
+<span class="lineNum">     220 </span><span class="lineCov">      85540 :     AWS_PRECONDITION(!str || aws_string_is_valid(str));</span>
+<span class="lineNum">     221 </span><span class="lineCov">      85540 :     if (str == NULL &amp;&amp; c_str == NULL) {</span>
+<span class="lineNum">     222 </span><span class="lineCov">       3003 :         return true;</span>
+<span class="lineNum">     223 </span><span class="lineCov">       3003 :     }</span>
+<span class="lineNum">     224 </span><span class="lineCov">      82537 :     if (str == NULL || c_str == NULL) {</span>
+<span class="lineNum">     225 </span><span class="lineCov">      33258 :         return false;</span>
+<span class="lineNum">     226 </span><span class="lineCov">      33258 :     }</span>
+<span class="lineNum">     227 </span><span class="lineCov">      49279 :     return aws_array_eq_c_str_ignore_case(str-&gt;bytes, str-&gt;len, c_str);</span>
+<span class="lineNum">     228 </span><span class="lineCov">      49279 : }</span>
 <span class="lineNum">     229 </span>            : 
 <a name="230"><span class="lineNum">     230 </span>            : bool aws_byte_buf_write_from_whole_string(</a>
 <span class="lineNum">     231 </span>            :     struct aws_byte_buf *AWS_RESTRICT buf,
-<span class="lineNum">     232 </span><span class="lineCov">       9829 :     const struct aws_string *AWS_RESTRICT src) {</span>
-<span class="lineNum">     233 </span><span class="lineCov">       9829 :     AWS_PRECONDITION(!buf || aws_byte_buf_is_valid(buf));</span>
-<span class="lineNum">     234 </span><span class="lineCov">       9829 :     AWS_PRECONDITION(!src || aws_string_is_valid(src));</span>
-<span class="lineNum">     235 </span><span class="lineCov">       9829 :     if (buf == NULL || src == NULL) {</span>
-<span class="lineNum">     236 </span><span class="lineCov">       7920 :         return false;</span>
-<span class="lineNum">     237 </span><span class="lineCov">       7920 :     }</span>
-<span class="lineNum">     238 </span><span class="lineCov">       1909 :     return aws_byte_buf_write(buf, aws_string_bytes(src), src-&gt;len);</span>
-<span class="lineNum">     239 </span><span class="lineCov">       1909 : }</span>
+<span class="lineNum">     232 </span><span class="lineCov">      52802 :     const struct aws_string *AWS_RESTRICT src) {</span>
+<span class="lineNum">     233 </span><span class="lineCov">      52802 :     AWS_PRECONDITION(!buf || aws_byte_buf_is_valid(buf));</span>
+<span class="lineNum">     234 </span><span class="lineCov">      52802 :     AWS_PRECONDITION(!src || aws_string_is_valid(src));</span>
+<span class="lineNum">     235 </span><span class="lineCov">      52802 :     if (buf == NULL || src == NULL) {</span>
+<span class="lineNum">     236 </span><span class="lineCov">      25896 :         return false;</span>
+<span class="lineNum">     237 </span><span class="lineCov">      25896 :     }</span>
+<span class="lineNum">     238 </span><span class="lineCov">      26906 :     return aws_byte_buf_write(buf, aws_string_bytes(src), src-&gt;len);</span>
+<span class="lineNum">     239 </span><span class="lineCov">      26906 : }</span>
 <span class="lineNum">     240 </span>            : 
 <span class="lineNum">     241 </span>            : /**
 <a name="242"><span class="lineNum">     242 </span>            :  * Creates an aws_byte_cursor from an existing string.</a>
 <span class="lineNum">     243 </span>            :  */
-<span class="lineNum">     244 </span><span class="lineCov">      32767 : struct aws_byte_cursor aws_byte_cursor_from_string(const struct aws_string *src) {</span>
-<span class="lineNum">     245 </span><span class="lineCov">      32767 :     AWS_PRECONDITION(aws_string_is_valid(src));</span>
-<span class="lineNum">     246 </span><span class="lineCov">      32767 :     return aws_byte_cursor_from_array(aws_string_bytes(src), src-&gt;len);</span>
-<a name="247"><span class="lineNum">     247 </span><span class="lineCov">      32767 : }</span></a>
+<span class="lineNum">     244 </span><span class="lineCov">      90872 : struct aws_byte_cursor aws_byte_cursor_from_string(const struct aws_string *src) {</span>
+<span class="lineNum">     245 </span><span class="lineCov">      90872 :     AWS_PRECONDITION(aws_string_is_valid(src));</span>
+<span class="lineNum">     246 </span><span class="lineCov">      90872 :     return aws_byte_cursor_from_array(aws_string_bytes(src), src-&gt;len);</span>
+<a name="247"><span class="lineNum">     247 </span><span class="lineCov">      90872 : }</span></a>
 <span class="lineNum">     248 </span>            : 
 <span class="lineNum">     249 </span><span class="lineNoCov">          0 : struct aws_string *aws_string_clone_or_reuse(struct aws_allocator *allocator, const struct aws_string *str) {</span>
 <span class="lineNum">     250 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(allocator);</span>

@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - seahorn/jobs/priority_queue_init_dynamic/aws_priority_queue_init_dynamic_harness.c</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../index.html">top level</a> - <a href="index.html">seahorn/jobs/priority_queue_init_dynamic</a> - aws_priority_queue_init_dynamic_harness.c<span style="font-size: 80%;"> (source / <a href="aws_priority_queue_init_dynamic_harness.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">39</td>
+            <td class="headerCovTableEntry">39</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /**</a>
+<span class="lineNum">       2 </span>            :  */
+<span class="lineNum">       3 </span>            : 
+<span class="lineNum">       4 </span>            : #include &lt;aws/common/priority_queue.h&gt;
+<span class="lineNum">       5 </span>            : #include &lt;nondet.h&gt;
+<span class="lineNum">       6 </span>            : #include &lt;priority_queue_helper.h&gt;
+<span class="lineNum">       7 </span>            : #include &lt;sea_allocators.h&gt;
+<span class="lineNum">       8 </span>            : #include &lt;proof_allocators.h&gt;
+<a name="9"><span class="lineNum">       9 </span>            : #include &lt;seahorn/seahorn.h&gt;</a>
+<span class="lineNum">      10 </span>            : #include &lt;utils.h&gt;
+<span class="lineNum">      11 </span><span class="lineCov">     100000 : int main(void) {</span>
+<span class="lineNum">      12 </span><span class="lineCov">     100000 :   /* data structure */</span>
+<span class="lineNum">      13 </span><span class="lineCov">     100000 :   struct aws_priority_queue queue; /* Precondition: queue is non-null */</span>
+<span class="lineNum">      14 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      15 </span><span class="lineCov">     100000 :   /* parameters */</span>
+<span class="lineNum">      16 </span><span class="lineCov">     100000 :   struct aws_allocator *allocator = sea_allocator();</span>
+<span class="lineNum">      17 </span><span class="lineCov">     100000 :   size_t item_size = nd_size_t();</span>
+<span class="lineNum">      18 </span><span class="lineCov">     100000 :   size_t initial_item_allocation = nd_size_t();</span>
+<span class="lineNum">      19 </span><span class="lineCov">     100000 :   size_t len = nd_size_t();</span>
+<span class="lineNum">      20 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      21 </span><span class="lineCov">     100000 :   /* assumptions */</span>
+<span class="lineNum">      22 </span><span class="lineCov">     100000 :   KLEE_ASSUME(__builtin_mul_overflow(initial_item_allocation, </span>
+<span class="lineNum">      23 </span><span class="lineCov">     100000 :         item_size, &amp;len) == 0 &amp;&amp; len &lt;= KLEE_MAX_SIZE);</span>
+<span class="lineNum">      24 </span><span class="lineCov">     100000 :   assume(initial_item_allocation &lt;= MAX_INITIAL_ITEM_ALLOCATION);</span>
+<span class="lineNum">      25 </span><span class="lineCov">     100000 :   assume(item_size &gt; 0 &amp;&amp; item_size &lt;= MAX_ITEM_SIZE);</span>
+<span class="lineNum">      26 </span><span class="lineCov">     100000 :   assume(!aws_mul_size_checked(initial_item_allocation, item_size, &amp;len));</span>
+<span class="lineNum">      27 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      28 </span><span class="lineCov">     100000 :   /* perform operation under verification */</span>
+<span class="lineNum">      29 </span>            :   #ifdef __KLEE__
+<span class="lineNum">      30 </span>            :     uint8_t *raw_array = bounded_malloc(sizeof(uint8_t) * len);
+<span class="lineNum">      31 </span>            :     if (!raw_array) return 0; // assume(raw_array)
+<span class="lineNum">      32 </span>            :   #else 
+<span class="lineNum">      33 </span>            :     uint8_t *raw_array = sea_malloc_safe(sizeof(uint8_t) * len);
+<span class="lineNum">      34 </span><span class="lineCov">     100000 :   #endif</span>
+<span class="lineNum">      35 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      36 </span><span class="lineCov">     100000 :   if (aws_priority_queue_init_dynamic(&amp;queue, allocator,</span>
+<span class="lineNum">      37 </span><span class="lineCov">     100000 :                                       initial_item_allocation, item_size,</span>
+<span class="lineNum">      38 </span><span class="lineCov">     100000 :                                       nondet_compare) == AWS_OP_SUCCESS) {</span>
+<span class="lineNum">      39 </span><span class="lineCov">        505 :     /* assertions */</span>
+<span class="lineNum">      40 </span><span class="lineCov">        505 :     sassert(aws_priority_queue_is_valid(&amp;queue));</span>
+<span class="lineNum">      41 </span><span class="lineCov">        505 :     sassert(queue.container.alloc == allocator);</span>
+<span class="lineNum">      42 </span><span class="lineCov">        505 :     sassert(queue.container.item_size == item_size);</span>
+<span class="lineNum">      43 </span><span class="lineCov">        505 :     sassert(queue.container.length == 0);</span>
+<span class="lineNum">      44 </span><span class="lineCov">        505 :     sassert(</span>
+<span class="lineNum">      45 </span><span class="lineCov">        505 :         (queue.container.data == NULL &amp;&amp; queue.container.current_size == 0) ||</span>
+<span class="lineNum">      46 </span><span class="lineCov">        505 :         (queue.container.data &amp;&amp; queue.container.current_size ==</span>
+<span class="lineNum">      47 </span><span class="lineCov">        505 :                                      (initial_item_allocation * item_size)));</span>
+<span class="lineNum">      48 </span><span class="lineCov">      99495 :   } else {</span>
+<span class="lineNum">      49 </span><span class="lineCov">      99495 :     /* assertions */</span>
+<span class="lineNum">      50 </span><span class="lineCov">      99495 :     sassert(AWS_IS_ZEROED(queue.container));</span>
+<span class="lineNum">      51 </span><span class="lineCov">      99495 :     sassert(AWS_IS_ZEROED(queue.backpointers));</span>
+<span class="lineNum">      52 </span><span class="lineCov">      99495 :   }</span>
+<span class="lineNum">      53 </span><span class="lineCov">     100000 :   return 0;</span>
+<span class="lineNum">      54 </span><span class="lineCov">     100000 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

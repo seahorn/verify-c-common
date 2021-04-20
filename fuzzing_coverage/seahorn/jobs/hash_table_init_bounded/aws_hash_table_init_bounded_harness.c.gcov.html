@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - seahorn/jobs/hash_table_init_bounded/aws_hash_table_init_bounded_harness.c</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../index.html">top level</a> - <a href="index.html">seahorn/jobs/hash_table_init_bounded</a> - aws_hash_table_init_bounded_harness.c<span style="font-size: 80%;"> (source / <a href="aws_hash_table_init_bounded_harness.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">28</td>
+            <td class="headerCovTableEntry">28</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #include &lt;aws/common/hash_table.h&gt;</a>
+<span class="lineNum">       2 </span>            : #include &lt;aws/common/private/hash_table_impl.h&gt;
+<span class="lineNum">       3 </span>            : 
+<span class="lineNum">       4 </span>            : #include &lt;seahorn/seahorn.h&gt;
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : #include &lt;config.h&gt;
+<span class="lineNum">       7 </span>            : #include &lt;hash_table_helper.h&gt;
+<span class="lineNum">       8 </span>            : #include &lt;proof_allocators.h&gt;
+<a name="9"><span class="lineNum">       9 </span>            : #include &lt;utils.h&gt;</a>
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span><span class="lineCov">     100000 : int main(void) {</span>
+<span class="lineNum">      12 </span><span class="lineCov">     100000 :   /* data structure */</span>
+<span class="lineNum">      13 </span><span class="lineCov">     100000 :   struct aws_allocator *allocator = sea_allocator();</span>
+<span class="lineNum">      14 </span><span class="lineCov">     100000 :   size_t size = nd_size_t();</span>
+<span class="lineNum">      15 </span><span class="lineCov">     100000 : #ifdef __FUZZ__</span>
+<span class="lineNum">      16 </span><span class="lineCov">     100000 :   size %= MAX_TABLE_SIZE;</span>
+<span class="lineNum">      17 </span>            : #else
+<span class="lineNum">      18 </span>            :   assume(size &lt;= MAX_TABLE_SIZE);
+<span class="lineNum">      19 </span>            : #endif
+<span class="lineNum">      20 </span>            :   aws_hash_fn *hash_fn;
+<span class="lineNum">      21 </span><span class="lineCov">     100000 :   hash_fn = uninterpreted_hasher;</span>
+<span class="lineNum">      22 </span><span class="lineCov">     100000 :   assume(hash_fn);</span>
+<span class="lineNum">      23 </span><span class="lineCov">     100000 :   aws_hash_callback_eq_fn *equals_fn;</span>
+<span class="lineNum">      24 </span><span class="lineCov">     100000 :   equals_fn = uninterpreted_equals;</span>
+<span class="lineNum">      25 </span><span class="lineCov">     100000 :   assume(equals_fn);</span>
+<span class="lineNum">      26 </span><span class="lineCov">     100000 :   aws_hash_callback_destroy_fn *destroy_key_fn;</span>
+<span class="lineNum">      27 </span><span class="lineCov">     100000 :   destroy_key_fn = uninterpreted_destroy_fn;</span>
+<span class="lineNum">      28 </span><span class="lineCov">     100000 :   aws_hash_callback_destroy_fn *destroy_value_fn;</span>
+<span class="lineNum">      29 </span><span class="lineCov">     100000 :   destroy_value_fn = uninterpreted_destroy_fn;</span>
+<span class="lineNum">      30 </span><span class="lineCov">     100000 :   struct aws_hash_table map;</span>
+<span class="lineNum">      31 </span><span class="lineCov">     100000 :   /* op under verification */</span>
+<span class="lineNum">      32 </span><span class="lineCov">     100000 :   int rval = aws_hash_table_init(&amp;map, allocator, size, hash_fn, equals_fn,</span>
+<span class="lineNum">      33 </span><span class="lineCov">     100000 :                                  destroy_key_fn, destroy_value_fn);</span>
+<span class="lineNum">      34 </span><span class="lineCov">     100000 :   if (rval == AWS_OP_SUCCESS) {</span>
+<span class="lineNum">      35 </span><span class="lineCov">      98947 :     /* assertions */</span>
+<span class="lineNum">      36 </span><span class="lineCov">      98947 :     sassert(aws_hash_table_is_valid(&amp;map));</span>
+<span class="lineNum">      37 </span><span class="lineCov">      98947 :     struct hash_table_state *impl = map.p_impl;</span>
+<span class="lineNum">      38 </span><span class="lineCov">      98947 :     assert_all_zeroes((uint8_t *)&amp;impl-&gt;slots[0],</span>
+<span class="lineNum">      39 </span><span class="lineCov">      98947 :                       impl-&gt;size * sizeof(impl-&gt;slots[0]));</span>
+<span class="lineNum">      40 </span><span class="lineCov">      98947 :   }</span>
+<span class="lineNum">      41 </span><span class="lineCov">     100000 :   return 0;</span>
+<span class="lineNum">      42 </span><span class="lineCov">     100000 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

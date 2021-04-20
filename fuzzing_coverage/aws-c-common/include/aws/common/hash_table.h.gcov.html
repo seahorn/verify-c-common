@@ -1,0 +1,504 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - aws-c-common/include/aws/common/hash_table.h</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../index.html">top level</a> - <a href="index.html">aws-c-common/include/aws/common</a> - hash_table.h<span style="font-size: 80%;"> (source / <a href="hash_table.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #ifndef AWS_COMMON_HASH_TABLE_H</a>
+<span class="lineNum">       2 </span>            : #define AWS_COMMON_HASH_TABLE_H
+<span class="lineNum">       3 </span>            : 
+<span class="lineNum">       4 </span>            : /**
+<span class="lineNum">       5 </span>            :  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+<span class="lineNum">       6 </span>            :  * SPDX-License-Identifier: Apache-2.0.
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            : #include &lt;aws/common/common.h&gt;
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : #include &lt;stddef.h&gt;
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span><span class="lineNoCov">          0 : #define AWS_COMMON_HASH_TABLE_ITER_CONTINUE (1 &lt;&lt; 0)</span>
+<span class="lineNum">      14 </span><span class="lineNoCov">          0 : #define AWS_COMMON_HASH_TABLE_ITER_DELETE (1 &lt;&lt; 1)</span>
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            : /**
+<span class="lineNum">      17 </span>            :  * Hash table data structure. This module provides an automatically resizing
+<span class="lineNum">      18 </span>            :  * hash table implementation for general purpose use. The hash table stores a
+<span class="lineNum">      19 </span>            :  * mapping between void * keys and values; it is expected that in most cases,
+<span class="lineNum">      20 </span>            :  * these will point to a structure elsewhere in the heap, instead of inlining a
+<span class="lineNum">      21 </span>            :  * key or value into the hash table element itself.
+<span class="lineNum">      22 </span>            :  *
+<span class="lineNum">      23 </span>            :  * Currently, this hash table implements a variant of robin hood hashing, but
+<span class="lineNum">      24 </span>            :  * we do not guarantee that this won't change in the future.
+<span class="lineNum">      25 </span>            :  *
+<span class="lineNum">      26 </span>            :  * Associated with each hash function are four callbacks:
+<span class="lineNum">      27 </span>            :  *
+<span class="lineNum">      28 </span>            :  *   hash_fn - A hash function from the keys to a uint64_t. It is critical that
+<span class="lineNum">      29 </span>            :  *      the hash function for a key does not change while the key is in the hash
+<span class="lineNum">      30 </span>            :  *      table; violating this results in undefined behavior. Collisions are
+<span class="lineNum">      31 </span>            :  *      tolerated, though naturally with reduced performance.
+<span class="lineNum">      32 </span>            :  *
+<span class="lineNum">      33 </span>            :  *   equals_fn - An equality comparison function. This function must be
+<span class="lineNum">      34 </span>            :  *      reflexive and consistent with hash_fn.
+<span class="lineNum">      35 </span>            :  *
+<span class="lineNum">      36 </span>            :  *   destroy_key_fn, destroy_value_fn - Optional callbacks invoked when the
+<span class="lineNum">      37 </span>            :  *      table is cleared or cleaned up and at the caller's option when an element
+<span class="lineNum">      38 </span>            :  *      is removed from the table. Either or both may be set to NULL, which
+<span class="lineNum">      39 </span>            :  *      has the same effect as a no-op destroy function.
+<span class="lineNum">      40 </span>            :  *
+<span class="lineNum">      41 </span>            :  * This datastructure can be safely moved between threads, subject to the
+<span class="lineNum">      42 </span>            :  * requirements of the underlying allocator. It is also safe to invoke
+<span class="lineNum">      43 </span>            :  * non-mutating operations on the hash table from multiple threads. A suitable
+<span class="lineNum">      44 </span>            :  * memory barrier must be used when transitioning from single-threaded mutating
+<span class="lineNum">      45 </span>            :  * usage to multithreaded usage.
+<span class="lineNum">      46 </span>            :  */
+<span class="lineNum">      47 </span>            : struct hash_table_state; /* Opaque pointer */
+<span class="lineNum">      48 </span>            : struct aws_hash_table {
+<span class="lineNum">      49 </span>            :     struct hash_table_state *p_impl;
+<span class="lineNum">      50 </span>            : };
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span>            : /**
+<span class="lineNum">      53 </span>            :  * Represents an element in the hash table. Various operations on the hash
+<span class="lineNum">      54 </span>            :  * table may provide pointers to elements stored within the hash table;
+<span class="lineNum">      55 </span>            :  * generally, calling code may alter value, but must not alter key (or any
+<span class="lineNum">      56 </span>            :  * information used to compute key's hash code).
+<span class="lineNum">      57 </span>            :  *
+<span class="lineNum">      58 </span>            :  * Pointers to elements within the hash are invalidated whenever an operation
+<span class="lineNum">      59 </span>            :  * which may change the number of elements in the hash is invoked (i.e. put,
+<span class="lineNum">      60 </span>            :  * delete, clear, and clean_up), regardless of whether the number of elements
+<span class="lineNum">      61 </span>            :  * actually changes.
+<span class="lineNum">      62 </span>            :  */
+<span class="lineNum">      63 </span>            : struct aws_hash_element {
+<span class="lineNum">      64 </span>            :     const void *key;
+<span class="lineNum">      65 </span>            :     void *value;
+<span class="lineNum">      66 </span>            : };
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span>            : enum aws_hash_iter_status {
+<span class="lineNum">      69 </span>            :     AWS_HASH_ITER_STATUS_DONE,
+<span class="lineNum">      70 </span>            :     AWS_HASH_ITER_STATUS_DELETE_CALLED,
+<span class="lineNum">      71 </span>            :     AWS_HASH_ITER_STATUS_READY_FOR_USE,
+<span class="lineNum">      72 </span>            : };
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span>            : struct aws_hash_iter {
+<span class="lineNum">      75 </span>            :     const struct aws_hash_table *map;
+<span class="lineNum">      76 </span>            :     struct aws_hash_element element;
+<span class="lineNum">      77 </span>            :     size_t slot;
+<span class="lineNum">      78 </span>            :     size_t limit;
+<span class="lineNum">      79 </span>            :     enum aws_hash_iter_status status;
+<span class="lineNum">      80 </span>            :     /*
+<span class="lineNum">      81 </span>            :      * Reserving extra fields for binary compatibility with future expansion of
+<span class="lineNum">      82 </span>            :      * iterator in case hash table implementation changes.
+<span class="lineNum">      83 </span>            :      */
+<span class="lineNum">      84 </span>            :     int unused_0;
+<span class="lineNum">      85 </span>            :     void *unused_1;
+<span class="lineNum">      86 </span>            :     void *unused_2;
+<span class="lineNum">      87 </span>            : };
+<span class="lineNum">      88 </span>            : 
+<span class="lineNum">      89 </span>            : /**
+<span class="lineNum">      90 </span>            :  * Prototype for a key hashing function pointer.
+<span class="lineNum">      91 </span>            :  */
+<span class="lineNum">      92 </span>            : typedef uint64_t(aws_hash_fn)(const void *key);
+<span class="lineNum">      93 </span>            : 
+<span class="lineNum">      94 </span>            : /**
+<span class="lineNum">      95 </span>            :  * Prototype for a hash table equality check function pointer.
+<span class="lineNum">      96 </span>            :  *
+<span class="lineNum">      97 </span>            :  * This type is usually used for a function that compares two hash table
+<span class="lineNum">      98 </span>            :  * keys, but note that the same type is used for a function that compares
+<span class="lineNum">      99 </span>            :  * two hash table values in aws_hash_table_eq.
+<span class="lineNum">     100 </span>            :  *
+<span class="lineNum">     101 </span>            :  * Equality functions used in a hash table must be reflexive (i.e., a == b if
+<span class="lineNum">     102 </span>            :  * and only if b == a), and must be consistent with the hash function in use.
+<span class="lineNum">     103 </span>            :  */
+<span class="lineNum">     104 </span>            : typedef bool(aws_hash_callback_eq_fn)(const void *a, const void *b);
+<span class="lineNum">     105 </span>            : 
+<span class="lineNum">     106 </span>            : /**
+<span class="lineNum">     107 </span>            :  * Prototype for a hash table key or value destructor function pointer.
+<span class="lineNum">     108 </span>            :  *
+<span class="lineNum">     109 </span>            :  * This function is used to destroy elements in the hash table when the
+<span class="lineNum">     110 </span>            :  * table is cleared or cleaned up.
+<span class="lineNum">     111 </span>            :  *
+<span class="lineNum">     112 </span>            :  * Note that functions which remove individual elements from the hash
+<span class="lineNum">     113 </span>            :  * table provide options of whether or not to invoke the destructors
+<span class="lineNum">     114 </span>            :  * on the key and value of a removed element.
+<span class="lineNum">     115 </span>            :  */
+<span class="lineNum">     116 </span>            : typedef void(aws_hash_callback_destroy_fn)(void *key_or_value);
+<span class="lineNum">     117 </span>            : 
+<span class="lineNum">     118 </span>            : AWS_EXTERN_C_BEGIN
+<span class="lineNum">     119 </span>            : 
+<span class="lineNum">     120 </span>            : /**
+<span class="lineNum">     121 </span>            :  * Initializes a hash map with initial capacity for 'size' elements
+<span class="lineNum">     122 </span>            :  * without resizing. Uses hash_fn to compute the hash of each element.
+<span class="lineNum">     123 </span>            :  * equals_fn to compute equality of two keys.  Whenever an element is
+<span class="lineNum">     124 </span>            :  * removed without being returned, destroy_key_fn is run on the pointer
+<span class="lineNum">     125 </span>            :  * to the key and destroy_value_fn is run on the pointer to the value.
+<span class="lineNum">     126 </span>            :  * Either or both may be NULL if a callback is not desired in this case.
+<span class="lineNum">     127 </span>            :  */
+<span class="lineNum">     128 </span>            : AWS_COMMON_API
+<span class="lineNum">     129 </span>            : int aws_hash_table_init(
+<span class="lineNum">     130 </span>            :     struct aws_hash_table *map,
+<span class="lineNum">     131 </span>            :     struct aws_allocator *alloc,
+<span class="lineNum">     132 </span>            :     size_t size,
+<span class="lineNum">     133 </span>            :     aws_hash_fn *hash_fn,
+<span class="lineNum">     134 </span>            :     aws_hash_callback_eq_fn *equals_fn,
+<span class="lineNum">     135 </span>            :     aws_hash_callback_destroy_fn *destroy_key_fn,
+<span class="lineNum">     136 </span>            :     aws_hash_callback_destroy_fn *destroy_value_fn);
+<span class="lineNum">     137 </span>            : 
+<span class="lineNum">     138 </span>            : /**
+<span class="lineNum">     139 </span>            :  * Deletes every element from map and frees all associated memory.
+<span class="lineNum">     140 </span>            :  * destroy_fn will be called for each element.  aws_hash_table_init
+<span class="lineNum">     141 </span>            :  * must be called before reusing the hash table.
+<span class="lineNum">     142 </span>            :  *
+<span class="lineNum">     143 </span>            :  * This method is idempotent.
+<span class="lineNum">     144 </span>            :  */
+<span class="lineNum">     145 </span>            : AWS_COMMON_API
+<span class="lineNum">     146 </span>            : void aws_hash_table_clean_up(struct aws_hash_table *map);
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span>            : /**
+<span class="lineNum">     149 </span>            :  * Safely swaps two hash tables. Note that we swap the entirety of the hash
+<span class="lineNum">     150 </span>            :  * table, including which allocator is associated.
+<span class="lineNum">     151 </span>            :  *
+<span class="lineNum">     152 </span>            :  * Neither hash table is required to be initialized; if one or both is
+<span class="lineNum">     153 </span>            :  * uninitialized, then the uninitialized state is also swapped.
+<span class="lineNum">     154 </span>            :  */
+<span class="lineNum">     155 </span>            : AWS_COMMON_API
+<span class="lineNum">     156 </span>            : void aws_hash_table_swap(struct aws_hash_table *AWS_RESTRICT a, struct aws_hash_table *AWS_RESTRICT b);
+<span class="lineNum">     157 </span>            : 
+<span class="lineNum">     158 </span>            : /**
+<span class="lineNum">     159 </span>            :  * Moves the hash table in 'from' to 'to'. After this move, 'from' will
+<span class="lineNum">     160 </span>            :  * be identical to the state of the original 'to' hash table, and 'to'
+<span class="lineNum">     161 </span>            :  * will be in the same state as if it had been passed to aws_hash_table_clean_up
+<span class="lineNum">     162 </span>            :  * (that is, it will have no memory allocated, and it will be safe to
+<span class="lineNum">     163 </span>            :  * either discard it or call aws_hash_table_clean_up again).
+<span class="lineNum">     164 </span>            :  *
+<span class="lineNum">     165 </span>            :  * Note that 'to' will not be cleaned up. You should make sure that 'to'
+<span class="lineNum">     166 </span>            :  * is either uninitialized or cleaned up before moving a hashtable into
+<span class="lineNum">     167 </span>            :  * it.
+<span class="lineNum">     168 </span>            :  */
+<span class="lineNum">     169 </span>            : AWS_COMMON_API
+<span class="lineNum">     170 </span>            : void aws_hash_table_move(struct aws_hash_table *AWS_RESTRICT to, struct aws_hash_table *AWS_RESTRICT from);
+<span class="lineNum">     171 </span>            : 
+<span class="lineNum">     172 </span>            : /**
+<span class="lineNum">     173 </span>            :  * Returns the current number of entries in the table.
+<span class="lineNum">     174 </span>            :  */
+<span class="lineNum">     175 </span>            : AWS_COMMON_API
+<span class="lineNum">     176 </span>            : size_t aws_hash_table_get_entry_count(const struct aws_hash_table *map);
+<span class="lineNum">     177 </span>            : 
+<span class="lineNum">     178 </span>            : /**
+<span class="lineNum">     179 </span>            :  * Returns an iterator to be used for iterating through a hash table.
+<span class="lineNum">     180 </span>            :  * Iterator will already point to the first element of the table it finds,
+<span class="lineNum">     181 </span>            :  * which can be accessed as iter.element.
+<span class="lineNum">     182 </span>            :  *
+<span class="lineNum">     183 </span>            :  * This function cannot fail, but if there are no elements in the table,
+<span class="lineNum">     184 </span>            :  * the returned iterator will return true for aws_hash_iter_done(&amp;iter).
+<span class="lineNum">     185 </span>            :  */
+<span class="lineNum">     186 </span>            : AWS_COMMON_API
+<span class="lineNum">     187 </span>            : struct aws_hash_iter aws_hash_iter_begin(const struct aws_hash_table *map);
+<span class="lineNum">     188 </span>            : 
+<span class="lineNum">     189 </span>            : /**
+<span class="lineNum">     190 </span>            :  * Returns true if iterator is done iterating through table, false otherwise.
+<span class="lineNum">     191 </span>            :  * If this is true, the iterator will not include an element of the table.
+<span class="lineNum">     192 </span>            :  */
+<span class="lineNum">     193 </span>            : AWS_COMMON_API
+<span class="lineNum">     194 </span>            : bool aws_hash_iter_done(const struct aws_hash_iter *iter);
+<span class="lineNum">     195 </span>            : 
+<span class="lineNum">     196 </span>            : /**
+<span class="lineNum">     197 </span>            :  * Updates iterator so that it points to next element of hash table.
+<span class="lineNum">     198 </span>            :  *
+<span class="lineNum">     199 </span>            :  * This and the two previous functions are designed to be used together with
+<span class="lineNum">     200 </span>            :  * the following idiom:
+<span class="lineNum">     201 </span>            :  *
+<span class="lineNum">     202 </span>            :  * for (struct aws_hash_iter iter = aws_hash_iter_begin(&amp;map);
+<span class="lineNum">     203 </span>            :  *      !aws_hash_iter_done(&amp;iter); aws_hash_iter_next(&amp;iter)) {
+<span class="lineNum">     204 </span>            :  *     const key_type key = *(const key_type *)iter.element.key;
+<span class="lineNum">     205 </span>            :  *     value_type value = *(value_type *)iter.element.value;
+<span class="lineNum">     206 </span>            :  *     // etc.
+<span class="lineNum">     207 </span>            :  * }
+<span class="lineNum">     208 </span>            :  *
+<span class="lineNum">     209 </span>            :  * Note that calling this on an iter which is &quot;done&quot; is idempotent:
+<span class="lineNum">     210 </span>            :  * i.e. it will return another iter which is &quot;done&quot;.
+<span class="lineNum">     211 </span>            :  */
+<span class="lineNum">     212 </span>            : AWS_COMMON_API
+<span class="lineNum">     213 </span>            : void aws_hash_iter_next(struct aws_hash_iter *iter);
+<span class="lineNum">     214 </span>            : 
+<span class="lineNum">     215 </span>            : /**
+<span class="lineNum">     216 </span>            :  * Deletes the element currently pointed-to by the hash iterator.
+<span class="lineNum">     217 </span>            :  * After calling this method, the element member of the iterator
+<span class="lineNum">     218 </span>            :  * should not be accessed until the next call to aws_hash_iter_next.
+<span class="lineNum">     219 </span>            :  *
+<span class="lineNum">     220 </span>            :  * @param destroy_contents If true, the destructors for the key and value
+<span class="lineNum">     221 </span>            :  *  will be called.
+<span class="lineNum">     222 </span>            :  */
+<span class="lineNum">     223 </span>            : AWS_COMMON_API
+<span class="lineNum">     224 </span>            : void aws_hash_iter_delete(struct aws_hash_iter *iter, bool destroy_contents);
+<span class="lineNum">     225 </span>            : 
+<span class="lineNum">     226 </span>            : /**
+<span class="lineNum">     227 </span>            :  * Attempts to locate an element at key.  If the element is found, a
+<span class="lineNum">     228 </span>            :  * pointer to the value is placed in *p_elem; if it is not found,
+<span class="lineNum">     229 </span>            :  * *pElem is set to NULL. Either way, AWS_OP_SUCCESS is returned.
+<span class="lineNum">     230 </span>            :  *
+<span class="lineNum">     231 </span>            :  * This method does not change the state of the hash table. Therefore, it
+<span class="lineNum">     232 </span>            :  * is safe to call _find from multiple threads on the same hash table,
+<span class="lineNum">     233 </span>            :  * provided no mutating operations happen in parallel.
+<span class="lineNum">     234 </span>            :  *
+<span class="lineNum">     235 </span>            :  * Calling code may update the value in the hash table by modifying **pElem
+<span class="lineNum">     236 </span>            :  * after a successful find. However, this pointer is not guaranteed to
+<span class="lineNum">     237 </span>            :  * remain usable after a subsequent call to _put, _delete, _clear, or
+<span class="lineNum">     238 </span>            :  * _clean_up.
+<span class="lineNum">     239 </span>            :  */
+<span class="lineNum">     240 </span>            : 
+<span class="lineNum">     241 </span>            : AWS_COMMON_API
+<span class="lineNum">     242 </span>            : int aws_hash_table_find(const struct aws_hash_table *map, const void *key, struct aws_hash_element **p_elem);
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span>            : /**
+<span class="lineNum">     245 </span>            :  * Attempts to locate an element at key. If no such element was found,
+<span class="lineNum">     246 </span>            :  * creates a new element, with value initialized to NULL. In either case, a
+<span class="lineNum">     247 </span>            :  * pointer to the element is placed in *p_elem.
+<span class="lineNum">     248 </span>            :  *
+<span class="lineNum">     249 </span>            :  * If was_created is non-NULL, *was_created is set to 0 if an existing
+<span class="lineNum">     250 </span>            :  * element was found, or 1 is a new element was created.
+<span class="lineNum">     251 </span>            :  *
+<span class="lineNum">     252 </span>            :  * Returns AWS_OP_SUCCESS if an item was found or created.
+<span class="lineNum">     253 </span>            :  * Raises AWS_ERROR_OOM if hash table expansion was required and memory
+<span class="lineNum">     254 </span>            :  * allocation failed.
+<span class="lineNum">     255 </span>            :  */
+<span class="lineNum">     256 </span>            : AWS_COMMON_API
+<span class="lineNum">     257 </span>            : int aws_hash_table_create(
+<span class="lineNum">     258 </span>            :     struct aws_hash_table *map,
+<span class="lineNum">     259 </span>            :     const void *key,
+<span class="lineNum">     260 </span>            :     struct aws_hash_element **p_elem,
+<span class="lineNum">     261 </span>            :     int *was_created);
+<span class="lineNum">     262 </span>            : 
+<span class="lineNum">     263 </span>            : /**
+<span class="lineNum">     264 </span>            :  * Inserts a new element at key, with the given value. If another element
+<span class="lineNum">     265 </span>            :  * exists at that key, the old element will be overwritten; both old key and
+<span class="lineNum">     266 </span>            :  * value objects will be destroyed.
+<span class="lineNum">     267 </span>            :  *
+<span class="lineNum">     268 </span>            :  * If was_created is non-NULL, *was_created is set to 0 if an existing
+<span class="lineNum">     269 </span>            :  * element was found, or 1 is a new element was created.
+<span class="lineNum">     270 </span>            :  *
+<span class="lineNum">     271 </span>            :  * Returns AWS_OP_SUCCESS if an item was found or created.
+<span class="lineNum">     272 </span>            :  * Raises AWS_ERROR_OOM if hash table expansion was required and memory
+<span class="lineNum">     273 </span>            :  */
+<span class="lineNum">     274 </span>            : AWS_COMMON_API
+<span class="lineNum">     275 </span>            : int aws_hash_table_put(struct aws_hash_table *map, const void *key, void *value, int *was_created);
+<span class="lineNum">     276 </span>            : 
+<span class="lineNum">     277 </span>            : /**
+<span class="lineNum">     278 </span>            :  * Removes element at key. Always returns AWS_OP_SUCCESS.
+<span class="lineNum">     279 </span>            :  *
+<span class="lineNum">     280 </span>            :  * If pValue is non-NULL, the existing value (if any) is moved into
+<span class="lineNum">     281 </span>            :  * (*value) before removing from the table, and destroy_fn is _not_
+<span class="lineNum">     282 </span>            :  * invoked. If pValue is NULL, then (if the element existed) destroy_fn
+<span class="lineNum">     283 </span>            :  * will be invoked on the element being removed.
+<span class="lineNum">     284 </span>            :  *
+<span class="lineNum">     285 </span>            :  * If was_present is non-NULL, it is set to 0 if the element was
+<span class="lineNum">     286 </span>            :  * not present, or 1 if it was present (and is now removed).
+<span class="lineNum">     287 </span>            :  */
+<span class="lineNum">     288 </span>            : AWS_COMMON_API
+<span class="lineNum">     289 </span>            : int aws_hash_table_remove(
+<span class="lineNum">     290 </span>            :     struct aws_hash_table *map,
+<span class="lineNum">     291 </span>            :     const void *key,
+<span class="lineNum">     292 </span>            :     struct aws_hash_element *p_value,
+<span class="lineNum">     293 </span>            :     int *was_present);
+<span class="lineNum">     294 </span>            : 
+<span class="lineNum">     295 </span>            : /**
+<span class="lineNum">     296 </span>            :  * Removes element already known (typically by find()).
+<span class="lineNum">     297 </span>            :  *
+<span class="lineNum">     298 </span>            :  * p_value should point to a valid element returned by create() or find().
+<span class="lineNum">     299 </span>            :  *
+<span class="lineNum">     300 </span>            :  * NOTE: DO NOT call this method from inside of a aws_hash_table_foreach callback, return
+<span class="lineNum">     301 </span>            :  * AWS_COMMON_HASH_TABLE_ITER_DELETE instead.
+<span class="lineNum">     302 </span>            :  */
+<span class="lineNum">     303 </span>            : AWS_COMMON_API
+<span class="lineNum">     304 </span>            : int aws_hash_table_remove_element(struct aws_hash_table *map, struct aws_hash_element *p_value);
+<span class="lineNum">     305 </span>            : 
+<span class="lineNum">     306 </span>            : /**
+<span class="lineNum">     307 </span>            :  * Iterates through every element in the map and invokes the callback on
+<span class="lineNum">     308 </span>            :  * that item. Iteration is performed in an arbitrary, implementation-defined
+<span class="lineNum">     309 </span>            :  * order, and is not guaranteed to be consistent across invocations.
+<span class="lineNum">     310 </span>            :  *
+<span class="lineNum">     311 </span>            :  * The callback may change the value associated with the key by overwriting
+<span class="lineNum">     312 </span>            :  * the value pointed-to by value. In this case, the on_element_removed
+<span class="lineNum">     313 </span>            :  * callback will not be invoked, unless the callback invokes
+<span class="lineNum">     314 </span>            :  * AWS_COMMON_HASH_TABLE_ITER_DELETE (in which case the on_element_removed
+<span class="lineNum">     315 </span>            :  * is given the updated value).
+<span class="lineNum">     316 </span>            :  *
+<span class="lineNum">     317 </span>            :  * The callback must return a bitmask of zero or more of the following values
+<span class="lineNum">     318 </span>            :  * ORed together:
+<span class="lineNum">     319 </span>            :  *
+<span class="lineNum">     320 </span>            :  * # AWS_COMMON_HASH_TABLE_ITER_CONTINUE - Continues iteration to the next
+<span class="lineNum">     321 </span>            :  *     element (if not set, iteration stops)
+<span class="lineNum">     322 </span>            :  * # AWS_COMMON_HASH_TABLE_ITER_DELETE   - Deletes the current value and
+<span class="lineNum">     323 </span>            :  *     continues iteration.  destroy_fn will NOT be invoked.
+<span class="lineNum">     324 </span>            :  *
+<span class="lineNum">     325 </span>            :  * Invoking any method which may change the contents of the hashtable
+<span class="lineNum">     326 </span>            :  * during iteration results in undefined behavior. However, you may safely
+<span class="lineNum">     327 </span>            :  * invoke non-mutating operations during an iteration.
+<span class="lineNum">     328 </span>            :  *
+<span class="lineNum">     329 </span>            :  * This operation is mutating only if AWS_COMMON_HASH_TABLE_ITER_DELETE
+<span class="lineNum">     330 </span>            :  * is returned at some point during iteration. Otherwise, it is non-mutating
+<span class="lineNum">     331 </span>            :  * and is safe to invoke in parallel with other non-mutating operations.
+<span class="lineNum">     332 </span>            :  */
+<span class="lineNum">     333 </span>            : 
+<span class="lineNum">     334 </span>            : AWS_COMMON_API
+<span class="lineNum">     335 </span>            : int aws_hash_table_foreach(
+<span class="lineNum">     336 </span>            :     struct aws_hash_table *map,
+<span class="lineNum">     337 </span>            :     int (*callback)(void *context, struct aws_hash_element *p_element),
+<span class="lineNum">     338 </span>            :     void *context);
+<span class="lineNum">     339 </span>            : 
+<span class="lineNum">     340 </span>            : /**
+<span class="lineNum">     341 </span>            :  * Compares two hash tables for equality. Both hash tables must have equivalent
+<span class="lineNum">     342 </span>            :  * key comparators; values will be compared using the comparator passed into this
+<span class="lineNum">     343 </span>            :  * function. The key hash function does not need to be equivalent between the
+<span class="lineNum">     344 </span>            :  * two hash tables.
+<span class="lineNum">     345 </span>            :  */
+<span class="lineNum">     346 </span>            : AWS_COMMON_API
+<span class="lineNum">     347 </span>            : bool aws_hash_table_eq(
+<span class="lineNum">     348 </span>            :     const struct aws_hash_table *a,
+<span class="lineNum">     349 </span>            :     const struct aws_hash_table *b,
+<span class="lineNum">     350 </span>            :     aws_hash_callback_eq_fn *value_eq);
+<span class="lineNum">     351 </span>            : 
+<span class="lineNum">     352 </span>            : /**
+<span class="lineNum">     353 </span>            :  * Removes every element from the hash map. destroy_fn will be called for
+<span class="lineNum">     354 </span>            :  * each element.
+<span class="lineNum">     355 </span>            :  */
+<span class="lineNum">     356 </span>            : AWS_COMMON_API
+<span class="lineNum">     357 </span>            : void aws_hash_table_clear(struct aws_hash_table *map);
+<span class="lineNum">     358 </span>            : 
+<span class="lineNum">     359 </span>            : /**
+<span class="lineNum">     360 </span>            :  * Convenience hash function for NULL-terminated C-strings
+<span class="lineNum">     361 </span>            :  */
+<span class="lineNum">     362 </span>            : AWS_COMMON_API
+<span class="lineNum">     363 </span>            : uint64_t aws_hash_c_string(const void *item);
+<span class="lineNum">     364 </span>            : 
+<span class="lineNum">     365 </span>            : /**
+<span class="lineNum">     366 </span>            :  * Convenience hash function for struct aws_strings.
+<span class="lineNum">     367 </span>            :  * Hash is same as used on the string bytes by aws_hash_c_string.
+<span class="lineNum">     368 </span>            :  */
+<span class="lineNum">     369 </span>            : AWS_COMMON_API
+<span class="lineNum">     370 </span>            : uint64_t aws_hash_string(const void *item);
+<span class="lineNum">     371 </span>            : 
+<span class="lineNum">     372 </span>            : /**
+<span class="lineNum">     373 </span>            :  * Convenience hash function for struct aws_byte_cursor.
+<span class="lineNum">     374 </span>            :  * Hash is same as used on the string bytes by aws_hash_c_string.
+<span class="lineNum">     375 </span>            :  */
+<span class="lineNum">     376 </span>            : AWS_COMMON_API
+<span class="lineNum">     377 </span>            : uint64_t aws_hash_byte_cursor_ptr(const void *item);
+<span class="lineNum">     378 </span>            : 
+<span class="lineNum">     379 </span>            : /**
+<span class="lineNum">     380 </span>            :  * Convenience hash function which hashes the pointer value directly,
+<span class="lineNum">     381 </span>            :  * without dereferencing.  This can be used in cases where pointer identity
+<span class="lineNum">     382 </span>            :  * is desired, or where a uintptr_t is encoded into a const void *.
+<span class="lineNum">     383 </span>            :  */
+<span class="lineNum">     384 </span>            : AWS_COMMON_API
+<span class="lineNum">     385 </span>            : uint64_t aws_hash_ptr(const void *item);
+<span class="lineNum">     386 </span>            : 
+<span class="lineNum">     387 </span>            : AWS_COMMON_API
+<span class="lineNum">     388 </span>            : uint64_t aws_hash_combine(uint64_t item1, uint64_t item2);
+<span class="lineNum">     389 </span>            : 
+<span class="lineNum">     390 </span>            : /**
+<span class="lineNum">     391 </span>            :  * Convenience eq callback for NULL-terminated C-strings
+<span class="lineNum">     392 </span>            :  */
+<span class="lineNum">     393 </span>            : AWS_COMMON_API
+<span class="lineNum">     394 </span>            : bool aws_hash_callback_c_str_eq(const void *a, const void *b);
+<span class="lineNum">     395 </span>            : 
+<span class="lineNum">     396 </span>            : /**
+<span class="lineNum">     397 </span>            :  * Convenience eq callback for AWS strings
+<span class="lineNum">     398 </span>            :  */
+<span class="lineNum">     399 </span>            : AWS_COMMON_API
+<span class="lineNum">     400 </span>            : bool aws_hash_callback_string_eq(const void *a, const void *b);
+<span class="lineNum">     401 </span>            : 
+<span class="lineNum">     402 </span>            : /**
+<span class="lineNum">     403 </span>            :  * Convenience destroy callback for AWS strings
+<span class="lineNum">     404 </span>            :  */
+<span class="lineNum">     405 </span>            : AWS_COMMON_API
+<span class="lineNum">     406 </span>            : void aws_hash_callback_string_destroy(void *a);
+<span class="lineNum">     407 </span>            : 
+<span class="lineNum">     408 </span>            : /**
+<span class="lineNum">     409 </span>            :  * Equality function which compares pointer equality.
+<span class="lineNum">     410 </span>            :  */
+<span class="lineNum">     411 </span>            : AWS_COMMON_API
+<span class="lineNum">     412 </span>            : bool aws_ptr_eq(const void *a, const void *b);
+<span class="lineNum">     413 </span>            : 
+<span class="lineNum">     414 </span>            : /**
+<span class="lineNum">     415 </span>            :  * Best-effort check of hash_table_state data-structure invariants
+<span class="lineNum">     416 </span>            :  */
+<span class="lineNum">     417 </span>            : AWS_COMMON_API
+<span class="lineNum">     418 </span>            : bool aws_hash_table_is_valid(const struct aws_hash_table *map);
+<span class="lineNum">     419 </span>            : 
+<span class="lineNum">     420 </span>            : /**
+<span class="lineNum">     421 </span>            :  * Given a pointer to a hash_iter, checks that it is well-formed, with all data-structure invariants.
+<span class="lineNum">     422 </span>            :  */
+<span class="lineNum">     423 </span>            : AWS_COMMON_API
+<span class="lineNum">     424 </span>            : bool aws_hash_iter_is_valid(const struct aws_hash_iter *iter);
+<span class="lineNum">     425 </span>            : 
+<span class="lineNum">     426 </span>            : AWS_EXTERN_C_END
+<span class="lineNum">     427 </span>            : 
+<span class="lineNum">     428 </span>            : #endif /* AWS_COMMON_HASH_TABLE_H */
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

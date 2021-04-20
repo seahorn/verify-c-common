@@ -37,12 +37,12 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">9</td>
-            <td class="headerCovTableEntry">101</td>
-            <td class="headerCovTableEntryLo">8.9 %</td>
+            <td class="headerCovTableEntry">155</td>
+            <td class="headerCovTableEntryLo">5.8 %</td>
           </tr>
           <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -76,17 +76,17 @@
 <span class="lineNum">      14 </span>            :  * Raises `err` to the installed callbacks, and sets the thread's error.
 <a name="15"><span class="lineNum">      15 </span>            :  */</a>
 <span class="lineNum">      16 </span>            : AWS_STATIC_IMPL
-<span class="lineNum">      17 </span><span class="lineCov">      96170 : int aws_raise_error(int err) {</span>
-<span class="lineNum">      18 </span><span class="lineCov">      96170 :     /*</span>
-<span class="lineNum">      19 </span><span class="lineCov">      96170 :      * Certain static analyzers can't see through the out-of-line call to aws_raise_error,</span>
-<span class="lineNum">      20 </span><span class="lineCov">      96170 :      * and assume that this might return AWS_OP_SUCCESS. We'll put the return inline just</span>
-<span class="lineNum">      21 </span><span class="lineCov">      96170 :      * to help with their assumptions.</span>
-<span class="lineNum">      22 </span><span class="lineCov">      96170 :      */</span>
-<span class="lineNum">      23 </span><span class="lineCov">      96170 : </span>
-<span class="lineNum">      24 </span><span class="lineCov">      96170 :     aws_raise_error_private(err);</span>
-<span class="lineNum">      25 </span><span class="lineCov">      96170 : </span>
-<span class="lineNum">      26 </span><span class="lineCov">      96170 :     return AWS_OP_ERR;</span>
-<span class="lineNum">      27 </span><span class="lineCov">      96170 : }</span>
+<span class="lineNum">      17 </span><span class="lineCov">     335363 : int aws_raise_error(int err) {</span>
+<span class="lineNum">      18 </span><span class="lineCov">     335363 :     /*</span>
+<span class="lineNum">      19 </span><span class="lineCov">     335363 :      * Certain static analyzers can't see through the out-of-line call to aws_raise_error,</span>
+<span class="lineNum">      20 </span><span class="lineCov">     335363 :      * and assume that this might return AWS_OP_SUCCESS. We'll put the return inline just</span>
+<span class="lineNum">      21 </span><span class="lineCov">     335363 :      * to help with their assumptions.</span>
+<span class="lineNum">      22 </span><span class="lineCov">     335363 :      */</span>
+<span class="lineNum">      23 </span><span class="lineCov">     335363 : </span>
+<span class="lineNum">      24 </span><span class="lineCov">     335363 :     aws_raise_error_private(err);</span>
+<span class="lineNum">      25 </span><span class="lineCov">     335363 : </span>
+<span class="lineNum">      26 </span><span class="lineCov">     335363 :     return AWS_OP_ERR;</span>
+<span class="lineNum">      27 </span><span class="lineCov">     335363 : }</span>
 <span class="lineNum">      28 </span>            : 
 <span class="lineNum">      29 </span>            : AWS_EXTERN_C_END
 <span class="lineNum">      30 </span>            : 

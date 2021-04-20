@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -72,44 +72,44 @@
 <span class="lineNum">      10 </span>            : #include &lt;utils.h&gt;
 <a name="11"><span class="lineNum">      11 </span>            : #include &lt;stddef.h&gt;</a>
 <span class="lineNum">      12 </span>            : 
-<span class="lineNum">      13 </span><span class="lineCov">      50000 : int main(void) {</span>
-<span class="lineNum">      14 </span><span class="lineCov">      50000 :   struct aws_string *str =</span>
-<span class="lineNum">      15 </span><span class="lineCov">      50000 :       nd_bool() ? ensure_string_is_allocated_bounded_length(MAX_STRING_LEN)</span>
-<span class="lineNum">      16 </span><span class="lineCov">      50000 :                 : NULL;</span>
-<span class="lineNum">      17 </span><span class="lineCov">      50000 :   struct aws_byte_buf buf;</span>
-<span class="lineNum">      18 </span><span class="lineCov">      50000 :   initialize_byte_buf(&amp;buf);</span>
-<span class="lineNum">      19 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      20 </span><span class="lineCov">      50000 :   assume(aws_byte_buf_is_valid(&amp;buf));</span>
-<span class="lineNum">      21 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      22 </span><span class="lineCov">      50000 :   /* save current state of the data structure */</span>
-<span class="lineNum">      23 </span><span class="lineCov">      50000 :   struct aws_byte_buf old_buf = buf;</span>
-<span class="lineNum">      24 </span><span class="lineCov">      50000 :   struct store_byte_from_buffer old_byte_from_buf;</span>
-<span class="lineNum">      25 </span><span class="lineCov">      50000 :   save_byte_from_array(buf.buffer, buf.len, &amp;old_byte_from_buf);</span>
-<span class="lineNum">      26 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      27 </span><span class="lineCov">      50000 :   size_t available_cap = buf.capacity - buf.len;</span>
-<span class="lineNum">      28 </span><span class="lineCov">      50000 :   bool nondet_parameter = nd_bool();</span>
-<span class="lineNum">      29 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      30 </span><span class="lineCov">      50000 :   if (aws_byte_buf_write_from_whole_string(nondet_parameter ? &amp;buf : NULL,</span>
-<span class="lineNum">      31 </span><span class="lineCov">      50000 :                                            str) &amp;&amp;</span>
-<span class="lineNum">      32 </span><span class="lineCov">      50000 :       str) {</span>
-<span class="lineNum">      33 </span><span class="lineCov">       1655 :     sassert(aws_string_is_valid(str));</span>
-<span class="lineNum">      34 </span><span class="lineCov">       1655 :     sassert(available_cap &gt;= str-&gt;len);</span>
-<span class="lineNum">      35 </span><span class="lineCov">       1655 :     if (nondet_parameter) {</span>
-<span class="lineNum">      36 </span><span class="lineCov">       1655 :       sassert(buf.len == old_buf.len + str-&gt;len);</span>
-<span class="lineNum">      37 </span><span class="lineCov">       1655 :       sassert(old_buf.capacity == buf.capacity);</span>
-<span class="lineNum">      38 </span><span class="lineCov">       1655 :       sassert(old_buf.allocator == buf.allocator);</span>
-<span class="lineNum">      39 </span><span class="lineCov">       1655 :       if (str-&gt;len &gt; 0 &amp;&amp; buf.len &gt; 0) {</span>
-<span class="lineNum">      40 </span><span class="lineCov">       1394 :         assert_bytes_match(buf.buffer + old_buf.len, str-&gt;bytes, str-&gt;len);</span>
-<span class="lineNum">      41 </span><span class="lineCov">       1394 :       }</span>
-<span class="lineNum">      42 </span><span class="lineCov">       1655 :     }</span>
-<span class="lineNum">      43 </span><span class="lineCov">      48345 :   } else {</span>
-<span class="lineNum">      44 </span><span class="lineCov">      48345 :     assert_byte_buf_equivalence(&amp;buf, &amp;old_buf, &amp;old_byte_from_buf);</span>
-<span class="lineNum">      45 </span><span class="lineCov">      48345 :   }</span>
-<span class="lineNum">      46 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      47 </span><span class="lineCov">      50000 :   sassert(aws_byte_buf_is_valid(&amp;buf));</span>
-<span class="lineNum">      48 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      49 </span><span class="lineCov">      50000 :   return 0;</span>
-<span class="lineNum">      50 </span><span class="lineCov">      50000 : }</span>
+<span class="lineNum">      13 </span><span class="lineCov">     100000 : int main(void) {</span>
+<span class="lineNum">      14 </span><span class="lineCov">     100000 :   struct aws_string *str =</span>
+<span class="lineNum">      15 </span><span class="lineCov">     100000 :       nd_bool() ? ensure_string_is_allocated_bounded_length(MAX_STRING_LEN)</span>
+<span class="lineNum">      16 </span><span class="lineCov">     100000 :                 : NULL;</span>
+<span class="lineNum">      17 </span><span class="lineCov">     100000 :   struct aws_byte_buf buf;</span>
+<span class="lineNum">      18 </span><span class="lineCov">     100000 :   initialize_byte_buf(&amp;buf);</span>
+<span class="lineNum">      19 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      20 </span><span class="lineCov">     100000 :   assume(aws_byte_buf_is_valid(&amp;buf));</span>
+<span class="lineNum">      21 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      22 </span><span class="lineCov">     100000 :   /* save current state of the data structure */</span>
+<span class="lineNum">      23 </span><span class="lineCov">     100000 :   struct aws_byte_buf old_buf = buf;</span>
+<span class="lineNum">      24 </span><span class="lineCov">     100000 :   struct store_byte_from_buffer old_byte_from_buf;</span>
+<span class="lineNum">      25 </span><span class="lineCov">     100000 :   save_byte_from_array(buf.buffer, buf.len, &amp;old_byte_from_buf);</span>
+<span class="lineNum">      26 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      27 </span><span class="lineCov">     100000 :   size_t available_cap = buf.capacity - buf.len;</span>
+<span class="lineNum">      28 </span><span class="lineCov">     100000 :   bool nondet_parameter = nd_bool();</span>
+<span class="lineNum">      29 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      30 </span><span class="lineCov">     100000 :   if (aws_byte_buf_write_from_whole_string(nondet_parameter ? &amp;buf : NULL,</span>
+<span class="lineNum">      31 </span><span class="lineCov">     100000 :                                            str) &amp;&amp;</span>
+<span class="lineNum">      32 </span><span class="lineCov">     100000 :       str) {</span>
+<span class="lineNum">      33 </span><span class="lineCov">      20847 :     sassert(aws_string_is_valid(str));</span>
+<span class="lineNum">      34 </span><span class="lineCov">      20847 :     sassert(available_cap &gt;= str-&gt;len);</span>
+<span class="lineNum">      35 </span><span class="lineCov">      20847 :     if (nondet_parameter) {</span>
+<span class="lineNum">      36 </span><span class="lineCov">      20847 :       sassert(buf.len == old_buf.len + str-&gt;len);</span>
+<span class="lineNum">      37 </span><span class="lineCov">      20847 :       sassert(old_buf.capacity == buf.capacity);</span>
+<span class="lineNum">      38 </span><span class="lineCov">      20847 :       sassert(old_buf.allocator == buf.allocator);</span>
+<span class="lineNum">      39 </span><span class="lineCov">      20847 :       if (str-&gt;len &gt; 0 &amp;&amp; buf.len &gt; 0) {</span>
+<span class="lineNum">      40 </span><span class="lineCov">      19424 :         assert_bytes_match(buf.buffer + old_buf.len, str-&gt;bytes, str-&gt;len);</span>
+<span class="lineNum">      41 </span><span class="lineCov">      19424 :       }</span>
+<span class="lineNum">      42 </span><span class="lineCov">      20847 :     }</span>
+<span class="lineNum">      43 </span><span class="lineCov">      79153 :   } else {</span>
+<span class="lineNum">      44 </span><span class="lineCov">      79153 :     assert_byte_buf_equivalence(&amp;buf, &amp;old_buf, &amp;old_byte_from_buf);</span>
+<span class="lineNum">      45 </span><span class="lineCov">      79153 :   }</span>
+<span class="lineNum">      46 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      47 </span><span class="lineCov">     100000 :   sassert(aws_byte_buf_is_valid(&amp;buf));</span>
+<span class="lineNum">      48 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      49 </span><span class="lineCov">     100000 :   return 0;</span>
+<span class="lineNum">      50 </span><span class="lineCov">     100000 : }</span>
 </pre>
       </td>
     </tr>

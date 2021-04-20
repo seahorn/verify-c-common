@@ -1,0 +1,283 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - aws-c-common/include/aws/common/math.h</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../index.html">top level</a> - <a href="index.html">aws-c-common/include/aws/common</a> - math.h<span style="font-size: 80%;"> (source / <a href="math.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #ifndef AWS_COMMON_MATH_H</a>
+<span class="lineNum">       2 </span>            : #define AWS_COMMON_MATH_H
+<span class="lineNum">       3 </span>            : 
+<span class="lineNum">       4 </span>            : /**
+<span class="lineNum">       5 </span>            :  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+<span class="lineNum">       6 </span>            :  * SPDX-License-Identifier: Apache-2.0.
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            : #include &lt;aws/common/common.h&gt;
+<span class="lineNum">      10 </span>            : #include &lt;aws/common/config.h&gt;
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span>            : #include &lt;limits.h&gt;
+<span class="lineNum">      13 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span>            : /* The number of bits in a size_t variable */
+<span class="lineNum">      16 </span>            : #if SIZE_MAX == UINT32_MAX
+<span class="lineNum">      17 </span>            : #    define SIZE_BITS 32
+<span class="lineNum">      18 </span>            : #elif SIZE_MAX == UINT64_MAX
+<span class="lineNum">      19 </span><span class="lineCov">     943349 : #    define SIZE_BITS 64</span>
+<span class="lineNum">      20 </span>            : #else
+<span class="lineNum">      21 </span>            : #    error &quot;Target not supported&quot;
+<span class="lineNum">      22 </span>            : #endif
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            : /* The largest power of two that can be stored in a size_t */
+<span class="lineNum">      25 </span><span class="lineCov">     943349 : #define SIZE_MAX_POWER_OF_TWO (((size_t)1) &lt;&lt; (SIZE_BITS - 1))</span>
+<span class="lineNum">      26 </span>            : 
+<span class="lineNum">      27 </span>            : AWS_EXTERN_C_BEGIN
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : #if defined(AWS_HAVE_GCC_OVERFLOW_MATH_EXTENSIONS) &amp;&amp; (defined(__clang__) || !defined(__cplusplus)) ||                 \
+<span class="lineNum">      30 </span>            :     (defined(__x86_64__) || defined(__aarch64__)) &amp;&amp; defined(AWS_HAVE_GCC_INLINE_ASM) ||                               \
+<span class="lineNum">      31 </span>            :     defined(AWS_HAVE_MSVC_MULX) || defined(CBMC) || !defined(AWS_HAVE_GCC_OVERFLOW_MATH_EXTENSIONS)
+<span class="lineNum">      32 </span>            : /* In all these cases, we can use fast static inline versions of this code */
+<span class="lineNum">      33 </span>            : #    define AWS_COMMON_MATH_API AWS_STATIC_IMPL
+<span class="lineNum">      34 </span>            : #else
+<span class="lineNum">      35 </span>            : /*
+<span class="lineNum">      36 </span>            :  * We got here because we are building in C++ mode but we only support overflow extensions
+<span class="lineNum">      37 </span>            :  * in C mode. Because the fallback is _slow_ (involving a division), we'd prefer to make a
+<span class="lineNum">      38 </span>            :  * non-inline call to the fast C intrinsics.
+<span class="lineNum">      39 </span>            :  */
+<span class="lineNum">      40 </span>            : #    define AWS_COMMON_MATH_API AWS_COMMON_API
+<span class="lineNum">      41 </span>            : #endif
+<span class="lineNum">      42 </span>            : 
+<span class="lineNum">      43 </span>            : /**
+<span class="lineNum">      44 </span>            :  * Multiplies a * b. If the result overflows, returns 2^64 - 1.
+<span class="lineNum">      45 </span>            :  */
+<span class="lineNum">      46 </span>            : AWS_COMMON_MATH_API uint64_t aws_mul_u64_saturating(uint64_t a, uint64_t b);
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            : /**
+<span class="lineNum">      49 </span>            :  * If a * b overflows, returns AWS_OP_ERR; otherwise multiplies
+<span class="lineNum">      50 </span>            :  * a * b, returns the result in *r, and returns AWS_OP_SUCCESS.
+<span class="lineNum">      51 </span>            :  */
+<span class="lineNum">      52 </span>            : AWS_COMMON_MATH_API int aws_mul_u64_checked(uint64_t a, uint64_t b, uint64_t *r);
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span>            : /**
+<span class="lineNum">      55 </span>            :  * Multiplies a * b. If the result overflows, returns 2^32 - 1.
+<span class="lineNum">      56 </span>            :  */
+<span class="lineNum">      57 </span>            : AWS_COMMON_MATH_API uint32_t aws_mul_u32_saturating(uint32_t a, uint32_t b);
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span>            : /**
+<span class="lineNum">      60 </span>            :  * If a * b overflows, returns AWS_OP_ERR; otherwise multiplies
+<span class="lineNum">      61 </span>            :  * a * b, returns the result in *r, and returns AWS_OP_SUCCESS.
+<span class="lineNum">      62 </span>            :  */
+<span class="lineNum">      63 </span>            : AWS_COMMON_MATH_API int aws_mul_u32_checked(uint32_t a, uint32_t b, uint32_t *r);
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span>            : /**
+<span class="lineNum">      66 </span>            :  * Adds a + b.  If the result overflows returns 2^64 - 1.
+<span class="lineNum">      67 </span>            :  */
+<span class="lineNum">      68 </span>            : AWS_COMMON_MATH_API uint64_t aws_add_u64_saturating(uint64_t a, uint64_t b);
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span>            : /**
+<span class="lineNum">      71 </span>            :  * If a + b overflows, returns AWS_OP_ERR; otherwise adds
+<span class="lineNum">      72 </span>            :  * a + b, returns the result in *r, and returns AWS_OP_SUCCESS.
+<span class="lineNum">      73 </span>            :  */
+<span class="lineNum">      74 </span>            : AWS_COMMON_MATH_API int aws_add_u64_checked(uint64_t a, uint64_t b, uint64_t *r);
+<span class="lineNum">      75 </span>            : 
+<span class="lineNum">      76 </span>            : /**
+<span class="lineNum">      77 </span>            :  * Adds a + b. If the result overflows returns 2^32 - 1.
+<span class="lineNum">      78 </span>            :  */
+<span class="lineNum">      79 </span>            : AWS_COMMON_MATH_API uint32_t aws_add_u32_saturating(uint32_t a, uint32_t b);
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span>            : /**
+<span class="lineNum">      82 </span>            :  * If a + b overflows, returns AWS_OP_ERR; otherwise adds
+<span class="lineNum">      83 </span>            :  * a + b, returns the result in *r, and returns AWS_OP_SUCCESS.
+<span class="lineNum">      84 </span>            :  */
+<span class="lineNum">      85 </span>            : AWS_COMMON_MATH_API int aws_add_u32_checked(uint32_t a, uint32_t b, uint32_t *r);
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span>            : /**
+<span class="lineNum">      88 </span>            :  * Subtracts a - b. If the result overflows returns 0.
+<span class="lineNum">      89 </span>            :  */
+<span class="lineNum">      90 </span>            : AWS_STATIC_IMPL uint64_t aws_sub_u64_saturating(uint64_t a, uint64_t b);
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span>            : /**
+<span class="lineNum">      93 </span>            :  * If a - b overflows, returns AWS_OP_ERR; otherwise subtracts
+<span class="lineNum">      94 </span>            :  * a - b, returns the result in *r, and returns AWS_OP_SUCCESS.
+<span class="lineNum">      95 </span>            :  */
+<span class="lineNum">      96 </span>            : AWS_STATIC_IMPL int aws_sub_u64_checked(uint64_t a, uint64_t b, uint64_t *r);
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span>            : /**
+<span class="lineNum">      99 </span>            :  * Subtracts a - b. If the result overflows returns 0.
+<span class="lineNum">     100 </span>            :  */
+<span class="lineNum">     101 </span>            : AWS_STATIC_IMPL uint32_t aws_sub_u32_saturating(uint32_t a, uint32_t b);
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span>            : /**
+<span class="lineNum">     104 </span>            :  * If a - b overflows, returns AWS_OP_ERR; otherwise subtracts
+<span class="lineNum">     105 </span>            :  * a - b, returns the result in *r, and returns AWS_OP_SUCCESS.
+<span class="lineNum">     106 </span>            :  */
+<span class="lineNum">     107 </span>            : AWS_STATIC_IMPL int aws_sub_u32_checked(uint32_t a, uint32_t b, uint32_t *r);
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span>            : /**
+<span class="lineNum">     110 </span>            :  * Multiplies a * b. If the result overflows, returns SIZE_MAX.
+<span class="lineNum">     111 </span>            :  */
+<span class="lineNum">     112 </span>            : AWS_STATIC_IMPL size_t aws_mul_size_saturating(size_t a, size_t b);
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span>            : /**
+<span class="lineNum">     115 </span>            :  * Multiplies a * b and returns the result in *r. If the result
+<span class="lineNum">     116 </span>            :  * overflows, returns AWS_OP_ERR; otherwise returns AWS_OP_SUCCESS.
+<span class="lineNum">     117 </span>            :  */
+<span class="lineNum">     118 </span>            : AWS_STATIC_IMPL int aws_mul_size_checked(size_t a, size_t b, size_t *r);
+<span class="lineNum">     119 </span>            : 
+<span class="lineNum">     120 </span>            : /**
+<span class="lineNum">     121 </span>            :  * Adds a + b.  If the result overflows returns SIZE_MAX.
+<span class="lineNum">     122 </span>            :  */
+<span class="lineNum">     123 </span>            : AWS_STATIC_IMPL size_t aws_add_size_saturating(size_t a, size_t b);
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span>            : /**
+<span class="lineNum">     126 </span>            :  * Adds a + b and returns the result in *r. If the result
+<span class="lineNum">     127 </span>            :  * overflows, returns AWS_OP_ERR; otherwise returns AWS_OP_SUCCESS.
+<span class="lineNum">     128 </span>            :  */
+<span class="lineNum">     129 </span>            : AWS_STATIC_IMPL int aws_add_size_checked(size_t a, size_t b, size_t *r);
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span>            : /**
+<span class="lineNum">     132 </span>            :  * Adds [num] arguments (expected to be of size_t), and returns the result in *r.
+<span class="lineNum">     133 </span>            :  * If the result overflows, returns AWS_OP_ERR; otherwise returns AWS_OP_SUCCESS.
+<span class="lineNum">     134 </span>            :  */
+<span class="lineNum">     135 </span>            : AWS_COMMON_API int aws_add_size_checked_varargs(size_t num, size_t *r, ...);
+<span class="lineNum">     136 </span>            : 
+<span class="lineNum">     137 </span>            : /**
+<span class="lineNum">     138 </span>            :  * Subtracts a - b. If the result overflows returns 0.
+<span class="lineNum">     139 </span>            :  */
+<span class="lineNum">     140 </span>            : AWS_STATIC_IMPL size_t aws_sub_size_saturating(size_t a, size_t b);
+<span class="lineNum">     141 </span>            : 
+<span class="lineNum">     142 </span>            : /**
+<span class="lineNum">     143 </span>            :  * If a - b overflows, returns AWS_OP_ERR; otherwise subtracts
+<span class="lineNum">     144 </span>            :  * a - b, returns the result in *r, and returns AWS_OP_SUCCESS.
+<span class="lineNum">     145 </span>            :  */
+<span class="lineNum">     146 </span>            : AWS_STATIC_IMPL int aws_sub_size_checked(size_t a, size_t b, size_t *r);
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span>            : /**
+<span class="lineNum">     149 </span>            :  * Function to check if x is power of 2
+<span class="lineNum">     150 </span>            :  */
+<span class="lineNum">     151 </span>            : AWS_STATIC_IMPL bool aws_is_power_of_two(const size_t x);
+<span class="lineNum">     152 </span>            : /**
+<span class="lineNum">     153 </span>            :  * Function to find the smallest result that is power of 2 &gt;= n. Returns AWS_OP_ERR if this cannot
+<span class="lineNum">     154 </span>            :  * be done without overflow
+<span class="lineNum">     155 </span>            :  */
+<span class="lineNum">     156 </span>            : AWS_STATIC_IMPL int aws_round_up_to_power_of_two(size_t n, size_t *result);
+<span class="lineNum">     157 </span>            : 
+<span class="lineNum">     158 </span>            : /**
+<span class="lineNum">     159 </span>            :  * Counts the number of leading 0 bits in an integer
+<span class="lineNum">     160 </span>            :  */
+<span class="lineNum">     161 </span>            : AWS_STATIC_IMPL size_t aws_clz_u32(uint32_t n);
+<span class="lineNum">     162 </span>            : AWS_STATIC_IMPL size_t aws_clz_i32(int32_t n);
+<span class="lineNum">     163 </span>            : AWS_STATIC_IMPL size_t aws_clz_u64(uint64_t n);
+<span class="lineNum">     164 </span>            : AWS_STATIC_IMPL size_t aws_clz_i64(int64_t n);
+<span class="lineNum">     165 </span>            : AWS_STATIC_IMPL size_t aws_clz_size(size_t n);
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span>            : /**
+<span class="lineNum">     168 </span>            :  * Counts the number of trailing 0 bits in an integer
+<span class="lineNum">     169 </span>            :  */
+<span class="lineNum">     170 </span>            : AWS_STATIC_IMPL size_t aws_ctz_u32(uint32_t n);
+<span class="lineNum">     171 </span>            : AWS_STATIC_IMPL size_t aws_ctz_i32(int32_t n);
+<span class="lineNum">     172 </span>            : AWS_STATIC_IMPL size_t aws_ctz_u64(uint64_t n);
+<span class="lineNum">     173 </span>            : AWS_STATIC_IMPL size_t aws_ctz_i64(int64_t n);
+<span class="lineNum">     174 </span>            : AWS_STATIC_IMPL size_t aws_ctz_size(size_t n);
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span>            : AWS_STATIC_IMPL uint8_t aws_min_u8(uint8_t a, uint8_t b);
+<span class="lineNum">     177 </span>            : AWS_STATIC_IMPL uint8_t aws_max_u8(uint8_t a, uint8_t b);
+<span class="lineNum">     178 </span>            : AWS_STATIC_IMPL int8_t aws_min_i8(int8_t a, int8_t b);
+<span class="lineNum">     179 </span>            : AWS_STATIC_IMPL int8_t aws_max_i8(int8_t a, int8_t b);
+<span class="lineNum">     180 </span>            : AWS_STATIC_IMPL uint16_t aws_min_u16(uint16_t a, uint16_t b);
+<span class="lineNum">     181 </span>            : AWS_STATIC_IMPL uint16_t aws_max_u16(uint16_t a, uint16_t b);
+<span class="lineNum">     182 </span>            : AWS_STATIC_IMPL int16_t aws_min_i16(int16_t a, int16_t b);
+<span class="lineNum">     183 </span>            : AWS_STATIC_IMPL int16_t aws_max_i16(int16_t a, int16_t b);
+<span class="lineNum">     184 </span>            : AWS_STATIC_IMPL uint32_t aws_min_u32(uint32_t a, uint32_t b);
+<span class="lineNum">     185 </span>            : AWS_STATIC_IMPL uint32_t aws_max_u32(uint32_t a, uint32_t b);
+<span class="lineNum">     186 </span>            : AWS_STATIC_IMPL int32_t aws_min_i32(int32_t a, int32_t b);
+<span class="lineNum">     187 </span>            : AWS_STATIC_IMPL int32_t aws_max_i32(int32_t a, int32_t b);
+<span class="lineNum">     188 </span>            : AWS_STATIC_IMPL uint64_t aws_min_u64(uint64_t a, uint64_t b);
+<span class="lineNum">     189 </span>            : AWS_STATIC_IMPL uint64_t aws_max_u64(uint64_t a, uint64_t b);
+<span class="lineNum">     190 </span>            : AWS_STATIC_IMPL int64_t aws_min_i64(int64_t a, int64_t b);
+<span class="lineNum">     191 </span>            : AWS_STATIC_IMPL int64_t aws_max_i64(int64_t a, int64_t b);
+<span class="lineNum">     192 </span>            : AWS_STATIC_IMPL size_t aws_min_size(size_t a, size_t b);
+<span class="lineNum">     193 </span>            : AWS_STATIC_IMPL size_t aws_max_size(size_t a, size_t b);
+<span class="lineNum">     194 </span>            : AWS_STATIC_IMPL int aws_min_int(int a, int b);
+<span class="lineNum">     195 </span>            : AWS_STATIC_IMPL int aws_max_int(int a, int b);
+<span class="lineNum">     196 </span>            : AWS_STATIC_IMPL float aws_min_float(float a, float b);
+<span class="lineNum">     197 </span>            : AWS_STATIC_IMPL float aws_max_float(float a, float b);
+<span class="lineNum">     198 </span>            : AWS_STATIC_IMPL double aws_min_double(double a, double b);
+<span class="lineNum">     199 </span>            : AWS_STATIC_IMPL double aws_max_double(double a, double b);
+<span class="lineNum">     200 </span>            : 
+<span class="lineNum">     201 </span>            : #ifndef AWS_NO_STATIC_IMPL
+<span class="lineNum">     202 </span>            : #    include &lt;aws/common/math.inl&gt;
+<span class="lineNum">     203 </span>            : #endif /* AWS_NO_STATIC_IMPL */
+<span class="lineNum">     204 </span>            : 
+<span class="lineNum">     205 </span>            : AWS_EXTERN_C_END
+<span class="lineNum">     206 </span>            : 
+<span class="lineNum">     207 </span>            : #endif /* AWS_COMMON_MATH_H */
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

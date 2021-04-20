@@ -31,13 +31,13 @@
             <td class="headerValue">all_fuzz.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">21</td>
-            <td class="headerCovTableEntry">30</td>
-            <td class="headerCovTableEntryLo">70.0 %</td>
+            <td class="headerCovTableEntry">27</td>
+            <td class="headerCovTableEntry">33</td>
+            <td class="headerCovTableEntryMed">81.8 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -104,7 +104,7 @@
 <span class="lineNum">      42 </span>            : #    include &lt;assert.h&gt;
 <span class="lineNum">      43 </span>            : #    define AWS_ASSERT(cond) assert(cond)
 <span class="lineNum">      44 </span>            : #elif defined(DEBUG_BUILD) || __clang_analyzer__
-<span class="lineNum">      45 </span><span class="lineCov">    2536426 : #    define AWS_ASSERT(cond) AWS_FATAL_ASSERT(cond)</span>
+<span class="lineNum">      45 </span><span class="lineCov">   15285886 : #    define AWS_ASSERT(cond) AWS_FATAL_ASSERT(cond)</span>
 <span class="lineNum">      46 </span>            : #else
 <span class="lineNum">      47 </span>            : #    define AWS_ASSERT(cond)
 <span class="lineNum">      48 </span>            : #endif /*  defined(CBMC) */
@@ -126,7 +126,7 @@
 <span class="lineNum">      64 </span>            :             __pragma(warning(pop))
 <span class="lineNum">      65 </span>            : #    else
 <span class="lineNum">      66 </span>            : #        define AWS_FATAL_ASSERT(cond)                                                                                 \
-<span class="lineNum">      67 </span><span class="lineCov">    3604062 :             if (!(cond)) {                                                                                             \</span>
+<span class="lineNum">      67 </span><span class="lineCov">   22195030 :             if (!(cond)) {                                                                                             \</span>
 <span class="lineNum">      68 </span><span class="lineNoCov">          0 :                 aws_fatal_assert(#cond, __FILE__, __LINE__);                                                           \</span>
 <span class="lineNum">      69 </span><span class="lineNoCov">          0 :             }</span>
 <span class="lineNum">      70 </span>            : #    endif /* defined(_MSC_VER) */
@@ -148,74 +148,84 @@
 <span class="lineNum">      86 </span>            : #    define AWS_POSTCONDITION1(cond) __CPROVER_assert((cond), #    cond &quot; check failed&quot;)
 <span class="lineNum">      87 </span>            : #    define AWS_FATAL_POSTCONDITION2(cond, explanation) __CPROVER_assert((cond), (explanation))
 <span class="lineNum">      88 </span>            : #    define AWS_FATAL_POSTCONDITION1(cond) __CPROVER_assert((cond), #    cond &quot; check failed&quot;)
-<span class="lineNum">      89 </span>            : #    define AWS_MEM_IS_READABLE(base, len) (((len) == 0) || (__CPROVER_r_ok((base), (len))))
-<span class="lineNum">      90 </span>            : #    define AWS_MEM_IS_WRITABLE(base, len) (((len) == 0) || (__CPROVER_r_ok((base), (len))))
+<span class="lineNum">      89 </span>            : #    define AWS_MEM_IS_READABLE_CHECK(base, len) (((len) == 0) || (__CPROVER_r_ok((base), (len))))
+<span class="lineNum">      90 </span>            : #    define AWS_MEM_IS_WRITABLE_CHECK(base, len) (((len) == 0) || (__CPROVER_r_ok((base), (len))))
 <span class="lineNum">      91 </span>            : #else
-<span class="lineNum">      92 </span><span class="lineCov">     190848 : #    define AWS_PRECONDITION2(cond, expl) AWS_ASSERT(cond)</span>
-<span class="lineNum">      93 </span><span class="lineCov">    1221689 : #    define AWS_PRECONDITION1(cond) AWS_ASSERT(cond)</span>
+<span class="lineNum">      92 </span><span class="lineCov">    1667281 : #    define AWS_PRECONDITION2(cond, expl) AWS_ASSERT(cond)</span>
+<span class="lineNum">      93 </span><span class="lineCov">    8438608 : #    define AWS_PRECONDITION1(cond) AWS_ASSERT(cond)</span>
 <span class="lineNum">      94 </span>            : #    define AWS_FATAL_PRECONDITION2(cond, expl) AWS_FATAL_ASSERT(cond)
-<span class="lineNum">      95 </span><span class="lineCov">     908268 : #    define AWS_FATAL_PRECONDITION1(cond) AWS_FATAL_ASSERT(cond)</span>
-<span class="lineNum">      96 </span>            : #    define AWS_POSTCONDITION2(cond, expl) AWS_ASSERT(cond)
-<span class="lineNum">      97 </span><span class="lineCov">    1090425 : #    define AWS_POSTCONDITION1(cond) AWS_ASSERT(cond)</span>
+<span class="lineNum">      95 </span><span class="lineCov">    3806981 : #    define AWS_FATAL_PRECONDITION1(cond) AWS_FATAL_ASSERT(cond)</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 : #    define AWS_POSTCONDITION2(cond, expl) AWS_ASSERT(cond)</span>
+<span class="lineNum">      97 </span><span class="lineCov">    5067471 : #    define AWS_POSTCONDITION1(cond) AWS_ASSERT(cond)</span>
 <span class="lineNum">      98 </span>            : #    define AWS_FATAL_POSTCONDITION2(cond, expl) AWS_FATAL_ASSERT(cond)
-<span class="lineNum">      99 </span><span class="lineCov">        114 : #    define AWS_FATAL_POSTCONDITION1(cond) AWS_FATAL_ASSERT(cond)</span>
+<span class="lineNum">      99 </span><span class="lineCov">       1026 : #    define AWS_FATAL_POSTCONDITION1(cond) AWS_FATAL_ASSERT(cond)</span>
 <span class="lineNum">     100 </span>            : /**
-<span class="lineNum">     101 </span>            :  * The C runtime does not give a way to check these properties,
-<span class="lineNum">     102 </span>            :  * but we can at least check that the pointer is valid. */
-<span class="lineNum">     103 </span><span class="lineCov">    2309758 : #    define AWS_MEM_IS_READABLE(base, len) (((len) == 0) || (base))</span>
-<span class="lineNum">     104 </span><span class="lineCov">    2686378 : #    define AWS_MEM_IS_WRITABLE(base, len) (((len) == 0) || (base))</span>
-<span class="lineNum">     105 </span>            : #endif /* CBMC */
-<span class="lineNum">     106 </span>            : 
-<span class="lineNum">     107 </span>            : /* Logical consequence. */
-<span class="lineNum">     108 </span><span class="lineCov">    4757560 : #define AWS_IMPLIES(a, b) (!(a) || (b))</span>
-<span class="lineNum">     109 </span>            : 
-<span class="lineNum">     110 </span>            : /**
-<span class="lineNum">     111 </span>            :  * If and only if (iff) is a biconditional logical connective between statements a and b.
-<span class="lineNum">     112 </span>            :  * We need double negations (!!) here to work correctly for non-Boolean a and b values.
-<span class="lineNum">     113 </span>            :  * Equivalent to (AWS_IMPLIES(a, b) &amp;&amp; AWS_IMPLIES(b, a)).
-<span class="lineNum">     114 </span>            :  */
-<span class="lineNum">     115 </span>            : #define AWS_IFF(a, b) (!!(a) == !!(b))
+<span class="lineNum">     101 </span>            :  * These macros should not be used in is_valid functions.
+<span class="lineNum">     102 </span>            :  * All validate functions are also used in assumptions for CBMC proofs,
+<span class="lineNum">     103 </span>            :  * which should not contain __CPROVER_*_ok primitives. The use of these primitives
+<span class="lineNum">     104 </span>            :  * in assumptions may lead to spurious results.
+<span class="lineNum">     105 </span>            :  * The C runtime does not give a way to check these properties,
+<span class="lineNum">     106 </span>            :  * but we can at least check that the pointer is valid. */
+<span class="lineNum">     107 </span>            : #    define AWS_MEM_IS_READABLE_CHECK(base, len) (((len) == 0) || (base))
+<span class="lineNum">     108 </span>            : #    define AWS_MEM_IS_WRITABLE_CHECK(base, len) (((len) == 0) || (base))
+<span class="lineNum">     109 </span>            : #endif /* CBMC */
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span>            : /**
+<span class="lineNum">     112 </span>            :  * These macros can safely be used in validate functions.
+<span class="lineNum">     113 </span>            :  */
+<span class="lineNum">     114 </span><span class="lineCov">   14955374 : #define AWS_MEM_IS_READABLE(base, len) (((len) == 0) || (base))</span>
+<span class="lineNum">     115 </span><span class="lineCov">   10581171 : #define AWS_MEM_IS_WRITABLE(base, len) (((len) == 0) || (base))</span>
 <span class="lineNum">     116 </span>            : 
-<span class="lineNum">     117 </span>            : #define AWS_RETURN_ERROR_IF_IMPL(type, cond, err, explanation)                                                         \
-<span class="lineNum">     118 </span><span class="lineCov">     228277 :     do {                                                                                                               \</span>
-<span class="lineNum">     119 </span><span class="lineCov">     228277 :         if (!(cond)) {                                                                                                 \</span>
-<span class="lineNum">     120 </span><span class="lineNoCov">          0 :             return aws_raise_error(err);                                                                               \</span>
-<span class="lineNum">     121 </span><span class="lineNoCov">          0 :         }                                                                                                              \</span>
-<span class="lineNum">     122 </span><span class="lineCov">     228277 :     } while (0)</span>
-<span class="lineNum">     123 </span>            : 
-<span class="lineNum">     124 </span>            : #define AWS_RETURN_ERROR_IF3(cond, err, explanation) AWS_RETURN_ERROR_IF_IMPL(&quot;InternalCheck&quot;, cond, err, explanation)
-<span class="lineNum">     125 </span>            : #define AWS_RETURN_ERROR_IF2(cond, err) AWS_RETURN_ERROR_IF3(cond, err, #cond &quot; check failed&quot;)
-<span class="lineNum">     126 </span>            : #define AWS_RETURN_ERROR_IF(...) CALL_OVERLOAD(AWS_RETURN_ERROR_IF, __VA_ARGS__)
-<span class="lineNum">     127 </span>            : 
-<span class="lineNum">     128 </span><span class="lineCov">     228277 : #define AWS_ERROR_PRECONDITION3(cond, err, explanation) AWS_RETURN_ERROR_IF_IMPL(&quot;Precondition&quot;, cond, err, explanation)</span>
-<span class="lineNum">     129 </span><span class="lineCov">     228277 : #define AWS_ERROR_PRECONDITION2(cond, err) AWS_ERROR_PRECONDITION3(cond, err, #cond &quot; check failed&quot;)</span>
-<span class="lineNum">     130 </span><span class="lineCov">     228277 : #define AWS_ERROR_PRECONDITION1(cond) AWS_ERROR_PRECONDITION2(cond, AWS_ERROR_INVALID_ARGUMENT)</span>
-<span class="lineNum">     131 </span>            : 
-<span class="lineNum">     132 </span>            : #define AWS_ERROR_POSTCONDITION3(cond, err, explanation)                                                               \
-<span class="lineNum">     133 </span>            :     AWS_RETURN_ERROR_IF_IMPL(&quot;Postcondition&quot;, cond, err, explanation)
-<span class="lineNum">     134 </span>            : #define AWS_ERROR_POSTCONDITION2(cond, err) AWS_ERROR_POSTCONDITION3(cond, err, #cond &quot; check failed&quot;)
-<span class="lineNum">     135 </span>            : #define AWS_ERROR_POSTCONDITION1(cond) AWS_ERROR_POSTCONDITION2(cond, AWS_ERROR_INVALID_ARGUMENT)
-<span class="lineNum">     136 </span>            : 
-<span class="lineNum">     137 </span>            : // The UNUSED is used to silence the complains of GCC for zero arguments in variadic macro
-<span class="lineNum">     138 </span><span class="lineCov">    1412537 : #define AWS_PRECONDITION(...) CALL_OVERLOAD(AWS_PRECONDITION, __VA_ARGS__)</span>
-<span class="lineNum">     139 </span><span class="lineCov">     908268 : #define AWS_FATAL_PRECONDITION(...) CALL_OVERLOAD(AWS_FATAL_PRECONDITION, __VA_ARGS__)</span>
-<span class="lineNum">     140 </span><span class="lineCov">    1090425 : #define AWS_POSTCONDITION(...) CALL_OVERLOAD(AWS_POSTCONDITION, __VA_ARGS__)</span>
-<span class="lineNum">     141 </span><span class="lineCov">        114 : #define AWS_FATAL_POSTCONDITION(...) CALL_OVERLOAD(AWS_FATAL_POSTCONDITION, __VA_ARGS__)</span>
-<span class="lineNum">     142 </span><span class="lineCov">     228277 : #define AWS_ERROR_PRECONDITION(...) CALL_OVERLOAD(AWS_ERROR_PRECONDITION, __VA_ARGS__)</span>
-<span class="lineNum">     143 </span>            : #define AWS_ERROR_POSTCONDITION(...) CALL_OVERLOAD(AWS_ERROR_PRECONDITION, __VA_ARGS__)
-<span class="lineNum">     144 </span>            : 
-<span class="lineNum">     145 </span>            : #define AWS_RETURN_WITH_POSTCONDITION(_rval, ...)                                                                      \
-<span class="lineNum">     146 </span><span class="lineNoCov">          0 :     do {                                                                                                               \</span>
-<span class="lineNum">     147 </span><span class="lineNoCov">          0 :         AWS_POSTCONDITION(__VA_ARGS__);                                                                                \</span>
-<span class="lineNum">     148 </span><span class="lineNoCov">          0 :         return _rval;                                                                                                  \</span>
-<span class="lineNum">     149 </span><span class="lineNoCov">          0 :     } while (0)</span>
-<span class="lineNum">     150 </span>            : 
-<span class="lineNum">     151 </span>            : #define AWS_SUCCEED_WITH_POSTCONDITION(...) AWS_RETURN_WITH_POSTCONDITION(AWS_OP_SUCCESS, __VA_ARGS__)
-<span class="lineNum">     152 </span>            : 
-<span class="lineNum">     153 </span><span class="lineNoCov">          0 : #define AWS_OBJECT_PTR_IS_READABLE(ptr) AWS_MEM_IS_READABLE((ptr), sizeof(*(ptr)))</span>
-<span class="lineNum">     154 </span>            : #define AWS_OBJECT_PTR_IS_WRITABLE(ptr) AWS_MEM_IS_WRITABLE((ptr), sizeof(*(ptr)))
-<span class="lineNum">     155 </span>            : 
-<span class="lineNum">     156 </span>            : #endif /* AWS_COMMON_ASSERT_H */
+<span class="lineNum">     117 </span>            : /* Logical consequence. */
+<span class="lineNum">     118 </span><span class="lineCov">   15044888 : #define AWS_IMPLIES(a, b) (!(a) || (b))</span>
+<span class="lineNum">     119 </span>            : 
+<span class="lineNum">     120 </span>            : /**
+<span class="lineNum">     121 </span>            :  * If and only if (iff) is a biconditional logical connective between statements a and b.
+<span class="lineNum">     122 </span>            :  * We need double negations (!!) here to work correctly for non-Boolean a and b values.
+<span class="lineNum">     123 </span>            :  * Equivalent to (AWS_IMPLIES(a, b) &amp;&amp; AWS_IMPLIES(b, a)).
+<span class="lineNum">     124 </span>            :  */
+<span class="lineNum">     125 </span>            : #define AWS_IFF(a, b) (!!(a) == !!(b))
+<span class="lineNum">     126 </span>            : 
+<span class="lineNum">     127 </span>            : #define AWS_RETURN_ERROR_IF_IMPL(type, cond, err, explanation)                                                         \
+<span class="lineNum">     128 </span><span class="lineCov">     581062 :     do {                                                                                                               \</span>
+<span class="lineNum">     129 </span><span class="lineCov">     581062 :         if (!(cond)) {                                                                                                 \</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :             return aws_raise_error(err);                                                                               \</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :         }                                                                                                              \</span>
+<span class="lineNum">     132 </span><span class="lineCov">     581062 :     } while (0)</span>
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span>            : #define AWS_RETURN_ERROR_IF3(cond, err, explanation) AWS_RETURN_ERROR_IF_IMPL(&quot;InternalCheck&quot;, cond, err, explanation)
+<span class="lineNum">     135 </span>            : #define AWS_RETURN_ERROR_IF2(cond, err) AWS_RETURN_ERROR_IF3(cond, err, #cond &quot; check failed&quot;)
+<span class="lineNum">     136 </span>            : #define AWS_RETURN_ERROR_IF(...) CALL_OVERLOAD(AWS_RETURN_ERROR_IF, __VA_ARGS__)
+<span class="lineNum">     137 </span>            : 
+<span class="lineNum">     138 </span><span class="lineCov">     581062 : #define AWS_ERROR_PRECONDITION3(cond, err, explanation) AWS_RETURN_ERROR_IF_IMPL(&quot;Precondition&quot;, cond, err, explanation)</span>
+<span class="lineNum">     139 </span><span class="lineCov">     581062 : #define AWS_ERROR_PRECONDITION2(cond, err) AWS_ERROR_PRECONDITION3(cond, err, #cond &quot; check failed&quot;)</span>
+<span class="lineNum">     140 </span><span class="lineCov">     577971 : #define AWS_ERROR_PRECONDITION1(cond) AWS_ERROR_PRECONDITION2(cond, AWS_ERROR_INVALID_ARGUMENT)</span>
+<span class="lineNum">     141 </span>            : 
+<span class="lineNum">     142 </span>            : #define AWS_ERROR_POSTCONDITION3(cond, err, explanation)                                                               \
+<span class="lineNum">     143 </span>            :     AWS_RETURN_ERROR_IF_IMPL(&quot;Postcondition&quot;, cond, err, explanation)
+<span class="lineNum">     144 </span>            : #define AWS_ERROR_POSTCONDITION2(cond, err) AWS_ERROR_POSTCONDITION3(cond, err, #cond &quot; check failed&quot;)
+<span class="lineNum">     145 </span>            : #define AWS_ERROR_POSTCONDITION1(cond) AWS_ERROR_POSTCONDITION2(cond, AWS_ERROR_INVALID_ARGUMENT)
+<span class="lineNum">     146 </span>            : 
+<span class="lineNum">     147 </span>            : // The UNUSED is used to silence the complains of GCC for zero arguments in variadic macro
+<span class="lineNum">     148 </span><span class="lineCov">   10105889 : #define AWS_PRECONDITION(...) CALL_OVERLOAD(AWS_PRECONDITION, __VA_ARGS__)</span>
+<span class="lineNum">     149 </span><span class="lineCov">    3806981 : #define AWS_FATAL_PRECONDITION(...) CALL_OVERLOAD(AWS_FATAL_PRECONDITION, __VA_ARGS__)</span>
+<span class="lineNum">     150 </span><span class="lineCov">    5067471 : #define AWS_POSTCONDITION(...) CALL_OVERLOAD(AWS_POSTCONDITION, __VA_ARGS__)</span>
+<span class="lineNum">     151 </span><span class="lineCov">       1026 : #define AWS_FATAL_POSTCONDITION(...) CALL_OVERLOAD(AWS_FATAL_POSTCONDITION, __VA_ARGS__)</span>
+<span class="lineNum">     152 </span><span class="lineCov">     581062 : #define AWS_ERROR_PRECONDITION(...) CALL_OVERLOAD(AWS_ERROR_PRECONDITION, __VA_ARGS__)</span>
+<span class="lineNum">     153 </span>            : #define AWS_ERROR_POSTCONDITION(...) CALL_OVERLOAD(AWS_ERROR_PRECONDITION, __VA_ARGS__)
+<span class="lineNum">     154 </span>            : 
+<span class="lineNum">     155 </span>            : #define AWS_RETURN_WITH_POSTCONDITION(_rval, ...)                                                                      \
+<span class="lineNum">     156 </span><span class="lineCov">     661510 :     do {                                                                                                               \</span>
+<span class="lineNum">     157 </span><span class="lineCov">     562563 :         AWS_POSTCONDITION(__VA_ARGS__);                                                                                \</span>
+<span class="lineNum">     158 </span><span class="lineCov">     562563 :         return _rval;                                                                                                  \</span>
+<span class="lineNum">     159 </span><span class="lineCov">     562563 :     } while (0)</span>
+<span class="lineNum">     160 </span>            : 
+<span class="lineNum">     161 </span><span class="lineCov">      98947 : #define AWS_SUCCEED_WITH_POSTCONDITION(...) AWS_RETURN_WITH_POSTCONDITION(AWS_OP_SUCCESS, __VA_ARGS__)</span>
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 : #define AWS_OBJECT_PTR_IS_READABLE(ptr) AWS_MEM_IS_READABLE((ptr), sizeof(*(ptr)))</span>
+<span class="lineNum">     164 </span><span class="lineCov">     300000 : #define AWS_OBJECT_PTR_IS_WRITABLE(ptr) AWS_MEM_IS_WRITABLE((ptr), sizeof(*(ptr)))</span>
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span>            : #endif /* AWS_COMMON_ASSERT_H */
 </pre>
       </td>
     </tr>

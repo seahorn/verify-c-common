@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -84,8 +84,8 @@
 <span class="lineNum">      22 </span>            : static const char *ISO_8601_SHORT_BASIC_DATE_FORMAT_STR = &quot;%Y%m%d&quot;;
 <span class="lineNum">      23 </span>            : 
 <span class="lineNum">      24 </span>            : #define STR_TRIPLET_TO_INDEX(str)                                                                                      \
-<span class="lineNum">      25 </span><span class="lineNoCov">          0 :     (((uint32_t)(uint8_t)tolower((str)[0]) &lt;&lt; 0) | ((uint32_t)(uint8_t)tolower((str)[1]) &lt;&lt; 8) |                       \</span>
-<span class="lineNum">      26 </span><span class="lineNoCov">          0 :      ((uint32_t)(uint8_t)tolower((str)[2]) &lt;&lt; 16))</span>
+<span class="lineNum">      25 </span><span class="lineNoCov">          0 :     (((uint32_t)tolower((uint8_t)((str)[0])) &lt;&lt; 0) | ((uint32_t)tolower((uint8_t)((str)[1])) &lt;&lt; 8) |                   \</span>
+<span class="lineNum">      26 </span><span class="lineNoCov">          0 :      ((uint32_t)tolower((uint8_t)((str)[2])) &lt;&lt; 16))</span>
 <span class="lineNum">      27 </span>            : 
 <span class="lineNum">      28 </span>            : static uint32_t s_jan = 0;
 <span class="lineNum">      29 </span>            : static uint32_t s_feb = 0;
@@ -202,7 +202,7 @@
 <span class="lineNum">     140 </span><span class="lineNoCov">          0 :         }</span>
 <span class="lineNum">     141 </span><span class="lineNoCov">          0 : </span>
 <span class="lineNum">     142 </span><span class="lineNoCov">          0 :         if (len == 2) {</span>
-<span class="lineNum">     143 </span><span class="lineNoCov">          0 :             return tolower(str[0]) == 'u' &amp;&amp; tolower(str[1]) == 't';</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :             return tolower((uint8_t)str[0]) == 'u' &amp;&amp; tolower((uint8_t)str[1]) == 't';</span>
 <span class="lineNum">     144 </span><span class="lineNoCov">          0 :         }</span>
 <span class="lineNum">     145 </span><span class="lineNoCov">          0 : </span>
 <span class="lineNum">     146 </span><span class="lineNoCov">          0 :         if (len &lt; 3) {</span>

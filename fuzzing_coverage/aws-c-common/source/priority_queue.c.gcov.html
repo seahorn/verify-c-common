@@ -1,0 +1,476 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - aws-c-common/source/priority_queue.c</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">aws-c-common/source</a> - priority_queue.c<span style="font-size: 80%;"> (source / <a href="priority_queue.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">81</td>
+            <td class="headerCovTableEntry">345</td>
+            <td class="headerCovTableEntryLo">23.5 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntry">19</td>
+            <td class="headerCovTableEntryLo">42.1 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /**</a>
+<span class="lineNum">       2 </span>            :  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+<span class="lineNum">       3 </span>            :  * SPDX-License-Identifier: Apache-2.0.
+<span class="lineNum">       4 </span>            :  */
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : #include &lt;aws/common/priority_queue.h&gt;
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span><span class="lineNoCov">          0 : #define PARENT_OF(index) (((index)&amp;1) ? (index) &gt;&gt; 1 : (index) &gt; 1 ? ((index)-2) &gt;&gt; 1 : 0)</span>
+<span class="lineNum">      11 </span><span class="lineNoCov">          0 : #define LEFT_OF(index) (((index) &lt;&lt; 1) + 1)</span>
+<a name="12"><span class="lineNum">      12 </span><span class="lineNoCov">          0 : #define RIGHT_OF(index) (((index) &lt;&lt; 1) + 2)</span></a>
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span><span class="lineNoCov">          0 : static void s_swap(struct aws_priority_queue *queue, size_t a, size_t b) {</span>
+<span class="lineNum">      15 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">      16 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(a &lt; queue-&gt;container.length);</span>
+<span class="lineNum">      17 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(b &lt; queue-&gt;container.length);</span>
+<span class="lineNum">      18 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(aws_priority_queue_backpointer_index_valid(queue, a));</span>
+<span class="lineNum">      19 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(aws_priority_queue_backpointer_index_valid(queue, b));</span>
+<span class="lineNum">      20 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      21 </span><span class="lineNoCov">          0 :     aws_array_list_swap(&amp;queue-&gt;container, a, b);</span>
+<span class="lineNum">      22 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      23 </span><span class="lineNoCov">          0 :     /* Invariant: If the backpointer array is initialized, we have enough room for all elements */</span>
+<span class="lineNum">      24 </span><span class="lineNoCov">          0 :     if (!AWS_IS_ZEROED(queue-&gt;backpointers)) {</span>
+<span class="lineNum">      25 </span><span class="lineNoCov">          0 :         AWS_ASSERT(queue-&gt;backpointers.length &gt; a);</span>
+<span class="lineNum">      26 </span><span class="lineNoCov">          0 :         AWS_ASSERT(queue-&gt;backpointers.length &gt; b);</span>
+<span class="lineNum">      27 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      28 </span><span class="lineNoCov">          0 :         struct aws_priority_queue_node **bp_a = &amp;((struct aws_priority_queue_node **)queue-&gt;backpointers.data)[a];</span>
+<span class="lineNum">      29 </span><span class="lineNoCov">          0 :         struct aws_priority_queue_node **bp_b = &amp;((struct aws_priority_queue_node **)queue-&gt;backpointers.data)[b];</span>
+<span class="lineNum">      30 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      31 </span><span class="lineNoCov">          0 :         struct aws_priority_queue_node *tmp = *bp_a;</span>
+<span class="lineNum">      32 </span><span class="lineNoCov">          0 :         *bp_a = *bp_b;</span>
+<span class="lineNum">      33 </span><span class="lineNoCov">          0 :         *bp_b = tmp;</span>
+<span class="lineNum">      34 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      35 </span><span class="lineNoCov">          0 :         if (*bp_a) {</span>
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 :             (*bp_a)-&gt;current_index = a;</span>
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">      38 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :         if (*bp_b) {</span>
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 :             (*bp_b)-&gt;current_index = b;</span>
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">      44 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_priority_queue_backpointer_index_valid(queue, a));</span>
+<span class="lineNum">      45 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_priority_queue_backpointer_index_valid(queue, b));</span>
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">      47 </span>            : 
+<a name="48"><span class="lineNum">      48 </span>            : /* Precondition: with the exception of the given root element, the container must be</a>
+<span class="lineNum">      49 </span>            :  * in heap order */
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 : static bool s_sift_down(struct aws_priority_queue *queue, size_t root) {</span>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(root &lt; queue-&gt;container.length);</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :     bool did_move = false;</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :     size_t len = aws_array_list_length(&amp;queue-&gt;container);</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :     while (LEFT_OF(root) &lt; len) {</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :         size_t left = LEFT_OF(root);</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :         size_t right = RIGHT_OF(root);</span>
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :         size_t first = root;</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :         void *first_item = NULL, *other_item = NULL;</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :         aws_array_list_get_at_ptr(&amp;queue-&gt;container, &amp;first_item, root);</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :         aws_array_list_get_at_ptr(&amp;queue-&gt;container, &amp;other_item, left);</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         if (queue-&gt;pred(first_item, other_item) &gt; 0) {</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :             first = left;</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :             first_item = other_item;</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :         if (right &lt; len) {</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :             aws_array_list_get_at_ptr(&amp;queue-&gt;container, &amp;other_item, right);</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :             /* choose the larger/smaller of the two in case of a max/min heap</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :              * respectively */</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :             if (queue-&gt;pred(first_item, other_item) &gt; 0) {</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :                 first = right;</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :                 first_item = other_item;</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :         if (first != root) {</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :             s_swap(queue, first, root);</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :             did_move = true;</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :             root = first;</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :         } else {</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :     return did_move;</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 : }</span>
+<a name="95"><span class="lineNum">      95 </span>            : </a>
+<span class="lineNum">      96 </span>            : /* Precondition: Elements prior to the specified index must be in heap order. */
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 : static bool s_sift_up(struct aws_priority_queue *queue, size_t index) {</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(index &lt; queue-&gt;container.length);</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :     bool did_move = false;</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :     void *parent_item, *child_item;</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :     size_t parent = PARENT_OF(index);</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :     while (index) {</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :         /*</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :          * These get_ats are guaranteed to be successful; if they are not, we have</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :          * serious state corruption, so just abort.</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :          */</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :         if (aws_array_list_get_at_ptr(&amp;queue-&gt;container, &amp;parent_item, parent) ||</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :             aws_array_list_get_at_ptr(&amp;queue-&gt;container, &amp;child_item, index)) {</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :             abort();</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :         if (queue-&gt;pred(parent_item, child_item) &gt; 0) {</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :             s_swap(queue, index, parent);</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :             did_move = true;</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :             index = parent;</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :             parent = PARENT_OF(index);</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :         } else {</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :     return did_move;</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     129 </span>            : 
+<span class="lineNum">     130 </span>            : /*
+<span class="lineNum">     131 </span>            :  * Precondition: With the exception of the given index, the heap condition holds for all elements.
+<a name="132"><span class="lineNum">     132 </span>            :  * In particular, the parent of the current index is a predecessor of all children of the current index.</a>
+<span class="lineNum">     133 </span>            :  */
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 : static void s_sift_either(struct aws_priority_queue *queue, size_t index) {</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(index &lt; queue-&gt;container.length);</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :     if (!index || !s_sift_up(queue, index)) {</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :         s_sift_down(queue, index);</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     144 </span>            : 
+<span class="lineNum">     145 </span>            : int aws_priority_queue_init_dynamic(
+<span class="lineNum">     146 </span>            :     struct aws_priority_queue *queue,
+<span class="lineNum">     147 </span>            :     struct aws_allocator *alloc,
+<a name="148"><span class="lineNum">     148 </span>            :     size_t default_size,</a>
+<span class="lineNum">     149 </span>            :     size_t item_size,
+<span class="lineNum">     150 </span><span class="lineCov">        505 :     aws_priority_queue_compare_fn *pred) {</span>
+<span class="lineNum">     151 </span><span class="lineCov">        505 : </span>
+<span class="lineNum">     152 </span><span class="lineCov">        505 :     AWS_FATAL_PRECONDITION(queue != NULL);</span>
+<span class="lineNum">     153 </span><span class="lineCov">        505 :     AWS_FATAL_PRECONDITION(alloc != NULL);</span>
+<span class="lineNum">     154 </span><span class="lineCov">        505 :     AWS_FATAL_PRECONDITION(item_size &gt; 0);</span>
+<span class="lineNum">     155 </span><span class="lineCov">        505 : </span>
+<span class="lineNum">     156 </span><span class="lineCov">        505 :     queue-&gt;pred = pred;</span>
+<span class="lineNum">     157 </span><span class="lineCov">        505 :     AWS_ZERO_STRUCT(queue-&gt;backpointers);</span>
+<span class="lineNum">     158 </span><span class="lineCov">        505 : </span>
+<span class="lineNum">     159 </span><span class="lineCov">        505 :     int ret = aws_array_list_init_dynamic(&amp;queue-&gt;container, alloc, default_size, item_size);</span>
+<span class="lineNum">     160 </span><span class="lineCov">        505 :     if (ret == AWS_OP_SUCCESS) {</span>
+<span class="lineNum">     161 </span><span class="lineCov">        505 :         AWS_POSTCONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     162 </span><span class="lineCov">        505 :     } else {</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :         AWS_POSTCONDITION(AWS_IS_ZEROED(queue-&gt;container));</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :         AWS_POSTCONDITION(AWS_IS_ZEROED(queue-&gt;backpointers));</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     166 </span><span class="lineCov">        505 :     return ret;</span>
+<span class="lineNum">     167 </span><span class="lineCov">        505 : }</span>
+<span class="lineNum">     168 </span>            : 
+<span class="lineNum">     169 </span>            : void aws_priority_queue_init_static(
+<span class="lineNum">     170 </span>            :     struct aws_priority_queue *queue,
+<span class="lineNum">     171 </span>            :     void *heap,
+<a name="172"><span class="lineNum">     172 </span>            :     size_t item_count,</a>
+<span class="lineNum">     173 </span>            :     size_t item_size,
+<span class="lineNum">     174 </span><span class="lineCov">      13137 :     aws_priority_queue_compare_fn *pred) {</span>
+<span class="lineNum">     175 </span><span class="lineCov">      13137 : </span>
+<span class="lineNum">     176 </span><span class="lineCov">      13137 :     AWS_FATAL_PRECONDITION(queue != NULL);</span>
+<span class="lineNum">     177 </span><span class="lineCov">      13137 :     AWS_FATAL_PRECONDITION(heap != NULL);</span>
+<span class="lineNum">     178 </span><span class="lineCov">      13137 :     AWS_FATAL_PRECONDITION(item_count &gt; 0);</span>
+<span class="lineNum">     179 </span><span class="lineCov">      13137 :     AWS_FATAL_PRECONDITION(item_size &gt; 0);</span>
+<span class="lineNum">     180 </span><span class="lineCov">      13137 : </span>
+<span class="lineNum">     181 </span><span class="lineCov">      13137 :     queue-&gt;pred = pred;</span>
+<span class="lineNum">     182 </span><span class="lineCov">      13137 :     AWS_ZERO_STRUCT(queue-&gt;backpointers);</span>
+<span class="lineNum">     183 </span><span class="lineCov">      13137 : </span>
+<span class="lineNum">     184 </span><span class="lineCov">      13137 :     aws_array_list_init_static(&amp;queue-&gt;container, heap, item_count, item_size);</span>
+<span class="lineNum">     185 </span><span class="lineCov">      13137 : </span>
+<span class="lineNum">     186 </span><span class="lineCov">      13137 :     AWS_POSTCONDITION(aws_priority_queue_is_valid(queue));</span>
+<a name="187"><span class="lineNum">     187 </span><span class="lineCov">      13137 : }</span></a>
+<span class="lineNum">     188 </span>            : 
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 : bool aws_priority_queue_backpointer_index_valid(const struct aws_priority_queue *const queue, size_t index) {</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :     if (AWS_IS_ZEROED(queue-&gt;backpointers)) {</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :         return true;</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :     if (index &lt; queue-&gt;backpointers.length) {</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :         struct aws_priority_queue_node *node = ((struct aws_priority_queue_node **)queue-&gt;backpointers.data)[index];</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :         return (node == NULL) || AWS_MEM_IS_WRITABLE(node, sizeof(struct aws_priority_queue_node));</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :     return false;</span>
+<a name="198"><span class="lineNum">     198 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     199 </span>            : 
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 : bool aws_priority_queue_backpointers_valid_deep(const struct aws_priority_queue *const queue) {</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :     if (!queue) {</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :         return false;</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :     for (size_t i = 0; i &lt; queue-&gt;backpointers.length; i++) {</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :         if (!aws_priority_queue_backpointer_index_valid(queue, i)) {</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :             return false;</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :     return true;</span>
+<a name="210"><span class="lineNum">     210 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     211 </span>            : 
+<span class="lineNum">     212 </span><span class="lineCov">     243790 : bool aws_priority_queue_backpointers_valid(const struct aws_priority_queue *const queue) {</span>
+<span class="lineNum">     213 </span><span class="lineCov">     243790 :     if (!queue) {</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :         return false;</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     216 </span><span class="lineCov">     243790 : </span>
+<span class="lineNum">     217 </span><span class="lineCov">     243790 :     /* Internal container validity */</span>
+<span class="lineNum">     218 </span><span class="lineCov">     243790 :     bool backpointer_list_is_valid =</span>
+<span class="lineNum">     219 </span><span class="lineCov">     243790 :         ((aws_array_list_is_valid(&amp;queue-&gt;backpointers) &amp;&amp; (queue-&gt;backpointers.current_size != 0) &amp;&amp;</span>
+<span class="lineNum">     220 </span><span class="lineCov">     243790 :           (queue-&gt;backpointers.data != NULL)));</span>
+<span class="lineNum">     221 </span><span class="lineCov">     243790 : </span>
+<span class="lineNum">     222 </span><span class="lineCov">     243790 :     /* Backpointer struct should either be zero or should be</span>
+<span class="lineNum">     223 </span><span class="lineCov">     243790 :      * initialized to be at most as long as the container, and having</span>
+<span class="lineNum">     224 </span><span class="lineCov">     243790 :      * as elements potentially null pointers to</span>
+<span class="lineNum">     225 </span><span class="lineCov">     243790 :      * aws_priority_queue_nodes */</span>
+<span class="lineNum">     226 </span><span class="lineCov">     243790 :     bool backpointer_list_item_size = queue-&gt;backpointers.item_size == sizeof(struct aws_priority_queue_node *);</span>
+<span class="lineNum">     227 </span><span class="lineCov">     243790 :     bool lists_equal_lengths = queue-&gt;backpointers.length == queue-&gt;container.length;</span>
+<span class="lineNum">     228 </span><span class="lineCov">     243790 :     bool backpointers_non_zero_current_size = queue-&gt;backpointers.current_size &gt; 0;</span>
+<span class="lineNum">     229 </span><span class="lineCov">     243790 : </span>
+<span class="lineNum">     230 </span><span class="lineCov">     243790 :     /* This check must be guarded, as it is not efficient, neither</span>
+<span class="lineNum">     231 </span><span class="lineCov">     243790 :      * when running tests nor CBMC */</span>
+<span class="lineNum">     232 </span>            : #if (AWS_DEEP_CHECKS == 1)
+<span class="lineNum">     233 </span>            :     bool backpointers_valid_deep = aws_priority_queue_backpointers_valid_deep(queue);
+<span class="lineNum">     234 </span>            : #else
+<span class="lineNum">     235 </span>            :     bool backpointers_valid_deep = true;
+<span class="lineNum">     236 </span><span class="lineCov">     243790 : #endif</span>
+<span class="lineNum">     237 </span><span class="lineCov">     243790 :     bool backpointers_zero =</span>
+<span class="lineNum">     238 </span><span class="lineCov">     243790 :         (queue-&gt;backpointers.current_size == 0 &amp;&amp; queue-&gt;backpointers.length == 0 &amp;&amp; queue-&gt;backpointers.data == NULL);</span>
+<span class="lineNum">     239 </span><span class="lineCov">     243790 :     bool backpointer_struct_is_valid =</span>
+<span class="lineNum">     240 </span><span class="lineCov">     243790 :         backpointers_zero || (backpointer_list_item_size &amp;&amp; lists_equal_lengths &amp;&amp; backpointers_non_zero_current_size &amp;&amp;</span>
+<span class="lineNum">     241 </span><span class="lineCov">     186766 :                               backpointers_valid_deep);</span>
+<span class="lineNum">     242 </span><span class="lineCov">     243790 : </span>
+<span class="lineNum">     243 </span><span class="lineCov">     243790 :     return ((backpointer_list_is_valid &amp;&amp; backpointer_struct_is_valid) || AWS_IS_ZEROED(queue-&gt;backpointers));</span>
+<a name="244"><span class="lineNum">     244 </span><span class="lineCov">     243790 : }</span></a>
+<span class="lineNum">     245 </span>            : 
+<span class="lineNum">     246 </span><span class="lineCov">     243790 : bool aws_priority_queue_is_valid(const struct aws_priority_queue *const queue) {</span>
+<span class="lineNum">     247 </span><span class="lineCov">     243790 :     /* Pointer validity checks */</span>
+<span class="lineNum">     248 </span><span class="lineCov">     243790 :     if (!queue) {</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :         return false;</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     251 </span><span class="lineCov">     243790 :     bool pred_is_valid = (queue-&gt;pred != NULL);</span>
+<span class="lineNum">     252 </span><span class="lineCov">     243790 :     bool container_is_valid = aws_array_list_is_valid(&amp;queue-&gt;container);</span>
+<span class="lineNum">     253 </span><span class="lineCov">     243790 : </span>
+<span class="lineNum">     254 </span><span class="lineCov">     243790 :     bool backpointers_valid = aws_priority_queue_backpointers_valid(queue);</span>
+<span class="lineNum">     255 </span><span class="lineCov">     243790 :     return pred_is_valid &amp;&amp; container_is_valid &amp;&amp; backpointers_valid;</span>
+<a name="256"><span class="lineNum">     256 </span><span class="lineCov">     243790 : }</span></a>
+<span class="lineNum">     257 </span>            : 
+<span class="lineNum">     258 </span><span class="lineCov">        228 : void aws_priority_queue_clean_up(struct aws_priority_queue *queue) {</span>
+<span class="lineNum">     259 </span><span class="lineCov">        228 :     aws_array_list_clean_up(&amp;queue-&gt;container);</span>
+<span class="lineNum">     260 </span><span class="lineCov">        228 :     if (!AWS_IS_ZEROED(queue-&gt;backpointers)) {</span>
+<span class="lineNum">     261 </span><span class="lineCov">        228 :         aws_array_list_clean_up(&amp;queue-&gt;backpointers);</span>
+<span class="lineNum">     262 </span><span class="lineCov">        228 :     }</span>
+<a name="263"><span class="lineNum">     263 </span><span class="lineCov">        228 : }</span></a>
+<span class="lineNum">     264 </span>            : 
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 : int aws_priority_queue_push(struct aws_priority_queue *queue, void *item) {</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(item &amp;&amp; AWS_MEM_IS_READABLE(item, queue-&gt;container.item_size));</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :     int rval = aws_priority_queue_push_ref(queue, item, NULL);</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :     return rval;</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     272 </span>            : 
+<span class="lineNum">     273 </span>            : int aws_priority_queue_push_ref(
+<a name="274"><span class="lineNum">     274 </span>            :     struct aws_priority_queue *queue,</a>
+<span class="lineNum">     275 </span>            :     void *item,
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :     struct aws_priority_queue_node *backpointer) {</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(item &amp;&amp; AWS_MEM_IS_READABLE(item, queue-&gt;container.item_size));</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :     int err = aws_array_list_push_back(&amp;queue-&gt;container, item);</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :     if (err) {</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :         AWS_POSTCONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :         return err;</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :     size_t index = aws_array_list_length(&amp;queue-&gt;container) - 1;</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :     if (backpointer &amp;&amp; !queue-&gt;backpointers.alloc) {</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :         if (!queue-&gt;container.alloc) {</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :             aws_raise_error(AWS_ERROR_UNSUPPORTED_OPERATION);</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :             goto backpointer_update_failed;</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :         if (aws_array_list_init_dynamic(</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :                 &amp;queue-&gt;backpointers, queue-&gt;container.alloc, index + 1, sizeof(struct aws_priority_queue_node *))) {</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :             goto backpointer_update_failed;</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :         /* When we initialize the backpointers array we need to zero out all existing entries */</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :         memset(queue-&gt;backpointers.data, 0, queue-&gt;backpointers.current_size);</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :     /*</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :      * Once we have any backpointers, we want to make sure we always have room in the backpointers array</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :      * for all elements; otherwise, sift_down gets complicated if it runs out of memory when sifting an</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :      * element with a backpointer down in the array.</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :      */</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :     if (!AWS_IS_ZEROED(queue-&gt;backpointers)) {</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :         if (aws_array_list_set_at(&amp;queue-&gt;backpointers, &amp;backpointer, index)) {</span>
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :             goto backpointer_update_failed;</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :     if (backpointer) {</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :         backpointer-&gt;current_index = index;</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :     s_sift_up(queue, aws_array_list_length(&amp;queue-&gt;container) - 1);</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :     return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 : backpointer_update_failed:</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :     /* Failed to initialize or grow the backpointer array, back out the node addition */</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :     aws_array_list_pop_back(&amp;queue-&gt;container);</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :     return AWS_OP_ERR;</span>
+<a name="327"><span class="lineNum">     327 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     328 </span>            : 
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 : static int s_remove_node(struct aws_priority_queue *queue, void *item, size_t item_index) {</span>
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(item &amp;&amp; AWS_MEM_IS_WRITABLE(item, queue-&gt;container.item_size));</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :     if (aws_array_list_get_at(&amp;queue-&gt;container, item, item_index)) {</span>
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :         /* shouldn't happen, but if it does we've already raised an error... */</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :         AWS_POSTCONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :         return AWS_OP_ERR;</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :     size_t swap_with = aws_array_list_length(&amp;queue-&gt;container) - 1;</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :     struct aws_priority_queue_node *backpointer = NULL;</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :     if (item_index != swap_with) {</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :         s_swap(queue, item_index, swap_with);</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :     aws_array_list_pop_back(&amp;queue-&gt;container);</span>
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :     if (!AWS_IS_ZEROED(queue-&gt;backpointers)) {</span>
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :         aws_array_list_get_at(&amp;queue-&gt;backpointers, &amp;backpointer, swap_with);</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :         if (backpointer) {</span>
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :             backpointer-&gt;current_index = SIZE_MAX;</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :         aws_array_list_pop_back(&amp;queue-&gt;backpointers);</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :     if (item_index != swap_with) {</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :         s_sift_either(queue, item_index);</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :     return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     362 </span>            : 
+<span class="lineNum">     363 </span>            : int aws_priority_queue_remove(
+<a name="364"><span class="lineNum">     364 </span>            :     struct aws_priority_queue *queue,</a>
+<span class="lineNum">     365 </span>            :     void *item,
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 :     const struct aws_priority_queue_node *node) {</span>
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(item &amp;&amp; AWS_MEM_IS_WRITABLE(item, queue-&gt;container.item_size));</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(node &amp;&amp; AWS_MEM_IS_READABLE(node, sizeof(struct aws_priority_queue_node)));</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :     AWS_ERROR_PRECONDITION(</span>
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :         node-&gt;current_index &lt; aws_array_list_length(&amp;queue-&gt;container), AWS_ERROR_PRIORITY_QUEUE_BAD_NODE);</span>
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 :     AWS_ERROR_PRECONDITION(queue-&gt;backpointers.data, AWS_ERROR_PRIORITY_QUEUE_BAD_NODE);</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :     int rval = s_remove_node(queue, item, node-&gt;current_index);</span>
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :     return rval;</span>
+<a name="377"><span class="lineNum">     377 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     378 </span>            : 
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 : int aws_priority_queue_pop(struct aws_priority_queue *queue, void *item) {</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(item &amp;&amp; AWS_MEM_IS_WRITABLE(item, queue-&gt;container.item_size));</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :     AWS_ERROR_PRECONDITION(aws_array_list_length(&amp;queue-&gt;container) != 0, AWS_ERROR_PRIORITY_QUEUE_EMPTY);</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :     int rval = s_remove_node(queue, item, 0);</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :     AWS_POSTCONDITION(aws_priority_queue_is_valid(queue));</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :     return rval;</span>
+<a name="387"><span class="lineNum">     387 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     388 </span>            : 
+<span class="lineNum">     389 </span><span class="lineCov">       3091 : int aws_priority_queue_top(const struct aws_priority_queue *queue, void **item) {</span>
+<span class="lineNum">     390 </span><span class="lineCov">       3091 :     AWS_ERROR_PRECONDITION(aws_array_list_length(&amp;queue-&gt;container) != 0, AWS_ERROR_PRIORITY_QUEUE_EMPTY);</span>
+<span class="lineNum">     391 </span><span class="lineCov">       3091 :     return aws_array_list_get_at_ptr(&amp;queue-&gt;container, item, 0);</span>
+<a name="392"><span class="lineNum">     392 </span><span class="lineCov">       3091 : }</span></a>
+<span class="lineNum">     393 </span>            : 
+<span class="lineNum">     394 </span><span class="lineCov">       2039 : size_t aws_priority_queue_size(const struct aws_priority_queue *queue) {</span>
+<span class="lineNum">     395 </span><span class="lineCov">       2039 :     return aws_array_list_length(&amp;queue-&gt;container);</span>
+<a name="396"><span class="lineNum">     396 </span><span class="lineCov">       2039 : }</span></a>
+<span class="lineNum">     397 </span>            : 
+<span class="lineNum">     398 </span><span class="lineCov">       1548 : size_t aws_priority_queue_capacity(const struct aws_priority_queue *queue) {</span>
+<span class="lineNum">     399 </span><span class="lineCov">       1548 :     return aws_array_list_capacity(&amp;queue-&gt;container);</span>
+<span class="lineNum">     400 </span><span class="lineCov">       1548 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -71,25 +71,25 @@
 <span class="lineNum">       9 </span>            : #include &lt;seahorn/seahorn.h&gt;
 <a name="10"><span class="lineNum">      10 </span>            : #include &lt;utils.h&gt;</a>
 <span class="lineNum">      11 </span>            : 
-<span class="lineNum">      12 </span><span class="lineCov">      50000 : int main() {</span>
-<span class="lineNum">      13 </span><span class="lineCov">      50000 :     /* parameter */</span>
-<span class="lineNum">      14 </span><span class="lineCov">      50000 :     size_t str_len;</span>
-<span class="lineNum">      15 </span><span class="lineCov">      50000 :     const char *c_str = ensure_c_str_is_nd_allocated(MAX_BUFFER_SIZE, &amp;str_len);</span>
-<span class="lineNum">      16 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      17 </span><span class="lineCov">      50000 :     /* operation under verification */</span>
-<span class="lineNum">      18 </span><span class="lineCov">      50000 :     struct aws_byte_cursor cur = aws_byte_cursor_from_c_str(c_str);</span>
-<span class="lineNum">      19 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      20 </span><span class="lineCov">      50000 :     /* assertions */</span>
-<span class="lineNum">      21 </span><span class="lineCov">      50000 :     sassert(aws_byte_cursor_is_valid(&amp;cur));</span>
-<span class="lineNum">      22 </span><span class="lineCov">      50000 :     if (cur.ptr) { /* if ptr is NULL len shoud be 0, otherwise equal to c_str */</span>
-<span class="lineNum">      23 </span><span class="lineCov">      36802 :         sassert(cur.len == str_len);</span>
-<span class="lineNum">      24 </span><span class="lineCov">      36802 :         assert_bytes_match(cur.ptr, (uint8_t *)c_str, cur.len);</span>
-<span class="lineNum">      25 </span><span class="lineCov">      36802 :     } else {</span>
-<span class="lineNum">      26 </span><span class="lineCov">      13198 :         sassert(cur.len == 0);</span>
-<span class="lineNum">      27 </span><span class="lineCov">      13198 :     }</span>
-<span class="lineNum">      28 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      29 </span><span class="lineCov">      50000 :     return 0;</span>
-<span class="lineNum">      30 </span><span class="lineCov">      50000 : }</span>
+<span class="lineNum">      12 </span><span class="lineCov">     100000 : int main() {</span>
+<span class="lineNum">      13 </span><span class="lineCov">     100000 :     /* parameter */</span>
+<span class="lineNum">      14 </span><span class="lineCov">     100000 :     size_t str_len;</span>
+<span class="lineNum">      15 </span><span class="lineCov">     100000 :     const char *c_str = ensure_c_str_is_nd_allocated(MAX_BUFFER_SIZE, &amp;str_len);</span>
+<span class="lineNum">      16 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      17 </span><span class="lineCov">     100000 :     /* operation under verification */</span>
+<span class="lineNum">      18 </span><span class="lineCov">     100000 :     struct aws_byte_cursor cur = aws_byte_cursor_from_c_str(c_str);</span>
+<span class="lineNum">      19 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      20 </span><span class="lineCov">     100000 :     /* assertions */</span>
+<span class="lineNum">      21 </span><span class="lineCov">     100000 :     sassert(aws_byte_cursor_is_valid(&amp;cur));</span>
+<span class="lineNum">      22 </span><span class="lineCov">     100000 :     if (cur.ptr) { /* if ptr is NULL len shoud be 0, otherwise equal to c_str */</span>
+<span class="lineNum">      23 </span><span class="lineCov">      83311 :         sassert(cur.len == str_len);</span>
+<span class="lineNum">      24 </span><span class="lineCov">      83311 :         assert_bytes_match(cur.ptr, (uint8_t *)c_str, cur.len);</span>
+<span class="lineNum">      25 </span><span class="lineCov">      83311 :     } else {</span>
+<span class="lineNum">      26 </span><span class="lineCov">      16689 :         sassert(cur.len == 0);</span>
+<span class="lineNum">      27 </span><span class="lineCov">      16689 :     }</span>
+<span class="lineNum">      28 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      29 </span><span class="lineCov">     100000 :     return 0;</span>
+<span class="lineNum">      30 </span><span class="lineCov">     100000 : }</span>
 </pre>
       </td>
     </tr>

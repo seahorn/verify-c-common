@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -71,31 +71,31 @@
 <span class="lineNum">       9 </span>            : #include &lt;utils.h&gt;
 <a name="10"><span class="lineNum">      10 </span>            : #include &lt;proof_allocators.h&gt;</a>
 <span class="lineNum">      11 </span>            : 
-<span class="lineNum">      12 </span><span class="lineCov">      50000 : int main() {</span>
-<span class="lineNum">      13 </span><span class="lineCov">      50000 :     /* parameter */</span>
-<span class="lineNum">      14 </span><span class="lineCov">      50000 :     size_t str_len = 0;</span>
-<span class="lineNum">      15 </span><span class="lineCov">      50000 :     const char *c_str = ensure_c_str_is_nd_allocated(MAX_BUFFER_SIZE, &amp;str_len);</span>
-<span class="lineNum">      16 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      17 </span><span class="lineCov">      50000 :     /* operation under verification */</span>
-<span class="lineNum">      18 </span><span class="lineCov">      50000 :     struct aws_byte_buf buf = aws_byte_buf_from_c_str(c_str);</span>
-<span class="lineNum">      19 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      20 </span><span class="lineCov">      50000 :     /* assertions */</span>
-<span class="lineNum">      21 </span><span class="lineCov">      50000 :     sassert(aws_byte_buf_is_valid(&amp;buf));</span>
-<span class="lineNum">      22 </span><span class="lineCov">      50000 :     sassert(buf.allocator == NULL);</span>
-<span class="lineNum">      23 </span><span class="lineCov">      50000 :     if (buf.buffer) {</span>
-<span class="lineNum">      24 </span><span class="lineCov">      32944 :         sassert(buf.len == str_len);</span>
-<span class="lineNum">      25 </span><span class="lineCov">      32944 :         sassert(buf.capacity == buf.len);</span>
-<span class="lineNum">      26 </span><span class="lineCov">      32944 :         assert_bytes_match(buf.buffer, (uint8_t *)c_str, buf.len);</span>
-<span class="lineNum">      27 </span><span class="lineCov">      32944 :     } else {</span>
-<span class="lineNum">      28 </span><span class="lineCov">      17056 :         if (c_str) {</span>
-<span class="lineNum">      29 </span><span class="lineCov">       3610 :             sassert(str_len == 0);</span>
-<span class="lineNum">      30 </span><span class="lineCov">       3610 :         }</span>
-<span class="lineNum">      31 </span><span class="lineCov">      17056 :         sassert(buf.len == 0);</span>
-<span class="lineNum">      32 </span><span class="lineCov">      17056 :         sassert(buf.capacity == 0);</span>
-<span class="lineNum">      33 </span><span class="lineCov">      17056 :     }</span>
-<span class="lineNum">      34 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      35 </span><span class="lineCov">      50000 :     return 0;</span>
-<span class="lineNum">      36 </span><span class="lineCov">      50000 : }</span>
+<span class="lineNum">      12 </span><span class="lineCov">     100000 : int main() {</span>
+<span class="lineNum">      13 </span><span class="lineCov">     100000 :     /* parameter */</span>
+<span class="lineNum">      14 </span><span class="lineCov">     100000 :     size_t str_len = 0;</span>
+<span class="lineNum">      15 </span><span class="lineCov">     100000 :     const char *c_str = ensure_c_str_is_nd_allocated(MAX_BUFFER_SIZE, &amp;str_len);</span>
+<span class="lineNum">      16 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      17 </span><span class="lineCov">     100000 :     /* operation under verification */</span>
+<span class="lineNum">      18 </span><span class="lineCov">     100000 :     struct aws_byte_buf buf = aws_byte_buf_from_c_str(c_str);</span>
+<span class="lineNum">      19 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      20 </span><span class="lineCov">     100000 :     /* assertions */</span>
+<span class="lineNum">      21 </span><span class="lineCov">     100000 :     sassert(aws_byte_buf_is_valid(&amp;buf));</span>
+<span class="lineNum">      22 </span><span class="lineCov">     100000 :     sassert(buf.allocator == NULL);</span>
+<span class="lineNum">      23 </span><span class="lineCov">     100000 :     if (buf.buffer) {</span>
+<span class="lineNum">      24 </span><span class="lineCov">      76194 :         sassert(buf.len == str_len);</span>
+<span class="lineNum">      25 </span><span class="lineCov">      76194 :         sassert(buf.capacity == buf.len);</span>
+<span class="lineNum">      26 </span><span class="lineCov">      76194 :         assert_bytes_match(buf.buffer, (uint8_t *)c_str, buf.len);</span>
+<span class="lineNum">      27 </span><span class="lineCov">      76194 :     } else {</span>
+<span class="lineNum">      28 </span><span class="lineCov">      23806 :         if (c_str) {</span>
+<span class="lineNum">      29 </span><span class="lineCov">       7242 :             sassert(str_len == 0);</span>
+<span class="lineNum">      30 </span><span class="lineCov">       7242 :         }</span>
+<span class="lineNum">      31 </span><span class="lineCov">      23806 :         sassert(buf.len == 0);</span>
+<span class="lineNum">      32 </span><span class="lineCov">      23806 :         sassert(buf.capacity == 0);</span>
+<span class="lineNum">      33 </span><span class="lineCov">      23806 :     }</span>
+<span class="lineNum">      34 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      35 </span><span class="lineCov">     100000 :     return 0;</span>
+<span class="lineNum">      36 </span><span class="lineCov">     100000 : }</span>
 </pre>
       </td>
     </tr>

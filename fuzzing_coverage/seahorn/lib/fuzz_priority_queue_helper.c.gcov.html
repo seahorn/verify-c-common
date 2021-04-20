@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - seahorn/lib/fuzz_priority_queue_helper.c</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">seahorn/lib</a> - fuzz_priority_queue_helper.c<span style="font-size: 80%;"> (source / <a href="fuzz_priority_queue_helper.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntry">16</td>
+            <td class="headerCovTableEntryMed">81.2 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntryLo">66.7 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #include &lt;array_list_helper.h&gt;</a>
+<span class="lineNum">       2 </span>            : #include &lt;nondet.h&gt;
+<a name="3"><span class="lineNum">       3 </span>            : #include &lt;priority_queue_helper.h&gt;</a>
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span><span class="lineNoCov">          0 : int nd_aws_priority_queue_compare_fn(const void *a, const void *b) {</span>
+<span class="lineNum">       6 </span><span class="lineNoCov">          0 :   return nd_int();</span>
+<a name="7"><span class="lineNum">       7 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span><span class="lineCov">     400000 : void initialize_priority_queue(struct aws_priority_queue *queue) {</span>
+<span class="lineNum">      10 </span><span class="lineCov">     400000 :   queue-&gt;pred = nd_aws_priority_queue_compare_fn;</span>
+<span class="lineNum">      11 </span><span class="lineCov">     400000 :   initialize_bounded_array_list(&amp;queue-&gt;container);</span>
+<span class="lineNum">      12 </span><span class="lineCov">     400000 :   initialize_bounded_array_list(&amp;queue-&gt;backpointers);</span>
+<span class="lineNum">      13 </span><span class="lineCov">     400000 : }</span>
+<span class="lineNum">      14 </span>            : 
+<a name="15"><span class="lineNum">      15 </span>            : bool aws_priority_queue_is_bounded(struct aws_priority_queue *queue,</a>
+<span class="lineNum">      16 </span>            :                                    const size_t max_initial_item_allocation,
+<span class="lineNum">      17 </span><span class="lineCov">     349586 :                                    const size_t max_item_size) {</span>
+<span class="lineNum">      18 </span><span class="lineCov">     349586 :   bool b1 = aws_array_list_is_bounded(</span>
+<span class="lineNum">      19 </span><span class="lineCov">     349586 :       &amp;queue-&gt;container, max_initial_item_allocation, max_item_size);</span>
+<span class="lineNum">      20 </span><span class="lineCov">     349586 :   bool b2 = aws_array_list_is_bounded(&amp;queue-&gt;backpointers,</span>
+<span class="lineNum">      21 </span><span class="lineCov">     349586 :                                       max_initial_item_allocation,</span>
+<span class="lineNum">      22 </span><span class="lineCov">     349586 :                                       sizeof(struct aws_priority_queue_node *));</span>
+<span class="lineNum">      23 </span><span class="lineCov">     349586 :   return b1 &amp;&amp; b2;</span>
+<span class="lineNum">      24 </span><span class="lineCov">     349586 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

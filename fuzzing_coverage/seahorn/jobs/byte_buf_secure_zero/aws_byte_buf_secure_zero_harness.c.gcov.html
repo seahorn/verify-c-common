@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -69,20 +69,20 @@
 <span class="lineNum">       7 </span>            : #include &lt;byte_buf_helper.h&gt;
 <a name="8"><span class="lineNum">       8 </span>            : #include &lt;utils.h&gt;</a>
 <span class="lineNum">       9 </span>            : 
-<span class="lineNum">      10 </span><span class="lineCov">      50000 : int main() {</span>
-<span class="lineNum">      11 </span><span class="lineCov">      50000 :     struct aws_byte_buf buf;</span>
-<span class="lineNum">      12 </span><span class="lineCov">      50000 :     initialize_byte_buf(&amp;buf);</span>
-<span class="lineNum">      13 </span><span class="lineCov">      50000 :     assume(aws_byte_buf_is_valid(&amp;buf));</span>
-<span class="lineNum">      14 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      15 </span><span class="lineCov">      50000 :     /* operation under verification */</span>
-<span class="lineNum">      16 </span><span class="lineCov">      50000 :     aws_byte_buf_secure_zero(&amp;buf);</span>
-<span class="lineNum">      17 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      18 </span><span class="lineCov">      50000 :     sassert(aws_byte_buf_is_valid(&amp;buf));</span>
-<span class="lineNum">      19 </span><span class="lineCov">      50000 :     assert_all_zeroes(buf.buffer, buf.capacity);</span>
-<span class="lineNum">      20 </span><span class="lineCov">      50000 :     sassert(buf.len == 0);</span>
-<span class="lineNum">      21 </span><span class="lineCov">      50000 : </span>
-<span class="lineNum">      22 </span><span class="lineCov">      50000 :     return 0;</span>
-<span class="lineNum">      23 </span><span class="lineCov">      50000 : }</span>
+<span class="lineNum">      10 </span><span class="lineCov">     100000 : int main() {</span>
+<span class="lineNum">      11 </span><span class="lineCov">     100000 :     struct aws_byte_buf buf;</span>
+<span class="lineNum">      12 </span><span class="lineCov">     100000 :     initialize_byte_buf(&amp;buf);</span>
+<span class="lineNum">      13 </span><span class="lineCov">     100000 :     assume(aws_byte_buf_is_valid(&amp;buf));</span>
+<span class="lineNum">      14 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      15 </span><span class="lineCov">     100000 :     /* operation under verification */</span>
+<span class="lineNum">      16 </span><span class="lineCov">     100000 :     aws_byte_buf_secure_zero(&amp;buf);</span>
+<span class="lineNum">      17 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      18 </span><span class="lineCov">     100000 :     sassert(aws_byte_buf_is_valid(&amp;buf));</span>
+<span class="lineNum">      19 </span><span class="lineCov">     100000 :     assert_all_zeroes(buf.buffer, buf.capacity);</span>
+<span class="lineNum">      20 </span><span class="lineCov">     100000 :     sassert(buf.len == 0);</span>
+<span class="lineNum">      21 </span><span class="lineCov">     100000 : </span>
+<span class="lineNum">      22 </span><span class="lineCov">     100000 :     return 0;</span>
+<span class="lineNum">      23 </span><span class="lineCov">     100000 : }</span>
 </pre>
       </td>
     </tr>

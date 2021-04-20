@@ -1,0 +1,1139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - aws-c-common/include/aws/common/private/lookup3.inl</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../index.html">top level</a> - <a href="index.html">aws-c-common/include/aws/common/private</a> - lookup3.inl<span style="font-size: 80%;"> (source / <a href="lookup3.inl.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">60</td>
+            <td class="headerCovTableEntry">471</td>
+            <td class="headerCovTableEntryLo">12.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntryLo">20.0 %</td>
+          </tr>
+          <tr><td><img src="../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #ifndef AWS_COMMON_PRIVATE_LOOKUP3_INL</a>
+<span class="lineNum">       2 </span>            : #define AWS_COMMON_PRIVATE_LOOKUP3_INL
+<span class="lineNum">       3 </span>            : /* clang-format off */
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            : /*
+<span class="lineNum">       6 </span>            :  * The following public domain code has been modified as follows:
+<span class="lineNum">       7 </span>            :  * # All functions have been made static.
+<span class="lineNum">       8 </span>            :  * # The self test harness has been turned off.
+<span class="lineNum">       9 </span>            :  * # stdint.h include removed for C89 compatibility.
+<span class="lineNum">      10 </span>            :  *
+<span class="lineNum">      11 </span>            :  * The original code was retrieved from http://burtleburtle.net/bob/c/lookup3.c
+<span class="lineNum">      12 </span>            :  */
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : /*
+<span class="lineNum">      15 </span>            : -------------------------------------------------------------------------------
+<span class="lineNum">      16 </span>            : lookup3.c, by Bob Jenkins, May 2006, Public Domain.
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            : These are functions for producing 32-bit hashes for hash table lookup.
+<span class="lineNum">      19 </span>            : hashword(), hashlittle(), hashlittle2(), hashbig(), mix(), and final()
+<span class="lineNum">      20 </span>            : are externally useful functions.  Routines to test the hash are included
+<span class="lineNum">      21 </span>            : if SELF_TEST is defined.  You can use this free for any purpose.  It's in
+<span class="lineNum">      22 </span>            : the public domain.  It has no warranty.
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            : You probably want to use hashlittle().  hashlittle() and hashbig()
+<span class="lineNum">      25 </span>            : hash byte arrays.  hashlittle() is is faster than hashbig() on
+<span class="lineNum">      26 </span>            : little-endian machines.  Intel and AMD are little-endian machines.
+<span class="lineNum">      27 </span>            : On second thought, you probably want hashlittle2(), which is identical to
+<span class="lineNum">      28 </span>            : hashlittle() except it returns two 32-bit hashes for the price of one.
+<span class="lineNum">      29 </span>            : You could implement hashbig2() if you wanted but I haven't bothered here.
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            : If you want to find a hash of, say, exactly 7 integers, do
+<span class="lineNum">      32 </span>            :   a = i1;  b = i2;  c = i3;
+<span class="lineNum">      33 </span>            :   mix(a,b,c);
+<span class="lineNum">      34 </span>            :   a += i4; b += i5; c += i6;
+<span class="lineNum">      35 </span>            :   mix(a,b,c);
+<span class="lineNum">      36 </span>            :   a += i7;
+<span class="lineNum">      37 </span>            :   final(a,b,c);
+<span class="lineNum">      38 </span>            : then use c as the hash value.  If you have a variable length array of
+<span class="lineNum">      39 </span>            : 4-byte integers to hash, use hashword().  If you have a byte array (like
+<span class="lineNum">      40 </span>            : a character string), use hashlittle().  If you have several byte arrays, or
+<span class="lineNum">      41 </span>            : a mix of things, see the comments above hashlittle().
+<span class="lineNum">      42 </span>            : 
+<span class="lineNum">      43 </span>            : Why is this so big?  I read 12 bytes at a time into 3 4-byte integers,
+<span class="lineNum">      44 </span>            : then mix those integers.  This is fast (you can do a lot more thorough
+<span class="lineNum">      45 </span>            : mixing with 12*3 instructions on 3 integers than you can with 3 instructions
+<span class="lineNum">      46 </span>            : on 1 byte), but shoehorning those bytes into integers efficiently is messy.
+<span class="lineNum">      47 </span>            : -------------------------------------------------------------------------------
+<span class="lineNum">      48 </span>            : */
+<span class="lineNum">      49 </span>            : // #define SELF_TEST 1
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span>            : #include &lt;stdio.h&gt;      /* defines printf for tests */
+<span class="lineNum">      52 </span>            : #include &lt;time.h&gt;       /* defines time_t for timings in the test */
+<span class="lineNum">      53 </span>            : #ifndef _MSC_VER
+<span class="lineNum">      54 </span>            : #include &lt;sys/param.h&gt;  /* attempt to define endianness */
+<span class="lineNum">      55 </span>            : #endif
+<span class="lineNum">      56 </span>            : #ifdef linux
+<span class="lineNum">      57 </span>            : # include &lt;endian.h&gt;    /* attempt to define endianness */
+<span class="lineNum">      58 </span>            : #endif
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span>            : #if _MSC_VER
+<span class="lineNum">      61 </span>            : #pragma warning(push)
+<span class="lineNum">      62 </span>            : #pragma warning(disable:4127) /*Disable &quot;conditional expression is constant&quot; */
+<span class="lineNum">      63 </span>            : #endif /* _MSC_VER */
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span>            : #ifdef CBMC
+<span class="lineNum">      66 </span>            : #    pragma CPROVER check push
+<span class="lineNum">      67 </span>            : #    pragma CPROVER check disable &quot;unsigned-overflow&quot;
+<span class="lineNum">      68 </span>            : #endif /* CBMC */
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span>            : /*
+<span class="lineNum">      71 </span>            :  * My best guess at if you are big-endian or little-endian.  This may
+<span class="lineNum">      72 </span>            :  * need adjustment.
+<span class="lineNum">      73 </span>            :  */
+<span class="lineNum">      74 </span>            :  #if (defined(__BYTE_ORDER) &amp;&amp; defined(__LITTLE_ENDIAN) &amp;&amp; \
+<span class="lineNum">      75 </span>            :       __BYTE_ORDER == __LITTLE_ENDIAN) || \
+<span class="lineNum">      76 </span>            :      (defined(__BYTE_ORDER__) &amp;&amp; defined(__ORDER_LITTLE_ENDIAN__) &amp;&amp; \
+<span class="lineNum">      77 </span>            :       __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__) || \
+<span class="lineNum">      78 </span>            :      (defined(i386) || defined(__i386__) || defined(__i486__) || \
+<span class="lineNum">      79 </span>            :       defined(__i586__) || defined(__i686__) || defined(vax) || defined(MIPSEL) || \
+<span class="lineNum">      80 </span>            :       defined(_M_IX86) || defined(_M_X64) || defined(_M_IA64) || defined(_M_ARM))
+<span class="lineNum">      81 </span><span class="lineCov">     427194 : # define HASH_LITTLE_ENDIAN 1</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 : # define HASH_BIG_ENDIAN 0</span>
+<span class="lineNum">      83 </span>            : #elif (defined(__BYTE_ORDER) &amp;&amp; defined(__BIG_ENDIAN) &amp;&amp; \
+<span class="lineNum">      84 </span>            :        __BYTE_ORDER == __BIG_ENDIAN) || \
+<span class="lineNum">      85 </span>            :       (defined(sparc) || defined(POWERPC) || defined(_M_PPC) || defined(mc68000) || defined(sel))
+<span class="lineNum">      86 </span>            : # define HASH_LITTLE_ENDIAN 0
+<span class="lineNum">      87 </span>            : # define HASH_BIG_ENDIAN 1
+<span class="lineNum">      88 </span>            : #else
+<span class="lineNum">      89 </span>            : # define HASH_LITTLE_ENDIAN 0
+<span class="lineNum">      90 </span>            : # define HASH_BIG_ENDIAN 0
+<span class="lineNum">      91 </span>            : #endif
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span>            : #define hashsize(n) ((uint32_t)1&lt;&lt;(n))
+<span class="lineNum">      94 </span>            : #define hashmask(n) (hashsize(n)-1)
+<span class="lineNum">      95 </span><span class="lineCov">    1442315 : #define rot(x,k) (((x)&lt;&lt;(k)) | ((x)&gt;&gt;(32-(k))))</span>
+<span class="lineNum">      96 </span>            : 
+<span class="lineNum">      97 </span>            : /*
+<span class="lineNum">      98 </span>            : -------------------------------------------------------------------------------
+<span class="lineNum">      99 </span>            : mix -- mix 3 32-bit values reversibly.
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span>            : This is reversible, so any information in (a,b,c) before mix() is
+<span class="lineNum">     102 </span>            : still in (a,b,c) after mix().
+<span class="lineNum">     103 </span>            : 
+<span class="lineNum">     104 </span>            : If four pairs of (a,b,c) inputs are run through mix(), or through
+<span class="lineNum">     105 </span>            : mix() in reverse, there are at least 32 bits of the output that
+<span class="lineNum">     106 </span>            : are sometimes the same for one pair and different for another pair.
+<span class="lineNum">     107 </span>            : This was tested for:
+<span class="lineNum">     108 </span>            : * pairs that differed by one bit, by two bits, in any combination
+<span class="lineNum">     109 </span>            :   of top bits of (a,b,c), or in any combination of bottom bits of
+<span class="lineNum">     110 </span>            :   (a,b,c).
+<span class="lineNum">     111 </span>            : * &quot;differ&quot; is defined as +, -, ^, or ~^.  For + and -, I transformed
+<span class="lineNum">     112 </span>            :   the output delta to a Gray code (a^(a&gt;&gt;1)) so a string of 1's (as
+<span class="lineNum">     113 </span>            :   is commonly produced by subtraction) look like a single 1-bit
+<span class="lineNum">     114 </span>            :   difference.
+<span class="lineNum">     115 </span>            : * the base values were pseudorandom, all zero but one bit set, or
+<span class="lineNum">     116 </span>            :   all zero plus a counter that starts at zero.
+<span class="lineNum">     117 </span>            : 
+<span class="lineNum">     118 </span>            : Some k values for my &quot;a-=c; a^=rot(c,k); c+=b;&quot; arrangement that
+<span class="lineNum">     119 </span>            : satisfy this are
+<span class="lineNum">     120 </span>            :     4  6  8 16 19  4
+<span class="lineNum">     121 </span>            :     9 15  3 18 27 15
+<span class="lineNum">     122 </span>            :    14  9  3  7 17  3
+<span class="lineNum">     123 </span>            : Well, &quot;9 15 3 18 27 15&quot; didn't quite get 32 bits diffing
+<span class="lineNum">     124 </span>            : for &quot;differ&quot; defined as + with a one-bit base and a two-bit delta.  I
+<span class="lineNum">     125 </span>            : used http://burtleburtle.net/bob/hash/avalanche.html to choose
+<span class="lineNum">     126 </span>            : the operations, constants, and arrangements of the variables.
+<span class="lineNum">     127 </span>            : 
+<span class="lineNum">     128 </span>            : This does not achieve avalanche.  There are input bits of (a,b,c)
+<span class="lineNum">     129 </span>            : that fail to affect some output bits of (a,b,c), especially of a.  The
+<span class="lineNum">     130 </span>            : most thoroughly mixed value is c, but it doesn't really even achieve
+<span class="lineNum">     131 </span>            : avalanche in c.
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span>            : This allows some parallelism.  Read-after-writes are good at doubling
+<span class="lineNum">     134 </span>            : the number of bits affected, so the goal of mixing pulls in the opposite
+<span class="lineNum">     135 </span>            : direction as the goal of parallelism.  I did what I could.  Rotates
+<span class="lineNum">     136 </span>            : seem to cost as much as shifts on every machine I could lay my hands
+<span class="lineNum">     137 </span>            : on, and rotates are much kinder to the top and bottom bits, so I used
+<span class="lineNum">     138 </span>            : rotates.
+<span class="lineNum">     139 </span>            : -------------------------------------------------------------------------------
+<span class="lineNum">     140 </span>            : */
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 : #define mix(a,b,c) \</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 : { \</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :   a -= c;  a ^= rot(c, 4);  c += b; \</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :   b -= a;  b ^= rot(a, 6);  a += c; \</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :   c -= b;  c ^= rot(b, 8);  b += a; \</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :   a -= c;  a ^= rot(c,16);  c += b; \</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :   b -= a;  b ^= rot(a,19);  a += c; \</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :   c -= b;  c ^= rot(b, 4);  b += a; \</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span>            : /*
+<span class="lineNum">     152 </span>            : -------------------------------------------------------------------------------
+<span class="lineNum">     153 </span>            : final -- final mixing of 3 32-bit values (a,b,c) into c
+<span class="lineNum">     154 </span>            : 
+<span class="lineNum">     155 </span>            : Pairs of (a,b,c) values differing in only a few bits will usually
+<span class="lineNum">     156 </span>            : produce values of c that look totally different.  This was tested for
+<span class="lineNum">     157 </span>            : * pairs that differed by one bit, by two bits, in any combination
+<span class="lineNum">     158 </span>            :   of top bits of (a,b,c), or in any combination of bottom bits of
+<span class="lineNum">     159 </span>            :   (a,b,c).
+<span class="lineNum">     160 </span>            : * &quot;differ&quot; is defined as +, -, ^, or ~^.  For + and -, I transformed
+<span class="lineNum">     161 </span>            :   the output delta to a Gray code (a^(a&gt;&gt;1)) so a string of 1's (as
+<span class="lineNum">     162 </span>            :   is commonly produced by subtraction) look like a single 1-bit
+<span class="lineNum">     163 </span>            :   difference.
+<span class="lineNum">     164 </span>            : * the base values were pseudorandom, all zero but one bit set, or
+<span class="lineNum">     165 </span>            :   all zero plus a counter that starts at zero.
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span>            : These constants passed:
+<span class="lineNum">     168 </span>            :  14 11 25 16 4 14 24
+<span class="lineNum">     169 </span>            :  12 14 25 16 4 14 24
+<span class="lineNum">     170 </span>            : and these came close:
+<span class="lineNum">     171 </span>            :   4  8 15 26 3 22 24
+<span class="lineNum">     172 </span>            :  10  8 15 26 3 22 24
+<span class="lineNum">     173 </span>            :  11  8 15 26 3 22 24
+<span class="lineNum">     174 </span>            : -------------------------------------------------------------------------------
+<span class="lineNum">     175 </span>            : */
+<span class="lineNum">     176 </span><span class="lineCov">     412090 : #define final(a,b,c) \</span>
+<span class="lineNum">     177 </span><span class="lineCov">     412090 : { \</span>
+<span class="lineNum">     178 </span><span class="lineCov">     412090 :   c ^= b; c -= rot(b,14); \</span>
+<span class="lineNum">     179 </span><span class="lineCov">     412090 :   a ^= c; a -= rot(c,11); \</span>
+<span class="lineNum">     180 </span><span class="lineCov">     412090 :   b ^= a; b -= rot(a,25); \</span>
+<span class="lineNum">     181 </span><span class="lineCov">     412090 :   c ^= b; c -= rot(b,16); \</span>
+<span class="lineNum">     182 </span><span class="lineCov">     412090 :   a ^= c; a -= rot(c,4);  \</span>
+<span class="lineNum">     183 </span><span class="lineCov">     412090 :   b ^= a; b -= rot(a,14); \</span>
+<span class="lineNum">     184 </span><span class="lineCov">     412090 :   c ^= b; c -= rot(b,24); \</span>
+<span class="lineNum">     185 </span><span class="lineCov">     412090 : }</span>
+<span class="lineNum">     186 </span>            : 
+<span class="lineNum">     187 </span>            : /*
+<span class="lineNum">     188 </span>            : --------------------------------------------------------------------
+<span class="lineNum">     189 </span>            :  This works on all machines.  To be useful, it requires
+<span class="lineNum">     190 </span>            :  -- that the key be an array of uint32_t's, and
+<span class="lineNum">     191 </span>            :  -- that the length be the number of uint32_t's in the key
+<span class="lineNum">     192 </span>            : 
+<span class="lineNum">     193 </span>            :  The function hashword() is identical to hashlittle() on little-endian
+<span class="lineNum">     194 </span>            :  machines, and identical to hashbig() on big-endian machines,
+<span class="lineNum">     195 </span>            :  except that the length has to be measured in uint32_ts rather than in
+<span class="lineNum">     196 </span>            :  bytes.  hashlittle() is more complicated than hashword() only because
+<span class="lineNum">     197 </span>            :  hashlittle() has to dance around fitting the key bytes into registers.
+<span class="lineNum">     198 </span>            : --------------------------------------------------------------------
+<span class="lineNum">     199 </span>            : */
+<span class="lineNum">     200 </span>            : static uint32_t hashword(
+<span class="lineNum">     201 </span>            : const uint32_t *k,                   /* the key, an array of uint32_t values */
+<a name="202"><span class="lineNum">     202 </span>            : size_t          length,               /* the length of the key, in uint32_ts */</a>
+<span class="lineNum">     203 </span>            : uint32_t        initval)         /* the previous hash, or an arbitrary value */
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 : {</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :   uint32_t a,b,c;</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :   /* Set up the internal state */</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :   a = b = c = 0xdeadbeef + (((uint32_t)length)&lt;&lt;2) + initval;</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :   /*------------------------------------------------- handle most of the key */</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :   while (length &gt; 3)</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :   {</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :     a += k[0];</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :     b += k[1];</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :     c += k[2];</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :     mix(a,b,c);</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :     length -= 3;</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :     k += 3;</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :   }</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :   /*------------------------------------------- handle the last 3 uint32_t's */</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :   switch(length)                     /* all the case statements fall through */</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :   {</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :   case 3 : c+=k[2];</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :   case 2 : b+=k[1];</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :   case 1 : a+=k[0];</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :     final(a,b,c);</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :   case 0:     /* case 0: nothing left to add */</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :   }</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :   /*------------------------------------------------------ report the result */</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :   return c;</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     234 </span>            : 
+<span class="lineNum">     235 </span>            : 
+<span class="lineNum">     236 </span>            : /*
+<span class="lineNum">     237 </span>            : --------------------------------------------------------------------
+<span class="lineNum">     238 </span>            : hashword2() -- same as hashword(), but take two seeds and return two
+<span class="lineNum">     239 </span>            : 32-bit values.  pc and pb must both be nonnull, and *pc and *pb must
+<span class="lineNum">     240 </span>            : both be initialized with seeds.  If you pass in (*pb)==0, the output
+<span class="lineNum">     241 </span>            : (*pc) will be the same as the return value from hashword().
+<span class="lineNum">     242 </span>            : --------------------------------------------------------------------
+<span class="lineNum">     243 </span>            : */
+<span class="lineNum">     244 </span>            : static void hashword2 (
+<span class="lineNum">     245 </span>            : const uint32_t *k,                   /* the key, an array of uint32_t values */
+<span class="lineNum">     246 </span>            : size_t          length,               /* the length of the key, in uint32_ts */
+<a name="247"><span class="lineNum">     247 </span>            : uint32_t       *pc,                      /* IN: seed OUT: primary hash value */</a>
+<span class="lineNum">     248 </span>            : uint32_t       *pb)               /* IN: more seed OUT: secondary hash value */
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 : {</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :   uint32_t a,b,c;</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :   /* Set up the internal state */</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :   a = b = c = 0xdeadbeef + ((uint32_t)(length&lt;&lt;2)) + *pc;</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :   c += *pb;</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :   /*------------------------------------------------- handle most of the key */</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :   while (length &gt; 3)</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :   {</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :     a += k[0];</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :     b += k[1];</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :     c += k[2];</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :     mix(a,b,c);</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :     length -= 3;</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :     k += 3;</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :   }</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :   /*------------------------------------------- handle the last 3 uint32_t's */</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :   switch(length)                     /* all the case statements fall through */</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :   {</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :   case 3 : c+=k[2];</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :   case 2 : b+=k[1];</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :   case 1 : a+=k[0];</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :     final(a,b,c);</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :   case 0:     /* case 0: nothing left to add */</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :   }</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :   /*------------------------------------------------------ report the result */</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :   *pc=c; *pb=b;</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     280 </span>            : 
+<span class="lineNum">     281 </span>            : 
+<span class="lineNum">     282 </span>            : /*
+<span class="lineNum">     283 </span>            : -------------------------------------------------------------------------------
+<span class="lineNum">     284 </span>            : hashlittle() -- hash a variable-length key into a 32-bit value
+<span class="lineNum">     285 </span>            :   k       : the key (the unaligned variable-length array of bytes)
+<span class="lineNum">     286 </span>            :   length  : the length of the key, counting by bytes
+<span class="lineNum">     287 </span>            :   initval : can be any 4-byte value
+<span class="lineNum">     288 </span>            : Returns a 32-bit value.  Every bit of the key affects every bit of
+<span class="lineNum">     289 </span>            : the return value.  Two keys differing by one or two bits will have
+<span class="lineNum">     290 </span>            : totally different hash values.
+<span class="lineNum">     291 </span>            : 
+<span class="lineNum">     292 </span>            : The best hash table sizes are powers of 2.  There is no need to do
+<span class="lineNum">     293 </span>            : mod a prime (mod is sooo slow!).  If you need less than 32 bits,
+<span class="lineNum">     294 </span>            : use a bitmask.  For example, if you need only 10 bits, do
+<span class="lineNum">     295 </span>            :   h = (h &amp; hashmask(10));
+<span class="lineNum">     296 </span>            : In which case, the hash table should have hashsize(10) elements.
+<span class="lineNum">     297 </span>            : 
+<span class="lineNum">     298 </span>            : If you are hashing n strings (uint8_t **)k, do it like this:
+<span class="lineNum">     299 </span>            :   for (i=0, h=0; i&lt;n; ++i) h = hashlittle( k[i], len[i], h);
+<span class="lineNum">     300 </span>            : 
+<span class="lineNum">     301 </span>            : By Bob Jenkins, 2006.  bob_jenkins@burtleburtle.net.  You may use this
+<span class="lineNum">     302 </span>            : code any way you wish, private, educational, or commercial.  It's free.
+<span class="lineNum">     303 </span>            : 
+<span class="lineNum">     304 </span>            : Use for hash table lookup, or anything where one collision in 2^^32 is
+<span class="lineNum">     305 </span>            : acceptable.  Do NOT use for cryptographic purposes.
+<span class="lineNum">     306 </span>            : -------------------------------------------------------------------------------
+<span class="lineNum">     307 </span>            : */
+<a name="308"><span class="lineNum">     308 </span>            : </a>
+<span class="lineNum">     309 </span>            : static uint32_t hashlittle( const void *key, size_t length, uint32_t initval)
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 : {</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :   uint32_t a,b,c;                                          /* internal state */</span>
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :   union { const void *ptr; size_t i; } u;     /* needed for Mac Powerbook G4 */</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :   /* Set up the internal state */</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :   a = b = c = 0xdeadbeef + ((uint32_t)length) + initval;</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :   u.ptr = key;</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :   if (HASH_LITTLE_ENDIAN &amp;&amp; ((u.i &amp; 0x3) == 0)) {</span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :     const uint32_t *k = (const uint32_t *)key;         /* read 32-bit chunks */</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :     /*------ all but last block: aligned reads and affect 32 bits of (a,b,c) */</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :     while (length &gt; 12)</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :       a += k[0];</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :       b += k[1];</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :       c += k[2];</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :       mix(a,b,c);</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :       length -= 12;</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :       k += 3;</span>
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :     /*----------------------------- handle the last (probably partial) block */</span>
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :     /*</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :      * &quot;k[2]&amp;0xffffff&quot; actually reads beyond the end of the string, but</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :      * then masks off the part it's not allowed to read.  Because the</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :      * string is aligned, the masked-off tail is in the same word as the</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :      * rest of the string. Every machine with memory protection I've seen</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :      * does it on word boundaries, so is OK with this. But VALGRIND and CBMC</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :      * will still catch it and complain. CBMC will ignore this type of error</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :      * in the code block between the pragmas &quot;CPROVER check push&quot; and</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :      * &quot;CPROVER check pop&quot;. The masking trick does make the hash noticably</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :      * faster for short strings (like English words).</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :      */</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 : #ifndef VALGRIND</span>
+<span class="lineNum">     345 </span>            : #ifdef CBMC
+<span class="lineNum">     346 </span>            : #    pragma CPROVER check push
+<span class="lineNum">     347 </span>            : #    pragma CPROVER check disable &quot;pointer&quot;
+<span class="lineNum">     348 </span>            : #endif
+<span class="lineNum">     349 </span>            :     // changed in aws-c-common: fix unused variable warning
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :     switch(length)</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :     case 12: c+=k[2]; b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :     case 11: c+=k[2]&amp;0xffffff; b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :     case 10: c+=k[2]&amp;0xffff; b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :     case 9 : c+=k[2]&amp;0xff; b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :     case 8 : b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :     case 7 : b+=k[1]&amp;0xffffff; a+=k[0]; break;</span>
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :     case 6 : b+=k[1]&amp;0xffff; a+=k[0]; break;</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :     case 5 : b+=k[1]&amp;0xff; a+=k[0]; break;</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :     case 4 : a+=k[0]; break;</span>
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :     case 3 : a+=k[0]&amp;0xffffff; break;</span>
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :     case 2 : a+=k[0]&amp;0xffff; break;</span>
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :     case 1 : a+=k[0]&amp;0xff; break;</span>
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 :     case 0 : return c;              /* zero length strings require no mixing */</span>
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     367 </span>            : #ifdef CBMC
+<span class="lineNum">     368 </span>            : #    pragma CPROVER check pop
+<span class="lineNum">     369 </span>            : #endif
+<span class="lineNum">     370 </span>            : #else /* make valgrind happy */
+<span class="lineNum">     371 </span>            : 
+<span class="lineNum">     372 </span>            :     const uint8_t *k8 = (const uint8_t *)k;
+<span class="lineNum">     373 </span>            :     switch(length)
+<span class="lineNum">     374 </span>            :     {
+<span class="lineNum">     375 </span>            :     case 12: c+=k[2]; b+=k[1]; a+=k[0]; break;
+<span class="lineNum">     376 </span>            :     case 11: c+=((uint32_t)k8[10])&lt;&lt;16;  /* fall through */
+<span class="lineNum">     377 </span>            :     case 10: c+=((uint32_t)k8[9])&lt;&lt;8;    /* fall through */
+<span class="lineNum">     378 </span>            :     case 9 : c+=k8[8];                   /* fall through */
+<span class="lineNum">     379 </span>            :     case 8 : b+=k[1]; a+=k[0]; break;
+<span class="lineNum">     380 </span>            :     case 7 : b+=((uint32_t)k8[6])&lt;&lt;16;   /* fall through */
+<span class="lineNum">     381 </span>            :     case 6 : b+=((uint32_t)k8[5])&lt;&lt;8;    /* fall through */
+<span class="lineNum">     382 </span>            :     case 5 : b+=k8[4];                   /* fall through */
+<span class="lineNum">     383 </span>            :     case 4 : a+=k[0]; break;
+<span class="lineNum">     384 </span>            :     case 3 : a+=((uint32_t)k8[2])&lt;&lt;16;   /* fall through */
+<span class="lineNum">     385 </span>            :     case 2 : a+=((uint32_t)k8[1])&lt;&lt;8;    /* fall through */
+<span class="lineNum">     386 </span>            :     case 1 : a+=k8[0]; break;
+<span class="lineNum">     387 </span>            :     case 0 : return c;
+<span class="lineNum">     388 </span>            :     }
+<span class="lineNum">     389 </span>            : 
+<span class="lineNum">     390 </span>            : #endif /* !valgrind */
+<span class="lineNum">     391 </span>            : 
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :   } else if (HASH_LITTLE_ENDIAN &amp;&amp; ((u.i &amp; 0x1) == 0)) {</span>
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :     const uint16_t *k = (const uint16_t *)key;         /* read 16-bit chunks */</span>
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 :     /*--------------- all but last block: aligned reads and different mixing */</span>
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 :     while (length &gt; 12)</span>
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :       a += k[0] + (((uint32_t)k[1])&lt;&lt;16);</span>
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :       b += k[2] + (((uint32_t)k[3])&lt;&lt;16);</span>
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 :       c += k[4] + (((uint32_t)k[5])&lt;&lt;16);</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :       mix(a,b,c);</span>
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :       length -= 12;</span>
+<span class="lineNum">     403 </span><span class="lineNoCov">          0 :       k += 6;</span>
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     405 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     406 </span><span class="lineNoCov">          0 :     /*----------------------------- handle the last (probably partial) block */</span>
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 :     const uint8_t *k8 = (const uint8_t *)k;</span>
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 :     switch(length)</span>
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :     case 12: c+=k[4]+(((uint32_t)k[5])&lt;&lt;16);</span>
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :              b+=k[2]+(((uint32_t)k[3])&lt;&lt;16);</span>
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :              a+=k[0]+(((uint32_t)k[1])&lt;&lt;16);</span>
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 :     case 11: c+=((uint32_t)k8[10])&lt;&lt;16;     /* fall through */</span>
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :     case 10: c+=k[4];</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :              b+=k[2]+(((uint32_t)k[3])&lt;&lt;16);</span>
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :              a+=k[0]+(((uint32_t)k[1])&lt;&lt;16);</span>
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :     case 9 : c+=k8[8];                      /* fall through */</span>
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :     case 8 : b+=k[2]+(((uint32_t)k[3])&lt;&lt;16);</span>
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :              a+=k[0]+(((uint32_t)k[1])&lt;&lt;16);</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :     case 7 : b+=((uint32_t)k8[6])&lt;&lt;16;      /* fall through */</span>
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 :     case 6 : b+=k[2];</span>
+<span class="lineNum">     425 </span><span class="lineNoCov">          0 :              a+=k[0]+(((uint32_t)k[1])&lt;&lt;16);</span>
+<span class="lineNum">     426 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 :     case 5 : b+=k8[4];                      /* fall through */</span>
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :     case 4 : a+=k[0]+(((uint32_t)k[1])&lt;&lt;16);</span>
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :     case 3 : a+=((uint32_t)k8[2])&lt;&lt;16;      /* fall through */</span>
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :     case 2 : a+=k[0];</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :     case 1 : a+=k8[0];</span>
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :     case 0 : return c;                     /* zero length requires no mixing */</span>
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     437 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 :   } else {                        /* need to read the key one byte at a time */</span>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :     const uint8_t *k = (const uint8_t *)key;</span>
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 :     /*--------------- all but the last block: affect some 32 bits of (a,b,c) */</span>
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 :     while (length &gt; 12)</span>
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 :       a += k[0];</span>
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :       a += ((uint32_t)k[1])&lt;&lt;8;</span>
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :       a += ((uint32_t)k[2])&lt;&lt;16;</span>
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :       a += ((uint32_t)k[3])&lt;&lt;24;</span>
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 :       b += k[4];</span>
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 :       b += ((uint32_t)k[5])&lt;&lt;8;</span>
+<span class="lineNum">     450 </span><span class="lineNoCov">          0 :       b += ((uint32_t)k[6])&lt;&lt;16;</span>
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 :       b += ((uint32_t)k[7])&lt;&lt;24;</span>
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 :       c += k[8];</span>
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :       c += ((uint32_t)k[9])&lt;&lt;8;</span>
+<span class="lineNum">     454 </span><span class="lineNoCov">          0 :       c += ((uint32_t)k[10])&lt;&lt;16;</span>
+<span class="lineNum">     455 </span><span class="lineNoCov">          0 :       c += ((uint32_t)k[11])&lt;&lt;24;</span>
+<span class="lineNum">     456 </span><span class="lineNoCov">          0 :       mix(a,b,c);</span>
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :       length -= 12;</span>
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :       k += 12;</span>
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :     /*-------------------------------- last block: affect all 32 bits of (c) */</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :     switch(length)                   /* all the case statements fall through */</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 :     case 12: c+=((uint32_t)k[11])&lt;&lt;24;</span>
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :     case 11: c+=((uint32_t)k[10])&lt;&lt;16;</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :     case 10: c+=((uint32_t)k[9])&lt;&lt;8;</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :     case 9 : c+=k[8];</span>
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 :     case 8 : b+=((uint32_t)k[7])&lt;&lt;24;</span>
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :     case 7 : b+=((uint32_t)k[6])&lt;&lt;16;</span>
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 :     case 6 : b+=((uint32_t)k[5])&lt;&lt;8;</span>
+<span class="lineNum">     471 </span><span class="lineNoCov">          0 :     case 5 : b+=k[4];</span>
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :     case 4 : a+=((uint32_t)k[3])&lt;&lt;24;</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :     case 3 : a+=((uint32_t)k[2])&lt;&lt;16;</span>
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :     case 2 : a+=((uint32_t)k[1])&lt;&lt;8;</span>
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :     case 1 : a+=k[0];</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 :     case 0 : return c;</span>
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :   }</span>
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :   final(a,b,c);</span>
+<span class="lineNum">     482 </span><span class="lineNoCov">          0 :   return c;</span>
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     484 </span>            : 
+<span class="lineNum">     485 </span>            : 
+<span class="lineNum">     486 </span>            : /*
+<span class="lineNum">     487 </span>            :  * hashlittle2: return 2 32-bit hash values
+<span class="lineNum">     488 </span>            :  *
+<span class="lineNum">     489 </span>            :  * This is identical to hashlittle(), except it returns two 32-bit hash
+<span class="lineNum">     490 </span>            :  * values instead of just one.  This is good enough for hash table
+<span class="lineNum">     491 </span>            :  * lookup with 2^^64 buckets, or if you want a second hash if you're not
+<span class="lineNum">     492 </span>            :  * happy with the first, or if you want a probably-unique 64-bit ID for
+<span class="lineNum">     493 </span>            :  * the key.  *pc is better mixed than *pb, so use *pc first.  If you want
+<span class="lineNum">     494 </span>            :  * a 64-bit value do something like &quot;*pc + (((uint64_t)*pb)&lt;&lt;32)&quot;.
+<span class="lineNum">     495 </span>            :  */
+<span class="lineNum">     496 </span>            : static void hashlittle2(
+<span class="lineNum">     497 </span>            :   const void *key,       /* the key to hash */
+<span class="lineNum">     498 </span>            :   size_t      length,    /* length of the key */
+<a name="499"><span class="lineNum">     499 </span>            :   uint32_t   *pc,        /* IN: primary initval, OUT: primary hash */</a>
+<span class="lineNum">     500 </span>            :   uint32_t   *pb)        /* IN: secondary initval, OUT: secondary hash */
+<span class="lineNum">     501 </span><span class="lineCov">     213597 : {</span>
+<span class="lineNum">     502 </span><span class="lineCov">     213597 :   uint32_t a,b,c;                                          /* internal state */</span>
+<span class="lineNum">     503 </span><span class="lineCov">     213597 :   union { const void *ptr; size_t i; } u;     /* needed for Mac Powerbook G4 */</span>
+<span class="lineNum">     504 </span><span class="lineCov">     213597 : </span>
+<span class="lineNum">     505 </span><span class="lineCov">     213597 :   /* Set up the internal state */</span>
+<span class="lineNum">     506 </span><span class="lineCov">     213597 :   a = b = c = 0xdeadbeef + ((uint32_t)length) + *pc;</span>
+<span class="lineNum">     507 </span><span class="lineCov">     213597 :   c += *pb;</span>
+<span class="lineNum">     508 </span><span class="lineCov">     213597 : </span>
+<span class="lineNum">     509 </span><span class="lineCov">     213597 :   u.ptr = key;</span>
+<span class="lineNum">     510 </span><span class="lineCov">     213597 :   if (HASH_LITTLE_ENDIAN &amp;&amp; ((u.i &amp; 0x3) == 0)) {</span>
+<span class="lineNum">     511 </span><span class="lineCov">     213597 :     const uint32_t *k = (const uint32_t *)key;         /* read 32-bit chunks */</span>
+<span class="lineNum">     512 </span><span class="lineCov">     213597 : </span>
+<span class="lineNum">     513 </span><span class="lineCov">     213597 :     /*------ all but last block: aligned reads and affect 32 bits of (a,b,c) */</span>
+<span class="lineNum">     514 </span><span class="lineCov">     213597 :     while (length &gt; 12)</span>
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :       a += k[0];</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :       b += k[1];</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :       c += k[2];</span>
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 :       mix(a,b,c);</span>
+<span class="lineNum">     520 </span><span class="lineNoCov">          0 :       length -= 12;</span>
+<span class="lineNum">     521 </span><span class="lineNoCov">          0 :       k += 3;</span>
+<span class="lineNum">     522 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     523 </span><span class="lineCov">     213597 : </span>
+<span class="lineNum">     524 </span><span class="lineCov">     213597 :     /*----------------------------- handle the last (probably partial) block */</span>
+<span class="lineNum">     525 </span><span class="lineCov">     213597 :     /*</span>
+<span class="lineNum">     526 </span><span class="lineCov">     213597 :      * &quot;k[2]&amp;0xffffff&quot; actually reads beyond the end of the string, but</span>
+<span class="lineNum">     527 </span><span class="lineCov">     213597 :      * then masks off the part it's not allowed to read.  Because the</span>
+<span class="lineNum">     528 </span><span class="lineCov">     213597 :      * string is aligned, the masked-off tail is in the same word as the</span>
+<span class="lineNum">     529 </span><span class="lineCov">     213597 :      * rest of the string. Every machine with memory protection I've seen</span>
+<span class="lineNum">     530 </span><span class="lineCov">     213597 :      * does it on word boundaries, so is OK with this. But VALGRIND and CBMC</span>
+<span class="lineNum">     531 </span><span class="lineCov">     213597 :      * will still catch it and complain. CBMC will ignore this type of error</span>
+<span class="lineNum">     532 </span><span class="lineCov">     213597 :      * in the code block between the pragmas &quot;CPROVER check push&quot; and</span>
+<span class="lineNum">     533 </span><span class="lineCov">     213597 :      * &quot;CPROVER check pop&quot;. The masking trick does make the hash noticably</span>
+<span class="lineNum">     534 </span><span class="lineCov">     213597 :      * faster for short strings (like English words).</span>
+<span class="lineNum">     535 </span><span class="lineCov">     213597 :      */</span>
+<span class="lineNum">     536 </span><span class="lineCov">     213597 : #ifndef VALGRIND</span>
+<span class="lineNum">     537 </span>            : #ifdef CBMC
+<span class="lineNum">     538 </span>            : #    pragma CPROVER check push
+<span class="lineNum">     539 </span>            : #    pragma CPROVER check disable &quot;pointer&quot;
+<span class="lineNum">     540 </span>            : #endif
+<span class="lineNum">     541 </span>            :     // changed in aws-c-common: fix unused variable warning
+<span class="lineNum">     542 </span><span class="lineCov">     213597 : </span>
+<span class="lineNum">     543 </span><span class="lineCov">     213597 :     switch(length)</span>
+<span class="lineNum">     544 </span><span class="lineCov">     213597 :     {</span>
+<span class="lineNum">     545 </span><span class="lineNoCov">          0 :     case 12: c+=k[2]; b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     546 </span><span class="lineNoCov">          0 :     case 11: c+=k[2]&amp;0xffffff; b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     547 </span><span class="lineCov">       2618 :     case 10: c+=k[2]&amp;0xffff; b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     548 </span><span class="lineCov">      13109 :     case 9 : c+=k[2]&amp;0xff; b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     549 </span><span class="lineCov">     104754 :     case 8 : b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     550 </span><span class="lineCov">      13989 :     case 7 : b+=k[1]&amp;0xffffff; a+=k[0]; break;</span>
+<span class="lineNum">     551 </span><span class="lineCov">      12946 :     case 6 : b+=k[1]&amp;0xffff; a+=k[0]; break;</span>
+<span class="lineNum">     552 </span><span class="lineCov">      13411 :     case 5 : b+=k[1]&amp;0xff; a+=k[0]; break;</span>
+<span class="lineNum">     553 </span><span class="lineCov">       9866 :     case 4 : a+=k[0]; break;</span>
+<span class="lineNum">     554 </span><span class="lineCov">      12210 :     case 3 : a+=k[0]&amp;0xffffff; break;</span>
+<span class="lineNum">     555 </span><span class="lineCov">      10316 :     case 2 : a+=k[0]&amp;0xffff; break;</span>
+<span class="lineNum">     556 </span><span class="lineCov">      12826 :     case 1 : a+=k[0]&amp;0xff; break;</span>
+<span class="lineNum">     557 </span><span class="lineCov">       7552 :     case 0 : *pc=c; *pb=b; return;  /* zero length strings require no mixing */</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     560 </span>            : #ifdef CBMC
+<span class="lineNum">     561 </span>            : #    pragma CPROVER check pop
+<span class="lineNum">     562 </span>            : #endif
+<span class="lineNum">     563 </span>            : #else /* make valgrind happy */
+<span class="lineNum">     564 </span>            : 
+<span class="lineNum">     565 </span>            :     const uint8_t *k8 = (const uint8_t *)k;
+<span class="lineNum">     566 </span>            :     switch(length)
+<span class="lineNum">     567 </span>            :     {
+<span class="lineNum">     568 </span>            :     case 12: c+=k[2]; b+=k[1]; a+=k[0]; break;
+<span class="lineNum">     569 </span>            :     case 11: c+=((uint32_t)k8[10])&lt;&lt;16;  /* fall through */
+<span class="lineNum">     570 </span>            :     case 10: c+=((uint32_t)k8[9])&lt;&lt;8;    /* fall through */
+<span class="lineNum">     571 </span>            :     case 9 : c+=k8[8];                   /* fall through */
+<span class="lineNum">     572 </span>            :     case 8 : b+=k[1]; a+=k[0]; break;
+<span class="lineNum">     573 </span>            :     case 7 : b+=((uint32_t)k8[6])&lt;&lt;16;   /* fall through */
+<span class="lineNum">     574 </span>            :     case 6 : b+=((uint32_t)k8[5])&lt;&lt;8;    /* fall through */
+<span class="lineNum">     575 </span>            :     case 5 : b+=k8[4];                   /* fall through */
+<span class="lineNum">     576 </span>            :     case 4 : a+=k[0]; break;
+<span class="lineNum">     577 </span>            :     case 3 : a+=((uint32_t)k8[2])&lt;&lt;16;   /* fall through */
+<span class="lineNum">     578 </span>            :     case 2 : a+=((uint32_t)k8[1])&lt;&lt;8;    /* fall through */
+<span class="lineNum">     579 </span>            :     case 1 : a+=k8[0]; break;
+<span class="lineNum">     580 </span>            :     case 0 : *pc=c; *pb=b; return;  /* zero length strings require no mixing */
+<span class="lineNum">     581 </span>            :     }
+<span class="lineNum">     582 </span>            : 
+<span class="lineNum">     583 </span>            : #endif /* !valgrind */
+<span class="lineNum">     584 </span>            : 
+<span class="lineNum">     585 </span><span class="lineNoCov">          0 :   } else if (HASH_LITTLE_ENDIAN &amp;&amp; ((u.i &amp; 0x1) == 0)) {</span>
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 :     const uint16_t *k = (const uint16_t *)key;         /* read 16-bit chunks */</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :     /*--------------- all but last block: aligned reads and different mixing */</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :     while (length &gt; 12)</span>
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :       a += k[0] + (((uint32_t)k[1])&lt;&lt;16);</span>
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 :       b += k[2] + (((uint32_t)k[3])&lt;&lt;16);</span>
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :       c += k[4] + (((uint32_t)k[5])&lt;&lt;16);</span>
+<span class="lineNum">     594 </span><span class="lineNoCov">          0 :       mix(a,b,c);</span>
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 :       length -= 12;</span>
+<span class="lineNum">     596 </span><span class="lineNoCov">          0 :       k += 6;</span>
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :     /*----------------------------- handle the last (probably partial) block */</span>
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :     const uint8_t *k8 = (const uint8_t *)k;</span>
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :     switch(length)</span>
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     603 </span><span class="lineNoCov">          0 :     case 12: c+=k[4]+(((uint32_t)k[5])&lt;&lt;16);</span>
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :              b+=k[2]+(((uint32_t)k[3])&lt;&lt;16);</span>
+<span class="lineNum">     605 </span><span class="lineNoCov">          0 :              a+=k[0]+(((uint32_t)k[1])&lt;&lt;16);</span>
+<span class="lineNum">     606 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     607 </span><span class="lineNoCov">          0 :     case 11: c+=((uint32_t)k8[10])&lt;&lt;16;     /* fall through */</span>
+<span class="lineNum">     608 </span><span class="lineNoCov">          0 :     case 10: c+=k[4];</span>
+<span class="lineNum">     609 </span><span class="lineNoCov">          0 :              b+=k[2]+(((uint32_t)k[3])&lt;&lt;16);</span>
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 :              a+=k[0]+(((uint32_t)k[1])&lt;&lt;16);</span>
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     612 </span><span class="lineNoCov">          0 :     case 9 : c+=k8[8];                      /* fall through */</span>
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :     case 8 : b+=k[2]+(((uint32_t)k[3])&lt;&lt;16);</span>
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 :              a+=k[0]+(((uint32_t)k[1])&lt;&lt;16);</span>
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :     case 7 : b+=((uint32_t)k8[6])&lt;&lt;16;      /* fall through */</span>
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :     case 6 : b+=k[2];</span>
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :              a+=k[0]+(((uint32_t)k[1])&lt;&lt;16);</span>
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     620 </span><span class="lineNoCov">          0 :     case 5 : b+=k8[4];                      /* fall through */</span>
+<span class="lineNum">     621 </span><span class="lineNoCov">          0 :     case 4 : a+=k[0]+(((uint32_t)k[1])&lt;&lt;16);</span>
+<span class="lineNum">     622 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :     case 3 : a+=((uint32_t)k8[2])&lt;&lt;16;      /* fall through */</span>
+<span class="lineNum">     624 </span><span class="lineNoCov">          0 :     case 2 : a+=k[0];</span>
+<span class="lineNum">     625 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     626 </span><span class="lineNoCov">          0 :     case 1 : a+=k8[0];</span>
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     628 </span><span class="lineNoCov">          0 :     case 0 : *pc=c; *pb=b; return;  /* zero length strings require no mixing */</span>
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     631 </span><span class="lineNoCov">          0 :   } else {                        /* need to read the key one byte at a time */</span>
+<span class="lineNum">     632 </span><span class="lineNoCov">          0 :     const uint8_t *k = (const uint8_t *)key;</span>
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     634 </span><span class="lineNoCov">          0 :     /*--------------- all but the last block: affect some 32 bits of (a,b,c) */</span>
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 :     while (length &gt; 12)</span>
+<span class="lineNum">     636 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     637 </span><span class="lineNoCov">          0 :       a += k[0];</span>
+<span class="lineNum">     638 </span><span class="lineNoCov">          0 :       a += ((uint32_t)k[1])&lt;&lt;8;</span>
+<span class="lineNum">     639 </span><span class="lineNoCov">          0 :       a += ((uint32_t)k[2])&lt;&lt;16;</span>
+<span class="lineNum">     640 </span><span class="lineNoCov">          0 :       a += ((uint32_t)k[3])&lt;&lt;24;</span>
+<span class="lineNum">     641 </span><span class="lineNoCov">          0 :       b += k[4];</span>
+<span class="lineNum">     642 </span><span class="lineNoCov">          0 :       b += ((uint32_t)k[5])&lt;&lt;8;</span>
+<span class="lineNum">     643 </span><span class="lineNoCov">          0 :       b += ((uint32_t)k[6])&lt;&lt;16;</span>
+<span class="lineNum">     644 </span><span class="lineNoCov">          0 :       b += ((uint32_t)k[7])&lt;&lt;24;</span>
+<span class="lineNum">     645 </span><span class="lineNoCov">          0 :       c += k[8];</span>
+<span class="lineNum">     646 </span><span class="lineNoCov">          0 :       c += ((uint32_t)k[9])&lt;&lt;8;</span>
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :       c += ((uint32_t)k[10])&lt;&lt;16;</span>
+<span class="lineNum">     648 </span><span class="lineNoCov">          0 :       c += ((uint32_t)k[11])&lt;&lt;24;</span>
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :       mix(a,b,c);</span>
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 :       length -= 12;</span>
+<span class="lineNum">     651 </span><span class="lineNoCov">          0 :       k += 12;</span>
+<span class="lineNum">     652 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     654 </span><span class="lineNoCov">          0 :     /*-------------------------------- last block: affect all 32 bits of (c) */</span>
+<span class="lineNum">     655 </span><span class="lineNoCov">          0 :     switch(length)                   /* all the case statements fall through */</span>
+<span class="lineNum">     656 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     657 </span><span class="lineNoCov">          0 :     case 12: c+=((uint32_t)k[11])&lt;&lt;24;</span>
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 :     case 11: c+=((uint32_t)k[10])&lt;&lt;16;</span>
+<span class="lineNum">     659 </span><span class="lineNoCov">          0 :     case 10: c+=((uint32_t)k[9])&lt;&lt;8;</span>
+<span class="lineNum">     660 </span><span class="lineNoCov">          0 :     case 9 : c+=k[8];</span>
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 :     case 8 : b+=((uint32_t)k[7])&lt;&lt;24;</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :     case 7 : b+=((uint32_t)k[6])&lt;&lt;16;</span>
+<span class="lineNum">     663 </span><span class="lineNoCov">          0 :     case 6 : b+=((uint32_t)k[5])&lt;&lt;8;</span>
+<span class="lineNum">     664 </span><span class="lineNoCov">          0 :     case 5 : b+=k[4];</span>
+<span class="lineNum">     665 </span><span class="lineNoCov">          0 :     case 4 : a+=((uint32_t)k[3])&lt;&lt;24;</span>
+<span class="lineNum">     666 </span><span class="lineNoCov">          0 :     case 3 : a+=((uint32_t)k[2])&lt;&lt;16;</span>
+<span class="lineNum">     667 </span><span class="lineNoCov">          0 :     case 2 : a+=((uint32_t)k[1])&lt;&lt;8;</span>
+<span class="lineNum">     668 </span><span class="lineNoCov">          0 :     case 1 : a+=k[0];</span>
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     670 </span><span class="lineNoCov">          0 :     case 0 : *pc=c; *pb=b; return;  /* zero length strings require no mixing */</span>
+<span class="lineNum">     671 </span><span class="lineCov">     206045 :     }</span>
+<span class="lineNum">     672 </span><span class="lineCov">     206045 :   }</span>
+<span class="lineNum">     673 </span><span class="lineCov">     206045 : </span>
+<span class="lineNum">     674 </span><span class="lineCov">     206045 :   final(a,b,c);</span>
+<span class="lineNum">     675 </span><span class="lineCov">     206045 :   *pc=c; *pb=b;</span>
+<span class="lineNum">     676 </span><span class="lineCov">     206045 : }</span>
+<span class="lineNum">     677 </span>            : 
+<span class="lineNum">     678 </span>            : 
+<span class="lineNum">     679 </span>            : 
+<span class="lineNum">     680 </span>            : /*
+<span class="lineNum">     681 </span>            :  * hashbig():
+<span class="lineNum">     682 </span>            :  * This is the same as hashword() on big-endian machines.  It is different
+<span class="lineNum">     683 </span>            :  * from hashlittle() on all machines.  hashbig() takes advantage of
+<span class="lineNum">     684 </span>            :  * big-endian byte ordering.
+<a name="685"><span class="lineNum">     685 </span>            :  */</a>
+<span class="lineNum">     686 </span>            : static uint32_t hashbig( const void *key, size_t length, uint32_t initval)
+<span class="lineNum">     687 </span><span class="lineNoCov">          0 : {</span>
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :   uint32_t a,b,c;</span>
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 :   union { const void *ptr; size_t i; } u; /* to cast key to (size_t) happily */</span>
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     691 </span><span class="lineNoCov">          0 :   /* Set up the internal state */</span>
+<span class="lineNum">     692 </span><span class="lineNoCov">          0 :   a = b = c = 0xdeadbeef + ((uint32_t)length) + initval;</span>
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     694 </span><span class="lineNoCov">          0 :   u.ptr = key;</span>
+<span class="lineNum">     695 </span><span class="lineNoCov">          0 :   if (HASH_BIG_ENDIAN &amp;&amp; ((u.i &amp; 0x3) == 0)) {</span>
+<span class="lineNum">     696 </span><span class="lineNoCov">          0 :     const uint32_t *k = (const uint32_t *)key;         /* read 32-bit chunks */</span>
+<span class="lineNum">     697 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 :     /*------ all but last block: aligned reads and affect 32 bits of (a,b,c) */</span>
+<span class="lineNum">     699 </span><span class="lineNoCov">          0 :     while (length &gt; 12)</span>
+<span class="lineNum">     700 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     701 </span><span class="lineNoCov">          0 :       a += k[0];</span>
+<span class="lineNum">     702 </span><span class="lineNoCov">          0 :       b += k[1];</span>
+<span class="lineNum">     703 </span><span class="lineNoCov">          0 :       c += k[2];</span>
+<span class="lineNum">     704 </span><span class="lineNoCov">          0 :       mix(a,b,c);</span>
+<span class="lineNum">     705 </span><span class="lineNoCov">          0 :       length -= 12;</span>
+<span class="lineNum">     706 </span><span class="lineNoCov">          0 :       k += 3;</span>
+<span class="lineNum">     707 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     708 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     709 </span><span class="lineNoCov">          0 :     /*----------------------------- handle the last (probably partial) block */</span>
+<span class="lineNum">     710 </span><span class="lineNoCov">          0 :     /*</span>
+<span class="lineNum">     711 </span><span class="lineNoCov">          0 :      * &quot;k[2]&lt;&lt;8&quot; actually reads beyond the end of the string, but</span>
+<span class="lineNum">     712 </span><span class="lineNoCov">          0 :      * then shifts out the part it's not allowed to read.  Because the</span>
+<span class="lineNum">     713 </span><span class="lineNoCov">          0 :      * string is aligned, the illegal read is in the same word as the</span>
+<span class="lineNum">     714 </span><span class="lineNoCov">          0 :      * rest of the string. Every machine with memory protection I've seen</span>
+<span class="lineNum">     715 </span><span class="lineNoCov">          0 :      * does it on word boundaries, so is OK with this. But VALGRIND and CBMC</span>
+<span class="lineNum">     716 </span><span class="lineNoCov">          0 :      * will still catch it and complain. CBMC will ignore this type of error</span>
+<span class="lineNum">     717 </span><span class="lineNoCov">          0 :      * in the code block between the pragmas &quot;CPROVER check push&quot; and</span>
+<span class="lineNum">     718 </span><span class="lineNoCov">          0 :      * &quot;CPROVER check pop&quot;. The masking trick does make the hash noticably</span>
+<span class="lineNum">     719 </span><span class="lineNoCov">          0 :      * faster for short strings (like English words).</span>
+<span class="lineNum">     720 </span><span class="lineNoCov">          0 :      */</span>
+<span class="lineNum">     721 </span><span class="lineNoCov">          0 : #ifndef VALGRIND</span>
+<span class="lineNum">     722 </span>            : #ifdef CBMC
+<span class="lineNum">     723 </span>            : #    pragma CPROVER check push
+<span class="lineNum">     724 </span>            : #    pragma CPROVER check disable &quot;pointer&quot;
+<span class="lineNum">     725 </span>            : #endif
+<span class="lineNum">     726 </span>            :     // changed in aws-c-common: fix unused variable warning
+<span class="lineNum">     727 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     728 </span><span class="lineNoCov">          0 :     switch(length)</span>
+<span class="lineNum">     729 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     730 </span><span class="lineNoCov">          0 :     case 12: c+=k[2]; b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     731 </span><span class="lineNoCov">          0 :     case 11: c+=k[2]&amp;0xffffff00; b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     732 </span><span class="lineNoCov">          0 :     case 10: c+=k[2]&amp;0xffff0000; b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     733 </span><span class="lineNoCov">          0 :     case 9 : c+=k[2]&amp;0xff000000; b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     734 </span><span class="lineNoCov">          0 :     case 8 : b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     735 </span><span class="lineNoCov">          0 :     case 7 : b+=k[1]&amp;0xffffff00; a+=k[0]; break;</span>
+<span class="lineNum">     736 </span><span class="lineNoCov">          0 :     case 6 : b+=k[1]&amp;0xffff0000; a+=k[0]; break;</span>
+<span class="lineNum">     737 </span><span class="lineNoCov">          0 :     case 5 : b+=k[1]&amp;0xff000000; a+=k[0]; break;</span>
+<span class="lineNum">     738 </span><span class="lineNoCov">          0 :     case 4 : a+=k[0]; break;</span>
+<span class="lineNum">     739 </span><span class="lineNoCov">          0 :     case 3 : a+=k[0]&amp;0xffffff00; break;</span>
+<span class="lineNum">     740 </span><span class="lineNoCov">          0 :     case 2 : a+=k[0]&amp;0xffff0000; break;</span>
+<span class="lineNum">     741 </span><span class="lineNoCov">          0 :     case 1 : a+=k[0]&amp;0xff000000; break;</span>
+<span class="lineNum">     742 </span><span class="lineNoCov">          0 :     case 0 : return c;              /* zero length strings require no mixing */</span>
+<span class="lineNum">     743 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     744 </span>            : #ifdef CBMC
+<span class="lineNum">     745 </span>            : #    pragma CPROVER check pop
+<span class="lineNum">     746 </span>            : #endif
+<span class="lineNum">     747 </span>            : #else  /* make valgrind happy */
+<span class="lineNum">     748 </span>            : 
+<span class="lineNum">     749 </span>            :     const uint8_t *k8 = (const uint8_t *)k;
+<span class="lineNum">     750 </span>            :     switch(length)                   /* all the case statements fall through */
+<span class="lineNum">     751 </span>            :     {
+<span class="lineNum">     752 </span>            :     case 12: c+=k[2]; b+=k[1]; a+=k[0]; break;
+<span class="lineNum">     753 </span>            :     case 11: c+=((uint32_t)k8[10])&lt;&lt;8;  /* fall through */
+<span class="lineNum">     754 </span>            :     case 10: c+=((uint32_t)k8[9])&lt;&lt;16;  /* fall through */
+<span class="lineNum">     755 </span>            :     case 9 : c+=((uint32_t)k8[8])&lt;&lt;24;  /* fall through */
+<span class="lineNum">     756 </span>            :     case 8 : b+=k[1]; a+=k[0]; break;
+<span class="lineNum">     757 </span>            :     case 7 : b+=((uint32_t)k8[6])&lt;&lt;8;   /* fall through */
+<span class="lineNum">     758 </span>            :     case 6 : b+=((uint32_t)k8[5])&lt;&lt;16;  /* fall through */
+<span class="lineNum">     759 </span>            :     case 5 : b+=((uint32_t)k8[4])&lt;&lt;24;  /* fall through */
+<span class="lineNum">     760 </span>            :     case 4 : a+=k[0]; break;
+<span class="lineNum">     761 </span>            :     case 3 : a+=((uint32_t)k8[2])&lt;&lt;8;   /* fall through */
+<span class="lineNum">     762 </span>            :     case 2 : a+=((uint32_t)k8[1])&lt;&lt;16;  /* fall through */
+<span class="lineNum">     763 </span>            :     case 1 : a+=((uint32_t)k8[0])&lt;&lt;24; break;
+<span class="lineNum">     764 </span>            :     case 0 : return c;
+<span class="lineNum">     765 </span>            :     }
+<span class="lineNum">     766 </span>            : 
+<span class="lineNum">     767 </span>            : #endif /* !VALGRIND */
+<span class="lineNum">     768 </span>            : 
+<span class="lineNum">     769 </span><span class="lineNoCov">          0 :   } else {                        /* need to read the key one byte at a time */</span>
+<span class="lineNum">     770 </span><span class="lineNoCov">          0 :     const uint8_t *k = (const uint8_t *)key;</span>
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     772 </span><span class="lineNoCov">          0 :     /*--------------- all but the last block: affect some 32 bits of (a,b,c) */</span>
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 :     while (length &gt; 12)</span>
+<span class="lineNum">     774 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     775 </span><span class="lineNoCov">          0 :       a += ((uint32_t)k[0])&lt;&lt;24;</span>
+<span class="lineNum">     776 </span><span class="lineNoCov">          0 :       a += ((uint32_t)k[1])&lt;&lt;16;</span>
+<span class="lineNum">     777 </span><span class="lineNoCov">          0 :       a += ((uint32_t)k[2])&lt;&lt;8;</span>
+<span class="lineNum">     778 </span><span class="lineNoCov">          0 :       a += ((uint32_t)k[3]);</span>
+<span class="lineNum">     779 </span><span class="lineNoCov">          0 :       b += ((uint32_t)k[4])&lt;&lt;24;</span>
+<span class="lineNum">     780 </span><span class="lineNoCov">          0 :       b += ((uint32_t)k[5])&lt;&lt;16;</span>
+<span class="lineNum">     781 </span><span class="lineNoCov">          0 :       b += ((uint32_t)k[6])&lt;&lt;8;</span>
+<span class="lineNum">     782 </span><span class="lineNoCov">          0 :       b += ((uint32_t)k[7]);</span>
+<span class="lineNum">     783 </span><span class="lineNoCov">          0 :       c += ((uint32_t)k[8])&lt;&lt;24;</span>
+<span class="lineNum">     784 </span><span class="lineNoCov">          0 :       c += ((uint32_t)k[9])&lt;&lt;16;</span>
+<span class="lineNum">     785 </span><span class="lineNoCov">          0 :       c += ((uint32_t)k[10])&lt;&lt;8;</span>
+<span class="lineNum">     786 </span><span class="lineNoCov">          0 :       c += ((uint32_t)k[11]);</span>
+<span class="lineNum">     787 </span><span class="lineNoCov">          0 :       mix(a,b,c);</span>
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 :       length -= 12;</span>
+<span class="lineNum">     789 </span><span class="lineNoCov">          0 :       k += 12;</span>
+<span class="lineNum">     790 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     791 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     792 </span><span class="lineNoCov">          0 :     /*-------------------------------- last block: affect all 32 bits of (c) */</span>
+<span class="lineNum">     793 </span><span class="lineNoCov">          0 :     switch(length)                   /* all the case statements fall through */</span>
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     795 </span><span class="lineNoCov">          0 :     case 12: c+=k[11];</span>
+<span class="lineNum">     796 </span><span class="lineNoCov">          0 :     case 11: c+=((uint32_t)k[10])&lt;&lt;8;</span>
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 :     case 10: c+=((uint32_t)k[9])&lt;&lt;16;</span>
+<span class="lineNum">     798 </span><span class="lineNoCov">          0 :     case 9 : c+=((uint32_t)k[8])&lt;&lt;24;</span>
+<span class="lineNum">     799 </span><span class="lineNoCov">          0 :     case 8 : b+=k[7];</span>
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :     case 7 : b+=((uint32_t)k[6])&lt;&lt;8;</span>
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :     case 6 : b+=((uint32_t)k[5])&lt;&lt;16;</span>
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 :     case 5 : b+=((uint32_t)k[4])&lt;&lt;24;</span>
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :     case 4 : a+=k[3];</span>
+<span class="lineNum">     804 </span><span class="lineNoCov">          0 :     case 3 : a+=((uint32_t)k[2])&lt;&lt;8;</span>
+<span class="lineNum">     805 </span><span class="lineNoCov">          0 :     case 2 : a+=((uint32_t)k[1])&lt;&lt;16;</span>
+<span class="lineNum">     806 </span><span class="lineNoCov">          0 :     case 1 : a+=((uint32_t)k[0])&lt;&lt;24;</span>
+<span class="lineNum">     807 </span><span class="lineNoCov">          0 :              break;</span>
+<span class="lineNum">     808 </span><span class="lineNoCov">          0 :     case 0 : return c;</span>
+<span class="lineNum">     809 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     810 </span><span class="lineNoCov">          0 :   }</span>
+<span class="lineNum">     811 </span><span class="lineNoCov">          0 : </span>
+<span class="lineNum">     812 </span><span class="lineNoCov">          0 :   final(a,b,c);</span>
+<span class="lineNum">     813 </span><span class="lineNoCov">          0 :   return c;</span>
+<span class="lineNum">     814 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     815 </span>            : 
+<span class="lineNum">     816 </span>            : 
+<span class="lineNum">     817 </span>            : #ifdef SELF_TEST
+<span class="lineNum">     818 </span>            : 
+<span class="lineNum">     819 </span>            : /* used for timings */
+<span class="lineNum">     820 </span>            : void driver1()
+<span class="lineNum">     821 </span>            : {
+<span class="lineNum">     822 </span>            :   uint8_t buf[256];
+<span class="lineNum">     823 </span>            :   uint32_t i;
+<span class="lineNum">     824 </span>            :   uint32_t h=0;
+<span class="lineNum">     825 </span>            :   time_t a,z;
+<span class="lineNum">     826 </span>            : 
+<span class="lineNum">     827 </span>            :   time(&amp;a);
+<span class="lineNum">     828 </span>            :   for (i=0; i&lt;256; ++i) buf[i] = 'x';
+<span class="lineNum">     829 </span>            :   for (i=0; i&lt;1; ++i)
+<span class="lineNum">     830 </span>            :   {
+<span class="lineNum">     831 </span>            :     h = hashlittle(&amp;buf[0],1,h);
+<span class="lineNum">     832 </span>            :   }
+<span class="lineNum">     833 </span>            :   time(&amp;z);
+<span class="lineNum">     834 </span>            :   if (z-a &gt; 0) printf(&quot;time %d %.8x\n&quot;, z-a, h);
+<span class="lineNum">     835 </span>            : }
+<span class="lineNum">     836 </span>            : 
+<span class="lineNum">     837 </span>            : /* check that every input bit changes every output bit half the time */
+<span class="lineNum">     838 </span>            : #define HASHSTATE 1
+<span class="lineNum">     839 </span>            : #define HASHLEN   1
+<span class="lineNum">     840 </span>            : #define MAXPAIR 60
+<span class="lineNum">     841 </span>            : #define MAXLEN  70
+<span class="lineNum">     842 </span>            : void driver2()
+<span class="lineNum">     843 </span>            : {
+<span class="lineNum">     844 </span>            :   uint8_t qa[MAXLEN+1], qb[MAXLEN+2], *a = &amp;qa[0], *b = &amp;qb[1];
+<span class="lineNum">     845 </span>            :   uint32_t c[HASHSTATE], d[HASHSTATE], i=0, j=0, k, l, m=0, z;
+<span class="lineNum">     846 </span>            :   uint32_t e[HASHSTATE],f[HASHSTATE],g[HASHSTATE],h[HASHSTATE];
+<span class="lineNum">     847 </span>            :   uint32_t x[HASHSTATE],y[HASHSTATE];
+<span class="lineNum">     848 </span>            :   uint32_t hlen;
+<span class="lineNum">     849 </span>            : 
+<span class="lineNum">     850 </span>            :   printf(&quot;No more than %d trials should ever be needed \n&quot;,MAXPAIR/2);
+<span class="lineNum">     851 </span>            :   for (hlen=0; hlen &lt; MAXLEN; ++hlen)
+<span class="lineNum">     852 </span>            :   {
+<span class="lineNum">     853 </span>            :     z=0;
+<span class="lineNum">     854 </span>            :     for (i=0; i&lt;hlen; ++i)  /*----------------------- for each input byte, */
+<span class="lineNum">     855 </span>            :     {
+<span class="lineNum">     856 </span>            :       for (j=0; j&lt;8; ++j)   /*------------------------ for each input bit, */
+<span class="lineNum">     857 </span>            :       {
+<span class="lineNum">     858 </span>            :         for (m=1; m&lt;8; ++m) /*------------ for serveral possible initvals, */
+<span class="lineNum">     859 </span>            :         {
+<span class="lineNum">     860 </span>            :           for (l=0; l&lt;HASHSTATE; ++l)
+<span class="lineNum">     861 </span>            :             e[l]=f[l]=g[l]=h[l]=x[l]=y[l]=~((uint32_t)0);
+<span class="lineNum">     862 </span>            : 
+<span class="lineNum">     863 </span>            :           /*---- check that every output bit is affected by that input bit */
+<span class="lineNum">     864 </span>            :           for (k=0; k&lt;MAXPAIR; k+=2)
+<span class="lineNum">     865 </span>            :           {
+<span class="lineNum">     866 </span>            :             uint32_t finished=1;
+<span class="lineNum">     867 </span>            :             /* keys have one bit different */
+<span class="lineNum">     868 </span>            :             for (l=0; l&lt;hlen+1; ++l) {a[l] = b[l] = (uint8_t)0;}
+<span class="lineNum">     869 </span>            :             /* have a and b be two keys differing in only one bit */
+<span class="lineNum">     870 </span>            :             a[i] ^= (k&lt;&lt;j);
+<span class="lineNum">     871 </span>            :             a[i] ^= (k&gt;&gt;(8-j));
+<span class="lineNum">     872 </span>            :              c[0] = hashlittle(a, hlen, m);
+<span class="lineNum">     873 </span>            :             b[i] ^= ((k+1)&lt;&lt;j);
+<span class="lineNum">     874 </span>            :             b[i] ^= ((k+1)&gt;&gt;(8-j));
+<span class="lineNum">     875 </span>            :              d[0] = hashlittle(b, hlen, m);
+<span class="lineNum">     876 </span>            :             /* check every bit is 1, 0, set, and not set at least once */
+<span class="lineNum">     877 </span>            :             for (l=0; l&lt;HASHSTATE; ++l)
+<span class="lineNum">     878 </span>            :             {
+<span class="lineNum">     879 </span>            :               e[l] &amp;= (c[l]^d[l]);
+<span class="lineNum">     880 </span>            :               f[l] &amp;= ~(c[l]^d[l]);
+<span class="lineNum">     881 </span>            :               g[l] &amp;= c[l];
+<span class="lineNum">     882 </span>            :               h[l] &amp;= ~c[l];
+<span class="lineNum">     883 </span>            :               x[l] &amp;= d[l];
+<span class="lineNum">     884 </span>            :               y[l] &amp;= ~d[l];
+<span class="lineNum">     885 </span>            :               if (e[l]|f[l]|g[l]|h[l]|x[l]|y[l]) finished=0;
+<span class="lineNum">     886 </span>            :             }
+<span class="lineNum">     887 </span>            :             if (finished) break;
+<span class="lineNum">     888 </span>            :           }
+<span class="lineNum">     889 </span>            :           if (k&gt;z) z=k;
+<span class="lineNum">     890 </span>            :           if (k==MAXPAIR)
+<span class="lineNum">     891 </span>            :           {
+<span class="lineNum">     892 </span>            :              printf(&quot;Some bit didn't change: &quot;);
+<span class="lineNum">     893 </span>            :              printf(&quot;%.8x %.8x %.8x %.8x %.8x %.8x  &quot;,
+<span class="lineNum">     894 </span>            :                     e[0],f[0],g[0],h[0],x[0],y[0]);
+<span class="lineNum">     895 </span>            :              printf(&quot;i %d j %d m %d len %d\n&quot;, i, j, m, hlen);
+<span class="lineNum">     896 </span>            :           }
+<span class="lineNum">     897 </span>            :           if (z==MAXPAIR) goto done;
+<span class="lineNum">     898 </span>            :         }
+<span class="lineNum">     899 </span>            :       }
+<span class="lineNum">     900 </span>            :     }
+<span class="lineNum">     901 </span>            :    done:
+<span class="lineNum">     902 </span>            :     if (z &lt; MAXPAIR)
+<span class="lineNum">     903 </span>            :     {
+<span class="lineNum">     904 </span>            :       printf(&quot;Mix success  %2d bytes  %2d initvals  &quot;,i,m);
+<span class="lineNum">     905 </span>            :       printf(&quot;required  %d  trials\n&quot;, z/2);
+<span class="lineNum">     906 </span>            :     }
+<span class="lineNum">     907 </span>            :   }
+<span class="lineNum">     908 </span>            :   printf(&quot;\n&quot;);
+<span class="lineNum">     909 </span>            : }
+<span class="lineNum">     910 </span>            : 
+<span class="lineNum">     911 </span>            : /* Check for reading beyond the end of the buffer and alignment problems */
+<span class="lineNum">     912 </span>            : void driver3()
+<span class="lineNum">     913 </span>            : {
+<span class="lineNum">     914 </span>            :   uint8_t buf[MAXLEN+20], *b;
+<span class="lineNum">     915 </span>            :   uint32_t len;
+<span class="lineNum">     916 </span>            :   uint8_t q[] = &quot;This is the time for all good men to come to the aid of their country...&quot;;
+<span class="lineNum">     917 </span>            :   uint32_t h;
+<span class="lineNum">     918 </span>            :   uint8_t qq[] = &quot;xThis is the time for all good men to come to the aid of their country...&quot;;
+<span class="lineNum">     919 </span>            :   uint32_t i;
+<span class="lineNum">     920 </span>            :   uint8_t qqq[] = &quot;xxThis is the time for all good men to come to the aid of their country...&quot;;
+<span class="lineNum">     921 </span>            :   uint32_t j;
+<span class="lineNum">     922 </span>            :   uint8_t qqqq[] = &quot;xxxThis is the time for all good men to come to the aid of their country...&quot;;
+<span class="lineNum">     923 </span>            :   uint32_t ref,x,y;
+<span class="lineNum">     924 </span>            :   uint8_t *p;
+<span class="lineNum">     925 </span>            : 
+<span class="lineNum">     926 </span>            :   printf(&quot;Endianness.  These lines should all be the same (for values filled in):\n&quot;);
+<span class="lineNum">     927 </span>            :   printf(&quot;%.8x                            %.8x                            %.8x\n&quot;,
+<span class="lineNum">     928 </span>            :          hashword((const uint32_t *)q, (sizeof(q)-1)/4, 13),
+<span class="lineNum">     929 </span>            :          hashword((const uint32_t *)q, (sizeof(q)-5)/4, 13),
+<span class="lineNum">     930 </span>            :          hashword((const uint32_t *)q, (sizeof(q)-9)/4, 13));
+<span class="lineNum">     931 </span>            :   p = q;
+<span class="lineNum">     932 </span>            :   printf(&quot;%.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x\n&quot;,
+<span class="lineNum">     933 </span>            :          hashlittle(p, sizeof(q)-1, 13), hashlittle(p, sizeof(q)-2, 13),
+<span class="lineNum">     934 </span>            :          hashlittle(p, sizeof(q)-3, 13), hashlittle(p, sizeof(q)-4, 13),
+<span class="lineNum">     935 </span>            :          hashlittle(p, sizeof(q)-5, 13), hashlittle(p, sizeof(q)-6, 13),
+<span class="lineNum">     936 </span>            :          hashlittle(p, sizeof(q)-7, 13), hashlittle(p, sizeof(q)-8, 13),
+<span class="lineNum">     937 </span>            :          hashlittle(p, sizeof(q)-9, 13), hashlittle(p, sizeof(q)-10, 13),
+<span class="lineNum">     938 </span>            :          hashlittle(p, sizeof(q)-11, 13), hashlittle(p, sizeof(q)-12, 13));
+<span class="lineNum">     939 </span>            :   p = &amp;qq[1];
+<span class="lineNum">     940 </span>            :   printf(&quot;%.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x\n&quot;,
+<span class="lineNum">     941 </span>            :          hashlittle(p, sizeof(q)-1, 13), hashlittle(p, sizeof(q)-2, 13),
+<span class="lineNum">     942 </span>            :          hashlittle(p, sizeof(q)-3, 13), hashlittle(p, sizeof(q)-4, 13),
+<span class="lineNum">     943 </span>            :          hashlittle(p, sizeof(q)-5, 13), hashlittle(p, sizeof(q)-6, 13),
+<span class="lineNum">     944 </span>            :          hashlittle(p, sizeof(q)-7, 13), hashlittle(p, sizeof(q)-8, 13),
+<span class="lineNum">     945 </span>            :          hashlittle(p, sizeof(q)-9, 13), hashlittle(p, sizeof(q)-10, 13),
+<span class="lineNum">     946 </span>            :          hashlittle(p, sizeof(q)-11, 13), hashlittle(p, sizeof(q)-12, 13));
+<span class="lineNum">     947 </span>            :   p = &amp;qqq[2];
+<span class="lineNum">     948 </span>            :   printf(&quot;%.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x\n&quot;,
+<span class="lineNum">     949 </span>            :          hashlittle(p, sizeof(q)-1, 13), hashlittle(p, sizeof(q)-2, 13),
+<span class="lineNum">     950 </span>            :          hashlittle(p, sizeof(q)-3, 13), hashlittle(p, sizeof(q)-4, 13),
+<span class="lineNum">     951 </span>            :          hashlittle(p, sizeof(q)-5, 13), hashlittle(p, sizeof(q)-6, 13),
+<span class="lineNum">     952 </span>            :          hashlittle(p, sizeof(q)-7, 13), hashlittle(p, sizeof(q)-8, 13),
+<span class="lineNum">     953 </span>            :          hashlittle(p, sizeof(q)-9, 13), hashlittle(p, sizeof(q)-10, 13),
+<span class="lineNum">     954 </span>            :          hashlittle(p, sizeof(q)-11, 13), hashlittle(p, sizeof(q)-12, 13));
+<span class="lineNum">     955 </span>            :   p = &amp;qqqq[3];
+<span class="lineNum">     956 </span>            :   printf(&quot;%.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x %.8x\n&quot;,
+<span class="lineNum">     957 </span>            :          hashlittle(p, sizeof(q)-1, 13), hashlittle(p, sizeof(q)-2, 13),
+<span class="lineNum">     958 </span>            :          hashlittle(p, sizeof(q)-3, 13), hashlittle(p, sizeof(q)-4, 13),
+<span class="lineNum">     959 </span>            :          hashlittle(p, sizeof(q)-5, 13), hashlittle(p, sizeof(q)-6, 13),
+<span class="lineNum">     960 </span>            :          hashlittle(p, sizeof(q)-7, 13), hashlittle(p, sizeof(q)-8, 13),
+<span class="lineNum">     961 </span>            :          hashlittle(p, sizeof(q)-9, 13), hashlittle(p, sizeof(q)-10, 13),
+<span class="lineNum">     962 </span>            :          hashlittle(p, sizeof(q)-11, 13), hashlittle(p, sizeof(q)-12, 13));
+<span class="lineNum">     963 </span>            :   printf(&quot;\n&quot;);
+<span class="lineNum">     964 </span>            : 
+<span class="lineNum">     965 </span>            :   /* check that hashlittle2 and hashlittle produce the same results */
+<span class="lineNum">     966 </span>            :   i=47; j=0;
+<span class="lineNum">     967 </span>            :   hashlittle2(q, sizeof(q), &amp;i, &amp;j);
+<span class="lineNum">     968 </span>            :   if (hashlittle(q, sizeof(q), 47) != i)
+<span class="lineNum">     969 </span>            :     printf(&quot;hashlittle2 and hashlittle mismatch\n&quot;);
+<span class="lineNum">     970 </span>            : 
+<span class="lineNum">     971 </span>            :   /* check that hashword2 and hashword produce the same results */
+<span class="lineNum">     972 </span>            :   len = 0xdeadbeef;
+<span class="lineNum">     973 </span>            :   i=47, j=0;
+<span class="lineNum">     974 </span>            :   hashword2(&amp;len, 1, &amp;i, &amp;j);
+<span class="lineNum">     975 </span>            :   if (hashword(&amp;len, 1, 47) != i)
+<span class="lineNum">     976 </span>            :     printf(&quot;hashword2 and hashword mismatch %x %x\n&quot;,
+<span class="lineNum">     977 </span>            :            i, hashword(&amp;len, 1, 47));
+<span class="lineNum">     978 </span>            : 
+<span class="lineNum">     979 </span>            :   /* check hashlittle doesn't read before or after the ends of the string */
+<span class="lineNum">     980 </span>            :   for (h=0, b=buf+1; h&lt;8; ++h, ++b)
+<span class="lineNum">     981 </span>            :   {
+<span class="lineNum">     982 </span>            :     for (i=0; i&lt;MAXLEN; ++i)
+<span class="lineNum">     983 </span>            :     {
+<span class="lineNum">     984 </span>            :       len = i;
+<span class="lineNum">     985 </span>            :       for (j=0; j&lt;i; ++j) *(b+j)=0;
+<span class="lineNum">     986 </span>            : 
+<span class="lineNum">     987 </span>            :       /* these should all be equal */
+<span class="lineNum">     988 </span>            :       ref = hashlittle(b, len, (uint32_t)1);
+<span class="lineNum">     989 </span>            :       *(b+i)=(uint8_t)~0;
+<span class="lineNum">     990 </span>            :       *(b-1)=(uint8_t)~0;
+<span class="lineNum">     991 </span>            :       x = hashlittle(b, len, (uint32_t)1);
+<span class="lineNum">     992 </span>            :       y = hashlittle(b, len, (uint32_t)1);
+<span class="lineNum">     993 </span>            :       if ((ref != x) || (ref != y))
+<span class="lineNum">     994 </span>            :       {
+<span class="lineNum">     995 </span>            :         printf(&quot;alignment error: %.8x %.8x %.8x %d %d\n&quot;,ref,x,y,
+<span class="lineNum">     996 </span>            :                h, i);
+<span class="lineNum">     997 </span>            :       }
+<span class="lineNum">     998 </span>            :     }
+<span class="lineNum">     999 </span>            :   }
+<span class="lineNum">    1000 </span>            : }
+<span class="lineNum">    1001 </span>            : 
+<span class="lineNum">    1002 </span>            : /* check for problems with nulls */
+<span class="lineNum">    1003 </span>            :  void driver4()
+<span class="lineNum">    1004 </span>            : {
+<span class="lineNum">    1005 </span>            :   uint8_t buf[1];
+<span class="lineNum">    1006 </span>            :   uint32_t h,i,state[HASHSTATE];
+<span class="lineNum">    1007 </span>            : 
+<span class="lineNum">    1008 </span>            : 
+<span class="lineNum">    1009 </span>            :   buf[0] = ~0;
+<span class="lineNum">    1010 </span>            :   for (i=0; i&lt;HASHSTATE; ++i) state[i] = 1;
+<span class="lineNum">    1011 </span>            :   printf(&quot;These should all be different\n&quot;);
+<span class="lineNum">    1012 </span>            :   for (i=0, h=0; i&lt;8; ++i)
+<span class="lineNum">    1013 </span>            :   {
+<span class="lineNum">    1014 </span>            :     h = hashlittle(buf, 0, h);
+<span class="lineNum">    1015 </span>            :     printf(&quot;%2ld  0-byte strings, hash is  %.8x\n&quot;, i, h);
+<span class="lineNum">    1016 </span>            :   }
+<span class="lineNum">    1017 </span>            : }
+<span class="lineNum">    1018 </span>            : 
+<span class="lineNum">    1019 </span>            : void driver5()
+<span class="lineNum">    1020 </span>            : {
+<span class="lineNum">    1021 </span>            :   uint32_t b,c;
+<span class="lineNum">    1022 </span>            :   b=0, c=0, hashlittle2(&quot;&quot;, 0, &amp;c, &amp;b);
+<span class="lineNum">    1023 </span>            :   printf(&quot;hash is %.8lx %.8lx\n&quot;, c, b);   /* deadbeef deadbeef */
+<span class="lineNum">    1024 </span>            :   b=0xdeadbeef, c=0, hashlittle2(&quot;&quot;, 0, &amp;c, &amp;b);
+<span class="lineNum">    1025 </span>            :   printf(&quot;hash is %.8lx %.8lx\n&quot;, c, b);   /* bd5b7dde deadbeef */
+<span class="lineNum">    1026 </span>            :   b=0xdeadbeef, c=0xdeadbeef, hashlittle2(&quot;&quot;, 0, &amp;c, &amp;b);
+<span class="lineNum">    1027 </span>            :   printf(&quot;hash is %.8lx %.8lx\n&quot;, c, b);   /* 9c093ccd bd5b7dde */
+<span class="lineNum">    1028 </span>            :   b=0, c=0, hashlittle2(&quot;Four score and seven years ago&quot;, 30, &amp;c, &amp;b);
+<span class="lineNum">    1029 </span>            :   printf(&quot;hash is %.8lx %.8lx\n&quot;, c, b);   /* 17770551 ce7226e6 */
+<span class="lineNum">    1030 </span>            :   b=1, c=0, hashlittle2(&quot;Four score and seven years ago&quot;, 30, &amp;c, &amp;b);
+<span class="lineNum">    1031 </span>            :   printf(&quot;hash is %.8lx %.8lx\n&quot;, c, b);   /* e3607cae bd371de4 */
+<span class="lineNum">    1032 </span>            :   b=0, c=1, hashlittle2(&quot;Four score and seven years ago&quot;, 30, &amp;c, &amp;b);
+<span class="lineNum">    1033 </span>            :   printf(&quot;hash is %.8lx %.8lx\n&quot;, c, b);   /* cd628161 6cbea4b3 */
+<span class="lineNum">    1034 </span>            :   c = hashlittle(&quot;Four score and seven years ago&quot;, 30, 0);
+<span class="lineNum">    1035 </span>            :   printf(&quot;hash is %.8lx\n&quot;, c);   /* 17770551 */
+<span class="lineNum">    1036 </span>            :   c = hashlittle(&quot;Four score and seven years ago&quot;, 30, 1);
+<span class="lineNum">    1037 </span>            :   printf(&quot;hash is %.8lx\n&quot;, c);   /* cd628161 */
+<span class="lineNum">    1038 </span>            : }
+<span class="lineNum">    1039 </span>            : 
+<span class="lineNum">    1040 </span>            : 
+<span class="lineNum">    1041 </span>            : int main()
+<span class="lineNum">    1042 </span>            : {
+<span class="lineNum">    1043 </span>            :   driver1();   /* test that the key is hashed: used for timings */
+<span class="lineNum">    1044 </span>            :   driver2();   /* test that whole key is hashed thoroughly */
+<span class="lineNum">    1045 </span>            :   driver3();   /* test that nothing but the key is hashed */
+<span class="lineNum">    1046 </span>            :   driver4();   /* test hashing multiple buffers (all buffers are null) */
+<span class="lineNum">    1047 </span>            :   driver5();   /* test the hash against known vectors */
+<span class="lineNum">    1048 </span>            :   return 1;
+<span class="lineNum">    1049 </span>            : }
+<span class="lineNum">    1050 </span>            : 
+<span class="lineNum">    1051 </span>            : #endif  /* SELF_TEST */
+<span class="lineNum">    1052 </span>            : 
+<span class="lineNum">    1053 </span>            : 
+<span class="lineNum">    1054 </span>            : #if _MSC_VER
+<span class="lineNum">    1055 </span>            : #pragma warning(pop)
+<span class="lineNum">    1056 </span>            : #endif /* _MSC_VER */
+<span class="lineNum">    1057 </span>            : 
+<span class="lineNum">    1058 </span>            : #ifdef CBMC
+<span class="lineNum">    1059 </span>            : #    pragma CPROVER check pop
+<span class="lineNum">    1060 </span>            : #endif /* CBMC */
+<span class="lineNum">    1061 </span>            : 
+<span class="lineNum">    1062 </span>            : /* clang-format on */
+<span class="lineNum">    1063 </span>            : #endif /* AWS_COMMON_PRIVATE_LOOKUP3_INL */
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

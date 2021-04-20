@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -68,310 +68,321 @@
 <span class="lineNum">       6 </span>            :  * SPDX-License-Identifier: Apache-2.0.
 <span class="lineNum">       7 </span>            :  */
 <span class="lineNum">       8 </span>            : 
-<span class="lineNum">       9 </span>            : #include &lt;aws/common/common.h&gt;
-<span class="lineNum">      10 </span>            : #include &lt;aws/common/thread.h&gt;
-<span class="lineNum">      11 </span>            : 
-<span class="lineNum">      12 </span>            : #define AWS_LOG_LEVEL_NONE 0
-<span class="lineNum">      13 </span>            : #define AWS_LOG_LEVEL_FATAL 1
-<span class="lineNum">      14 </span>            : #define AWS_LOG_LEVEL_ERROR 2
-<span class="lineNum">      15 </span>            : #define AWS_LOG_LEVEL_WARN 3
-<span class="lineNum">      16 </span>            : #define AWS_LOG_LEVEL_INFO 4
-<span class="lineNum">      17 </span>            : #define AWS_LOG_LEVEL_DEBUG 5
-<span class="lineNum">      18 </span>            : #define AWS_LOG_LEVEL_TRACE 6
-<span class="lineNum">      19 </span>            : 
-<span class="lineNum">      20 </span>            : /**
-<span class="lineNum">      21 </span>            :  * Controls what log calls pass through the logger and what log calls get filtered out.
-<span class="lineNum">      22 </span>            :  * If a log level has a value of X, then all log calls using a level &lt;= X will appear, while
-<span class="lineNum">      23 </span>            :  * those using a value &gt; X will not occur.
-<span class="lineNum">      24 </span>            :  *
-<span class="lineNum">      25 </span>            :  * You can filter both dynamically (by setting the log level on the logger object) or statically
-<span class="lineNum">      26 </span>            :  * (by defining AWS_STATIC_LOG_LEVEL to be an appropriate integer module-wide).  Statically filtered
-<span class="lineNum">      27 </span>            :  * log calls will be completely compiled out but require a rebuild if you want to get more detail
-<span class="lineNum">      28 </span>            :  * about what's happening.
-<span class="lineNum">      29 </span>            :  */
-<span class="lineNum">      30 </span>            : enum aws_log_level {
-<span class="lineNum">      31 </span>            :     AWS_LL_NONE = AWS_LOG_LEVEL_NONE,
-<span class="lineNum">      32 </span>            :     AWS_LL_FATAL = AWS_LOG_LEVEL_FATAL,
-<span class="lineNum">      33 </span>            :     AWS_LL_ERROR = AWS_LOG_LEVEL_ERROR,
-<span class="lineNum">      34 </span>            :     AWS_LL_WARN = AWS_LOG_LEVEL_WARN,
-<span class="lineNum">      35 </span>            :     AWS_LL_INFO = AWS_LOG_LEVEL_INFO,
-<span class="lineNum">      36 </span>            :     AWS_LL_DEBUG = AWS_LOG_LEVEL_DEBUG,
-<span class="lineNum">      37 </span>            :     AWS_LL_TRACE = AWS_LOG_LEVEL_TRACE,
-<span class="lineNum">      38 </span>            : 
-<span class="lineNum">      39 </span>            :     AWS_LL_COUNT
-<span class="lineNum">      40 </span>            : };
-<span class="lineNum">      41 </span>            : 
-<span class="lineNum">      42 </span>            : /**
-<span class="lineNum">      43 </span>            :  * Log subject is a way of designating the topic of logging.
-<span class="lineNum">      44 </span>            :  *
-<span class="lineNum">      45 </span>            :  * The general idea is to support a finer-grained approach to log level control.  The primary use case
-<span class="lineNum">      46 </span>            :  * is for situations that require more detailed logging within a specific domain, where enabling that detail
-<span class="lineNum">      47 </span>            :  * globally leads to an untenable flood of information.
-<span class="lineNum">      48 </span>            :  *
-<span class="lineNum">      49 </span>            :  * For example, enable TRACE logging for tls-related log statements (handshake binary payloads), but
-<span class="lineNum">      50 </span>            :  * only WARN logging everywhere else (because http payloads would blow up the log files).
-<span class="lineNum">      51 </span>            :  *
-<span class="lineNum">      52 </span>            :  * Log subject is an enum similar to aws error: each library has its own value-space and someone is
-<span class="lineNum">      53 </span>            :  * responsible for registering the value &lt;-&gt; string connections.
-<span class="lineNum">      54 </span>            :  */
-<span class="lineNum">      55 </span>            : typedef uint32_t aws_log_subject_t;
-<span class="lineNum">      56 </span>            : 
-<span class="lineNum">      57 </span>            : /* Each library gets space for 2^^10 log subject entries */
-<span class="lineNum">      58 </span><span class="lineNoCov">          0 : #define AWS_LOG_SUBJECT_STRIDE_BITS 10</span>
-<span class="lineNum">      59 </span><span class="lineNoCov">          0 : #define AWS_LOG_SUBJECT_STRIDE (1U &lt;&lt; AWS_LOG_SUBJECT_STRIDE_BITS)</span>
-<span class="lineNum">      60 </span>            : #define AWS_LOG_SUBJECT_BEGIN_RANGE(x) ((x)*AWS_LOG_SUBJECT_STRIDE)
-<span class="lineNum">      61 </span>            : #define AWS_LOG_SUBJECT_END_RANGE(x) (((x) + 1) * AWS_LOG_SUBJECT_STRIDE - 1)
-<span class="lineNum">      62 </span>            : 
-<span class="lineNum">      63 </span>            : struct aws_log_subject_info {
-<span class="lineNum">      64 </span>            :     aws_log_subject_t subject_id;
-<span class="lineNum">      65 </span>            :     const char *subject_name;
-<span class="lineNum">      66 </span>            :     const char *subject_description;
-<span class="lineNum">      67 </span>            : };
-<span class="lineNum">      68 </span>            : 
-<span class="lineNum">      69 </span>            : #define DEFINE_LOG_SUBJECT_INFO(id, name, desc)                                                                        \
-<span class="lineNum">      70 </span>            :     { .subject_id = (id), .subject_name = (name), .subject_description = (desc) }
-<span class="lineNum">      71 </span>            : 
-<span class="lineNum">      72 </span>            : struct aws_log_subject_info_list {
-<span class="lineNum">      73 </span>            :     struct aws_log_subject_info *subject_list;
-<span class="lineNum">      74 </span>            :     size_t count;
-<span class="lineNum">      75 </span>            : };
-<span class="lineNum">      76 </span>            : 
-<span class="lineNum">      77 </span>            : enum aws_common_log_subject {
-<span class="lineNum">      78 </span>            :     AWS_LS_COMMON_GENERAL = AWS_LOG_SUBJECT_BEGIN_RANGE(AWS_C_COMMON_PACKAGE_ID),
-<span class="lineNum">      79 </span>            :     AWS_LS_COMMON_TASK_SCHEDULER,
-<span class="lineNum">      80 </span>            :     AWS_LS_COMMON_THREAD,
-<span class="lineNum">      81 </span>            :     AWS_LS_COMMON_MEMTRACE,
-<span class="lineNum">      82 </span>            :     AWS_LS_COMMON_XML_PARSER,
-<span class="lineNum">      83 </span>            : 
-<span class="lineNum">      84 </span>            :     AWS_LS_COMMON_LAST = AWS_LOG_SUBJECT_END_RANGE(AWS_C_COMMON_PACKAGE_ID)
-<span class="lineNum">      85 </span>            : };
-<span class="lineNum">      86 </span>            : 
-<span class="lineNum">      87 </span>            : struct aws_logger;
-<span class="lineNum">      88 </span>            : struct aws_log_formatter;
-<span class="lineNum">      89 </span>            : struct aws_log_channel;
-<span class="lineNum">      90 </span>            : struct aws_log_writer;
-<span class="lineNum">      91 </span>            : 
-<span class="lineNum">      92 </span>            : /**
-<span class="lineNum">      93 </span>            :  * We separate the log level function from the log call itself so that we can do the filter check in the macros (see
-<span class="lineNum">      94 </span>            :  * below)
-<span class="lineNum">      95 </span>            :  *
-<span class="lineNum">      96 </span>            :  * By doing so, we make it so that the variadic format arguments are not even evaluated if the filter check does not
-<span class="lineNum">      97 </span>            :  * succeed.
-<span class="lineNum">      98 </span>            :  */
-<span class="lineNum">      99 </span>            : struct aws_logger_vtable {
-<span class="lineNum">     100 </span>            :     int (*const log)(
-<span class="lineNum">     101 </span>            :         struct aws_logger *logger,
-<span class="lineNum">     102 </span>            :         enum aws_log_level log_level,
-<span class="lineNum">     103 </span>            :         aws_log_subject_t subject,
-<span class="lineNum">     104 </span>            :         const char *format,
-<span class="lineNum">     105 </span>            :         ...)
-<span class="lineNum">     106 </span>            : #if defined(__clang__) || defined(__GNUC__) || defined(__GNUG__)
-<span class="lineNum">     107 </span>            :         __attribute__((format(printf, 4, 5)))
-<span class="lineNum">     108 </span>            : #endif /* non-ms compilers: TODO - find out what versions format support was added in */
-<span class="lineNum">     109 </span>            :         ;
-<span class="lineNum">     110 </span>            :     enum aws_log_level (*const get_log_level)(struct aws_logger *logger, aws_log_subject_t subject);
-<span class="lineNum">     111 </span>            :     void (*const clean_up)(struct aws_logger *logger);
-<span class="lineNum">     112 </span>            : };
-<span class="lineNum">     113 </span>            : 
-<span class="lineNum">     114 </span>            : struct aws_logger {
-<span class="lineNum">     115 </span>            :     struct aws_logger_vtable *vtable;
-<span class="lineNum">     116 </span>            :     struct aws_allocator *allocator;
-<span class="lineNum">     117 </span>            :     void *p_impl;
-<span class="lineNum">     118 </span>            : };
-<span class="lineNum">     119 </span>            : 
-<span class="lineNum">     120 </span>            : /**
-<span class="lineNum">     121 </span>            :  * The base formatted logging macro that all other formatted logging macros resolve to.
-<span class="lineNum">     122 </span>            :  * Checks for a logger and filters based on log level.
-<span class="lineNum">     123 </span>            :  *
-<span class="lineNum">     124 </span>            :  */
-<span class="lineNum">     125 </span>            : #define AWS_LOGF(log_level, subject, ...)                                                                              \
-<span class="lineNum">     126 </span><span class="lineNoCov">          0 :     {                                                                                                                  \</span>
-<span class="lineNum">     127 </span><span class="lineNoCov">          0 :         AWS_ASSERT(log_level &gt; 0);                                                                                     \</span>
-<span class="lineNum">     128 </span><span class="lineNoCov">          0 :         struct aws_logger *logger = aws_logger_get();                                                                  \</span>
-<span class="lineNum">     129 </span><span class="lineNoCov">          0 :         if (logger != NULL &amp;&amp; logger-&gt;vtable-&gt;get_log_level(logger, (subject)) &gt;= (log_level)) {                       \</span>
-<span class="lineNum">     130 </span><span class="lineNoCov">          0 :             logger-&gt;vtable-&gt;log(logger, log_level, subject, __VA_ARGS__);                                              \</span>
-<span class="lineNum">     131 </span><span class="lineNoCov">          0 :         }                                                                                                              \</span>
-<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     133 </span>            : 
-<span class="lineNum">     134 </span>            : /**
-<span class="lineNum">     135 </span>            :  * LOGF_&lt;level&gt; variants for each level.  These are what should be used directly to do all logging.
-<span class="lineNum">     136 </span>            :  *
-<span class="lineNum">     137 </span>            :  * i.e.
+<span class="lineNum">       9 </span>            : #include &lt;aws/common/atomics.h&gt;
+<span class="lineNum">      10 </span>            : #include &lt;aws/common/common.h&gt;
+<span class="lineNum">      11 </span>            : #include &lt;aws/common/thread.h&gt;
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            : #define AWS_LOG_LEVEL_NONE 0
+<span class="lineNum">      14 </span>            : #define AWS_LOG_LEVEL_FATAL 1
+<span class="lineNum">      15 </span>            : #define AWS_LOG_LEVEL_ERROR 2
+<span class="lineNum">      16 </span>            : #define AWS_LOG_LEVEL_WARN 3
+<span class="lineNum">      17 </span>            : #define AWS_LOG_LEVEL_INFO 4
+<span class="lineNum">      18 </span>            : #define AWS_LOG_LEVEL_DEBUG 5
+<span class="lineNum">      19 </span>            : #define AWS_LOG_LEVEL_TRACE 6
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span>            : /**
+<span class="lineNum">      22 </span>            :  * Controls what log calls pass through the logger and what log calls get filtered out.
+<span class="lineNum">      23 </span>            :  * If a log level has a value of X, then all log calls using a level &lt;= X will appear, while
+<span class="lineNum">      24 </span>            :  * those using a value &gt; X will not occur.
+<span class="lineNum">      25 </span>            :  *
+<span class="lineNum">      26 </span>            :  * You can filter both dynamically (by setting the log level on the logger object) or statically
+<span class="lineNum">      27 </span>            :  * (by defining AWS_STATIC_LOG_LEVEL to be an appropriate integer module-wide).  Statically filtered
+<span class="lineNum">      28 </span>            :  * log calls will be completely compiled out but require a rebuild if you want to get more detail
+<span class="lineNum">      29 </span>            :  * about what's happening.
+<span class="lineNum">      30 </span>            :  */
+<span class="lineNum">      31 </span>            : enum aws_log_level {
+<span class="lineNum">      32 </span>            :     AWS_LL_NONE = AWS_LOG_LEVEL_NONE,
+<span class="lineNum">      33 </span>            :     AWS_LL_FATAL = AWS_LOG_LEVEL_FATAL,
+<span class="lineNum">      34 </span>            :     AWS_LL_ERROR = AWS_LOG_LEVEL_ERROR,
+<span class="lineNum">      35 </span>            :     AWS_LL_WARN = AWS_LOG_LEVEL_WARN,
+<span class="lineNum">      36 </span>            :     AWS_LL_INFO = AWS_LOG_LEVEL_INFO,
+<span class="lineNum">      37 </span>            :     AWS_LL_DEBUG = AWS_LOG_LEVEL_DEBUG,
+<span class="lineNum">      38 </span>            :     AWS_LL_TRACE = AWS_LOG_LEVEL_TRACE,
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            :     AWS_LL_COUNT
+<span class="lineNum">      41 </span>            : };
+<span class="lineNum">      42 </span>            : 
+<span class="lineNum">      43 </span>            : /**
+<span class="lineNum">      44 </span>            :  * Log subject is a way of designating the topic of logging.
+<span class="lineNum">      45 </span>            :  *
+<span class="lineNum">      46 </span>            :  * The general idea is to support a finer-grained approach to log level control.  The primary use case
+<span class="lineNum">      47 </span>            :  * is for situations that require more detailed logging within a specific domain, where enabling that detail
+<span class="lineNum">      48 </span>            :  * globally leads to an untenable flood of information.
+<span class="lineNum">      49 </span>            :  *
+<span class="lineNum">      50 </span>            :  * For example, enable TRACE logging for tls-related log statements (handshake binary payloads), but
+<span class="lineNum">      51 </span>            :  * only WARN logging everywhere else (because http payloads would blow up the log files).
+<span class="lineNum">      52 </span>            :  *
+<span class="lineNum">      53 </span>            :  * Log subject is an enum similar to aws error: each library has its own value-space and someone is
+<span class="lineNum">      54 </span>            :  * responsible for registering the value &lt;-&gt; string connections.
+<span class="lineNum">      55 </span>            :  */
+<span class="lineNum">      56 </span>            : typedef uint32_t aws_log_subject_t;
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span>            : /* Each library gets space for 2^^10 log subject entries */
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 : #define AWS_LOG_SUBJECT_STRIDE_BITS 10</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 : #define AWS_LOG_SUBJECT_STRIDE (1U &lt;&lt; AWS_LOG_SUBJECT_STRIDE_BITS)</span>
+<span class="lineNum">      61 </span>            : #define AWS_LOG_SUBJECT_BEGIN_RANGE(x) ((x)*AWS_LOG_SUBJECT_STRIDE)
+<span class="lineNum">      62 </span>            : #define AWS_LOG_SUBJECT_END_RANGE(x) (((x) + 1) * AWS_LOG_SUBJECT_STRIDE - 1)
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            : struct aws_log_subject_info {
+<span class="lineNum">      65 </span>            :     aws_log_subject_t subject_id;
+<span class="lineNum">      66 </span>            :     const char *subject_name;
+<span class="lineNum">      67 </span>            :     const char *subject_description;
+<span class="lineNum">      68 </span>            : };
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span>            : #define DEFINE_LOG_SUBJECT_INFO(id, name, desc)                                                                        \
+<span class="lineNum">      71 </span>            :     { .subject_id = (id), .subject_name = (name), .subject_description = (desc) }
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span>            : struct aws_log_subject_info_list {
+<span class="lineNum">      74 </span>            :     struct aws_log_subject_info *subject_list;
+<span class="lineNum">      75 </span>            :     size_t count;
+<span class="lineNum">      76 </span>            : };
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span>            : enum aws_common_log_subject {
+<span class="lineNum">      79 </span>            :     AWS_LS_COMMON_GENERAL = AWS_LOG_SUBJECT_BEGIN_RANGE(AWS_C_COMMON_PACKAGE_ID),
+<span class="lineNum">      80 </span>            :     AWS_LS_COMMON_TASK_SCHEDULER,
+<span class="lineNum">      81 </span>            :     AWS_LS_COMMON_THREAD,
+<span class="lineNum">      82 </span>            :     AWS_LS_COMMON_MEMTRACE,
+<span class="lineNum">      83 </span>            :     AWS_LS_COMMON_XML_PARSER,
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span>            :     AWS_LS_COMMON_LAST = AWS_LOG_SUBJECT_END_RANGE(AWS_C_COMMON_PACKAGE_ID)
+<span class="lineNum">      86 </span>            : };
+<span class="lineNum">      87 </span>            : 
+<span class="lineNum">      88 </span>            : struct aws_logger;
+<span class="lineNum">      89 </span>            : struct aws_log_formatter;
+<span class="lineNum">      90 </span>            : struct aws_log_channel;
+<span class="lineNum">      91 </span>            : struct aws_log_writer;
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span>            : /**
+<span class="lineNum">      94 </span>            :  * We separate the log level function from the log call itself so that we can do the filter check in the macros (see
+<span class="lineNum">      95 </span>            :  * below)
+<span class="lineNum">      96 </span>            :  *
+<span class="lineNum">      97 </span>            :  * By doing so, we make it so that the variadic format arguments are not even evaluated if the filter check does not
+<span class="lineNum">      98 </span>            :  * succeed.
+<span class="lineNum">      99 </span>            :  */
+<span class="lineNum">     100 </span>            : struct aws_logger_vtable {
+<span class="lineNum">     101 </span>            :     int (*const log)(
+<span class="lineNum">     102 </span>            :         struct aws_logger *logger,
+<span class="lineNum">     103 </span>            :         enum aws_log_level log_level,
+<span class="lineNum">     104 </span>            :         aws_log_subject_t subject,
+<span class="lineNum">     105 </span>            :         const char *format,
+<span class="lineNum">     106 </span>            :         ...)
+<span class="lineNum">     107 </span>            : #if defined(__clang__) || defined(__GNUC__) || defined(__GNUG__)
+<span class="lineNum">     108 </span>            :         __attribute__((format(printf, 4, 5)))
+<span class="lineNum">     109 </span>            : #endif /* non-ms compilers: TODO - find out what versions format support was added in */
+<span class="lineNum">     110 </span>            :         ;
+<span class="lineNum">     111 </span>            :     enum aws_log_level (*const get_log_level)(struct aws_logger *logger, aws_log_subject_t subject);
+<span class="lineNum">     112 </span>            :     void (*const clean_up)(struct aws_logger *logger);
+<span class="lineNum">     113 </span>            :     int (*set_log_level)(struct aws_logger *logger, enum aws_log_level);
+<span class="lineNum">     114 </span>            : };
+<span class="lineNum">     115 </span>            : 
+<span class="lineNum">     116 </span>            : struct aws_logger {
+<span class="lineNum">     117 </span>            :     struct aws_logger_vtable *vtable;
+<span class="lineNum">     118 </span>            :     struct aws_allocator *allocator;
+<span class="lineNum">     119 </span>            :     void *p_impl;
+<span class="lineNum">     120 </span>            : };
+<span class="lineNum">     121 </span>            : 
+<span class="lineNum">     122 </span>            : /**
+<span class="lineNum">     123 </span>            :  * The base formatted logging macro that all other formatted logging macros resolve to.
+<span class="lineNum">     124 </span>            :  * Checks for a logger and filters based on log level.
+<span class="lineNum">     125 </span>            :  *
+<span class="lineNum">     126 </span>            :  */
+<span class="lineNum">     127 </span>            : #define AWS_LOGF(log_level, subject, ...)                                                                              \
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :     {                                                                                                                  \</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :         AWS_ASSERT(log_level &gt; 0);                                                                                     \</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :         struct aws_logger *logger = aws_logger_get();                                                                  \</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :         if (logger != NULL &amp;&amp; logger-&gt;vtable-&gt;get_log_level(logger, (subject)) &gt;= (log_level)) {                       \</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :             logger-&gt;vtable-&gt;log(logger, log_level, subject, __VA_ARGS__);                                              \</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :         }                                                                                                              \</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span>            : /**
+<span class="lineNum">     137 </span>            :  * LOGF_&lt;level&gt; variants for each level.  These are what should be used directly to do all logging.
 <span class="lineNum">     138 </span>            :  *
-<span class="lineNum">     139 </span>            :  * LOGF_FATAL(&quot;Device \&quot;%s\&quot; not found&quot;, device-&gt;name);
+<span class="lineNum">     139 </span>            :  * i.e.
 <span class="lineNum">     140 </span>            :  *
-<span class="lineNum">     141 </span>            :  *
-<span class="lineNum">     142 </span>            :  * Later we will likely expose Subject-aware variants
-<span class="lineNum">     143 </span>            :  */
-<span class="lineNum">     144 </span>            : #if !defined(AWS_STATIC_LOG_LEVEL) || (AWS_STATIC_LOG_LEVEL &gt;= AWS_LOG_LEVEL_FATAL)
-<span class="lineNum">     145 </span>            : #    define AWS_LOGF_FATAL(subject, ...) AWS_LOGF(AWS_LL_FATAL, subject, __VA_ARGS__)
-<span class="lineNum">     146 </span>            : #else
-<span class="lineNum">     147 </span>            : #    define AWS_LOGF_FATAL(subject, ...)
-<span class="lineNum">     148 </span>            : #endif
-<span class="lineNum">     149 </span>            : 
-<span class="lineNum">     150 </span>            : #if !defined(AWS_STATIC_LOG_LEVEL) || (AWS_STATIC_LOG_LEVEL &gt;= AWS_LOG_LEVEL_ERROR)
-<span class="lineNum">     151 </span><span class="lineNoCov">          0 : #    define AWS_LOGF_ERROR(subject, ...) AWS_LOGF(AWS_LL_ERROR, subject, __VA_ARGS__)</span>
-<span class="lineNum">     152 </span>            : #else
-<span class="lineNum">     153 </span>            : #    define AWS_LOGF_ERROR(subject, ...)
-<span class="lineNum">     154 </span>            : #endif
-<span class="lineNum">     155 </span>            : 
-<span class="lineNum">     156 </span>            : #if !defined(AWS_STATIC_LOG_LEVEL) || (AWS_STATIC_LOG_LEVEL &gt;= AWS_LOG_LEVEL_WARN)
-<span class="lineNum">     157 </span><span class="lineNoCov">          0 : #    define AWS_LOGF_WARN(subject, ...) AWS_LOGF(AWS_LL_WARN, subject, __VA_ARGS__)</span>
-<span class="lineNum">     158 </span>            : #else
-<span class="lineNum">     159 </span>            : #    define AWS_LOGF_WARN(subject, ...)
-<span class="lineNum">     160 </span>            : #endif
-<span class="lineNum">     161 </span>            : 
-<span class="lineNum">     162 </span>            : #if !defined(AWS_STATIC_LOG_LEVEL) || (AWS_STATIC_LOG_LEVEL &gt;= AWS_LOG_LEVEL_INFO)
-<span class="lineNum">     163 </span><span class="lineNoCov">          0 : #    define AWS_LOGF_INFO(subject, ...) AWS_LOGF(AWS_LL_INFO, subject, __VA_ARGS__)</span>
-<span class="lineNum">     164 </span>            : #else
-<span class="lineNum">     165 </span>            : #    define AWS_LOGF_INFO(subject, ...)
-<span class="lineNum">     166 </span>            : #endif
-<span class="lineNum">     167 </span>            : 
-<span class="lineNum">     168 </span>            : #if !defined(AWS_STATIC_LOG_LEVEL) || (AWS_STATIC_LOG_LEVEL &gt;= AWS_LOG_LEVEL_DEBUG)
-<span class="lineNum">     169 </span>            : #    define AWS_LOGF_DEBUG(subject, ...) AWS_LOGF(AWS_LL_DEBUG, subject, __VA_ARGS__)
-<span class="lineNum">     170 </span>            : #else
-<span class="lineNum">     171 </span>            : #    define AWS_LOGF_DEBUG(subject, ...)
-<span class="lineNum">     172 </span>            : #endif
-<span class="lineNum">     173 </span>            : 
-<span class="lineNum">     174 </span>            : #if !defined(AWS_STATIC_LOG_LEVEL) || (AWS_STATIC_LOG_LEVEL &gt;= AWS_LOG_LEVEL_TRACE)
-<span class="lineNum">     175 </span><span class="lineNoCov">          0 : #    define AWS_LOGF_TRACE(subject, ...) AWS_LOGF(AWS_LL_TRACE, subject, __VA_ARGS__)</span>
-<span class="lineNum">     176 </span>            : #else
-<span class="lineNum">     177 </span>            : #    define AWS_LOGF_TRACE(subject, ...)
-<span class="lineNum">     178 </span>            : #endif
-<span class="lineNum">     179 </span>            : 
-<span class="lineNum">     180 </span>            : /*
-<span class="lineNum">     181 </span>            :  * Standard logger implementation composing three sub-components:
-<span class="lineNum">     182 </span>            :  *
-<span class="lineNum">     183 </span>            :  * The formatter takes var args input from the user and produces a formatted log line
-<span class="lineNum">     184 </span>            :  * The writer takes a formatted log line and outputs it somewhere
-<span class="lineNum">     185 </span>            :  * The channel is the transport between the two
-<span class="lineNum">     186 </span>            :  */
-<span class="lineNum">     187 </span>            : struct aws_logger_pipeline {
-<span class="lineNum">     188 </span>            :     struct aws_log_formatter *formatter;
-<span class="lineNum">     189 </span>            :     struct aws_log_channel *channel;
-<span class="lineNum">     190 </span>            :     struct aws_log_writer *writer;
-<span class="lineNum">     191 </span>            :     struct aws_allocator *allocator;
-<span class="lineNum">     192 </span>            :     enum aws_log_level level;
-<span class="lineNum">     193 </span>            : };
-<span class="lineNum">     194 </span>            : 
-<span class="lineNum">     195 </span>            : /**
-<span class="lineNum">     196 </span>            :  * Options for aws_logger_init_standard().
-<span class="lineNum">     197 </span>            :  * Set `filename` to open a file for logging and close it when the logger cleans up.
-<span class="lineNum">     198 </span>            :  * Set `file` to use a file that is already open, such as `stderr` or `stdout`.
-<span class="lineNum">     199 </span>            :  */
-<span class="lineNum">     200 </span>            : struct aws_logger_standard_options {
-<span class="lineNum">     201 </span>            :     enum aws_log_level level;
-<span class="lineNum">     202 </span>            :     const char *filename;
-<span class="lineNum">     203 </span>            :     FILE *file;
-<span class="lineNum">     204 </span>            : };
-<span class="lineNum">     205 </span>            : 
-<span class="lineNum">     206 </span>            : AWS_EXTERN_C_BEGIN
+<span class="lineNum">     141 </span>            :  * LOGF_FATAL(&quot;Device \&quot;%s\&quot; not found&quot;, device-&gt;name);
+<span class="lineNum">     142 </span>            :  *
+<span class="lineNum">     143 </span>            :  *
+<span class="lineNum">     144 </span>            :  * Later we will likely expose Subject-aware variants
+<span class="lineNum">     145 </span>            :  */
+<span class="lineNum">     146 </span>            : #if !defined(AWS_STATIC_LOG_LEVEL) || (AWS_STATIC_LOG_LEVEL &gt;= AWS_LOG_LEVEL_FATAL)
+<span class="lineNum">     147 </span>            : #    define AWS_LOGF_FATAL(subject, ...) AWS_LOGF(AWS_LL_FATAL, subject, __VA_ARGS__)
+<span class="lineNum">     148 </span>            : #else
+<span class="lineNum">     149 </span>            : #    define AWS_LOGF_FATAL(subject, ...)
+<span class="lineNum">     150 </span>            : #endif
+<span class="lineNum">     151 </span>            : 
+<span class="lineNum">     152 </span>            : #if !defined(AWS_STATIC_LOG_LEVEL) || (AWS_STATIC_LOG_LEVEL &gt;= AWS_LOG_LEVEL_ERROR)
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 : #    define AWS_LOGF_ERROR(subject, ...) AWS_LOGF(AWS_LL_ERROR, subject, __VA_ARGS__)</span>
+<span class="lineNum">     154 </span>            : #else
+<span class="lineNum">     155 </span>            : #    define AWS_LOGF_ERROR(subject, ...)
+<span class="lineNum">     156 </span>            : #endif
+<span class="lineNum">     157 </span>            : 
+<span class="lineNum">     158 </span>            : #if !defined(AWS_STATIC_LOG_LEVEL) || (AWS_STATIC_LOG_LEVEL &gt;= AWS_LOG_LEVEL_WARN)
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 : #    define AWS_LOGF_WARN(subject, ...) AWS_LOGF(AWS_LL_WARN, subject, __VA_ARGS__)</span>
+<span class="lineNum">     160 </span>            : #else
+<span class="lineNum">     161 </span>            : #    define AWS_LOGF_WARN(subject, ...)
+<span class="lineNum">     162 </span>            : #endif
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span>            : #if !defined(AWS_STATIC_LOG_LEVEL) || (AWS_STATIC_LOG_LEVEL &gt;= AWS_LOG_LEVEL_INFO)
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 : #    define AWS_LOGF_INFO(subject, ...) AWS_LOGF(AWS_LL_INFO, subject, __VA_ARGS__)</span>
+<span class="lineNum">     166 </span>            : #else
+<span class="lineNum">     167 </span>            : #    define AWS_LOGF_INFO(subject, ...)
+<span class="lineNum">     168 </span>            : #endif
+<span class="lineNum">     169 </span>            : 
+<span class="lineNum">     170 </span>            : #if !defined(AWS_STATIC_LOG_LEVEL) || (AWS_STATIC_LOG_LEVEL &gt;= AWS_LOG_LEVEL_DEBUG)
+<span class="lineNum">     171 </span>            : #    define AWS_LOGF_DEBUG(subject, ...) AWS_LOGF(AWS_LL_DEBUG, subject, __VA_ARGS__)
+<span class="lineNum">     172 </span>            : #else
+<span class="lineNum">     173 </span>            : #    define AWS_LOGF_DEBUG(subject, ...)
+<span class="lineNum">     174 </span>            : #endif
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span>            : #if !defined(AWS_STATIC_LOG_LEVEL) || (AWS_STATIC_LOG_LEVEL &gt;= AWS_LOG_LEVEL_TRACE)
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 : #    define AWS_LOGF_TRACE(subject, ...) AWS_LOGF(AWS_LL_TRACE, subject, __VA_ARGS__)</span>
+<span class="lineNum">     178 </span>            : #else
+<span class="lineNum">     179 </span>            : #    define AWS_LOGF_TRACE(subject, ...)
+<span class="lineNum">     180 </span>            : #endif
+<span class="lineNum">     181 </span>            : 
+<span class="lineNum">     182 </span>            : /*
+<span class="lineNum">     183 </span>            :  * Standard logger implementation composing three sub-components:
+<span class="lineNum">     184 </span>            :  *
+<span class="lineNum">     185 </span>            :  * The formatter takes var args input from the user and produces a formatted log line
+<span class="lineNum">     186 </span>            :  * The writer takes a formatted log line and outputs it somewhere
+<span class="lineNum">     187 </span>            :  * The channel is the transport between the two
+<span class="lineNum">     188 </span>            :  */
+<span class="lineNum">     189 </span>            : struct aws_logger_pipeline {
+<span class="lineNum">     190 </span>            :     struct aws_log_formatter *formatter;
+<span class="lineNum">     191 </span>            :     struct aws_log_channel *channel;
+<span class="lineNum">     192 </span>            :     struct aws_log_writer *writer;
+<span class="lineNum">     193 </span>            :     struct aws_allocator *allocator;
+<span class="lineNum">     194 </span>            :     struct aws_atomic_var level;
+<span class="lineNum">     195 </span>            : };
+<span class="lineNum">     196 </span>            : 
+<span class="lineNum">     197 </span>            : /**
+<span class="lineNum">     198 </span>            :  * Options for aws_logger_init_standard().
+<span class="lineNum">     199 </span>            :  * Set `filename` to open a file for logging and close it when the logger cleans up.
+<span class="lineNum">     200 </span>            :  * Set `file` to use a file that is already open, such as `stderr` or `stdout`.
+<span class="lineNum">     201 </span>            :  */
+<span class="lineNum">     202 </span>            : struct aws_logger_standard_options {
+<span class="lineNum">     203 </span>            :     enum aws_log_level level;
+<span class="lineNum">     204 </span>            :     const char *filename;
+<span class="lineNum">     205 </span>            :     FILE *file;
+<span class="lineNum">     206 </span>            : };
 <span class="lineNum">     207 </span>            : 
-<span class="lineNum">     208 </span>            : /**
-<span class="lineNum">     209 </span>            :  * Sets the aws logger used globally across the process.  Not thread-safe.  Must only be called once.
-<span class="lineNum">     210 </span>            :  */
-<span class="lineNum">     211 </span>            : AWS_COMMON_API
-<span class="lineNum">     212 </span>            : void aws_logger_set(struct aws_logger *logger);
-<span class="lineNum">     213 </span>            : 
-<span class="lineNum">     214 </span>            : /**
-<span class="lineNum">     215 </span>            :  * Gets the aws logger used globally across the process.
-<span class="lineNum">     216 </span>            :  */
-<span class="lineNum">     217 </span>            : AWS_COMMON_API
-<span class="lineNum">     218 </span>            : struct aws_logger *aws_logger_get(void);
-<span class="lineNum">     219 </span>            : 
-<span class="lineNum">     220 </span>            : /**
-<span class="lineNum">     221 </span>            :  * Cleans up all resources used by the logger; simply invokes the clean_up v-function
-<span class="lineNum">     222 </span>            :  */
-<span class="lineNum">     223 </span>            : AWS_COMMON_API
-<span class="lineNum">     224 </span>            : void aws_logger_clean_up(struct aws_logger *logger);
-<span class="lineNum">     225 </span>            : 
-<span class="lineNum">     226 </span>            : /**
-<span class="lineNum">     227 </span>            :  * Converts a log level to a c-string constant.  Intended primarily to support building log lines that
-<span class="lineNum">     228 </span>            :  * include the level in them, i.e.
-<span class="lineNum">     229 </span>            :  *
-<span class="lineNum">     230 </span>            :  * [ERROR] 10:34:54.642 01-31-19 - Json parse error....
-<span class="lineNum">     231 </span>            :  */
-<span class="lineNum">     232 </span>            : AWS_COMMON_API
-<span class="lineNum">     233 </span>            : int aws_log_level_to_string(enum aws_log_level log_level, const char **level_string);
-<span class="lineNum">     234 </span>            : 
-<span class="lineNum">     235 </span>            : /**
-<span class="lineNum">     236 </span>            :  * Converts a c-string constant to a log level value.  Uses case-insensitive comparison
-<span class="lineNum">     237 </span>            :  * and simply iterates all possibilities until a match or nothing remains.  If no match
-<span class="lineNum">     238 </span>            :  * is found, AWS_OP_ERR is returned.
-<span class="lineNum">     239 </span>            :  */
-<span class="lineNum">     240 </span>            : AWS_COMMON_API
-<span class="lineNum">     241 </span>            : int aws_string_to_log_level(const char *level_string, enum aws_log_level *log_level);
-<span class="lineNum">     242 </span>            : 
-<span class="lineNum">     243 </span>            : /**
-<span class="lineNum">     244 </span>            :  * Converts an aws_thread_id_t to a c-string.  For portability, aws_thread_id_t
-<span class="lineNum">     245 </span>            :  * must not be printed directly.  Intended primarily to support building log
-<span class="lineNum">     246 </span>            :  * lines that include the thread id in them.  The parameter `buffer` must
-<span class="lineNum">     247 </span>            :  * point-to a char buffer of length `bufsz == AWS_THREAD_ID_T_REPR_BUFSZ`.  The
-<span class="lineNum">     248 </span>            :  * thread id representation is returned in `buffer`.
-<span class="lineNum">     249 </span>            :  */
-<span class="lineNum">     250 </span>            : AWS_COMMON_API
-<span class="lineNum">     251 </span>            : int aws_thread_id_t_to_string(aws_thread_id_t thread_id, char *buffer, size_t bufsz);
-<span class="lineNum">     252 </span>            : 
-<span class="lineNum">     253 </span>            : /**
-<span class="lineNum">     254 </span>            :  * Get subject name from log subject.
-<span class="lineNum">     255 </span>            :  */
-<span class="lineNum">     256 </span>            : AWS_COMMON_API
-<span class="lineNum">     257 </span>            : const char *aws_log_subject_name(aws_log_subject_t subject);
-<span class="lineNum">     258 </span>            : 
-<span class="lineNum">     259 </span>            : /**
-<span class="lineNum">     260 </span>            :  * Connects log subject strings with log subject integer values
-<span class="lineNum">     261 </span>            :  */
-<span class="lineNum">     262 </span>            : AWS_COMMON_API
-<span class="lineNum">     263 </span>            : void aws_register_log_subject_info_list(struct aws_log_subject_info_list *log_subject_list);
-<span class="lineNum">     264 </span>            : 
-<span class="lineNum">     265 </span>            : /**
-<span class="lineNum">     266 </span>            :  * Disconnects log subject strings with log subject integer values
-<span class="lineNum">     267 </span>            :  */
-<span class="lineNum">     268 </span>            : AWS_COMMON_API
-<span class="lineNum">     269 </span>            : void aws_unregister_log_subject_info_list(struct aws_log_subject_info_list *log_subject_list);
-<span class="lineNum">     270 </span>            : 
-<span class="lineNum">     271 </span>            : /*
-<span class="lineNum">     272 </span>            :  * Initializes a pipeline logger that is built from the default formatter, a background thread-based channel, and
-<span class="lineNum">     273 </span>            :  * a file writer.  The default logger in almost all circumstances.
-<span class="lineNum">     274 </span>            :  */
-<span class="lineNum">     275 </span>            : AWS_COMMON_API
-<span class="lineNum">     276 </span>            : int aws_logger_init_standard(
-<span class="lineNum">     277 </span>            :     struct aws_logger *logger,
-<span class="lineNum">     278 </span>            :     struct aws_allocator *allocator,
-<span class="lineNum">     279 </span>            :     struct aws_logger_standard_options *options);
-<span class="lineNum">     280 </span>            : 
-<span class="lineNum">     281 </span>            : /*
-<span class="lineNum">     282 </span>            :  * Initializes a pipeline logger from components that have already been initialized.  This is not an ownership transfer.
-<span class="lineNum">     283 </span>            :  * After the pipeline logger is cleaned up, the components will have to manually be cleaned up by the user.
-<span class="lineNum">     284 </span>            :  */
-<span class="lineNum">     285 </span>            : AWS_COMMON_API
-<span class="lineNum">     286 </span>            : int aws_logger_init_from_external(
-<span class="lineNum">     287 </span>            :     struct aws_logger *logger,
-<span class="lineNum">     288 </span>            :     struct aws_allocator *allocator,
-<span class="lineNum">     289 </span>            :     struct aws_log_formatter *formatter,
-<span class="lineNum">     290 </span>            :     struct aws_log_channel *channel,
-<span class="lineNum">     291 </span>            :     struct aws_log_writer *writer,
-<span class="lineNum">     292 </span>            :     enum aws_log_level level);
-<span class="lineNum">     293 </span>            : 
-<span class="lineNum">     294 </span>            : /*
-<span class="lineNum">     295 </span>            :  * Pipeline logger vtable for custom configurations
-<span class="lineNum">     296 </span>            :  */
-<span class="lineNum">     297 </span>            : AWS_COMMON_API
-<span class="lineNum">     298 </span>            : extern struct aws_logger_vtable g_pipeline_logger_owned_vtable;
-<span class="lineNum">     299 </span>            : 
-<span class="lineNum">     300 </span>            : /*
-<span class="lineNum">     301 </span>            :  * Initializes a logger that does not perform any allocation during logging.  Log lines larger than the internal
-<span class="lineNum">     302 </span>            :  * constant are truncated.  Formatting matches the standard logger.  Used for memory tracing logging.
-<span class="lineNum">     303 </span>            :  */
-<span class="lineNum">     304 </span>            : AWS_COMMON_API
-<span class="lineNum">     305 </span>            : int aws_logger_init_noalloc(
-<span class="lineNum">     306 </span>            :     struct aws_logger *logger,
-<span class="lineNum">     307 </span>            :     struct aws_allocator *allocator,
-<span class="lineNum">     308 </span>            :     struct aws_logger_standard_options *options);
-<span class="lineNum">     309 </span>            : 
-<span class="lineNum">     310 </span>            : AWS_EXTERN_C_END
-<span class="lineNum">     311 </span>            : 
-<span class="lineNum">     312 </span>            : #endif /* AWS_COMMON_LOGGING_H */
+<span class="lineNum">     208 </span>            : AWS_EXTERN_C_BEGIN
+<span class="lineNum">     209 </span>            : 
+<span class="lineNum">     210 </span>            : /**
+<span class="lineNum">     211 </span>            :  * Sets the aws logger used globally across the process.  Not thread-safe.  Must only be called once.
+<span class="lineNum">     212 </span>            :  */
+<span class="lineNum">     213 </span>            : AWS_COMMON_API
+<span class="lineNum">     214 </span>            : void aws_logger_set(struct aws_logger *logger);
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span>            : /**
+<span class="lineNum">     217 </span>            :  * Gets the aws logger used globally across the process.
+<span class="lineNum">     218 </span>            :  */
+<span class="lineNum">     219 </span>            : AWS_COMMON_API
+<span class="lineNum">     220 </span>            : struct aws_logger *aws_logger_get(void);
+<span class="lineNum">     221 </span>            : 
+<span class="lineNum">     222 </span>            : /**
+<span class="lineNum">     223 </span>            :  * Cleans up all resources used by the logger; simply invokes the clean_up v-function
+<span class="lineNum">     224 </span>            :  */
+<span class="lineNum">     225 </span>            : AWS_COMMON_API
+<span class="lineNum">     226 </span>            : void aws_logger_clean_up(struct aws_logger *logger);
+<span class="lineNum">     227 </span>            : 
+<span class="lineNum">     228 </span>            : /**
+<span class="lineNum">     229 </span>            :  * Sets the current logging level for the logger.  Loggers are not require to support this.
+<span class="lineNum">     230 </span>            :  * @param logger logger to set the log level for
+<span class="lineNum">     231 </span>            :  * @param level new log level for the logger
+<span class="lineNum">     232 </span>            :  * @return AWS_OP_SUCCESS if the level was successfully set, AWS_OP_ERR otherwise
+<span class="lineNum">     233 </span>            :  */
+<span class="lineNum">     234 </span>            : AWS_COMMON_API
+<span class="lineNum">     235 </span>            : int aws_logger_set_log_level(struct aws_logger *logger, enum aws_log_level level);
+<span class="lineNum">     236 </span>            : 
+<span class="lineNum">     237 </span>            : /**
+<span class="lineNum">     238 </span>            :  * Converts a log level to a c-string constant.  Intended primarily to support building log lines that
+<span class="lineNum">     239 </span>            :  * include the level in them, i.e.
+<span class="lineNum">     240 </span>            :  *
+<span class="lineNum">     241 </span>            :  * [ERROR] 10:34:54.642 01-31-19 - Json parse error....
+<span class="lineNum">     242 </span>            :  */
+<span class="lineNum">     243 </span>            : AWS_COMMON_API
+<span class="lineNum">     244 </span>            : int aws_log_level_to_string(enum aws_log_level log_level, const char **level_string);
+<span class="lineNum">     245 </span>            : 
+<span class="lineNum">     246 </span>            : /**
+<span class="lineNum">     247 </span>            :  * Converts a c-string constant to a log level value.  Uses case-insensitive comparison
+<span class="lineNum">     248 </span>            :  * and simply iterates all possibilities until a match or nothing remains.  If no match
+<span class="lineNum">     249 </span>            :  * is found, AWS_OP_ERR is returned.
+<span class="lineNum">     250 </span>            :  */
+<span class="lineNum">     251 </span>            : AWS_COMMON_API
+<span class="lineNum">     252 </span>            : int aws_string_to_log_level(const char *level_string, enum aws_log_level *log_level);
+<span class="lineNum">     253 </span>            : 
+<span class="lineNum">     254 </span>            : /**
+<span class="lineNum">     255 </span>            :  * Converts an aws_thread_id_t to a c-string.  For portability, aws_thread_id_t
+<span class="lineNum">     256 </span>            :  * must not be printed directly.  Intended primarily to support building log
+<span class="lineNum">     257 </span>            :  * lines that include the thread id in them.  The parameter `buffer` must
+<span class="lineNum">     258 </span>            :  * point-to a char buffer of length `bufsz == AWS_THREAD_ID_T_REPR_BUFSZ`.  The
+<span class="lineNum">     259 </span>            :  * thread id representation is returned in `buffer`.
+<span class="lineNum">     260 </span>            :  */
+<span class="lineNum">     261 </span>            : AWS_COMMON_API
+<span class="lineNum">     262 </span>            : int aws_thread_id_t_to_string(aws_thread_id_t thread_id, char *buffer, size_t bufsz);
+<span class="lineNum">     263 </span>            : 
+<span class="lineNum">     264 </span>            : /**
+<span class="lineNum">     265 </span>            :  * Get subject name from log subject.
+<span class="lineNum">     266 </span>            :  */
+<span class="lineNum">     267 </span>            : AWS_COMMON_API
+<span class="lineNum">     268 </span>            : const char *aws_log_subject_name(aws_log_subject_t subject);
+<span class="lineNum">     269 </span>            : 
+<span class="lineNum">     270 </span>            : /**
+<span class="lineNum">     271 </span>            :  * Connects log subject strings with log subject integer values
+<span class="lineNum">     272 </span>            :  */
+<span class="lineNum">     273 </span>            : AWS_COMMON_API
+<span class="lineNum">     274 </span>            : void aws_register_log_subject_info_list(struct aws_log_subject_info_list *log_subject_list);
+<span class="lineNum">     275 </span>            : 
+<span class="lineNum">     276 </span>            : /**
+<span class="lineNum">     277 </span>            :  * Disconnects log subject strings with log subject integer values
+<span class="lineNum">     278 </span>            :  */
+<span class="lineNum">     279 </span>            : AWS_COMMON_API
+<span class="lineNum">     280 </span>            : void aws_unregister_log_subject_info_list(struct aws_log_subject_info_list *log_subject_list);
+<span class="lineNum">     281 </span>            : 
+<span class="lineNum">     282 </span>            : /*
+<span class="lineNum">     283 </span>            :  * Initializes a pipeline logger that is built from the default formatter, a background thread-based channel, and
+<span class="lineNum">     284 </span>            :  * a file writer.  The default logger in almost all circumstances.
+<span class="lineNum">     285 </span>            :  */
+<span class="lineNum">     286 </span>            : AWS_COMMON_API
+<span class="lineNum">     287 </span>            : int aws_logger_init_standard(
+<span class="lineNum">     288 </span>            :     struct aws_logger *logger,
+<span class="lineNum">     289 </span>            :     struct aws_allocator *allocator,
+<span class="lineNum">     290 </span>            :     struct aws_logger_standard_options *options);
+<span class="lineNum">     291 </span>            : 
+<span class="lineNum">     292 </span>            : /*
+<span class="lineNum">     293 </span>            :  * Initializes a pipeline logger from components that have already been initialized.  This is not an ownership transfer.
+<span class="lineNum">     294 </span>            :  * After the pipeline logger is cleaned up, the components will have to manually be cleaned up by the user.
+<span class="lineNum">     295 </span>            :  */
+<span class="lineNum">     296 </span>            : AWS_COMMON_API
+<span class="lineNum">     297 </span>            : int aws_logger_init_from_external(
+<span class="lineNum">     298 </span>            :     struct aws_logger *logger,
+<span class="lineNum">     299 </span>            :     struct aws_allocator *allocator,
+<span class="lineNum">     300 </span>            :     struct aws_log_formatter *formatter,
+<span class="lineNum">     301 </span>            :     struct aws_log_channel *channel,
+<span class="lineNum">     302 </span>            :     struct aws_log_writer *writer,
+<span class="lineNum">     303 </span>            :     enum aws_log_level level);
+<span class="lineNum">     304 </span>            : 
+<span class="lineNum">     305 </span>            : /*
+<span class="lineNum">     306 </span>            :  * Pipeline logger vtable for custom configurations
+<span class="lineNum">     307 </span>            :  */
+<span class="lineNum">     308 </span>            : AWS_COMMON_API
+<span class="lineNum">     309 </span>            : extern struct aws_logger_vtable g_pipeline_logger_owned_vtable;
+<span class="lineNum">     310 </span>            : 
+<span class="lineNum">     311 </span>            : /*
+<span class="lineNum">     312 </span>            :  * Initializes a logger that does not perform any allocation during logging.  Log lines larger than the internal
+<span class="lineNum">     313 </span>            :  * constant are truncated.  Formatting matches the standard logger.  Used for memory tracing logging.
+<span class="lineNum">     314 </span>            :  */
+<span class="lineNum">     315 </span>            : AWS_COMMON_API
+<span class="lineNum">     316 </span>            : int aws_logger_init_noalloc(
+<span class="lineNum">     317 </span>            :     struct aws_logger *logger,
+<span class="lineNum">     318 </span>            :     struct aws_allocator *allocator,
+<span class="lineNum">     319 </span>            :     struct aws_logger_standard_options *options);
+<span class="lineNum">     320 </span>            : 
+<span class="lineNum">     321 </span>            : AWS_EXTERN_C_END
+<span class="lineNum">     322 </span>            : 
+<span class="lineNum">     323 </span>            : #endif /* AWS_COMMON_LOGGING_H */
 </pre>
       </td>
     </tr>

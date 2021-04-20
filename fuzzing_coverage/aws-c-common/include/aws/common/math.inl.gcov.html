@@ -31,18 +31,18 @@
             <td class="headerValue">all_fuzz.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntry">27</td>
             <td class="headerCovTableEntry">174</td>
-            <td class="headerCovTableEntryLo">1.7 %</td>
+            <td class="headerCovTableEntryLo">15.5 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-31 00:52:12</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">27</td>
-            <td class="headerCovTableEntry">3456</td>
-            <td class="headerCovTableEntryLo">0.8 %</td>
+            <td class="headerCovTableEntry">38</td>
+            <td class="headerCovTableEntry">5364</td>
+            <td class="headerCovTableEntryLo">0.7 %</td>
           </tr>
           <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -158,7 +158,7 @@
 <span class="lineNum">      96 </span>            :  * Multiplies a * b and returns the result in *r. If the result
 <a name="97"><span class="lineNum">      97 </span>            :  * overflows, returns AWS_OP_ERR; otherwise returns AWS_OP_SUCCESS.</a>
 <span class="lineNum">      98 </span>            :  */
-<span class="lineNum">      99 </span><span class="lineCov">    1214553 : AWS_STATIC_IMPL int aws_mul_size_checked(size_t a, size_t b, size_t *r) {</span>
+<span class="lineNum">      99 </span><span class="lineCov">    5518997 : AWS_STATIC_IMPL int aws_mul_size_checked(size_t a, size_t b, size_t *r) {</span>
 <span class="lineNum">     100 </span><span class="lineNoCov">          0 : #if SIZE_BITS == 32</span>
 <span class="lineNum">     101 </span><span class="lineNoCov">          0 :     return aws_mul_u32_checked(a, b, (uint32_t *)r);</span>
 <span class="lineNum">     102 </span><span class="lineNoCov">          0 : #elif SIZE_BITS == 64</span>
@@ -171,7 +171,7 @@
 <span class="lineNum">     109 </span>            : /**
 <a name="110"><span class="lineNum">     110 </span>            :  * Adds a + b.  If the result overflows returns SIZE_MAX.</a>
 <span class="lineNum">     111 </span>            :  */
-<span class="lineNum">     112 </span><span class="lineCov">      22583 : AWS_STATIC_IMPL size_t aws_add_size_saturating(size_t a, size_t b) {</span>
+<span class="lineNum">     112 </span><span class="lineCov">      55663 : AWS_STATIC_IMPL size_t aws_add_size_saturating(size_t a, size_t b) {</span>
 <span class="lineNum">     113 </span><span class="lineNoCov">          0 : #if SIZE_BITS == 32</span>
 <span class="lineNum">     114 </span><span class="lineNoCov">          0 :     return (size_t)aws_add_u32_saturating(a, b);</span>
 <span class="lineNum">     115 </span><span class="lineNoCov">          0 : #elif SIZE_BITS == 64</span>
@@ -185,7 +185,7 @@
 <span class="lineNum">     123 </span>            :  * Adds a + b and returns the result in *r. If the result
 <a name="124"><span class="lineNum">     124 </span>            :  * overflows, returns AWS_OP_ERR; otherwise returns AWS_OP_SUCCESS.</a>
 <span class="lineNum">     125 </span>            :  */
-<span class="lineNum">     126 </span><span class="lineCov">      71067 : AWS_STATIC_IMPL int aws_add_size_checked(size_t a, size_t b, size_t *r) {</span>
+<span class="lineNum">     126 </span><span class="lineCov">    1942763 : AWS_STATIC_IMPL int aws_add_size_checked(size_t a, size_t b, size_t *r) {</span>
 <span class="lineNum">     127 </span><span class="lineNoCov">          0 : #if SIZE_BITS == 32</span>
 <span class="lineNum">     128 </span><span class="lineNoCov">          0 :     return aws_add_u32_checked(a, b, (uint32_t *)r);</span>
 <span class="lineNum">     129 </span><span class="lineNoCov">          0 : #elif SIZE_BITS == 64</span>
@@ -218,37 +218,37 @@
 <span class="lineNum">     156 </span>            : /**
 <a name="157"><span class="lineNum">     157 </span>            :  * Function to check if x is power of 2</a>
 <span class="lineNum">     158 </span>            :  */
-<span class="lineNum">     159 </span><span class="lineNoCov">          0 : AWS_STATIC_IMPL bool aws_is_power_of_two(const size_t x) {</span>
-<span class="lineNum">     160 </span><span class="lineNoCov">          0 :     /* First x in the below expression is for the case when x is 0 */</span>
-<span class="lineNum">     161 </span><span class="lineNoCov">          0 :     return x &amp;&amp; (!(x &amp; (x - 1)));</span>
-<span class="lineNum">     162 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     159 </span><span class="lineCov">    1617907 : AWS_STATIC_IMPL bool aws_is_power_of_two(const size_t x) {</span>
+<span class="lineNum">     160 </span><span class="lineCov">    1617907 :     /* First x in the below expression is for the case when x is 0 */</span>
+<span class="lineNum">     161 </span><span class="lineCov">    1617907 :     return x &amp;&amp; (!(x &amp; (x - 1)));</span>
+<span class="lineNum">     162 </span><span class="lineCov">    1617907 : }</span>
 <span class="lineNum">     163 </span>            : 
 <span class="lineNum">     164 </span>            : /**
 <span class="lineNum">     165 </span>            :  * Function to find the smallest result that is power of 2 &gt;= n. Returns AWS_OP_ERR if this cannot
 <a name="166"><span class="lineNum">     166 </span>            :  * be done without overflow</a>
 <span class="lineNum">     167 </span>            :  */
-<span class="lineNum">     168 </span><span class="lineNoCov">          0 : AWS_STATIC_IMPL int aws_round_up_to_power_of_two(size_t n, size_t *result) {</span>
-<span class="lineNum">     169 </span><span class="lineNoCov">          0 :     if (n == 0) {</span>
-<span class="lineNum">     170 </span><span class="lineNoCov">          0 :         *result = 1;</span>
-<span class="lineNum">     171 </span><span class="lineNoCov">          0 :         return AWS_OP_SUCCESS;</span>
-<span class="lineNum">     172 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     173 </span><span class="lineNoCov">          0 :     if (n &gt; SIZE_MAX_POWER_OF_TWO) {</span>
+<span class="lineNum">     168 </span><span class="lineCov">    1523495 : AWS_STATIC_IMPL int aws_round_up_to_power_of_two(size_t n, size_t *result) {</span>
+<span class="lineNum">     169 </span><span class="lineCov">    1523495 :     if (n == 0) {</span>
+<span class="lineNum">     170 </span><span class="lineCov">     580146 :         *result = 1;</span>
+<span class="lineNum">     171 </span><span class="lineCov">     580146 :         return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     172 </span><span class="lineCov">     580146 :     }</span>
+<span class="lineNum">     173 </span><span class="lineCov">     943349 :     if (n &gt; SIZE_MAX_POWER_OF_TWO) {</span>
 <span class="lineNum">     174 </span><span class="lineNoCov">          0 :         return aws_raise_error(AWS_ERROR_OVERFLOW_DETECTED);</span>
 <span class="lineNum">     175 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     176 </span><span class="lineNoCov">          0 : </span>
-<span class="lineNum">     177 </span><span class="lineNoCov">          0 :     n--;</span>
-<span class="lineNum">     178 </span><span class="lineNoCov">          0 :     n |= n &gt;&gt; 1;</span>
-<span class="lineNum">     179 </span><span class="lineNoCov">          0 :     n |= n &gt;&gt; 2;</span>
-<span class="lineNum">     180 </span><span class="lineNoCov">          0 :     n |= n &gt;&gt; 4;</span>
-<span class="lineNum">     181 </span><span class="lineNoCov">          0 :     n |= n &gt;&gt; 8;</span>
-<span class="lineNum">     182 </span><span class="lineNoCov">          0 :     n |= n &gt;&gt; 16;</span>
-<span class="lineNum">     183 </span><span class="lineNoCov">          0 : #if SIZE_BITS == 64</span>
-<span class="lineNum">     184 </span><span class="lineNoCov">          0 :     n |= n &gt;&gt; 32;</span>
-<span class="lineNum">     185 </span><span class="lineNoCov">          0 : #endif</span>
-<span class="lineNum">     186 </span><span class="lineNoCov">          0 :     n++;</span>
-<span class="lineNum">     187 </span><span class="lineNoCov">          0 :     *result = n;</span>
-<span class="lineNum">     188 </span><span class="lineNoCov">          0 :     return AWS_OP_SUCCESS;</span>
-<span class="lineNum">     189 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     176 </span><span class="lineCov">     943349 : </span>
+<span class="lineNum">     177 </span><span class="lineCov">     943349 :     n--;</span>
+<span class="lineNum">     178 </span><span class="lineCov">     943349 :     n |= n &gt;&gt; 1;</span>
+<span class="lineNum">     179 </span><span class="lineCov">     943349 :     n |= n &gt;&gt; 2;</span>
+<span class="lineNum">     180 </span><span class="lineCov">     943349 :     n |= n &gt;&gt; 4;</span>
+<span class="lineNum">     181 </span><span class="lineCov">     943349 :     n |= n &gt;&gt; 8;</span>
+<span class="lineNum">     182 </span><span class="lineCov">     943349 :     n |= n &gt;&gt; 16;</span>
+<span class="lineNum">     183 </span><span class="lineCov">     943349 : #if SIZE_BITS == 64</span>
+<span class="lineNum">     184 </span><span class="lineCov">     943349 :     n |= n &gt;&gt; 32;</span>
+<span class="lineNum">     185 </span><span class="lineCov">     943349 : #endif</span>
+<span class="lineNum">     186 </span><span class="lineCov">     943349 :     n++;</span>
+<span class="lineNum">     187 </span><span class="lineCov">     943349 :     *result = n;</span>
+<span class="lineNum">     188 </span><span class="lineCov">     943349 :     return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     189 </span><span class="lineCov">     943349 : }</span>
 <span class="lineNum">     190 </span>            : 
 <span class="lineNum">     191 </span>            : #if _MSC_VER
 <span class="lineNum">     192 </span>            : #    pragma warning(pop)

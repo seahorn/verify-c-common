@@ -1,0 +1,294 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - aws-c-common/include/aws/common/atomics_gnu.inl</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../index.html">top level</a> - <a href="index.html">aws-c-common/include/aws/common</a> - atomics_gnu.inl<span style="font-size: 80%;"> (source / <a href="atomics_gnu.inl.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntry">76</td>
+            <td class="headerCovTableEntryLo">19.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">9</td>
+            <td class="headerCovTableEntry">187</td>
+            <td class="headerCovTableEntryLo">4.8 %</td>
+          </tr>
+          <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #ifndef AWS_COMMON_ATOMICS_GNU_INL</a>
+<span class="lineNum">       2 </span>            : #define AWS_COMMON_ATOMICS_GNU_INL
+<span class="lineNum">       3 </span>            : 
+<span class="lineNum">       4 </span>            : /**
+<span class="lineNum">       5 </span>            :  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+<span class="lineNum">       6 </span>            :  * SPDX-License-Identifier: Apache-2.0.
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            : /* These are implicitly included, but help with editor highlighting */
+<span class="lineNum">      10 </span>            : #include &lt;aws/common/atomics.h&gt;
+<span class="lineNum">      11 </span>            : #include &lt;aws/common/common.h&gt;
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            : #include &lt;stdint.h&gt;
+<span class="lineNum">      14 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            : AWS_EXTERN_C_BEGIN
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            : #ifdef __clang__
+<span class="lineNum">      19 </span>            : #    pragma clang diagnostic push
+<span class="lineNum">      20 </span>            : #    pragma clang diagnostic ignored &quot;-Wc11-extensions&quot;
+<span class="lineNum">      21 </span>            : #else
+<span class="lineNum">      22 </span>            : #    pragma GCC diagnostic push
+<span class="lineNum">      23 </span>            : #    pragma GCC diagnostic ignored &quot;-Wpedantic&quot;
+<span class="lineNum">      24 </span>            : #endif
+<span class="lineNum">      25 </span>            : 
+<a name="26"><span class="lineNum">      26 </span>            : typedef size_t aws_atomic_impl_int_t;</a>
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span><span class="lineCov">      82304 : static inline int aws_atomic_priv_xlate_order(enum aws_memory_order order) {</span>
+<span class="lineNum">      29 </span><span class="lineCov">      82304 :     switch (order) {</span>
+<span class="lineNum">      30 </span><span class="lineNoCov">          0 :         case aws_memory_order_relaxed:</span>
+<span class="lineNum">      31 </span><span class="lineNoCov">          0 :             return __ATOMIC_RELAXED;</span>
+<span class="lineNum">      32 </span><span class="lineNoCov">          0 :         case aws_memory_order_acquire:</span>
+<span class="lineNum">      33 </span><span class="lineNoCov">          0 :             return __ATOMIC_ACQUIRE;</span>
+<span class="lineNum">      34 </span><span class="lineNoCov">          0 :         case aws_memory_order_release:</span>
+<span class="lineNum">      35 </span><span class="lineNoCov">          0 :             return __ATOMIC_RELEASE;</span>
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 :         case aws_memory_order_acq_rel:</span>
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :             return __ATOMIC_ACQ_REL;</span>
+<span class="lineNum">      38 </span><span class="lineCov">      82304 :         case aws_memory_order_seq_cst:</span>
+<span class="lineNum">      39 </span><span class="lineCov">      82304 :             return __ATOMIC_SEQ_CST;</span>
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 :         default: /* Unknown memory order */</span>
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 :             abort();</span>
+<span class="lineNum">      42 </span><span class="lineCov">      82304 :     }</span>
+<span class="lineNum">      43 </span><span class="lineCov">      82304 : }</span>
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span>            : /**
+<span class="lineNum">      46 </span>            :  * Initializes an atomic variable with an integer value. This operation should be done before any
+<span class="lineNum">      47 </span>            :  * other operations on this atomic variable, and must be done before attempting any parallel operations.
+<a name="48"><span class="lineNum">      48 </span>            :  */</a>
+<span class="lineNum">      49 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 : void aws_atomic_init_int(volatile struct aws_atomic_var *var, size_t n) {</span>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :     AWS_ATOMIC_VAR_INTVAL(var) = n;</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span>            : /**
+<span class="lineNum">      55 </span>            :  * Initializes an atomic variable with a pointer value. This operation should be done before any
+<span class="lineNum">      56 </span>            :  * other operations on this atomic variable, and must be done before attempting any parallel operations.
+<a name="57"><span class="lineNum">      57 </span>            :  */</a>
+<span class="lineNum">      58 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      59 </span><span class="lineCov">       9348 : void aws_atomic_init_ptr(volatile struct aws_atomic_var *var, void *p) {</span>
+<span class="lineNum">      60 </span><span class="lineCov">       9348 :     AWS_ATOMIC_VAR_PTRVAL(var) = p;</span>
+<span class="lineNum">      61 </span><span class="lineCov">       9348 : }</span>
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span>            : /**
+<span class="lineNum">      64 </span>            :  * Reads an atomic var as an integer, using the specified ordering, and returns the result.
+<a name="65"><span class="lineNum">      65 </span>            :  */</a>
+<span class="lineNum">      66 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 : size_t aws_atomic_load_int_explicit(volatile const struct aws_atomic_var *var, enum aws_memory_order memory_order) {</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :     return __atomic_load_n(&amp;AWS_ATOMIC_VAR_INTVAL(var), aws_atomic_priv_xlate_order(memory_order));</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span>            : /**
+<span class="lineNum">      72 </span>            :  * Reads an atomic var as a pointer, using the specified ordering, and returns the result.
+<a name="73"><span class="lineNum">      73 </span>            :  */</a>
+<span class="lineNum">      74 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      75 </span><span class="lineCov">      66004 : void *aws_atomic_load_ptr_explicit(volatile const struct aws_atomic_var *var, enum aws_memory_order memory_order) {</span>
+<span class="lineNum">      76 </span><span class="lineCov">      66004 :     return __atomic_load_n(&amp;AWS_ATOMIC_VAR_PTRVAL(var), aws_atomic_priv_xlate_order(memory_order));</span>
+<span class="lineNum">      77 </span><span class="lineCov">      66004 : }</span>
+<span class="lineNum">      78 </span>            : 
+<span class="lineNum">      79 </span>            : /**
+<span class="lineNum">      80 </span>            :  * Stores an integer into an atomic var, using the specified ordering.
+<a name="81"><span class="lineNum">      81 </span>            :  */</a>
+<span class="lineNum">      82 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 : void aws_atomic_store_int_explicit(volatile struct aws_atomic_var *var, size_t n, enum aws_memory_order memory_order) {</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :     __atomic_store_n(&amp;AWS_ATOMIC_VAR_INTVAL(var), n, aws_atomic_priv_xlate_order(memory_order));</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span>            : /**
+<span class="lineNum">      88 </span>            :  * Stores an pointer into an atomic var, using the specified ordering.
+<a name="89"><span class="lineNum">      89 </span>            :  */</a>
+<span class="lineNum">      90 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">      91 </span><span class="lineCov">      16300 : void aws_atomic_store_ptr_explicit(volatile struct aws_atomic_var *var, void *p, enum aws_memory_order memory_order) {</span>
+<span class="lineNum">      92 </span><span class="lineCov">      16300 :     __atomic_store_n(&amp;AWS_ATOMIC_VAR_PTRVAL(var), p, aws_atomic_priv_xlate_order(memory_order));</span>
+<span class="lineNum">      93 </span><span class="lineCov">      16300 : }</span>
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span>            : /**
+<span class="lineNum">      96 </span>            :  * Exchanges an integer with the value in an atomic_var, using the specified ordering.
+<span class="lineNum">      97 </span>            :  * Returns the value that was previously in the atomic_var.
+<span class="lineNum">      98 </span>            :  */
+<span class="lineNum">      99 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     100 </span>            : size_t aws_atomic_exchange_int_explicit(
+<a name="101"><span class="lineNum">     101 </span>            :     volatile struct aws_atomic_var *var,</a>
+<span class="lineNum">     102 </span>            :     size_t n,
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :     enum aws_memory_order memory_order) {</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :     return __atomic_exchange_n(&amp;AWS_ATOMIC_VAR_INTVAL(var), n, aws_atomic_priv_xlate_order(memory_order));</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     106 </span>            : 
+<span class="lineNum">     107 </span>            : /**
+<span class="lineNum">     108 </span>            :  * Exchanges a pointer with the value in an atomic_var, using the specified ordering.
+<span class="lineNum">     109 </span>            :  * Returns the value that was previously in the atomic_var.
+<span class="lineNum">     110 </span>            :  */
+<span class="lineNum">     111 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     112 </span>            : void *aws_atomic_exchange_ptr_explicit(
+<a name="113"><span class="lineNum">     113 </span>            :     volatile struct aws_atomic_var *var,</a>
+<span class="lineNum">     114 </span>            :     void *p,
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :     enum aws_memory_order memory_order) {</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :     return __atomic_exchange_n(&amp;AWS_ATOMIC_VAR_PTRVAL(var), p, aws_atomic_priv_xlate_order(memory_order));</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     118 </span>            : 
+<span class="lineNum">     119 </span>            : /**
+<span class="lineNum">     120 </span>            :  * Atomically compares *var to *expected; if they are equal, atomically sets *var = desired. Otherwise, *expected is set
+<span class="lineNum">     121 </span>            :  * to the value in *var. On success, the memory ordering used was order_success; otherwise, it was order_failure.
+<span class="lineNum">     122 </span>            :  * order_failure must be no stronger than order_success, and must not be release or acq_rel.
+<span class="lineNum">     123 </span>            :  */
+<span class="lineNum">     124 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     125 </span>            : bool aws_atomic_compare_exchange_int_explicit(
+<span class="lineNum">     126 </span>            :     volatile struct aws_atomic_var *var,
+<span class="lineNum">     127 </span>            :     size_t *expected,
+<a name="128"><span class="lineNum">     128 </span>            :     size_t desired,</a>
+<span class="lineNum">     129 </span>            :     enum aws_memory_order order_success,
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :     enum aws_memory_order order_failure) {</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     return __atomic_compare_exchange_n(</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :         &amp;AWS_ATOMIC_VAR_INTVAL(var),</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :         expected,</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :         desired,</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :         false,</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :         aws_atomic_priv_xlate_order(order_success),</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :         aws_atomic_priv_xlate_order(order_failure));</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     139 </span>            : 
+<span class="lineNum">     140 </span>            : /**
+<span class="lineNum">     141 </span>            :  * Atomically compares *var to *expected; if they are equal, atomically sets *var = desired. Otherwise, *expected is set
+<span class="lineNum">     142 </span>            :  * to the value in *var. On success, the memory ordering used was order_success; otherwise, it was order_failure.
+<span class="lineNum">     143 </span>            :  * order_failure must be no stronger than order_success, and must not be release or acq_rel.
+<span class="lineNum">     144 </span>            :  */
+<span class="lineNum">     145 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     146 </span>            : bool aws_atomic_compare_exchange_ptr_explicit(
+<span class="lineNum">     147 </span>            :     volatile struct aws_atomic_var *var,
+<span class="lineNum">     148 </span>            :     void **expected,
+<a name="149"><span class="lineNum">     149 </span>            :     void *desired,</a>
+<span class="lineNum">     150 </span>            :     enum aws_memory_order order_success,
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :     enum aws_memory_order order_failure) {</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :     return __atomic_compare_exchange_n(</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :         &amp;AWS_ATOMIC_VAR_PTRVAL(var),</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :         expected,</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :         desired,</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :         false,</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :         aws_atomic_priv_xlate_order(order_success),</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :         aws_atomic_priv_xlate_order(order_failure));</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     160 </span>            : 
+<span class="lineNum">     161 </span>            : /**
+<span class="lineNum">     162 </span>            :  * Atomically adds n to *var, and returns the previous value of *var.
+<a name="163"><span class="lineNum">     163 </span>            :  */</a>
+<span class="lineNum">     164 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 : size_t aws_atomic_fetch_add_explicit(volatile struct aws_atomic_var *var, size_t n, enum aws_memory_order order) {</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :     return __atomic_fetch_add(&amp;AWS_ATOMIC_VAR_INTVAL(var), n, aws_atomic_priv_xlate_order(order));</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     168 </span>            : 
+<span class="lineNum">     169 </span>            : /**
+<span class="lineNum">     170 </span>            :  * Atomically subtracts n from *var, and returns the previous value of *var.
+<a name="171"><span class="lineNum">     171 </span>            :  */</a>
+<span class="lineNum">     172 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 : size_t aws_atomic_fetch_sub_explicit(volatile struct aws_atomic_var *var, size_t n, enum aws_memory_order order) {</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :     return __atomic_fetch_sub(&amp;AWS_ATOMIC_VAR_INTVAL(var), n, aws_atomic_priv_xlate_order(order));</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     176 </span>            : 
+<span class="lineNum">     177 </span>            : /**
+<span class="lineNum">     178 </span>            :  * Atomically ORs n with *var, and returns the previous value of *var.
+<a name="179"><span class="lineNum">     179 </span>            :  */</a>
+<span class="lineNum">     180 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 : size_t aws_atomic_fetch_or_explicit(volatile struct aws_atomic_var *var, size_t n, enum aws_memory_order order) {</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :     return __atomic_fetch_or(&amp;AWS_ATOMIC_VAR_INTVAL(var), n, aws_atomic_priv_xlate_order(order));</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     184 </span>            : 
+<span class="lineNum">     185 </span>            : /**
+<span class="lineNum">     186 </span>            :  * Atomically ANDs n with *var, and returns the previous value of *var.
+<a name="187"><span class="lineNum">     187 </span>            :  */</a>
+<span class="lineNum">     188 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 : size_t aws_atomic_fetch_and_explicit(volatile struct aws_atomic_var *var, size_t n, enum aws_memory_order order) {</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :     return __atomic_fetch_and(&amp;AWS_ATOMIC_VAR_INTVAL(var), n, aws_atomic_priv_xlate_order(order));</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     192 </span>            : 
+<span class="lineNum">     193 </span>            : /**
+<span class="lineNum">     194 </span>            :  * Atomically XORs n with *var, and returns the previous value of *var.
+<a name="195"><span class="lineNum">     195 </span>            :  */</a>
+<span class="lineNum">     196 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 : size_t aws_atomic_fetch_xor_explicit(volatile struct aws_atomic_var *var, size_t n, enum aws_memory_order order) {</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :     return __atomic_fetch_xor(&amp;AWS_ATOMIC_VAR_INTVAL(var), n, aws_atomic_priv_xlate_order(order));</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     200 </span>            : 
+<span class="lineNum">     201 </span>            : /**
+<span class="lineNum">     202 </span>            :  * Provides the same reordering guarantees as an atomic operation with the specified memory order, without
+<span class="lineNum">     203 </span>            :  * needing to actually perform an atomic operation.
+<a name="204"><span class="lineNum">     204 </span>            :  */</a>
+<span class="lineNum">     205 </span>            : AWS_STATIC_IMPL
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 : void aws_atomic_thread_fence(enum aws_memory_order order) {</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :     __atomic_thread_fence(order);</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     209 </span>            : 
+<span class="lineNum">     210 </span>            : #ifdef __clang__
+<span class="lineNum">     211 </span>            : #    pragma clang diagnostic pop
+<span class="lineNum">     212 </span>            : #else
+<span class="lineNum">     213 </span>            : #    pragma GCC diagnostic pop
+<span class="lineNum">     214 </span>            : #endif
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span>            : #define AWS_ATOMICS_HAVE_THREAD_FENCE
+<span class="lineNum">     217 </span>            : AWS_EXTERN_C_END
+<span class="lineNum">     218 </span>            : #endif /* AWS_COMMON_ATOMICS_GNU_INL */
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
