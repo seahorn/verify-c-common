@@ -289,13 +289,13 @@ function(sea_add_unsat_test TARGET)
   add_test(NAME "${TARGET}_unsat_test" COMMAND ${VERIFY_CMD} ${VERIFY_FLAGS} --expect=unsat ${BC})
 endfunction()
 
-set(FUZZ_FLAGS corpus -use_value_profile=1 -detect_leaks=0 -runs=50000 -allocator_may_return_null=1 CACHE STRING "Flags for fuzzing")
+set(FUZZ_FLAGS corpus -use_value_profile=1 -detect_leaks=0 -runs=50000 CACHE STRING "Flags for fuzzing")
 separate_arguments(FUZZ_FLAGS)
 
 function(sea_add_fuzz_test TARGET)
   add_custom_target("${TARGET}_corpus" ALL COMMAND ${CMAKE_COMMAND} -E make_directory corpus)
   add_test(NAME "${TARGET}_fuzz_test"
-    COMMAND ${CMAKE_COMMAND} -E env ASAN_OPTIONS=detect_leaks=0 "./${TARGET}_fuzz" ${FUZZ_FLAGS})
+    COMMAND ${CMAKE_COMMAND} -E env "ASAN_OPTIONS=detect_leaks=0 allocator_may_return_null=1" "./${TARGET}_fuzz" ${FUZZ_FLAGS})
 endfunction()
 
 
