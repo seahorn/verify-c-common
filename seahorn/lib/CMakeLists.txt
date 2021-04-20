@@ -67,7 +67,7 @@ add_library(
   fuzz_byte_buf_helper.c
   fuzz_string_helper.c
   fuzz_priority_queue_helper.c
-  ring_buffer_helper.c
+  fuzz_ring_buffer_helper.c
   fuzz_hash_table_helper.c
   bounds.c
   utils.c
