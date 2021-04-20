@@ -289,7 +289,7 @@ function(sea_add_unsat_test TARGET)
   add_test(NAME "${TARGET}_unsat_test" COMMAND ${VERIFY_CMD} ${VERIFY_FLAGS} --expect=unsat ${BC})
 endfunction()
 
-set(FUZZ_FLAGS corpus -use_value_profile=1 -detect_leaks=0 -runs=50000 CACHE STRING "Flags for fuzzing")
+set(FUZZ_FLAGS corpus -use_value_profile=1 -detect_leaks=0 -runs=50000 -timeout=60 -rss_limit_mb=4096 CACHE STRING "Flags for fuzzing")
 separate_arguments(FUZZ_FLAGS)
 
 function(sea_add_fuzz_test TARGET)
