@@ -8,8 +8,8 @@ int nd_aws_priority_queue_compare_fn(const void *a, const void *b) {
 
 void initialize_priority_queue(struct aws_priority_queue *queue) {
   queue->pred = nd_aws_priority_queue_compare_fn;
-  initialize_array_list(&queue->container);
-  initialize_array_list(&queue->backpointers);
+  initialize_bounded_array_list(&queue->container);
+  initialize_bounded_array_list(&queue->backpointers);
 }
 
 bool aws_priority_queue_is_bounded(struct aws_priority_queue *queue,
