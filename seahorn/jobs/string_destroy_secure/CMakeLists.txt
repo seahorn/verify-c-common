@@ -24,3 +24,5 @@ sea_add_fuzz(
   string_destroy_secure
   aws_string_destroy_secure_harness.c
 )
+
+set_tests_properties(string_destroy_secure_fuzz_test PROPERTIES WILL_FAIL TRUE)
