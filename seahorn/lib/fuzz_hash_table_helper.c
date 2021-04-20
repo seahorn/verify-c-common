@@ -148,11 +148,6 @@ void ensure_hash_table_has_valid_destroy_functions(struct aws_hash_table *map) {
   map->p_impl->destroy_value_fn = nd_bool() ? NULL : hash_proof_destroy_noop;
 }
 
-// real programs (i.e. in fuzzing) require actual impl
-uint64_t uninterpreted_hasher(const void *a) {
-  return nd_uint64_t();
-}
-
 bool uninterpreted_equals(const void *const a, const void *const b) {
   return nd_bool();
 }
