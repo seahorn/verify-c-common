@@ -57,3 +57,22 @@ void ensure_byte_buf_has_allocated_buffer_member_in_range(
   // assume(buf->capacity <= max_capacity)
   buf->capacity %= (max_capacity + 1);
 }
+
+bool ring_buffers_are_equal(struct aws_ring_buffer *r1,
+                            struct aws_ring_buffer *r2) {
+  if (!r1 || !r2)
+    return r1 == r2;
+
+  bool res = r1->allocator == r2->allocator &&
+             r1->allocation == r2->allocation &&
+             r1->allocation_end == r2->allocation_end;
+  if (!res)
+    return false;
+  uint8_t *r1_head = aws_atomic_load_ptr(&r1->head);
+  uint8_t *r1_tail = aws_atomic_load_ptr(&r1->tail);
+
+  uint8_t *r2_head = aws_atomic_load_ptr(&r2->head);
+  uint8_t *r2_tail = aws_atomic_load_ptr(&r2->tail);
+
+  return r1_head == r2_head && r1_tail == r2_tail;
+}
