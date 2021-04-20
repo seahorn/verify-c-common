@@ -59,13 +59,6 @@ INLINE void *sea_malloc_aligned_havoc(size_t sz) {
     memhavoc(data, sz);
   return data;
 }
-#elif __FUZZ__
-INLINE void *sea_malloc_aligned_havoc(size_t sz) {
-  void *data = sea_malloc_aligned(&sz);
-  if (data)
-    memhavoc(data, sz);
-  return data;
-}
 #else
 INLINE void *sea_malloc_aligned_havoc(size_t sz) {
   void *data = sea_malloc_aligned(sz);
