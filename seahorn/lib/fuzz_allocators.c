@@ -3,6 +3,7 @@
  */
 
 #include <proof_allocators.h>
+#include "sea_allocators.h"
 #include <stdarg.h>
 #include <stdlib.h>
 
@@ -17,6 +18,23 @@ void *sea_malloc_safe(size_t sz) {
   void *p = malloc(sz);
   assume(p);
   return p;
+}
+
+#define AWS_ALIGN_ROUND_UP(value, alignment) \
+  (((value) + ((alignment)-1)) & ~((alignment)-1))
+
+INLINE void *sea_malloc_aligned(size_t sz) {
+  enum { S_ALIGNMENT = sizeof(intmax_t) };
+  size_t alloc_sz = AWS_ALIGN_ROUND_UP(sz, S_ALIGNMENT);
+  return malloc(alloc_sz);
+}
+#undef AWS_ALIGN_ROUND_UP
+
+void *sea_malloc_aligned_havoc(size_t sz) {
+  void *data = sea_malloc_aligned(sz);
+  if (data)
+    memhavoc(data, sz);
+  return data;
 }
 
 /**

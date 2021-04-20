@@ -71,6 +71,5 @@ add_library(
   fuzz_hash_table_helper.c
   bounds.c
   utils.c
-  sea_allocators.c
 )
 target_compile_options(sea_fuzz PUBLIC -fdeclspec -fsanitize=fuzzer-no-link,address,undefined -fprofile-instr-generate -fcoverage-mapping)
