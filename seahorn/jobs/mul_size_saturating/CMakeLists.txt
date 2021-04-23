@@ -6,3 +6,5 @@ sea_add_unsat_test(mul_size_saturating)
 # klee
 sea_add_klee(mul_size_saturating
 aws_mul_size_saturating_harness.c)
+
+sea_add_fuzz(mul_size_saturating aws_mul_size_saturating_harness.c)
