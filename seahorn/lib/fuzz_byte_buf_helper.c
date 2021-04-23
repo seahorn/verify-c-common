@@ -12,8 +12,7 @@ void initialize_byte_buf(struct aws_byte_buf *const buf) {
   // cap <= max_size
   cap %= max_size;
   // len <= cap
-  cap = cap == 0 ? 1 : cap;
-  len %= cap;
+  len = (cap == 0) ? 0 : len % cap;
 
   buf->len = len;
   buf->capacity = cap;
