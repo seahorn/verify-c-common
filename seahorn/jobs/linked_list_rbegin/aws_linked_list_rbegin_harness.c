@@ -19,4 +19,6 @@ int main(void) {
   sassert(length > 0 || rbegin == &list.head);
   sassert((rbegin == &list.head) || aws_linked_list_node_prev_is_valid(rbegin));
   sassert(is_aws_list_unchanged_to_head(&list, &to_save));
+
+  return 0;
 }

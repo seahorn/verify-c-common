@@ -18,4 +18,6 @@ int main(void) {
   sassert(aws_linked_list_node_prev_is_valid(&node));
   sassert(aws_linked_list_node_next_is_valid(rval));
   sassert(rval == &before);
+
+  return 0;
 }

@@ -13,4 +13,6 @@ int main(void) {
 
   /* assertions */
   sassert(aws_linked_list_is_valid(&list));
+
+  return 0;
 }

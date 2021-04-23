@@ -16,4 +16,6 @@ int main() {
   /* assertions */
   assert_all_zeroes((const uint8_t *)&node,
                     sizeof(struct aws_linked_list_node));
+
+  return 0;
 }

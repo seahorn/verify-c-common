@@ -10,3 +10,6 @@ sea_add_unsat_test(linked_list_rbegin)
 # klee
 sea_add_klee(linked_list_rbegin
 aws_linked_list_rbegin_harness.c)
+
+sea_add_fuzz(linked_list_rbegin
+  aws_linked_list_rbegin_harness.c)

@@ -16,4 +16,5 @@ int main(void) {
 
   sassert(end == &list.tail);
   sassert(is_aws_list_unchanged_to_head(&list, &to_save));
+  return 0;
 }

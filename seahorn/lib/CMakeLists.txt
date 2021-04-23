@@ -69,6 +69,7 @@ add_library(
   fuzz_priority_queue_helper.c
   fuzz_ring_buffer_helper.c
   fuzz_hash_table_helper.c
+  linked_list_helper.c
   bounds.c
   utils.c
 )
