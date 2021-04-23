@@ -45,4 +45,6 @@ int main(void) {
     */
     sassert(before.next == before_next);
     sassert(before_prev.prev == before_prev_prev);
+
+    return 0;
 }

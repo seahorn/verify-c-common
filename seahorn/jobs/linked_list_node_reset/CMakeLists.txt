@@ -7,3 +7,6 @@ sea_add_unsat_test(linked_list_node_reset)
 # klee
 sea_add_klee(linked_list_node_reset
 aws_linked_list_node_reset_harness.c)
+
+sea_add_fuzz(linked_list_node_reset
+  aws_linked_list_node_reset_harness.c)
