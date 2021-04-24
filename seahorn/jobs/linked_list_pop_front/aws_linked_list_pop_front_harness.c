@@ -9,9 +9,10 @@ int main(void) {
   size_t size;
   sea_nd_init_aws_linked_list_from_head(&list, &size);
   struct saved_aws_linked_list to_save = {.saved_size = 0};
-  assume(!aws_linked_list_empty(&list));
 #ifdef __KLEE__
-    if (size == 0) return 0;
+  if (size == 0) return 0;
+#else
+  assume(!aws_linked_list_empty(&list));
 #endif
 
   /* Keep the old last node of the linked list */
