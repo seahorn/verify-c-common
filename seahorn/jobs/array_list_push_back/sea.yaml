@@ -1,2 +1,3 @@
 verify_options:
-  horn-bmc-tactic: smtfd
+# smtfd tactic is best, but maybe buggy in --cex mode
+  horn-bmc-tactic: smt
