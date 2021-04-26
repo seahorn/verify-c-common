@@ -23,4 +23,4 @@ jobs:
         run: docker build -t verify-c-common . --file docker/verify-c-common-klee.Dockerfile
 
       - name: Run Tests 
-        run: docker run -t verify-c-common /bin/bash -c "cd build && ctest -R klee_ --timeout 2000"
+        run: docker run -t verify-c-common /bin/bash -c "cd build && ctest -R klee_ --output-on-failure --timeout 2000"

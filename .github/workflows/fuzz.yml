@@ -26,7 +26,7 @@ jobs:
       - name: Run Tests and collect coverage
         run: docker run -v $(pwd):/host verify-c-common:fuzz /bin/bash -c \
           "mkdir /home/usea/verify-c-common/fuzzing_coverage &&
-          cd build && ctest -R fuzz --timeout 2000 &&
+          cd build && ctest -R fuzz --output-on-failure --timeout 2000 &&
           python3 /home/usea/verify-c-common/scripts/get_fuzzing_coverage.py --html-dir=/home/usea/verify-c-common/fuzzing_coverage &&
           mv /home/usea/verify-c-common/data/fuzz_coverage/all_fuzz.info /host &&
           cp -r /home/usea/verify-c-common/fuzzing_coverage /host/fuzzing_coverage"
