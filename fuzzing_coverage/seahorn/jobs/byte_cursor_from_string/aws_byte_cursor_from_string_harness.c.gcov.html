@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -70,17 +70,17 @@
 <span class="lineNum">       8 </span>            : #include &lt;string_helper.h&gt;
 <a name="9"><span class="lineNum">       9 </span>            : #include &lt;utils.h&gt;</a>
 <span class="lineNum">      10 </span>            : 
-<span class="lineNum">      11 </span><span class="lineCov">     100000 : int main() {</span>
-<span class="lineNum">      12 </span><span class="lineCov">     100000 :     struct aws_string *str = ensure_string_is_allocated_bounded_length(MAX_STRING_LEN);</span>
-<span class="lineNum">      13 </span><span class="lineCov">     100000 :     struct aws_byte_cursor cursor = aws_byte_cursor_from_string(str);</span>
-<span class="lineNum">      14 </span><span class="lineCov">     100000 :     sassert(aws_string_is_valid(str));</span>
-<span class="lineNum">      15 </span><span class="lineCov">     100000 :     sassert(aws_byte_cursor_is_valid(&amp;cursor));</span>
-<span class="lineNum">      16 </span><span class="lineCov">     100000 :     sassert(cursor.len == str-&gt;len);</span>
-<span class="lineNum">      17 </span><span class="lineCov">     100000 :     sassert(cursor.ptr == str-&gt;bytes);</span>
-<span class="lineNum">      18 </span><span class="lineCov">     100000 :     assert_bytes_match(str-&gt;bytes, cursor.ptr, str-&gt;len);</span>
-<span class="lineNum">      19 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      20 </span><span class="lineCov">     100000 :     return 0;</span>
-<span class="lineNum">      21 </span><span class="lineCov">     100000 : }</span>
+<span class="lineNum">      11 </span><span class="lineCov">     150000 : int main() {</span>
+<span class="lineNum">      12 </span><span class="lineCov">     150000 :     struct aws_string *str = ensure_string_is_allocated_bounded_length(MAX_STRING_LEN);</span>
+<span class="lineNum">      13 </span><span class="lineCov">     150000 :     struct aws_byte_cursor cursor = aws_byte_cursor_from_string(str);</span>
+<span class="lineNum">      14 </span><span class="lineCov">     150000 :     sassert(aws_string_is_valid(str));</span>
+<span class="lineNum">      15 </span><span class="lineCov">     150000 :     sassert(aws_byte_cursor_is_valid(&amp;cursor));</span>
+<span class="lineNum">      16 </span><span class="lineCov">     150000 :     sassert(cursor.len == str-&gt;len);</span>
+<span class="lineNum">      17 </span><span class="lineCov">     150000 :     sassert(cursor.ptr == str-&gt;bytes);</span>
+<span class="lineNum">      18 </span><span class="lineCov">     150000 :     assert_bytes_match(str-&gt;bytes, cursor.ptr, str-&gt;len);</span>
+<span class="lineNum">      19 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      20 </span><span class="lineCov">     150000 :     return 0;</span>
+<span class="lineNum">      21 </span><span class="lineCov">     150000 : }</span>
 </pre>
       </td>
     </tr>

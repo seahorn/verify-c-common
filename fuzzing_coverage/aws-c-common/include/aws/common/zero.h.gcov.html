@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -79,9 +79,9 @@
 <span class="lineNum">      17 </span>            :  * Set each byte in the struct to zero.
 <span class="lineNum">      18 </span>            :  */
 <span class="lineNum">      19 </span>            : #define AWS_ZERO_STRUCT(object)                                                                                        \
-<span class="lineNum">      20 </span><span class="lineCov">     232648 :     do {                                                                                                               \</span>
-<span class="lineNum">      21 </span><span class="lineCov">     232648 :         memset(&amp;(object), 0, sizeof(object));                                                                          \</span>
-<span class="lineNum">      22 </span><span class="lineCov">     232648 :     } while (0)</span>
+<span class="lineNum">      20 </span><span class="lineCov">     512468 :     do {                                                                                                               \</span>
+<span class="lineNum">      21 </span><span class="lineCov">     512468 :         memset(&amp;(object), 0, sizeof(object));                                                                          \</span>
+<span class="lineNum">      22 </span><span class="lineCov">     512468 :     } while (0)</span>
 <span class="lineNum">      23 </span>            : 
 <span class="lineNum">      24 </span>            : /**
 <span class="lineNum">      25 </span>            :  * Set each byte in the array to zero.
@@ -101,7 +101,7 @@
 <span class="lineNum">      39 </span>            :         }
 <span class="lineNum">      40 </span>            : /* clang-format on */
 <span class="lineNum">      41 </span>            : #else
-<span class="lineNum">      42 </span><span class="lineCov">     172547 : #    define AWS_IS_ZEROED(object) aws_is_mem_zeroed(&amp;(object), sizeof(object))</span>
+<span class="lineNum">      42 </span><span class="lineCov">     257392 : #    define AWS_IS_ZEROED(object) aws_is_mem_zeroed(&amp;(object), sizeof(object))</span>
 <span class="lineNum">      43 </span>            : #endif
 <span class="lineNum">      44 </span>            : 
 <span class="lineNum">      45 </span>            : /**

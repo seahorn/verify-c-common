@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">9</td>
@@ -87,8 +87,8 @@
 <span class="lineNum">      25 </span>            : 
 <a name="26"><span class="lineNum">      26 </span>            : typedef size_t aws_atomic_impl_int_t;</a>
 <span class="lineNum">      27 </span>            : 
-<span class="lineNum">      28 </span><span class="lineCov">      82304 : static inline int aws_atomic_priv_xlate_order(enum aws_memory_order order) {</span>
-<span class="lineNum">      29 </span><span class="lineCov">      82304 :     switch (order) {</span>
+<span class="lineNum">      28 </span><span class="lineCov">     130000 : static inline int aws_atomic_priv_xlate_order(enum aws_memory_order order) {</span>
+<span class="lineNum">      29 </span><span class="lineCov">     130000 :     switch (order) {</span>
 <span class="lineNum">      30 </span><span class="lineNoCov">          0 :         case aws_memory_order_relaxed:</span>
 <span class="lineNum">      31 </span><span class="lineNoCov">          0 :             return __ATOMIC_RELAXED;</span>
 <span class="lineNum">      32 </span><span class="lineNoCov">          0 :         case aws_memory_order_acquire:</span>
@@ -97,12 +97,12 @@
 <span class="lineNum">      35 </span><span class="lineNoCov">          0 :             return __ATOMIC_RELEASE;</span>
 <span class="lineNum">      36 </span><span class="lineNoCov">          0 :         case aws_memory_order_acq_rel:</span>
 <span class="lineNum">      37 </span><span class="lineNoCov">          0 :             return __ATOMIC_ACQ_REL;</span>
-<span class="lineNum">      38 </span><span class="lineCov">      82304 :         case aws_memory_order_seq_cst:</span>
-<span class="lineNum">      39 </span><span class="lineCov">      82304 :             return __ATOMIC_SEQ_CST;</span>
+<span class="lineNum">      38 </span><span class="lineCov">     130000 :         case aws_memory_order_seq_cst:</span>
+<span class="lineNum">      39 </span><span class="lineCov">     130000 :             return __ATOMIC_SEQ_CST;</span>
 <span class="lineNum">      40 </span><span class="lineNoCov">          0 :         default: /* Unknown memory order */</span>
 <span class="lineNum">      41 </span><span class="lineNoCov">          0 :             abort();</span>
-<span class="lineNum">      42 </span><span class="lineCov">      82304 :     }</span>
-<span class="lineNum">      43 </span><span class="lineCov">      82304 : }</span>
+<span class="lineNum">      42 </span><span class="lineCov">     130000 :     }</span>
+<span class="lineNum">      43 </span><span class="lineCov">     130000 : }</span>
 <span class="lineNum">      44 </span>            : 
 <span class="lineNum">      45 </span>            : /**
 <span class="lineNum">      46 </span>            :  * Initializes an atomic variable with an integer value. This operation should be done before any
@@ -118,9 +118,9 @@
 <span class="lineNum">      56 </span>            :  * other operations on this atomic variable, and must be done before attempting any parallel operations.
 <a name="57"><span class="lineNum">      57 </span>            :  */</a>
 <span class="lineNum">      58 </span>            : AWS_STATIC_IMPL
-<span class="lineNum">      59 </span><span class="lineCov">       9348 : void aws_atomic_init_ptr(volatile struct aws_atomic_var *var, void *p) {</span>
-<span class="lineNum">      60 </span><span class="lineCov">       9348 :     AWS_ATOMIC_VAR_PTRVAL(var) = p;</span>
-<span class="lineNum">      61 </span><span class="lineCov">       9348 : }</span>
+<span class="lineNum">      59 </span><span class="lineCov">      15838 : void aws_atomic_init_ptr(volatile struct aws_atomic_var *var, void *p) {</span>
+<span class="lineNum">      60 </span><span class="lineCov">      15838 :     AWS_ATOMIC_VAR_PTRVAL(var) = p;</span>
+<span class="lineNum">      61 </span><span class="lineCov">      15838 : }</span>
 <span class="lineNum">      62 </span>            : 
 <span class="lineNum">      63 </span>            : /**
 <span class="lineNum">      64 </span>            :  * Reads an atomic var as an integer, using the specified ordering, and returns the result.
@@ -134,9 +134,9 @@
 <span class="lineNum">      72 </span>            :  * Reads an atomic var as a pointer, using the specified ordering, and returns the result.
 <a name="73"><span class="lineNum">      73 </span>            :  */</a>
 <span class="lineNum">      74 </span>            : AWS_STATIC_IMPL
-<span class="lineNum">      75 </span><span class="lineCov">      66004 : void *aws_atomic_load_ptr_explicit(volatile const struct aws_atomic_var *var, enum aws_memory_order memory_order) {</span>
-<span class="lineNum">      76 </span><span class="lineCov">      66004 :     return __atomic_load_n(&amp;AWS_ATOMIC_VAR_PTRVAL(var), aws_atomic_priv_xlate_order(memory_order));</span>
-<span class="lineNum">      77 </span><span class="lineCov">      66004 : }</span>
+<span class="lineNum">      75 </span><span class="lineCov">     104756 : void *aws_atomic_load_ptr_explicit(volatile const struct aws_atomic_var *var, enum aws_memory_order memory_order) {</span>
+<span class="lineNum">      76 </span><span class="lineCov">     104756 :     return __atomic_load_n(&amp;AWS_ATOMIC_VAR_PTRVAL(var), aws_atomic_priv_xlate_order(memory_order));</span>
+<span class="lineNum">      77 </span><span class="lineCov">     104756 : }</span>
 <span class="lineNum">      78 </span>            : 
 <span class="lineNum">      79 </span>            : /**
 <span class="lineNum">      80 </span>            :  * Stores an integer into an atomic var, using the specified ordering.
@@ -150,9 +150,9 @@
 <span class="lineNum">      88 </span>            :  * Stores an pointer into an atomic var, using the specified ordering.
 <a name="89"><span class="lineNum">      89 </span>            :  */</a>
 <span class="lineNum">      90 </span>            : AWS_STATIC_IMPL
-<span class="lineNum">      91 </span><span class="lineCov">      16300 : void aws_atomic_store_ptr_explicit(volatile struct aws_atomic_var *var, void *p, enum aws_memory_order memory_order) {</span>
-<span class="lineNum">      92 </span><span class="lineCov">      16300 :     __atomic_store_n(&amp;AWS_ATOMIC_VAR_PTRVAL(var), p, aws_atomic_priv_xlate_order(memory_order));</span>
-<span class="lineNum">      93 </span><span class="lineCov">      16300 : }</span>
+<span class="lineNum">      91 </span><span class="lineCov">      25244 : void aws_atomic_store_ptr_explicit(volatile struct aws_atomic_var *var, void *p, enum aws_memory_order memory_order) {</span>
+<span class="lineNum">      92 </span><span class="lineCov">      25244 :     __atomic_store_n(&amp;AWS_ATOMIC_VAR_PTRVAL(var), p, aws_atomic_priv_xlate_order(memory_order));</span>
+<span class="lineNum">      93 </span><span class="lineCov">      25244 : }</span>
 <span class="lineNum">      94 </span>            : 
 <span class="lineNum">      95 </span>            : /**
 <span class="lineNum">      96 </span>            :  * Exchanges an integer with the value in an atomic_var, using the specified ordering.

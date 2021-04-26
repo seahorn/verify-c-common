@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -72,30 +72,30 @@
 <span class="lineNum">      10 </span>            : #include &lt;stddef.h&gt;
 <a name="11"><span class="lineNum">      11 </span>            : #include &lt;proof_allocators.h&gt;</a>
 <span class="lineNum">      12 </span>            : 
-<span class="lineNum">      13 </span><span class="lineCov">     100000 : int main() {</span>
-<span class="lineNum">      14 </span><span class="lineCov">     100000 :     /* parameters */</span>
-<span class="lineNum">      15 </span><span class="lineCov">     100000 :     size_t alloc_size = nd_size_t();</span>
-<span class="lineNum">      16 </span><span class="lineCov">     100000 :     KLEE_ASSUME(alloc_size &lt; MAX_STRING_LEN);</span>
-<span class="lineNum">      17 </span><span class="lineCov">     100000 :     uint8_t *array = bounded_malloc(alloc_size);</span>
-<span class="lineNum">      18 </span><span class="lineCov">     100000 :     struct aws_allocator *allocator = sea_allocator();</span>
-<span class="lineNum">      19 </span><span class="lineCov">     100000 :     size_t reported_size = nd_size_t();</span>
-<span class="lineNum">      20 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      21 </span><span class="lineCov">     100000 :     /* precondition */</span>
-<span class="lineNum">      22 </span><span class="lineCov">     100000 :     assume(reported_size &lt;= alloc_size);</span>
-<span class="lineNum">      23 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      24 </span><span class="lineCov">     100000 :     /* operation under verification */</span>
-<span class="lineNum">      25 </span><span class="lineCov">     100000 :     struct aws_string *str = aws_string_new_from_array(allocator, array, reported_size);</span>
-<span class="lineNum">      26 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      27 </span><span class="lineCov">     100000 :     /* assertions */</span>
-<span class="lineNum">      28 </span><span class="lineCov">     100000 :     if (str) {</span>
-<span class="lineNum">      29 </span><span class="lineCov">      14684 :         sassert(str-&gt;len == reported_size);</span>
-<span class="lineNum">      30 </span><span class="lineCov">      14684 :         sassert(str-&gt;bytes[str-&gt;len] == 0);</span>
-<span class="lineNum">      31 </span><span class="lineCov">      14684 :         assert_bytes_match(str-&gt;bytes, array, str-&gt;len);</span>
-<span class="lineNum">      32 </span><span class="lineCov">      14684 :         sassert(aws_string_is_valid(str));</span>
-<span class="lineNum">      33 </span><span class="lineCov">      14684 :     }</span>
-<span class="lineNum">      34 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      35 </span><span class="lineCov">     100000 :     return 0;</span>
-<span class="lineNum">      36 </span><span class="lineCov">     100000 : }</span>
+<span class="lineNum">      13 </span><span class="lineCov">     150000 : int main() {</span>
+<span class="lineNum">      14 </span><span class="lineCov">     150000 :     /* parameters */</span>
+<span class="lineNum">      15 </span><span class="lineCov">     150000 :     size_t alloc_size = nd_size_t();</span>
+<span class="lineNum">      16 </span><span class="lineCov">     150000 :     KLEE_ASSUME(alloc_size &lt; MAX_STRING_LEN);</span>
+<span class="lineNum">      17 </span><span class="lineCov">     150000 :     uint8_t *array = bounded_malloc(alloc_size);</span>
+<span class="lineNum">      18 </span><span class="lineCov">     150000 :     struct aws_allocator *allocator = sea_allocator();</span>
+<span class="lineNum">      19 </span><span class="lineCov">     150000 :     size_t reported_size = nd_size_t();</span>
+<span class="lineNum">      20 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      21 </span><span class="lineCov">     150000 :     /* precondition */</span>
+<span class="lineNum">      22 </span><span class="lineCov">     150000 :     assume(reported_size &lt;= alloc_size);</span>
+<span class="lineNum">      23 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      24 </span><span class="lineCov">     150000 :     /* operation under verification */</span>
+<span class="lineNum">      25 </span><span class="lineCov">     150000 :     struct aws_string *str = aws_string_new_from_array(allocator, array, reported_size);</span>
+<span class="lineNum">      26 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      27 </span><span class="lineCov">     150000 :     /* assertions */</span>
+<span class="lineNum">      28 </span><span class="lineCov">     150000 :     if (str) {</span>
+<span class="lineNum">      29 </span><span class="lineCov">      21782 :         sassert(str-&gt;len == reported_size);</span>
+<span class="lineNum">      30 </span><span class="lineCov">      21782 :         sassert(str-&gt;bytes[str-&gt;len] == 0);</span>
+<span class="lineNum">      31 </span><span class="lineCov">      21782 :         assert_bytes_match(str-&gt;bytes, array, str-&gt;len);</span>
+<span class="lineNum">      32 </span><span class="lineCov">      21782 :         sassert(aws_string_is_valid(str));</span>
+<span class="lineNum">      33 </span><span class="lineCov">      21782 :     }</span>
+<span class="lineNum">      34 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      35 </span><span class="lineCov">     150000 :     return 0;</span>
+<span class="lineNum">      36 </span><span class="lineCov">     150000 : }</span>
 </pre>
       </td>
     </tr>

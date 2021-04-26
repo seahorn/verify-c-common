@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -78,13 +78,13 @@
 <span class="lineNum">      16 </span>            : #if SIZE_MAX == UINT32_MAX
 <span class="lineNum">      17 </span>            : #    define SIZE_BITS 32
 <span class="lineNum">      18 </span>            : #elif SIZE_MAX == UINT64_MAX
-<span class="lineNum">      19 </span><span class="lineCov">     943349 : #    define SIZE_BITS 64</span>
+<span class="lineNum">      19 </span><span class="lineCov">    1439225 : #    define SIZE_BITS 64</span>
 <span class="lineNum">      20 </span>            : #else
 <span class="lineNum">      21 </span>            : #    error &quot;Target not supported&quot;
 <span class="lineNum">      22 </span>            : #endif
 <span class="lineNum">      23 </span>            : 
 <span class="lineNum">      24 </span>            : /* The largest power of two that can be stored in a size_t */
-<span class="lineNum">      25 </span><span class="lineCov">     943349 : #define SIZE_MAX_POWER_OF_TWO (((size_t)1) &lt;&lt; (SIZE_BITS - 1))</span>
+<span class="lineNum">      25 </span><span class="lineCov">    1439225 : #define SIZE_MAX_POWER_OF_TWO (((size_t)1) &lt;&lt; (SIZE_BITS - 1))</span>
 <span class="lineNum">      26 </span>            : 
 <span class="lineNum">      27 </span>            : AWS_EXTERN_C_BEGIN
 <span class="lineNum">      28 </span>            : 

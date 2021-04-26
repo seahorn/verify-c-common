@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -68,19 +68,19 @@
 <span class="lineNum">       6 </span>            : #include &lt;byte_buf_helper.h&gt;
 <a name="7"><span class="lineNum">       7 </span>            : #include &lt;config.h&gt;</a>
 <span class="lineNum">       8 </span>            : 
-<span class="lineNum">       9 </span><span class="lineCov">     100000 : int main(void) {</span>
-<span class="lineNum">      10 </span><span class="lineCov">     100000 :     struct aws_byte_cursor cur;</span>
-<span class="lineNum">      11 </span><span class="lineCov">     100000 :     initialize_byte_cursor_aligned(&amp;cur);</span>
-<span class="lineNum">      12 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      13 </span><span class="lineCov">     100000 :     assume(aws_byte_cursor_is_bounded(&amp;cur, MAX_BUFFER_SIZE));</span>
-<span class="lineNum">      14 </span><span class="lineCov">     100000 :     assume(aws_byte_cursor_is_valid(&amp;cur));</span>
-<span class="lineNum">      15 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      16 </span><span class="lineCov">     100000 :     /* This function has no pre or post conditions */</span>
-<span class="lineNum">      17 </span><span class="lineCov">     100000 :     uint64_t rval = aws_hash_byte_cursor_ptr(&amp;cur);</span>
-<span class="lineNum">      18 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      19 </span><span class="lineCov">     100000 :     sassert(aws_byte_cursor_is_valid(&amp;cur));</span>
-<span class="lineNum">      20 </span><span class="lineCov">     100000 :     return 0;</span>
-<span class="lineNum">      21 </span><span class="lineCov">     100000 : }</span>
+<span class="lineNum">       9 </span><span class="lineCov">     150000 : int main(void) {</span>
+<span class="lineNum">      10 </span><span class="lineCov">     150000 :     struct aws_byte_cursor cur;</span>
+<span class="lineNum">      11 </span><span class="lineCov">     150000 :     initialize_byte_cursor_aligned(&amp;cur);</span>
+<span class="lineNum">      12 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      13 </span><span class="lineCov">     150000 :     assume(aws_byte_cursor_is_bounded(&amp;cur, MAX_BUFFER_SIZE));</span>
+<span class="lineNum">      14 </span><span class="lineCov">     150000 :     assume(aws_byte_cursor_is_valid(&amp;cur));</span>
+<span class="lineNum">      15 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      16 </span><span class="lineCov">     150000 :     /* This function has no pre or post conditions */</span>
+<span class="lineNum">      17 </span><span class="lineCov">     150000 :     uint64_t rval = aws_hash_byte_cursor_ptr(&amp;cur);</span>
+<span class="lineNum">      18 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      19 </span><span class="lineCov">     150000 :     sassert(aws_byte_cursor_is_valid(&amp;cur));</span>
+<span class="lineNum">      20 </span><span class="lineCov">     150000 :     return 0;</span>
+<span class="lineNum">      21 </span><span class="lineCov">     150000 : }</span>
 </pre>
       </td>
     </tr>

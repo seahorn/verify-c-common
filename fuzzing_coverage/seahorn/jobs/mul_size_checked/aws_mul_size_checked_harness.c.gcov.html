@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - seahorn/jobs/mul_size_checked/aws_mul_size_checked_harness.c</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../index.html">top level</a> - <a href="index.html">seahorn/jobs/mul_size_checked</a> - aws_mul_size_checked_harness.c<span style="font-size: 80%;"> (source / <a href="aws_mul_size_checked_harness.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">34</td>
+            <td class="headerCovTableEntry">34</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #include &lt;aws/common/math.h&gt;</a>
+<span class="lineNum">       2 </span>            : #include &lt;seahorn/seahorn.h&gt;
+<span class="lineNum">       3 </span>            : #include &lt;nondet.h&gt;
+<span class="lineNum">       4 </span>            : 
+<a name="5"><span class="lineNum">       5 </span>            : /**</a>
+<span class="lineNum">       6 </span>            :  */
+<span class="lineNum">       7 </span><span class="lineCov">      50000 : int main() {</span>
+<span class="lineNum">       8 </span><span class="lineCov">      50000 :     if (nd_bool()) {</span>
+<span class="lineNum">       9 </span><span class="lineCov">      35253 :         /*</span>
+<span class="lineNum">      10 </span><span class="lineCov">      35253 :          */</span>
+<span class="lineNum">      11 </span><span class="lineCov">      35253 :         // AG: seahorn can deal with arbitrary integers</span>
+<span class="lineNum">      12 </span><span class="lineCov">      35253 :         // AG: CBMC was limited to testing with exactly two inputs!</span>
+<span class="lineNum">      13 </span><span class="lineCov">      35253 :         uint64_t a = nd_uint64_t();</span>
+<span class="lineNum">      14 </span><span class="lineCov">      35253 :         uint64_t b = nd_uint64_t();</span>
+<span class="lineNum">      15 </span><span class="lineCov">      35253 :         uint64_t r = nd_uint64_t();</span>
+<span class="lineNum">      16 </span><span class="lineCov">      35253 :         if (!aws_mul_u64_checked(a, b, &amp;r)) {</span>
+<span class="lineNum">      17 </span><span class="lineCov">        950 :             sassert(r == a * b);</span>
+<span class="lineNum">      18 </span><span class="lineCov">      34303 :         } else {</span>
+<span class="lineNum">      19 </span><span class="lineCov">      34303 :             // AG: the assert is wrong. it is taken from add_size_checked</span>
+<span class="lineNum">      20 </span><span class="lineCov">      34303 :             // sassert((b &gt; 0) &amp;&amp; (a &gt; (UINT64_MAX - b)));</span>
+<span class="lineNum">      21 </span><span class="lineCov">      34303 :             sassert(b &gt; 0);</span>
+<span class="lineNum">      22 </span><span class="lineCov">      34303 :         }</span>
+<span class="lineNum">      23 </span><span class="lineCov">      35253 :     } else {</span>
+<span class="lineNum">      24 </span><span class="lineCov">      14747 :         /*</span>
+<span class="lineNum">      25 </span><span class="lineCov">      14747 :          */</span>
+<span class="lineNum">      26 </span><span class="lineCov">      14747 :         // AG: seahorn can deal with arbitrary integers</span>
+<span class="lineNum">      27 </span><span class="lineCov">      14747 :         // AG: CBMC was limited to testing with exactly two inputs!</span>
+<span class="lineNum">      28 </span><span class="lineCov">      14747 :         uint32_t a = nd_uint32_t();</span>
+<span class="lineNum">      29 </span><span class="lineCov">      14747 :         uint32_t b = nd_uint32_t();</span>
+<span class="lineNum">      30 </span><span class="lineCov">      14747 :         uint32_t r = nd_uint32_t();</span>
+<span class="lineNum">      31 </span><span class="lineCov">      14747 :         if (!aws_mul_u32_checked(a, b, &amp;r)) {</span>
+<span class="lineNum">      32 </span><span class="lineCov">       1083 :             sassert(r == a * b);</span>
+<span class="lineNum">      33 </span><span class="lineCov">      13664 :         } else {</span>
+<span class="lineNum">      34 </span><span class="lineCov">      13664 :             // AG: the assert is wrong. it is taken from add_size_checked</span>
+<span class="lineNum">      35 </span><span class="lineCov">      13664 :             // sassert((b &gt; 0) &amp;&amp; (a &gt; (UINT32_MAX - b)));</span>
+<span class="lineNum">      36 </span><span class="lineCov">      13664 :             sassert(b &gt; 0);</span>
+<span class="lineNum">      37 </span><span class="lineCov">      13664 :         }</span>
+<span class="lineNum">      38 </span><span class="lineCov">      14747 :     }</span>
+<span class="lineNum">      39 </span><span class="lineCov">      50000 :     return 0;</span>
+<span class="lineNum">      40 </span><span class="lineCov">      50000 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

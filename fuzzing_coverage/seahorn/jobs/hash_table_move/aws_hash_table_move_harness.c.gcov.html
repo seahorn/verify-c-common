@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -65,31 +65,31 @@
 <span class="lineNum">       3 </span>            : #include &lt;seahorn/seahorn.h&gt;
 <a name="4"><span class="lineNum">       4 </span>            : #include &lt;utils.h&gt;</a>
 <span class="lineNum">       5 </span>            : 
-<span class="lineNum">       6 </span><span class="lineCov">     100000 : int main(void) {</span>
-<span class="lineNum">       7 </span><span class="lineCov">     100000 :   struct aws_hash_table to;</span>
-<span class="lineNum">       8 </span><span class="lineCov">     100000 :   struct aws_hash_table from;</span>
-<span class="lineNum">       9 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      10 </span><span class="lineCov">     100000 : #if defined(__KLEE__) || defined(__FUZZ__)</span>
-<span class="lineNum">      11 </span><span class="lineCov">     100000 :   initialize_bounded_aws_hash_table(&amp;from, MAX_TABLE_SIZE);</span>
+<span class="lineNum">       6 </span><span class="lineCov">     150000 : int main(void) {</span>
+<span class="lineNum">       7 </span><span class="lineCov">     150000 :   struct aws_hash_table to;</span>
+<span class="lineNum">       8 </span><span class="lineCov">     150000 :   struct aws_hash_table from;</span>
+<span class="lineNum">       9 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      10 </span><span class="lineCov">     150000 : #if defined(__KLEE__) || defined(__FUZZ__)</span>
+<span class="lineNum">      11 </span><span class="lineCov">     150000 :   initialize_bounded_aws_hash_table(&amp;from, MAX_TABLE_SIZE);</span>
 <span class="lineNum">      12 </span>            : #else
 <span class="lineNum">      13 </span>            :   // There are no loops in the code under test, so use the biggest possible
 <span class="lineNum">      14 </span>            :   // value
 <span class="lineNum">      15 </span>            :   initialize_bounded_aws_hash_table(&amp;from, SIZE_MAX);
 <span class="lineNum">      16 </span>            : #endif
-<span class="lineNum">      17 </span><span class="lineCov">     100000 :   assume(aws_hash_table_is_valid(&amp;from));</span>
-<span class="lineNum">      18 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      19 </span><span class="lineCov">     100000 :   struct store_byte_from_buffer stored_byte;</span>
-<span class="lineNum">      20 </span><span class="lineCov">     100000 :   save_byte_from_hash_table(&amp;from, &amp;stored_byte);</span>
-<span class="lineNum">      21 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      22 </span><span class="lineCov">     100000 :   aws_hash_table_move(&amp;to, &amp;from);</span>
-<span class="lineNum">      23 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      24 </span><span class="lineCov">     100000 :   // Ensure that the destination table is valid.</span>
-<span class="lineNum">      25 </span><span class="lineCov">     100000 :   sassert(aws_hash_table_is_valid(&amp;to));</span>
-<span class="lineNum">      26 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      27 </span><span class="lineCov">     100000 :   // Ensure that the two tables were byte for byte swapped</span>
-<span class="lineNum">      28 </span><span class="lineCov">     100000 :   assert_hash_table_unchanged(&amp;to, &amp;stored_byte);</span>
-<span class="lineNum">      29 </span><span class="lineCov">     100000 :   return 0;</span>
-<span class="lineNum">      30 </span><span class="lineCov">     100000 : }</span>
+<span class="lineNum">      17 </span><span class="lineCov">     150000 :   assume(aws_hash_table_is_valid(&amp;from));</span>
+<span class="lineNum">      18 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      19 </span><span class="lineCov">     150000 :   struct store_byte_from_buffer stored_byte;</span>
+<span class="lineNum">      20 </span><span class="lineCov">     150000 :   save_byte_from_hash_table(&amp;from, &amp;stored_byte);</span>
+<span class="lineNum">      21 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      22 </span><span class="lineCov">     150000 :   aws_hash_table_move(&amp;to, &amp;from);</span>
+<span class="lineNum">      23 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      24 </span><span class="lineCov">     150000 :   // Ensure that the destination table is valid.</span>
+<span class="lineNum">      25 </span><span class="lineCov">     150000 :   sassert(aws_hash_table_is_valid(&amp;to));</span>
+<span class="lineNum">      26 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      27 </span><span class="lineCov">     150000 :   // Ensure that the two tables were byte for byte swapped</span>
+<span class="lineNum">      28 </span><span class="lineCov">     150000 :   assert_hash_table_unchanged(&amp;to, &amp;stored_byte);</span>
+<span class="lineNum">      29 </span><span class="lineCov">     150000 :   return 0;</span>
+<span class="lineNum">      30 </span><span class="lineCov">     150000 : }</span>
 </pre>
       </td>
     </tr>

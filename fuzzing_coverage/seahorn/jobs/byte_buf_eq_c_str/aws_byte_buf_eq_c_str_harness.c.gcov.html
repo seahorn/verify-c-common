@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -70,41 +70,41 @@
 <span class="lineNum">       8 </span>            : #include &lt;string_helper.h&gt;
 <a name="9"><span class="lineNum">       9 </span>            : #include &lt;utils.h&gt;</a>
 <span class="lineNum">      10 </span>            : 
-<span class="lineNum">      11 </span><span class="lineCov">     100000 : int main() {</span>
-<span class="lineNum">      12 </span><span class="lineCov">     100000 :   /* parameters */</span>
-<span class="lineNum">      13 </span><span class="lineCov">     100000 :   struct aws_byte_buf buf;</span>
-<span class="lineNum">      14 </span><span class="lineCov">     100000 :   initialize_byte_buf(&amp;buf);</span>
-<span class="lineNum">      15 </span><span class="lineCov">     100000 :   size_t str_len;</span>
-<span class="lineNum">      16 </span><span class="lineCov">     100000 :   const char *c_str =</span>
-<span class="lineNum">      17 </span><span class="lineCov">     100000 :       ensure_c_str_is_nd_allocated_safe(MAX_BUFFER_SIZE, &amp;str_len);</span>
-<span class="lineNum">      18 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      19 </span><span class="lineCov">     100000 :   /* assumptions */</span>
-<span class="lineNum">      20 </span><span class="lineCov">     100000 :   assume(aws_byte_buf_is_valid(&amp;buf));</span>
-<span class="lineNum">      21 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      22 </span><span class="lineCov">     100000 :   /* save current state of the parameters */</span>
-<span class="lineNum">      23 </span><span class="lineCov">     100000 :   struct aws_byte_buf old = buf;</span>
-<span class="lineNum">      24 </span><span class="lineCov">     100000 :   struct store_byte_from_buffer old_byte;</span>
-<span class="lineNum">      25 </span><span class="lineCov">     100000 :   save_byte_from_array(buf.buffer, buf.len, &amp;old_byte);</span>
-<span class="lineNum">      26 </span><span class="lineCov">     100000 :   struct store_byte_from_buffer old_byte_from_str;</span>
-<span class="lineNum">      27 </span><span class="lineCov">     100000 :   save_byte_from_array((uint8_t *)c_str, str_len, &amp;old_byte_from_str);</span>
-<span class="lineNum">      28 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      29 </span><span class="lineCov">     100000 :   /* operation under verification */</span>
-<span class="lineNum">      30 </span><span class="lineCov">     100000 :     if (aws_byte_buf_eq_c_str(&amp;buf, c_str)) {</span>
-<span class="lineNum">      31 </span><span class="lineCov">      11178 :         sassert(buf.len == str_len);</span>
-<span class="lineNum">      32 </span><span class="lineCov">      11178 :         if (buf.len &gt; 0) {</span>
-<span class="lineNum">      33 </span><span class="lineCov">       5398 :             assert_bytes_match(buf.buffer, (uint8_t *)c_str, buf.len);</span>
-<span class="lineNum">      34 </span><span class="lineCov">       5398 :         }</span>
-<span class="lineNum">      35 </span><span class="lineCov">      11178 :     }</span>
-<span class="lineNum">      36 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      37 </span><span class="lineCov">     100000 :     /* asserts both parameters remain unchanged */</span>
-<span class="lineNum">      38 </span><span class="lineCov">     100000 :     sassert(aws_byte_buf_is_valid(&amp;buf));</span>
-<span class="lineNum">      39 </span><span class="lineCov">     100000 :     assert_byte_buf_equivalence(&amp;buf, &amp;old, &amp;old_byte);</span>
-<span class="lineNum">      40 </span><span class="lineCov">     100000 :     if (str_len &gt; 0) {</span>
-<span class="lineNum">      41 </span><span class="lineCov">       8101 :         assert_byte_from_buffer_matches((uint8_t *)c_str, &amp;old_byte_from_str);</span>
-<span class="lineNum">      42 </span><span class="lineCov">       8101 :     }</span>
-<span class="lineNum">      43 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      44 </span><span class="lineCov">     100000 :     return 0;</span>
-<span class="lineNum">      45 </span><span class="lineCov">     100000 : }</span>
+<span class="lineNum">      11 </span><span class="lineCov">     150000 : int main() {</span>
+<span class="lineNum">      12 </span><span class="lineCov">     150000 :   /* parameters */</span>
+<span class="lineNum">      13 </span><span class="lineCov">     150000 :   struct aws_byte_buf buf;</span>
+<span class="lineNum">      14 </span><span class="lineCov">     150000 :   initialize_byte_buf(&amp;buf);</span>
+<span class="lineNum">      15 </span><span class="lineCov">     150000 :   size_t str_len;</span>
+<span class="lineNum">      16 </span><span class="lineCov">     150000 :   const char *c_str =</span>
+<span class="lineNum">      17 </span><span class="lineCov">     150000 :       ensure_c_str_is_nd_allocated_safe(MAX_BUFFER_SIZE, &amp;str_len);</span>
+<span class="lineNum">      18 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      19 </span><span class="lineCov">     150000 :   /* assumptions */</span>
+<span class="lineNum">      20 </span><span class="lineCov">     150000 :   assume(aws_byte_buf_is_valid(&amp;buf));</span>
+<span class="lineNum">      21 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      22 </span><span class="lineCov">     150000 :   /* save current state of the parameters */</span>
+<span class="lineNum">      23 </span><span class="lineCov">     150000 :   struct aws_byte_buf old = buf;</span>
+<span class="lineNum">      24 </span><span class="lineCov">     150000 :   struct store_byte_from_buffer old_byte;</span>
+<span class="lineNum">      25 </span><span class="lineCov">     150000 :   save_byte_from_array(buf.buffer, buf.len, &amp;old_byte);</span>
+<span class="lineNum">      26 </span><span class="lineCov">     150000 :   struct store_byte_from_buffer old_byte_from_str;</span>
+<span class="lineNum">      27 </span><span class="lineCov">     150000 :   save_byte_from_array((uint8_t *)c_str, str_len, &amp;old_byte_from_str);</span>
+<span class="lineNum">      28 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      29 </span><span class="lineCov">     150000 :   /* operation under verification */</span>
+<span class="lineNum">      30 </span><span class="lineCov">     150000 :     if (aws_byte_buf_eq_c_str(&amp;buf, c_str)) {</span>
+<span class="lineNum">      31 </span><span class="lineCov">      15473 :         sassert(buf.len == str_len);</span>
+<span class="lineNum">      32 </span><span class="lineCov">      15473 :         if (buf.len &gt; 0) {</span>
+<span class="lineNum">      33 </span><span class="lineCov">       8101 :             assert_bytes_match(buf.buffer, (uint8_t *)c_str, buf.len);</span>
+<span class="lineNum">      34 </span><span class="lineCov">       8101 :         }</span>
+<span class="lineNum">      35 </span><span class="lineCov">      15473 :     }</span>
+<span class="lineNum">      36 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      37 </span><span class="lineCov">     150000 :     /* asserts both parameters remain unchanged */</span>
+<span class="lineNum">      38 </span><span class="lineCov">     150000 :     sassert(aws_byte_buf_is_valid(&amp;buf));</span>
+<span class="lineNum">      39 </span><span class="lineCov">     150000 :     assert_byte_buf_equivalence(&amp;buf, &amp;old, &amp;old_byte);</span>
+<span class="lineNum">      40 </span><span class="lineCov">     150000 :     if (str_len &gt; 0) {</span>
+<span class="lineNum">      41 </span><span class="lineCov">      12143 :         assert_byte_from_buffer_matches((uint8_t *)c_str, &amp;old_byte_from_str);</span>
+<span class="lineNum">      42 </span><span class="lineCov">      12143 :     }</span>
+<span class="lineNum">      43 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      44 </span><span class="lineCov">     150000 :     return 0;</span>
+<span class="lineNum">      45 </span><span class="lineCov">     150000 : }</span>
 </pre>
       </td>
     </tr>

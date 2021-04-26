@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -69,48 +69,48 @@
 <span class="lineNum">       7 </span>            : #include &lt;byte_buf_helper.h&gt;
 <a name="8"><span class="lineNum">       8 </span>            : #include &lt;utils.h&gt;</a>
 <span class="lineNum">       9 </span>            : 
-<span class="lineNum">      10 </span><span class="lineCov">     100000 : int main() {</span>
-<span class="lineNum">      11 </span><span class="lineCov">     100000 :     struct aws_byte_buf to;</span>
-<span class="lineNum">      12 </span><span class="lineCov">     100000 :     initialize_byte_buf(&amp;to);</span>
-<span class="lineNum">      13 </span><span class="lineCov">     100000 :     assume(aws_byte_buf_is_bounded(&amp;to, MAX_BUFFER_SIZE));</span>
-<span class="lineNum">      14 </span><span class="lineCov">     100000 :     assume(aws_byte_buf_is_valid(&amp;to));</span>
-<span class="lineNum">      15 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      16 </span><span class="lineCov">     100000 :     /* save current state of the data structure */</span>
-<span class="lineNum">      17 </span><span class="lineCov">     100000 :     struct aws_byte_buf to_old = to;</span>
-<span class="lineNum">      18 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      19 </span><span class="lineCov">     100000 :     struct aws_byte_cursor from;</span>
-<span class="lineNum">      20 </span><span class="lineCov">     100000 :     initialize_byte_cursor(&amp;from);</span>
-<span class="lineNum">      21 </span><span class="lineCov">     100000 :     assume(aws_byte_cursor_is_bounded(&amp;from, MAX_BUFFER_SIZE));</span>
-<span class="lineNum">      22 </span><span class="lineCov">     100000 :     assume(aws_byte_cursor_is_valid(&amp;from));</span>
-<span class="lineNum">      23 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      24 </span><span class="lineCov">     100000 :     /* save current state of the data structure */</span>
-<span class="lineNum">      25 </span><span class="lineCov">     100000 :     struct aws_byte_cursor from_old = from;</span>
-<span class="lineNum">      26 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      27 </span><span class="lineCov">     100000 :     /**</span>
-<span class="lineNum">      28 </span><span class="lineCov">     100000 :      * The specification for the function requires that the buffer</span>
-<span class="lineNum">      29 </span><span class="lineCov">     100000 :      * be at least 256 bytes.</span>
-<span class="lineNum">      30 </span><span class="lineCov">     100000 :      */</span>
-<span class="lineNum">      31 </span><span class="lineCov">     100000 :     uint8_t lookup_table[256];</span>
-<span class="lineNum">      32 </span><span class="lineCov">     100000 :     // This initializes the LUT non-deterministically</span>
-<span class="lineNum">      33 </span><span class="lineCov">     100000 :     memhavoc(lookup_table, sizeof(lookup_table));</span>
-<span class="lineNum">      34 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      35 </span><span class="lineCov">     100000 :     if (aws_byte_buf_append_with_lookup(&amp;to, &amp;from, lookup_table) == AWS_OP_SUCCESS) {</span>
-<span class="lineNum">      36 </span><span class="lineCov">      29997 :         sassert(to.len == to_old.len + from.len);</span>
-<span class="lineNum">      37 </span><span class="lineCov">      70003 :     } else {</span>
-<span class="lineNum">      38 </span><span class="lineCov">      70003 :         /* if the operation return an error, to must not change */</span>
-<span class="lineNum">      39 </span><span class="lineCov">      70003 :         assert_bytes_match(to_old.buffer, to.buffer, to.len);</span>
-<span class="lineNum">      40 </span><span class="lineCov">      70003 :         sassert(to_old.len == to.len);</span>
-<span class="lineNum">      41 </span><span class="lineCov">      70003 :     }</span>
-<span class="lineNum">      42 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      43 </span><span class="lineCov">     100000 :     sassert(aws_byte_buf_is_valid(&amp;to));</span>
-<span class="lineNum">      44 </span><span class="lineCov">     100000 :     sassert(aws_byte_cursor_is_valid(&amp;from));</span>
-<span class="lineNum">      45 </span><span class="lineCov">     100000 :     sassert(to_old.allocator == to.allocator);</span>
-<span class="lineNum">      46 </span><span class="lineCov">     100000 :     sassert(to_old.capacity == to.capacity);</span>
-<span class="lineNum">      47 </span><span class="lineCov">     100000 :     assert_bytes_match(from_old.ptr, from.ptr, from.len);</span>
-<span class="lineNum">      48 </span><span class="lineCov">     100000 :     sassert(from_old.len == from.len);</span>
-<span class="lineNum">      49 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      50 </span><span class="lineCov">     100000 :     return 0;</span>
-<span class="lineNum">      51 </span><span class="lineCov">     100000 : }</span>
+<span class="lineNum">      10 </span><span class="lineCov">     150000 : int main() {</span>
+<span class="lineNum">      11 </span><span class="lineCov">     150000 :     struct aws_byte_buf to;</span>
+<span class="lineNum">      12 </span><span class="lineCov">     150000 :     initialize_byte_buf(&amp;to);</span>
+<span class="lineNum">      13 </span><span class="lineCov">     150000 :     assume(aws_byte_buf_is_bounded(&amp;to, MAX_BUFFER_SIZE));</span>
+<span class="lineNum">      14 </span><span class="lineCov">     150000 :     assume(aws_byte_buf_is_valid(&amp;to));</span>
+<span class="lineNum">      15 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      16 </span><span class="lineCov">     150000 :     /* save current state of the data structure */</span>
+<span class="lineNum">      17 </span><span class="lineCov">     150000 :     struct aws_byte_buf to_old = to;</span>
+<span class="lineNum">      18 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      19 </span><span class="lineCov">     150000 :     struct aws_byte_cursor from;</span>
+<span class="lineNum">      20 </span><span class="lineCov">     150000 :     initialize_byte_cursor(&amp;from);</span>
+<span class="lineNum">      21 </span><span class="lineCov">     150000 :     assume(aws_byte_cursor_is_bounded(&amp;from, MAX_BUFFER_SIZE));</span>
+<span class="lineNum">      22 </span><span class="lineCov">     150000 :     assume(aws_byte_cursor_is_valid(&amp;from));</span>
+<span class="lineNum">      23 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      24 </span><span class="lineCov">     150000 :     /* save current state of the data structure */</span>
+<span class="lineNum">      25 </span><span class="lineCov">     150000 :     struct aws_byte_cursor from_old = from;</span>
+<span class="lineNum">      26 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      27 </span><span class="lineCov">     150000 :     /**</span>
+<span class="lineNum">      28 </span><span class="lineCov">     150000 :      * The specification for the function requires that the buffer</span>
+<span class="lineNum">      29 </span><span class="lineCov">     150000 :      * be at least 256 bytes.</span>
+<span class="lineNum">      30 </span><span class="lineCov">     150000 :      */</span>
+<span class="lineNum">      31 </span><span class="lineCov">     150000 :     uint8_t lookup_table[256];</span>
+<span class="lineNum">      32 </span><span class="lineCov">     150000 :     // This initializes the LUT non-deterministically</span>
+<span class="lineNum">      33 </span><span class="lineCov">     150000 :     memhavoc(lookup_table, sizeof(lookup_table));</span>
+<span class="lineNum">      34 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      35 </span><span class="lineCov">     150000 :     if (aws_byte_buf_append_with_lookup(&amp;to, &amp;from, lookup_table) == AWS_OP_SUCCESS) {</span>
+<span class="lineNum">      36 </span><span class="lineCov">      46821 :         sassert(to.len == to_old.len + from.len);</span>
+<span class="lineNum">      37 </span><span class="lineCov">     103179 :     } else {</span>
+<span class="lineNum">      38 </span><span class="lineCov">     103179 :         /* if the operation return an error, to must not change */</span>
+<span class="lineNum">      39 </span><span class="lineCov">     103179 :         assert_bytes_match(to_old.buffer, to.buffer, to.len);</span>
+<span class="lineNum">      40 </span><span class="lineCov">     103179 :         sassert(to_old.len == to.len);</span>
+<span class="lineNum">      41 </span><span class="lineCov">     103179 :     }</span>
+<span class="lineNum">      42 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      43 </span><span class="lineCov">     150000 :     sassert(aws_byte_buf_is_valid(&amp;to));</span>
+<span class="lineNum">      44 </span><span class="lineCov">     150000 :     sassert(aws_byte_cursor_is_valid(&amp;from));</span>
+<span class="lineNum">      45 </span><span class="lineCov">     150000 :     sassert(to_old.allocator == to.allocator);</span>
+<span class="lineNum">      46 </span><span class="lineCov">     150000 :     sassert(to_old.capacity == to.capacity);</span>
+<span class="lineNum">      47 </span><span class="lineCov">     150000 :     assert_bytes_match(from_old.ptr, from.ptr, from.len);</span>
+<span class="lineNum">      48 </span><span class="lineCov">     150000 :     sassert(from_old.len == from.len);</span>
+<span class="lineNum">      49 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      50 </span><span class="lineCov">     150000 :     return 0;</span>
+<span class="lineNum">      51 </span><span class="lineCov">     150000 : }</span>
 </pre>
       </td>
     </tr>

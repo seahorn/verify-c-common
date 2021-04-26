@@ -37,12 +37,12 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">2</td>
-            <td class="headerCovTableEntry">155</td>
-            <td class="headerCovTableEntryLo">1.3 %</td>
+            <td class="headerCovTableEntry">178</td>
+            <td class="headerCovTableEntryLo">1.1 %</td>
           </tr>
           <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -78,33 +78,33 @@
 <span class="lineNum">      16 </span>            :  * Returns whether each byte is zero.
 <a name="17"><span class="lineNum">      17 </span>            :  */</a>
 <span class="lineNum">      18 </span>            : AWS_STATIC_IMPL
-<span class="lineNum">      19 </span><span class="lineCov">     254752 : bool aws_is_mem_zeroed(const void *buf, size_t bufsize) {</span>
-<span class="lineNum">      20 </span><span class="lineCov">     254752 :     /* Optimization idea: vectorized instructions to check more than 64 bits at a time. */</span>
-<span class="lineNum">      21 </span><span class="lineCov">     254752 : </span>
-<span class="lineNum">      22 </span><span class="lineCov">     254752 :     /* Check 64 bits at a time */</span>
-<span class="lineNum">      23 </span><span class="lineCov">     254752 :     const uint64_t *buf_u64 = (const uint64_t *)buf;</span>
-<span class="lineNum">      24 </span><span class="lineCov">     254752 :     const size_t num_u64_checks = bufsize / 8;</span>
-<span class="lineNum">      25 </span><span class="lineCov">     254752 :     size_t i;</span>
-<span class="lineNum">      26 </span><span class="lineCov">     799917 :     for (i = 0; i &lt; num_u64_checks; ++i) {</span>
-<span class="lineNum">      27 </span><span class="lineCov">     690884 :         if (buf_u64[i]) {</span>
-<span class="lineNum">      28 </span><span class="lineCov">     145719 :             return false;</span>
-<span class="lineNum">      29 </span><span class="lineCov">     145719 :         }</span>
-<span class="lineNum">      30 </span><span class="lineCov">     690884 :     }</span>
-<span class="lineNum">      31 </span><span class="lineCov">     254752 : </span>
-<span class="lineNum">      32 </span><span class="lineCov">     254752 :     /* Update buf to where u64 checks left off */</span>
-<span class="lineNum">      33 </span><span class="lineCov">     254752 :     buf = buf_u64 + num_u64_checks;</span>
-<span class="lineNum">      34 </span><span class="lineCov">     109033 :     bufsize = bufsize % 8;</span>
-<span class="lineNum">      35 </span><span class="lineCov">     109033 : </span>
-<span class="lineNum">      36 </span><span class="lineCov">     109033 :     /* Check 8 bits at a time */</span>
-<span class="lineNum">      37 </span><span class="lineCov">     109033 :     const uint8_t *buf_u8 = (const uint8_t *)buf;</span>
-<span class="lineNum">      38 </span><span class="lineCov">     109033 :     for (i = 0; i &lt; bufsize; ++i) {</span>
+<span class="lineNum">      19 </span><span class="lineCov">     381271 : bool aws_is_mem_zeroed(const void *buf, size_t bufsize) {</span>
+<span class="lineNum">      20 </span><span class="lineCov">     381271 :     /* Optimization idea: vectorized instructions to check more than 64 bits at a time. */</span>
+<span class="lineNum">      21 </span><span class="lineCov">     381271 : </span>
+<span class="lineNum">      22 </span><span class="lineCov">     381271 :     /* Check 64 bits at a time */</span>
+<span class="lineNum">      23 </span><span class="lineCov">     381271 :     const uint64_t *buf_u64 = (const uint64_t *)buf;</span>
+<span class="lineNum">      24 </span><span class="lineCov">     381271 :     const size_t num_u64_checks = bufsize / 8;</span>
+<span class="lineNum">      25 </span><span class="lineCov">     381271 :     size_t i;</span>
+<span class="lineNum">      26 </span><span class="lineCov">    1202126 :     for (i = 0; i &lt; num_u64_checks; ++i) {</span>
+<span class="lineNum">      27 </span><span class="lineCov">    1037955 :         if (buf_u64[i]) {</span>
+<span class="lineNum">      28 </span><span class="lineCov">     217100 :             return false;</span>
+<span class="lineNum">      29 </span><span class="lineCov">     217100 :         }</span>
+<span class="lineNum">      30 </span><span class="lineCov">    1037955 :     }</span>
+<span class="lineNum">      31 </span><span class="lineCov">     381271 : </span>
+<span class="lineNum">      32 </span><span class="lineCov">     381271 :     /* Update buf to where u64 checks left off */</span>
+<span class="lineNum">      33 </span><span class="lineCov">     381271 :     buf = buf_u64 + num_u64_checks;</span>
+<span class="lineNum">      34 </span><span class="lineCov">     164171 :     bufsize = bufsize % 8;</span>
+<span class="lineNum">      35 </span><span class="lineCov">     164171 : </span>
+<span class="lineNum">      36 </span><span class="lineCov">     164171 :     /* Check 8 bits at a time */</span>
+<span class="lineNum">      37 </span><span class="lineCov">     164171 :     const uint8_t *buf_u8 = (const uint8_t *)buf;</span>
+<span class="lineNum">      38 </span><span class="lineCov">     164171 :     for (i = 0; i &lt; bufsize; ++i) {</span>
 <span class="lineNum">      39 </span><span class="lineNoCov">          0 :         if (buf_u8[i]) {</span>
 <span class="lineNum">      40 </span><span class="lineNoCov">          0 :             return false;</span>
 <span class="lineNum">      41 </span><span class="lineNoCov">          0 :         }</span>
 <span class="lineNum">      42 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">      43 </span><span class="lineCov">     109033 : </span>
-<span class="lineNum">      44 </span><span class="lineCov">     109033 :     return true;</span>
-<span class="lineNum">      45 </span><span class="lineCov">     109033 : }</span>
+<span class="lineNum">      43 </span><span class="lineCov">     164171 : </span>
+<span class="lineNum">      44 </span><span class="lineCov">     164171 :     return true;</span>
+<span class="lineNum">      45 </span><span class="lineCov">     164171 : }</span>
 <span class="lineNum">      46 </span>            : 
 <span class="lineNum">      47 </span>            : AWS_EXTERN_C_END
 <span class="lineNum">      48 </span>            : 

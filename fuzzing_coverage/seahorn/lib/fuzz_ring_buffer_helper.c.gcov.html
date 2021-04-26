@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -68,22 +68,22 @@
 <span class="lineNum">       6 </span>            : #include &lt;aws/common/byte_buf.h&gt;
 <a name="7"><span class="lineNum">       7 </span>            : </a>
 <span class="lineNum">       8 </span>            : void initialize_ring_buffer(struct aws_ring_buffer *ring_buf,
-<span class="lineNum">       9 </span><span class="lineCov">      98813 :                             const size_t size) {</span>
-<span class="lineNum">      10 </span><span class="lineCov">      98813 :   ring_buf-&gt;allocator = sea_allocator();</span>
-<span class="lineNum">      11 </span><span class="lineCov">      98813 :   /* The `aws_ring_buffer_init` function requires size &gt; 0. */</span>
-<span class="lineNum">      12 </span><span class="lineCov">      98813 :   assume(0 &lt; size);</span>
-<span class="lineNum">      13 </span><span class="lineCov">      98813 :   // assume(size &lt;= MAX_BUFFER_SIZE);</span>
-<span class="lineNum">      14 </span><span class="lineCov">      98813 :   size_t alloc_sz = size % MAX_BUFFER_SIZE;</span>
-<span class="lineNum">      15 </span><span class="lineCov">      98813 : </span>
-<span class="lineNum">      16 </span><span class="lineCov">      98813 :   ring_buf-&gt;allocation = bounded_malloc(alloc_sz);</span>
-<span class="lineNum">      17 </span><span class="lineCov">      98813 :   size_t position_head = nd_size_t();</span>
-<span class="lineNum">      18 </span><span class="lineCov">      98813 :   size_t position_tail = nd_size_t();</span>
-<span class="lineNum">      19 </span><span class="lineCov">      98813 :   assume(position_head &lt; alloc_sz);</span>
-<span class="lineNum">      20 </span><span class="lineCov">      98813 :   assume(position_tail &lt; alloc_sz);</span>
-<span class="lineNum">      21 </span><span class="lineCov">      98813 :   aws_atomic_store_ptr(&amp;ring_buf-&gt;head, (ring_buf-&gt;allocation + position_head));</span>
-<span class="lineNum">      22 </span><span class="lineCov">      98813 :   aws_atomic_store_ptr(&amp;ring_buf-&gt;tail, (ring_buf-&gt;allocation + position_tail));</span>
-<span class="lineNum">      23 </span><span class="lineCov">      98813 :   ring_buf-&gt;allocation_end = ring_buf-&gt;allocation + alloc_sz;</span>
-<span class="lineNum">      24 </span><span class="lineCov">      98813 : }</span>
+<span class="lineNum">       9 </span><span class="lineCov">     148254 :                             const size_t size) {</span>
+<span class="lineNum">      10 </span><span class="lineCov">     148254 :   ring_buf-&gt;allocator = sea_allocator();</span>
+<span class="lineNum">      11 </span><span class="lineCov">     148254 :   /* The `aws_ring_buffer_init` function requires size &gt; 0. */</span>
+<span class="lineNum">      12 </span><span class="lineCov">     148254 :   assume(0 &lt; size);</span>
+<span class="lineNum">      13 </span><span class="lineCov">     148254 :   // assume(size &lt;= MAX_BUFFER_SIZE);</span>
+<span class="lineNum">      14 </span><span class="lineCov">     148254 :   size_t alloc_sz = size % MAX_BUFFER_SIZE;</span>
+<span class="lineNum">      15 </span><span class="lineCov">     148254 : </span>
+<span class="lineNum">      16 </span><span class="lineCov">     148254 :   ring_buf-&gt;allocation = bounded_malloc(alloc_sz);</span>
+<span class="lineNum">      17 </span><span class="lineCov">     148254 :   size_t position_head = nd_size_t();</span>
+<span class="lineNum">      18 </span><span class="lineCov">     148254 :   size_t position_tail = nd_size_t();</span>
+<span class="lineNum">      19 </span><span class="lineCov">     148254 :   assume(position_head &lt; alloc_sz);</span>
+<span class="lineNum">      20 </span><span class="lineCov">     148254 :   assume(position_tail &lt; alloc_sz);</span>
+<span class="lineNum">      21 </span><span class="lineCov">     148254 :   aws_atomic_store_ptr(&amp;ring_buf-&gt;head, (ring_buf-&gt;allocation + position_head));</span>
+<span class="lineNum">      22 </span><span class="lineCov">     148254 :   aws_atomic_store_ptr(&amp;ring_buf-&gt;tail, (ring_buf-&gt;allocation + position_tail));</span>
+<span class="lineNum">      23 </span><span class="lineCov">     148254 :   ring_buf-&gt;allocation_end = ring_buf-&gt;allocation + alloc_sz;</span>
+<span class="lineNum">      24 </span><span class="lineCov">     148254 : }</span>
 <a name="25"><span class="lineNum">      25 </span>            : </a>
 <span class="lineNum">      26 </span>            : void ensure_byte_buf_has_allocated_buffer_member_in_ring_buf(
 <span class="lineNum">      27 </span><span class="lineNoCov">          0 :     struct aws_byte_buf *buf, struct aws_ring_buffer *ring_buf) {</span>

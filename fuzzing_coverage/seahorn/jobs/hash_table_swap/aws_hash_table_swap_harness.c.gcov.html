@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -65,43 +65,43 @@
 <span class="lineNum">       3 </span>            : #include &lt;seahorn/seahorn.h&gt;
 <a name="4"><span class="lineNum">       4 </span>            : #include &lt;utils.h&gt;</a>
 <span class="lineNum">       5 </span>            : 
-<span class="lineNum">       6 </span><span class="lineCov">     100000 : int main(void) {</span>
-<span class="lineNum">       7 </span><span class="lineCov">     100000 :   struct aws_hash_table a;</span>
-<span class="lineNum">       8 </span><span class="lineCov">     100000 :   struct aws_hash_table b;</span>
-<span class="lineNum">       9 </span><span class="lineCov">     100000 :   struct store_byte_from_buffer stored_byte_a;</span>
-<span class="lineNum">      10 </span><span class="lineCov">     100000 :   struct store_byte_from_buffer stored_byte_b;</span>
-<span class="lineNum">      11 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      12 </span><span class="lineCov">     100000 :   /* There are no loops in the code under test, so use the biggest possible</span>
-<span class="lineNum">      13 </span><span class="lineCov">     100000 :    * value */</span>
-<span class="lineNum">      14 </span><span class="lineCov">     100000 :   /* Seahorn: initializing both lhs and rhs since init is non det anyways */</span>
-<span class="lineNum">      15 </span><span class="lineCov">     100000 : #if defined(__KLEE__) || defined(__FUZZ__)</span>
-<span class="lineNum">      16 </span><span class="lineCov">     100000 :   initialize_bounded_aws_hash_table(&amp;a, MAX_TABLE_SIZE);</span>
+<span class="lineNum">       6 </span><span class="lineCov">     150000 : int main(void) {</span>
+<span class="lineNum">       7 </span><span class="lineCov">     150000 :   struct aws_hash_table a;</span>
+<span class="lineNum">       8 </span><span class="lineCov">     150000 :   struct aws_hash_table b;</span>
+<span class="lineNum">       9 </span><span class="lineCov">     150000 :   struct store_byte_from_buffer stored_byte_a;</span>
+<span class="lineNum">      10 </span><span class="lineCov">     150000 :   struct store_byte_from_buffer stored_byte_b;</span>
+<span class="lineNum">      11 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      12 </span><span class="lineCov">     150000 :   /* There are no loops in the code under test, so use the biggest possible</span>
+<span class="lineNum">      13 </span><span class="lineCov">     150000 :    * value */</span>
+<span class="lineNum">      14 </span><span class="lineCov">     150000 :   /* Seahorn: initializing both lhs and rhs since init is non det anyways */</span>
+<span class="lineNum">      15 </span><span class="lineCov">     150000 : #if defined(__KLEE__) || defined(__FUZZ__)</span>
+<span class="lineNum">      16 </span><span class="lineCov">     150000 :   initialize_bounded_aws_hash_table(&amp;a, MAX_TABLE_SIZE);</span>
 <span class="lineNum">      17 </span>            : #else
 <span class="lineNum">      18 </span>            :   // There are no loops in the code under test, so use the biggest possible
 <span class="lineNum">      19 </span>            :   // value
 <span class="lineNum">      20 </span>            :   initialize_bounded_aws_hash_table(&amp;a, SIZE_MAX);
 <span class="lineNum">      21 </span>            : #endif
-<span class="lineNum">      22 </span><span class="lineCov">     100000 :   assume(aws_hash_table_is_valid(&amp;a));</span>
-<span class="lineNum">      23 </span><span class="lineCov">     100000 :   save_byte_from_hash_table(&amp;a, &amp;stored_byte_a);</span>
-<span class="lineNum">      24 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      25 </span><span class="lineCov">     100000 : #if defined(__KLEE__) || defined(__FUZZ__)</span>
-<span class="lineNum">      26 </span><span class="lineCov">     100000 :   initialize_bounded_aws_hash_table(&amp;b, MAX_TABLE_SIZE);</span>
+<span class="lineNum">      22 </span><span class="lineCov">     150000 :   assume(aws_hash_table_is_valid(&amp;a));</span>
+<span class="lineNum">      23 </span><span class="lineCov">     150000 :   save_byte_from_hash_table(&amp;a, &amp;stored_byte_a);</span>
+<span class="lineNum">      24 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      25 </span><span class="lineCov">     150000 : #if defined(__KLEE__) || defined(__FUZZ__)</span>
+<span class="lineNum">      26 </span><span class="lineCov">     150000 :   initialize_bounded_aws_hash_table(&amp;b, MAX_TABLE_SIZE);</span>
 <span class="lineNum">      27 </span>            : #else
 <span class="lineNum">      28 </span>            :   // There are no loops in the code under test, so use the biggest possible
 <span class="lineNum">      29 </span>            :   // value
 <span class="lineNum">      30 </span>            :   initialize_bounded_aws_hash_table(&amp;b, SIZE_MAX);
 <span class="lineNum">      31 </span>            : #endif
-<span class="lineNum">      32 </span><span class="lineCov">     100000 :   assume(aws_hash_table_is_valid(&amp;b));</span>
-<span class="lineNum">      33 </span><span class="lineCov">     100000 :   save_byte_from_hash_table(&amp;b, &amp;stored_byte_b);</span>
-<span class="lineNum">      34 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      35 </span><span class="lineCov">     100000 :   aws_hash_table_swap(&amp;a, &amp;b);</span>
-<span class="lineNum">      36 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      37 </span><span class="lineCov">     100000 :   sassert(aws_hash_table_is_valid(&amp;b));</span>
-<span class="lineNum">      38 </span><span class="lineCov">     100000 :   assert_hash_table_unchanged(&amp;b, &amp;stored_byte_a);</span>
-<span class="lineNum">      39 </span><span class="lineCov">     100000 :   sassert(aws_hash_table_is_valid(&amp;a));</span>
-<span class="lineNum">      40 </span><span class="lineCov">     100000 :   assert_hash_table_unchanged(&amp;a, &amp;stored_byte_b);</span>
-<span class="lineNum">      41 </span><span class="lineCov">     100000 :   return 0;</span>
-<span class="lineNum">      42 </span><span class="lineCov">     100000 : }</span>
+<span class="lineNum">      32 </span><span class="lineCov">     150000 :   assume(aws_hash_table_is_valid(&amp;b));</span>
+<span class="lineNum">      33 </span><span class="lineCov">     150000 :   save_byte_from_hash_table(&amp;b, &amp;stored_byte_b);</span>
+<span class="lineNum">      34 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      35 </span><span class="lineCov">     150000 :   aws_hash_table_swap(&amp;a, &amp;b);</span>
+<span class="lineNum">      36 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      37 </span><span class="lineCov">     150000 :   sassert(aws_hash_table_is_valid(&amp;b));</span>
+<span class="lineNum">      38 </span><span class="lineCov">     150000 :   assert_hash_table_unchanged(&amp;b, &amp;stored_byte_a);</span>
+<span class="lineNum">      39 </span><span class="lineCov">     150000 :   sassert(aws_hash_table_is_valid(&amp;a));</span>
+<span class="lineNum">      40 </span><span class="lineCov">     150000 :   assert_hash_table_unchanged(&amp;a, &amp;stored_byte_b);</span>
+<span class="lineNum">      41 </span><span class="lineCov">     150000 :   return 0;</span>
+<span class="lineNum">      42 </span><span class="lineCov">     150000 : }</span>
 </pre>
       </td>
     </tr>

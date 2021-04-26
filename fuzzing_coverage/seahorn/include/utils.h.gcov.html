@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -80,7 +80,7 @@
 <span class="lineNum">      18 </span>            : #ifdef __KLEE__ // define macros for KLEE_ASSUME, the assumption for KLEE only
 <span class="lineNum">      19 </span>            : #define KLEE_ASSUME(X) klee_assume(X)
 <span class="lineNum">      20 </span>            : #elif __FUZZ__
-<span class="lineNum">      21 </span><span class="lineCov">    1526384 : #define KLEE_ASSUME(X) assume(X)</span>
+<span class="lineNum">      21 </span><span class="lineCov">    2290170 : #define KLEE_ASSUME(X) assume(X)</span>
 <span class="lineNum">      22 </span>            : #else
 <span class="lineNum">      23 </span>            : #define KLEE_ASSUME(X)
 <span class="lineNum">      24 </span>            : #endif
@@ -92,7 +92,7 @@
 <span class="lineNum">      30 </span>            : #endif
 <span class="lineNum">      31 </span>            : 
 <span class="lineNum">      32 </span>            : #ifdef __FUZZ__ // set upper bound of X to Y during fuzzing
-<span class="lineNum">      33 </span><span class="lineCov">     100000 : #define FUZZ_ASSUME_LT(X, Y) X %= Y</span>
+<span class="lineNum">      33 </span><span class="lineCov">     150000 : #define FUZZ_ASSUME_LT(X, Y) X %= Y</span>
 <span class="lineNum">      34 </span>            : #else
 <span class="lineNum">      35 </span>            : #define FUZZ_ASSUME_LT(X, Y)
 <span class="lineNum">      36 </span>            : #endif

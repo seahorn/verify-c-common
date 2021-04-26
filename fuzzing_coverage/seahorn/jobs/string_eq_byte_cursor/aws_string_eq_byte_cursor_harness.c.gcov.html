@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -71,29 +71,29 @@
 <span class="lineNum">       9 </span>            : #include &lt;utils.h&gt;
 <a name="10"><span class="lineNum">      10 </span>            : #include &lt;stddef.h&gt;</a>
 <span class="lineNum">      11 </span>            : 
-<span class="lineNum">      12 </span><span class="lineCov">     100000 : int main() {</span>
-<span class="lineNum">      13 </span><span class="lineCov">     100000 :     struct aws_string *str = nd_bool() ?</span>
-<span class="lineNum">      14 </span><span class="lineCov">      92524 :             ensure_string_is_allocated_bounded_length(MAX_STRING_LEN) :</span>
-<span class="lineNum">      15 </span><span class="lineCov">     100000 :             NULL;</span>
-<span class="lineNum">      16 </span><span class="lineCov">     100000 :     struct aws_byte_cursor cursor;</span>
-<span class="lineNum">      17 </span><span class="lineCov">     100000 :     initialize_byte_cursor(&amp;cursor);</span>
-<span class="lineNum">      18 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      19 </span><span class="lineCov">     100000 :     assume(aws_byte_cursor_is_valid(&amp;cursor));</span>
-<span class="lineNum">      20 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      21 </span><span class="lineCov">     100000 :     bool nondet_parameter = nd_bool();</span>
-<span class="lineNum">      22 </span><span class="lineCov">     100000 :     if (aws_string_eq_byte_cursor(str, nondet_parameter ? &amp;cursor : NULL) &amp;&amp; str) {</span>
-<span class="lineNum">      23 </span><span class="lineCov">      12631 :         sassert(aws_string_is_valid(str));</span>
-<span class="lineNum">      24 </span><span class="lineCov">      12631 :         if (nondet_parameter) {</span>
-<span class="lineNum">      25 </span><span class="lineCov">      12631 :             sassert(str-&gt;len == cursor.len);</span>
-<span class="lineNum">      26 </span><span class="lineCov">      12631 :             if (str-&gt;len &gt; 0) {</span>
-<span class="lineNum">      27 </span><span class="lineCov">      12000 :                 assert_bytes_match(str-&gt;bytes, cursor.ptr, str-&gt;len);</span>
-<span class="lineNum">      28 </span><span class="lineCov">      12000 :             }</span>
-<span class="lineNum">      29 </span><span class="lineCov">      12631 :         }</span>
-<span class="lineNum">      30 </span><span class="lineCov">      12631 :     }</span>
-<span class="lineNum">      31 </span><span class="lineCov">     100000 :     sassert(aws_byte_cursor_is_valid(&amp;cursor));</span>
-<span class="lineNum">      32 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      33 </span><span class="lineCov">     100000 :     return 0;</span>
-<span class="lineNum">      34 </span><span class="lineCov">     100000 : }</span>
+<span class="lineNum">      12 </span><span class="lineCov">     150000 : int main() {</span>
+<span class="lineNum">      13 </span><span class="lineCov">     150000 :     struct aws_string *str = nd_bool() ?</span>
+<span class="lineNum">      14 </span><span class="lineCov">     139288 :             ensure_string_is_allocated_bounded_length(MAX_STRING_LEN) :</span>
+<span class="lineNum">      15 </span><span class="lineCov">     150000 :             NULL;</span>
+<span class="lineNum">      16 </span><span class="lineCov">     150000 :     struct aws_byte_cursor cursor;</span>
+<span class="lineNum">      17 </span><span class="lineCov">     150000 :     initialize_byte_cursor(&amp;cursor);</span>
+<span class="lineNum">      18 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      19 </span><span class="lineCov">     150000 :     assume(aws_byte_cursor_is_valid(&amp;cursor));</span>
+<span class="lineNum">      20 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      21 </span><span class="lineCov">     150000 :     bool nondet_parameter = nd_bool();</span>
+<span class="lineNum">      22 </span><span class="lineCov">     150000 :     if (aws_string_eq_byte_cursor(str, nondet_parameter ? &amp;cursor : NULL) &amp;&amp; str) {</span>
+<span class="lineNum">      23 </span><span class="lineCov">      18053 :         sassert(aws_string_is_valid(str));</span>
+<span class="lineNum">      24 </span><span class="lineCov">      18053 :         if (nondet_parameter) {</span>
+<span class="lineNum">      25 </span><span class="lineCov">      18053 :             sassert(str-&gt;len == cursor.len);</span>
+<span class="lineNum">      26 </span><span class="lineCov">      18053 :             if (str-&gt;len &gt; 0) {</span>
+<span class="lineNum">      27 </span><span class="lineCov">      17249 :                 assert_bytes_match(str-&gt;bytes, cursor.ptr, str-&gt;len);</span>
+<span class="lineNum">      28 </span><span class="lineCov">      17249 :             }</span>
+<span class="lineNum">      29 </span><span class="lineCov">      18053 :         }</span>
+<span class="lineNum">      30 </span><span class="lineCov">      18053 :     }</span>
+<span class="lineNum">      31 </span><span class="lineCov">     150000 :     sassert(aws_byte_cursor_is_valid(&amp;cursor));</span>
+<span class="lineNum">      32 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      33 </span><span class="lineCov">     150000 :     return 0;</span>
+<span class="lineNum">      34 </span><span class="lineCov">     150000 : }</span>
 </pre>
       </td>
     </tr>

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -66,29 +66,29 @@
 <span class="lineNum">       4 </span>            : 
 <a name="5"><span class="lineNum">       5 </span>            : /**</a>
 <span class="lineNum">       6 </span>            :  */
-<span class="lineNum">       7 </span><span class="lineCov">     100000 : int main(void) {</span>
-<span class="lineNum">       8 </span><span class="lineCov">     100000 :     if (nd_bool()) {</span>
-<span class="lineNum">       9 </span><span class="lineCov">      74526 :         uint64_t a = nd_uint64_t();</span>
-<span class="lineNum">      10 </span><span class="lineCov">      74526 :         uint64_t b = nd_uint64_t();</span>
-<span class="lineNum">      11 </span><span class="lineCov">      74526 :         uint64_t r = nd_uint64_t();</span>
-<span class="lineNum">      12 </span><span class="lineCov">      74526 :         int rval = aws_add_u64_checked(a, b, &amp;r);</span>
-<span class="lineNum">      13 </span><span class="lineCov">      74526 :         if (!rval) {</span>
-<span class="lineNum">      14 </span><span class="lineCov">      21607 :             sassert(r == a + b);</span>
-<span class="lineNum">      15 </span><span class="lineCov">      52919 :         } else {</span>
-<span class="lineNum">      16 </span><span class="lineCov">      52919 :             sassert((b &gt; 0) &amp;&amp; (a &gt; (UINT64_MAX - b)));</span>
-<span class="lineNum">      17 </span><span class="lineCov">      52919 :         }</span>
-<span class="lineNum">      18 </span><span class="lineCov">      74526 :     } else {</span>
-<span class="lineNum">      19 </span><span class="lineCov">      25474 :         uint32_t a = nd_uint32_t();</span>
-<span class="lineNum">      20 </span><span class="lineCov">      25474 :         uint32_t b = nd_uint32_t();</span>
-<span class="lineNum">      21 </span><span class="lineCov">      25474 :         uint32_t r = nd_uint32_t();</span>
-<span class="lineNum">      22 </span><span class="lineCov">      25474 :         if (!aws_add_u32_checked(a, b, &amp;r)) {</span>
-<span class="lineNum">      23 </span><span class="lineCov">      10277 :             sassert(r == a + b);</span>
-<span class="lineNum">      24 </span><span class="lineCov">      15197 :         } else {</span>
-<span class="lineNum">      25 </span><span class="lineCov">      15197 :             sassert((b &gt; 0) &amp;&amp; (a &gt; (UINT32_MAX - b)));</span>
-<span class="lineNum">      26 </span><span class="lineCov">      15197 :         }</span>
-<span class="lineNum">      27 </span><span class="lineCov">      25474 :     }</span>
-<span class="lineNum">      28 </span><span class="lineCov">     100000 :   return 0;</span>
-<span class="lineNum">      29 </span><span class="lineCov">     100000 : }</span>
+<span class="lineNum">       7 </span><span class="lineCov">     150000 : int main(void) {</span>
+<span class="lineNum">       8 </span><span class="lineCov">     150000 :     if (nd_bool()) {</span>
+<span class="lineNum">       9 </span><span class="lineCov">     111164 :         uint64_t a = nd_uint64_t();</span>
+<span class="lineNum">      10 </span><span class="lineCov">     111164 :         uint64_t b = nd_uint64_t();</span>
+<span class="lineNum">      11 </span><span class="lineCov">     111164 :         uint64_t r = nd_uint64_t();</span>
+<span class="lineNum">      12 </span><span class="lineCov">     111164 :         int rval = aws_add_u64_checked(a, b, &amp;r);</span>
+<span class="lineNum">      13 </span><span class="lineCov">     111164 :         if (!rval) {</span>
+<span class="lineNum">      14 </span><span class="lineCov">      32921 :             sassert(r == a + b);</span>
+<span class="lineNum">      15 </span><span class="lineCov">      78243 :         } else {</span>
+<span class="lineNum">      16 </span><span class="lineCov">      78243 :             sassert((b &gt; 0) &amp;&amp; (a &gt; (UINT64_MAX - b)));</span>
+<span class="lineNum">      17 </span><span class="lineCov">      78243 :         }</span>
+<span class="lineNum">      18 </span><span class="lineCov">     111164 :     } else {</span>
+<span class="lineNum">      19 </span><span class="lineCov">      38836 :         uint32_t a = nd_uint32_t();</span>
+<span class="lineNum">      20 </span><span class="lineCov">      38836 :         uint32_t b = nd_uint32_t();</span>
+<span class="lineNum">      21 </span><span class="lineCov">      38836 :         uint32_t r = nd_uint32_t();</span>
+<span class="lineNum">      22 </span><span class="lineCov">      38836 :         if (!aws_add_u32_checked(a, b, &amp;r)) {</span>
+<span class="lineNum">      23 </span><span class="lineCov">      16362 :             sassert(r == a + b);</span>
+<span class="lineNum">      24 </span><span class="lineCov">      22474 :         } else {</span>
+<span class="lineNum">      25 </span><span class="lineCov">      22474 :             sassert((b &gt; 0) &amp;&amp; (a &gt; (UINT32_MAX - b)));</span>
+<span class="lineNum">      26 </span><span class="lineCov">      22474 :         }</span>
+<span class="lineNum">      27 </span><span class="lineCov">      38836 :     }</span>
+<span class="lineNum">      28 </span><span class="lineCov">     150000 :   return 0;</span>
+<span class="lineNum">      29 </span><span class="lineCov">     150000 : }</span>
 </pre>
       </td>
     </tr>

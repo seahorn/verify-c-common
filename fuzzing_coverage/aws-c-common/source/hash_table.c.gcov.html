@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">12</td>
@@ -227,50 +227,50 @@
 <span class="lineNum">     165 </span>            :  * size, and copies the state header into this allocated memory, which is
 <a name="166"><span class="lineNum">     166 </span>            :  * returned.</a>
 <span class="lineNum">     167 </span>            :  */
-<span class="lineNum">     168 </span><span class="lineCov">      98947 : static struct hash_table_state *s_alloc_state(const struct hash_table_state *template) {</span>
-<span class="lineNum">     169 </span><span class="lineCov">      98947 :     size_t required_bytes;</span>
-<span class="lineNum">     170 </span><span class="lineCov">      98947 :     if (hash_table_state_required_bytes(template-&gt;size, &amp;required_bytes)) {</span>
+<span class="lineNum">     168 </span><span class="lineCov">     148439 : static struct hash_table_state *s_alloc_state(const struct hash_table_state *template) {</span>
+<span class="lineNum">     169 </span><span class="lineCov">     148439 :     size_t required_bytes;</span>
+<span class="lineNum">     170 </span><span class="lineCov">     148439 :     if (hash_table_state_required_bytes(template-&gt;size, &amp;required_bytes)) {</span>
 <span class="lineNum">     171 </span><span class="lineNoCov">          0 :         return NULL;</span>
 <span class="lineNum">     172 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     173 </span><span class="lineCov">      98947 : </span>
-<span class="lineNum">     174 </span><span class="lineCov">      98947 :     /* An empty slot has hashcode 0. So this marks all slots as empty */</span>
-<span class="lineNum">     175 </span><span class="lineCov">      98947 :     struct hash_table_state *state = aws_mem_calloc(template-&gt;alloc, 1, required_bytes);</span>
-<span class="lineNum">     176 </span><span class="lineCov">      98947 : </span>
-<span class="lineNum">     177 </span><span class="lineCov">      98947 :     if (state == NULL) {</span>
+<span class="lineNum">     173 </span><span class="lineCov">     148439 : </span>
+<span class="lineNum">     174 </span><span class="lineCov">     148439 :     /* An empty slot has hashcode 0. So this marks all slots as empty */</span>
+<span class="lineNum">     175 </span><span class="lineCov">     148439 :     struct hash_table_state *state = aws_mem_calloc(template-&gt;alloc, 1, required_bytes);</span>
+<span class="lineNum">     176 </span><span class="lineCov">     148439 : </span>
+<span class="lineNum">     177 </span><span class="lineCov">     148439 :     if (state == NULL) {</span>
 <span class="lineNum">     178 </span><span class="lineNoCov">          0 :         return state;</span>
 <span class="lineNum">     179 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     180 </span><span class="lineCov">      98947 : </span>
-<span class="lineNum">     181 </span><span class="lineCov">      98947 :     *state = *template;</span>
-<span class="lineNum">     182 </span><span class="lineCov">      98947 :     return state;</span>
-<span class="lineNum">     183 </span><span class="lineCov">      98947 : }</span>
+<span class="lineNum">     180 </span><span class="lineCov">     148439 : </span>
+<span class="lineNum">     181 </span><span class="lineCov">     148439 :     *state = *template;</span>
+<span class="lineNum">     182 </span><span class="lineCov">     148439 :     return state;</span>
+<span class="lineNum">     183 </span><span class="lineCov">     148439 : }</span>
 <a name="184"><span class="lineNum">     184 </span>            : </a>
 <span class="lineNum">     185 </span>            : /* Computes the correct size and max_load based on a requested size. */
-<span class="lineNum">     186 </span><span class="lineCov">      98947 : static int s_update_template_size(struct hash_table_state *template, size_t expected_elements) {</span>
-<span class="lineNum">     187 </span><span class="lineCov">      98947 :     size_t min_size = expected_elements;</span>
-<span class="lineNum">     188 </span><span class="lineCov">      98947 : </span>
-<span class="lineNum">     189 </span><span class="lineCov">      98947 :     if (min_size &lt; 2) {</span>
-<span class="lineNum">     190 </span><span class="lineCov">      45442 :         min_size = 2;</span>
-<span class="lineNum">     191 </span><span class="lineCov">      45442 :     }</span>
-<span class="lineNum">     192 </span><span class="lineCov">      98947 : </span>
-<span class="lineNum">     193 </span><span class="lineCov">      98947 :     /* size is always a power of 2 */</span>
-<span class="lineNum">     194 </span><span class="lineCov">      98947 :     size_t size;</span>
-<span class="lineNum">     195 </span><span class="lineCov">      98947 :     if (aws_round_up_to_power_of_two(min_size, &amp;size)) {</span>
+<span class="lineNum">     186 </span><span class="lineCov">     148439 : static int s_update_template_size(struct hash_table_state *template, size_t expected_elements) {</span>
+<span class="lineNum">     187 </span><span class="lineCov">     148439 :     size_t min_size = expected_elements;</span>
+<span class="lineNum">     188 </span><span class="lineCov">     148439 : </span>
+<span class="lineNum">     189 </span><span class="lineCov">     148439 :     if (min_size &lt; 2) {</span>
+<span class="lineNum">     190 </span><span class="lineCov">      68126 :         min_size = 2;</span>
+<span class="lineNum">     191 </span><span class="lineCov">      68126 :     }</span>
+<span class="lineNum">     192 </span><span class="lineCov">     148439 : </span>
+<span class="lineNum">     193 </span><span class="lineCov">     148439 :     /* size is always a power of 2 */</span>
+<span class="lineNum">     194 </span><span class="lineCov">     148439 :     size_t size;</span>
+<span class="lineNum">     195 </span><span class="lineCov">     148439 :     if (aws_round_up_to_power_of_two(min_size, &amp;size)) {</span>
 <span class="lineNum">     196 </span><span class="lineNoCov">          0 :         return AWS_OP_ERR;</span>
 <span class="lineNum">     197 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     198 </span><span class="lineCov">      98947 : </span>
-<span class="lineNum">     199 </span><span class="lineCov">      98947 :     /* Update the template once we've calculated everything successfully */</span>
-<span class="lineNum">     200 </span><span class="lineCov">      98947 :     template-&gt;size = size;</span>
-<span class="lineNum">     201 </span><span class="lineCov">      98947 :     template-&gt;max_load = (size_t)(template-&gt;max_load_factor * (double)template-&gt;size);</span>
-<span class="lineNum">     202 </span><span class="lineCov">      98947 :     /* Ensure that there is always at least one empty slot in the hash table */</span>
-<span class="lineNum">     203 </span><span class="lineCov">      98947 :     if (template-&gt;max_load &gt;= size) {</span>
+<span class="lineNum">     198 </span><span class="lineCov">     148439 : </span>
+<span class="lineNum">     199 </span><span class="lineCov">     148439 :     /* Update the template once we've calculated everything successfully */</span>
+<span class="lineNum">     200 </span><span class="lineCov">     148439 :     template-&gt;size = size;</span>
+<span class="lineNum">     201 </span><span class="lineCov">     148439 :     template-&gt;max_load = (size_t)(template-&gt;max_load_factor * (double)template-&gt;size);</span>
+<span class="lineNum">     202 </span><span class="lineCov">     148439 :     /* Ensure that there is always at least one empty slot in the hash table */</span>
+<span class="lineNum">     203 </span><span class="lineCov">     148439 :     if (template-&gt;max_load &gt;= size) {</span>
 <span class="lineNum">     204 </span><span class="lineNoCov">          0 :         template-&gt;max_load = size - 1;</span>
 <span class="lineNum">     205 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     206 </span><span class="lineCov">      98947 : </span>
-<span class="lineNum">     207 </span><span class="lineCov">      98947 :     /* Since size is a power of 2: (index &amp; (size - 1)) == (index % size) */</span>
-<span class="lineNum">     208 </span><span class="lineCov">      98947 :     template-&gt;mask = size - 1;</span>
-<span class="lineNum">     209 </span><span class="lineCov">      98947 : </span>
-<span class="lineNum">     210 </span><span class="lineCov">      98947 :     return AWS_OP_SUCCESS;</span>
-<span class="lineNum">     211 </span><span class="lineCov">      98947 : }</span>
+<span class="lineNum">     206 </span><span class="lineCov">     148439 : </span>
+<span class="lineNum">     207 </span><span class="lineCov">     148439 :     /* Since size is a power of 2: (index &amp; (size - 1)) == (index % size) */</span>
+<span class="lineNum">     208 </span><span class="lineCov">     148439 :     template-&gt;mask = size - 1;</span>
+<span class="lineNum">     209 </span><span class="lineCov">     148439 : </span>
+<span class="lineNum">     210 </span><span class="lineCov">     148439 :     return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     211 </span><span class="lineCov">     148439 : }</span>
 <span class="lineNum">     212 </span>            : 
 <span class="lineNum">     213 </span>            : int aws_hash_table_init(
 <span class="lineNum">     214 </span>            :     struct aws_hash_table *map,
@@ -279,33 +279,33 @@
 <span class="lineNum">     217 </span>            :     aws_hash_fn *hash_fn,
 <a name="218"><span class="lineNum">     218 </span>            :     aws_hash_callback_eq_fn *equals_fn,</a>
 <span class="lineNum">     219 </span>            :     aws_hash_callback_destroy_fn *destroy_key_fn,
-<span class="lineNum">     220 </span><span class="lineCov">      98947 :     aws_hash_callback_destroy_fn *destroy_value_fn) {</span>
-<span class="lineNum">     221 </span><span class="lineCov">      98947 :     AWS_PRECONDITION(map != NULL);</span>
-<span class="lineNum">     222 </span><span class="lineCov">      98947 :     AWS_PRECONDITION(alloc != NULL);</span>
-<span class="lineNum">     223 </span><span class="lineCov">      98947 :     AWS_PRECONDITION(hash_fn != NULL);</span>
-<span class="lineNum">     224 </span><span class="lineCov">      98947 :     AWS_PRECONDITION(equals_fn != NULL);</span>
-<span class="lineNum">     225 </span><span class="lineCov">      98947 : </span>
-<span class="lineNum">     226 </span><span class="lineCov">      98947 :     struct hash_table_state template;</span>
-<span class="lineNum">     227 </span><span class="lineCov">      98947 :     template.hash_fn = hash_fn;</span>
-<span class="lineNum">     228 </span><span class="lineCov">      98947 :     template.equals_fn = equals_fn;</span>
-<span class="lineNum">     229 </span><span class="lineCov">      98947 :     template.destroy_key_fn = destroy_key_fn;</span>
-<span class="lineNum">     230 </span><span class="lineCov">      98947 :     template.destroy_value_fn = destroy_value_fn;</span>
-<span class="lineNum">     231 </span><span class="lineCov">      98947 :     template.alloc = alloc;</span>
-<span class="lineNum">     232 </span><span class="lineCov">      98947 : </span>
-<span class="lineNum">     233 </span><span class="lineCov">      98947 :     template.entry_count = 0;</span>
-<span class="lineNum">     234 </span><span class="lineCov">      98947 :     template.max_load_factor = 0.95; /* TODO - make configurable? */</span>
-<span class="lineNum">     235 </span><span class="lineCov">      98947 : </span>
-<span class="lineNum">     236 </span><span class="lineCov">      98947 :     if (s_update_template_size(&amp;template, size)) {</span>
+<span class="lineNum">     220 </span><span class="lineCov">     148439 :     aws_hash_callback_destroy_fn *destroy_value_fn) {</span>
+<span class="lineNum">     221 </span><span class="lineCov">     148439 :     AWS_PRECONDITION(map != NULL);</span>
+<span class="lineNum">     222 </span><span class="lineCov">     148439 :     AWS_PRECONDITION(alloc != NULL);</span>
+<span class="lineNum">     223 </span><span class="lineCov">     148439 :     AWS_PRECONDITION(hash_fn != NULL);</span>
+<span class="lineNum">     224 </span><span class="lineCov">     148439 :     AWS_PRECONDITION(equals_fn != NULL);</span>
+<span class="lineNum">     225 </span><span class="lineCov">     148439 : </span>
+<span class="lineNum">     226 </span><span class="lineCov">     148439 :     struct hash_table_state template;</span>
+<span class="lineNum">     227 </span><span class="lineCov">     148439 :     template.hash_fn = hash_fn;</span>
+<span class="lineNum">     228 </span><span class="lineCov">     148439 :     template.equals_fn = equals_fn;</span>
+<span class="lineNum">     229 </span><span class="lineCov">     148439 :     template.destroy_key_fn = destroy_key_fn;</span>
+<span class="lineNum">     230 </span><span class="lineCov">     148439 :     template.destroy_value_fn = destroy_value_fn;</span>
+<span class="lineNum">     231 </span><span class="lineCov">     148439 :     template.alloc = alloc;</span>
+<span class="lineNum">     232 </span><span class="lineCov">     148439 : </span>
+<span class="lineNum">     233 </span><span class="lineCov">     148439 :     template.entry_count = 0;</span>
+<span class="lineNum">     234 </span><span class="lineCov">     148439 :     template.max_load_factor = 0.95; /* TODO - make configurable? */</span>
+<span class="lineNum">     235 </span><span class="lineCov">     148439 : </span>
+<span class="lineNum">     236 </span><span class="lineCov">     148439 :     if (s_update_template_size(&amp;template, size)) {</span>
 <span class="lineNum">     237 </span><span class="lineNoCov">          0 :         return AWS_OP_ERR;</span>
 <span class="lineNum">     238 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     239 </span><span class="lineCov">      98947 :     map-&gt;p_impl = s_alloc_state(&amp;template);</span>
-<span class="lineNum">     240 </span><span class="lineCov">      98947 : </span>
-<span class="lineNum">     241 </span><span class="lineCov">      98947 :     if (!map-&gt;p_impl) {</span>
+<span class="lineNum">     239 </span><span class="lineCov">     148439 :     map-&gt;p_impl = s_alloc_state(&amp;template);</span>
+<span class="lineNum">     240 </span><span class="lineCov">     148439 : </span>
+<span class="lineNum">     241 </span><span class="lineCov">     148439 :     if (!map-&gt;p_impl) {</span>
 <span class="lineNum">     242 </span><span class="lineNoCov">          0 :         return AWS_OP_ERR;</span>
 <span class="lineNum">     243 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     244 </span><span class="lineCov">      98947 : </span>
-<span class="lineNum">     245 </span><span class="lineCov">      98947 :     AWS_SUCCEED_WITH_POSTCONDITION(aws_hash_table_is_valid(map));</span>
-<a name="246"><span class="lineNum">     246 </span><span class="lineCov">      98947 : }</span></a>
+<span class="lineNum">     244 </span><span class="lineCov">     148439 : </span>
+<span class="lineNum">     245 </span><span class="lineCov">     148439 :     AWS_SUCCEED_WITH_POSTCONDITION(aws_hash_table_is_valid(map));</span>
+<a name="246"><span class="lineNum">     246 </span><span class="lineCov">     148439 : }</span></a>
 <span class="lineNum">     247 </span>            : 
 <span class="lineNum">     248 </span><span class="lineNoCov">          0 : void aws_hash_table_clean_up(struct aws_hash_table *map) {</span>
 <span class="lineNum">     249 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(map != NULL);</span>
@@ -1012,36 +1012,36 @@
 <span class="lineNum">     950 </span><span class="lineNoCov">          0 :     return ((uint64_t)b &lt;&lt; 32) | c;</span>
 <a name="951"><span class="lineNum">     951 </span><span class="lineNoCov">          0 : }</span></a>
 <span class="lineNum">     952 </span>            : 
-<span class="lineNum">     953 </span><span class="lineCov">      89854 : uint64_t aws_hash_string(const void *item) {</span>
-<span class="lineNum">     954 </span><span class="lineCov">      89854 :     AWS_PRECONDITION(aws_string_is_valid(item));</span>
-<span class="lineNum">     955 </span><span class="lineCov">      89854 :     const struct aws_string *str = item;</span>
-<span class="lineNum">     956 </span><span class="lineCov">      89854 : </span>
-<span class="lineNum">     957 </span><span class="lineCov">      89854 :     /* first digits of pi in hex */</span>
-<span class="lineNum">     958 </span><span class="lineCov">      89854 :     uint32_t b = 0x3243F6A8, c = 0x885A308D;</span>
-<span class="lineNum">     959 </span><span class="lineCov">      89854 :     hashlittle2(aws_string_bytes(str), str-&gt;len, &amp;c, &amp;b);</span>
-<span class="lineNum">     960 </span><span class="lineCov">      89854 :     AWS_RETURN_WITH_POSTCONDITION(((uint64_t)b &lt;&lt; 32) | c, aws_string_is_valid(str));</span>
-<a name="961"><span class="lineNum">     961 </span><span class="lineCov">      89854 : }</span></a>
+<span class="lineNum">     953 </span><span class="lineCov">     134963 : uint64_t aws_hash_string(const void *item) {</span>
+<span class="lineNum">     954 </span><span class="lineCov">     134963 :     AWS_PRECONDITION(aws_string_is_valid(item));</span>
+<span class="lineNum">     955 </span><span class="lineCov">     134963 :     const struct aws_string *str = item;</span>
+<span class="lineNum">     956 </span><span class="lineCov">     134963 : </span>
+<span class="lineNum">     957 </span><span class="lineCov">     134963 :     /* first digits of pi in hex */</span>
+<span class="lineNum">     958 </span><span class="lineCov">     134963 :     uint32_t b = 0x3243F6A8, c = 0x885A308D;</span>
+<span class="lineNum">     959 </span><span class="lineCov">     134963 :     hashlittle2(aws_string_bytes(str), str-&gt;len, &amp;c, &amp;b);</span>
+<span class="lineNum">     960 </span><span class="lineCov">     134963 :     AWS_RETURN_WITH_POSTCONDITION(((uint64_t)b &lt;&lt; 32) | c, aws_string_is_valid(str));</span>
+<a name="961"><span class="lineNum">     961 </span><span class="lineCov">     134963 : }</span></a>
 <span class="lineNum">     962 </span>            : 
-<span class="lineNum">     963 </span><span class="lineCov">      29824 : uint64_t aws_hash_byte_cursor_ptr(const void *item) {</span>
-<span class="lineNum">     964 </span><span class="lineCov">      29824 :     AWS_PRECONDITION(aws_byte_cursor_is_valid(item));</span>
-<span class="lineNum">     965 </span><span class="lineCov">      29824 :     const struct aws_byte_cursor *cur = item;</span>
-<span class="lineNum">     966 </span><span class="lineCov">      29824 : </span>
-<span class="lineNum">     967 </span><span class="lineCov">      29824 :     /* first digits of pi in hex */</span>
-<span class="lineNum">     968 </span><span class="lineCov">      29824 :     uint32_t b = 0x3243F6A8, c = 0x885A308D;</span>
-<span class="lineNum">     969 </span><span class="lineCov">      29824 :     hashlittle2(cur-&gt;ptr, cur-&gt;len, &amp;c, &amp;b);</span>
-<span class="lineNum">     970 </span><span class="lineCov">      29824 :     AWS_RETURN_WITH_POSTCONDITION(((uint64_t)b &lt;&lt; 32) | c, aws_byte_cursor_is_valid(cur));</span>
-<a name="971"><span class="lineNum">     971 </span><span class="lineCov">      29824 : }</span></a>
+<span class="lineNum">     963 </span><span class="lineCov">      46743 : uint64_t aws_hash_byte_cursor_ptr(const void *item) {</span>
+<span class="lineNum">     964 </span><span class="lineCov">      46743 :     AWS_PRECONDITION(aws_byte_cursor_is_valid(item));</span>
+<span class="lineNum">     965 </span><span class="lineCov">      46743 :     const struct aws_byte_cursor *cur = item;</span>
+<span class="lineNum">     966 </span><span class="lineCov">      46743 : </span>
+<span class="lineNum">     967 </span><span class="lineCov">      46743 :     /* first digits of pi in hex */</span>
+<span class="lineNum">     968 </span><span class="lineCov">      46743 :     uint32_t b = 0x3243F6A8, c = 0x885A308D;</span>
+<span class="lineNum">     969 </span><span class="lineCov">      46743 :     hashlittle2(cur-&gt;ptr, cur-&gt;len, &amp;c, &amp;b);</span>
+<span class="lineNum">     970 </span><span class="lineCov">      46743 :     AWS_RETURN_WITH_POSTCONDITION(((uint64_t)b &lt;&lt; 32) | c, aws_byte_cursor_is_valid(cur));</span>
+<a name="971"><span class="lineNum">     971 </span><span class="lineCov">      46743 : }</span></a>
 <span class="lineNum">     972 </span>            : 
-<span class="lineNum">     973 </span><span class="lineCov">      93919 : uint64_t aws_hash_ptr(const void *item) {</span>
-<span class="lineNum">     974 </span><span class="lineCov">      93919 :     /* Since the numeric value of the pointer is considered, not the memory behind it, 0 is an acceptable value */</span>
-<span class="lineNum">     975 </span><span class="lineCov">      93919 :     /* first digits of e in hex</span>
-<span class="lineNum">     976 </span><span class="lineCov">      93919 :      * 2.b7e 1516 28ae d2a6 */</span>
-<span class="lineNum">     977 </span><span class="lineCov">      93919 :     uint32_t b = 0x2b7e1516, c = 0x28aed2a6;</span>
-<span class="lineNum">     978 </span><span class="lineCov">      93919 : </span>
-<span class="lineNum">     979 </span><span class="lineCov">      93919 :     hashlittle2(&amp;item, sizeof(item), &amp;c, &amp;b);</span>
-<span class="lineNum">     980 </span><span class="lineCov">      93919 : </span>
-<span class="lineNum">     981 </span><span class="lineCov">      93919 :     return ((uint64_t)b &lt;&lt; 32) | c;</span>
-<a name="982"><span class="lineNum">     982 </span><span class="lineCov">      93919 : }</span></a>
+<span class="lineNum">     973 </span><span class="lineCov">     140733 : uint64_t aws_hash_ptr(const void *item) {</span>
+<span class="lineNum">     974 </span><span class="lineCov">     140733 :     /* Since the numeric value of the pointer is considered, not the memory behind it, 0 is an acceptable value */</span>
+<span class="lineNum">     975 </span><span class="lineCov">     140733 :     /* first digits of e in hex</span>
+<span class="lineNum">     976 </span><span class="lineCov">     140733 :      * 2.b7e 1516 28ae d2a6 */</span>
+<span class="lineNum">     977 </span><span class="lineCov">     140733 :     uint32_t b = 0x2b7e1516, c = 0x28aed2a6;</span>
+<span class="lineNum">     978 </span><span class="lineCov">     140733 : </span>
+<span class="lineNum">     979 </span><span class="lineCov">     140733 :     hashlittle2(&amp;item, sizeof(item), &amp;c, &amp;b);</span>
+<span class="lineNum">     980 </span><span class="lineCov">     140733 : </span>
+<span class="lineNum">     981 </span><span class="lineCov">     140733 :     return ((uint64_t)b &lt;&lt; 32) | c;</span>
+<a name="982"><span class="lineNum">     982 </span><span class="lineCov">     140733 : }</span></a>
 <span class="lineNum">     983 </span>            : 
 <span class="lineNum">     984 </span><span class="lineNoCov">          0 : uint64_t aws_hash_combine(uint64_t item1, uint64_t item2) {</span>
 <span class="lineNum">     985 </span><span class="lineNoCov">          0 :     uint32_t b = item2 &amp; 0xFFFFFFFF; /* LSB */</span>
@@ -1051,24 +1051,24 @@
 <span class="lineNum">     989 </span><span class="lineNoCov">          0 :     return ((uint64_t)b &lt;&lt; 32) | c;</span>
 <a name="990"><span class="lineNum">     990 </span><span class="lineNoCov">          0 : }</span></a>
 <span class="lineNum">     991 </span>            : 
-<span class="lineNum">     992 </span><span class="lineCov">      67392 : bool aws_hash_callback_c_str_eq(const void *a, const void *b) {</span>
-<span class="lineNum">     993 </span><span class="lineCov">      67392 :     AWS_PRECONDITION(aws_c_string_is_valid(a));</span>
-<span class="lineNum">     994 </span><span class="lineCov">      67392 :     AWS_PRECONDITION(aws_c_string_is_valid(b));</span>
-<span class="lineNum">     995 </span><span class="lineCov">      67392 :     bool rval = !strcmp(a, b);</span>
-<span class="lineNum">     996 </span><span class="lineCov">      67392 :     AWS_RETURN_WITH_POSTCONDITION(rval, aws_c_string_is_valid(a) &amp;&amp; aws_c_string_is_valid(b));</span>
-<a name="997"><span class="lineNum">     997 </span><span class="lineCov">      67392 : }</span></a>
+<span class="lineNum">     992 </span><span class="lineCov">      99353 : bool aws_hash_callback_c_str_eq(const void *a, const void *b) {</span>
+<span class="lineNum">     993 </span><span class="lineCov">      99353 :     AWS_PRECONDITION(aws_c_string_is_valid(a));</span>
+<span class="lineNum">     994 </span><span class="lineCov">      99353 :     AWS_PRECONDITION(aws_c_string_is_valid(b));</span>
+<span class="lineNum">     995 </span><span class="lineCov">      99353 :     bool rval = !strcmp(a, b);</span>
+<span class="lineNum">     996 </span><span class="lineCov">      99353 :     AWS_RETURN_WITH_POSTCONDITION(rval, aws_c_string_is_valid(a) &amp;&amp; aws_c_string_is_valid(b));</span>
+<a name="997"><span class="lineNum">     997 </span><span class="lineCov">      99353 : }</span></a>
 <span class="lineNum">     998 </span>            : 
-<span class="lineNum">     999 </span><span class="lineCov">      86858 : bool aws_hash_callback_string_eq(const void *a, const void *b) {</span>
-<span class="lineNum">    1000 </span><span class="lineCov">      86858 :     AWS_PRECONDITION(aws_string_is_valid(a));</span>
-<span class="lineNum">    1001 </span><span class="lineCov">      86858 :     AWS_PRECONDITION(aws_string_is_valid(b));</span>
-<span class="lineNum">    1002 </span><span class="lineCov">      86858 :     bool rval = aws_string_eq(a, b);</span>
-<span class="lineNum">    1003 </span><span class="lineCov">      86858 :     AWS_RETURN_WITH_POSTCONDITION(rval, aws_c_string_is_valid(a) &amp;&amp; aws_c_string_is_valid(b));</span>
-<a name="1004"><span class="lineNum">    1004 </span><span class="lineCov">      86858 : }</span></a>
+<span class="lineNum">     999 </span><span class="lineCov">     130258 : bool aws_hash_callback_string_eq(const void *a, const void *b) {</span>
+<span class="lineNum">    1000 </span><span class="lineCov">     130258 :     AWS_PRECONDITION(aws_string_is_valid(a));</span>
+<span class="lineNum">    1001 </span><span class="lineCov">     130258 :     AWS_PRECONDITION(aws_string_is_valid(b));</span>
+<span class="lineNum">    1002 </span><span class="lineCov">     130258 :     bool rval = aws_string_eq(a, b);</span>
+<span class="lineNum">    1003 </span><span class="lineCov">     130258 :     AWS_RETURN_WITH_POSTCONDITION(rval, aws_c_string_is_valid(a) &amp;&amp; aws_c_string_is_valid(b));</span>
+<a name="1004"><span class="lineNum">    1004 </span><span class="lineCov">     130258 : }</span></a>
 <span class="lineNum">    1005 </span>            : 
-<span class="lineNum">    1006 </span><span class="lineCov">      85261 : void aws_hash_callback_string_destroy(void *a) {</span>
-<span class="lineNum">    1007 </span><span class="lineCov">      85261 :     AWS_PRECONDITION(aws_string_is_valid(a));</span>
-<span class="lineNum">    1008 </span><span class="lineCov">      85261 :     aws_string_destroy(a);</span>
-<a name="1009"><span class="lineNum">    1009 </span><span class="lineCov">      85261 : }</span></a>
+<span class="lineNum">    1006 </span><span class="lineCov">     128178 : void aws_hash_callback_string_destroy(void *a) {</span>
+<span class="lineNum">    1007 </span><span class="lineCov">     128178 :     AWS_PRECONDITION(aws_string_is_valid(a));</span>
+<span class="lineNum">    1008 </span><span class="lineCov">     128178 :     aws_string_destroy(a);</span>
+<a name="1009"><span class="lineNum">    1009 </span><span class="lineCov">     128178 : }</span></a>
 <span class="lineNum">    1010 </span>            : 
 <span class="lineNum">    1011 </span><span class="lineNoCov">          0 : bool aws_ptr_eq(const void *a, const void *b) {</span>
 <span class="lineNum">    1012 </span><span class="lineNoCov">          0 :     return a == b;</span>
@@ -1079,34 +1079,34 @@
 <span class="lineNum">    1017 </span>            :  * Some invariants, such as that the number of entries is actually the
 <a name="1018"><span class="lineNum">    1018 </span>            :  * same as the entry_count field, would require a loop to check</a>
 <span class="lineNum">    1019 </span>            :  */
-<span class="lineNum">    1020 </span><span class="lineCov">    1617907 : bool aws_hash_table_is_valid(const struct aws_hash_table *map) {</span>
-<span class="lineNum">    1021 </span><span class="lineCov">    1617907 :     return map &amp;&amp; map-&gt;p_impl &amp;&amp; hash_table_state_is_valid(map-&gt;p_impl);</span>
-<span class="lineNum">    1022 </span><span class="lineCov">    1617907 : }</span>
+<span class="lineNum">    1020 </span><span class="lineCov">    2473707 : bool aws_hash_table_is_valid(const struct aws_hash_table *map) {</span>
+<span class="lineNum">    1021 </span><span class="lineCov">    2473707 :     return map &amp;&amp; map-&gt;p_impl &amp;&amp; hash_table_state_is_valid(map-&gt;p_impl);</span>
+<span class="lineNum">    1022 </span><span class="lineCov">    2473707 : }</span>
 <span class="lineNum">    1023 </span>            : 
 <span class="lineNum">    1024 </span>            : /**
 <span class="lineNum">    1025 </span>            :  * Best-effort check of hash_table_state data-structure invariants
 <span class="lineNum">    1026 </span>            :  * Some invariants, such as that the number of entries is actually the
 <a name="1027"><span class="lineNum">    1027 </span>            :  * same as the entry_count field, would require a loop to check</a>
 <span class="lineNum">    1028 </span>            :  */
-<span class="lineNum">    1029 </span><span class="lineCov">    1617907 : bool hash_table_state_is_valid(const struct hash_table_state *map) {</span>
-<span class="lineNum">    1030 </span><span class="lineCov">    1617907 :     if (!map) {</span>
+<span class="lineNum">    1029 </span><span class="lineCov">    2473707 : bool hash_table_state_is_valid(const struct hash_table_state *map) {</span>
+<span class="lineNum">    1030 </span><span class="lineCov">    2473707 :     if (!map) {</span>
 <span class="lineNum">    1031 </span><span class="lineNoCov">          0 :         return false;</span>
 <span class="lineNum">    1032 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">    1033 </span><span class="lineCov">    1617907 :     bool hash_fn_nonnull = (map-&gt;hash_fn != NULL);</span>
-<span class="lineNum">    1034 </span><span class="lineCov">    1617907 :     bool equals_fn_nonnull = (map-&gt;equals_fn != NULL);</span>
-<span class="lineNum">    1035 </span><span class="lineCov">    1617907 :     /*destroy_key_fn and destroy_value_fn are both allowed to be NULL*/</span>
-<span class="lineNum">    1036 </span><span class="lineCov">    1617907 :     bool alloc_nonnull = (map-&gt;alloc != NULL);</span>
-<span class="lineNum">    1037 </span><span class="lineCov">    1617907 :     bool size_at_least_two = (map-&gt;size &gt;= 2);</span>
-<span class="lineNum">    1038 </span><span class="lineCov">    1617907 :     bool size_is_power_of_two = aws_is_power_of_two(map-&gt;size);</span>
-<span class="lineNum">    1039 </span><span class="lineCov">    1617907 :     bool entry_count = (map-&gt;entry_count &lt;= map-&gt;max_load);</span>
-<span class="lineNum">    1040 </span><span class="lineCov">    1617907 :     bool max_load = (map-&gt;max_load &lt; map-&gt;size);</span>
-<span class="lineNum">    1041 </span><span class="lineCov">    1617907 :     bool mask_is_correct = (map-&gt;mask == (map-&gt;size - 1));</span>
-<span class="lineNum">    1042 </span><span class="lineCov">    1617907 :     bool max_load_factor_bounded = map-&gt;max_load_factor == 0.95; //(map-&gt;max_load_factor &lt; 1.0);</span>
-<span class="lineNum">    1043 </span><span class="lineCov">    1617907 :     bool slots_allocated = AWS_MEM_IS_WRITABLE(&amp;map-&gt;slots[0], sizeof(map-&gt;slots[0]) * map-&gt;size);</span>
-<span class="lineNum">    1044 </span><span class="lineCov">    1617907 : </span>
-<span class="lineNum">    1045 </span><span class="lineCov">    1617907 :     return hash_fn_nonnull &amp;&amp; equals_fn_nonnull &amp;&amp; alloc_nonnull &amp;&amp; size_at_least_two &amp;&amp; size_is_power_of_two &amp;&amp;</span>
-<span class="lineNum">    1046 </span><span class="lineCov">    1617907 :            entry_count &amp;&amp; max_load &amp;&amp; mask_is_correct &amp;&amp; max_load_factor_bounded &amp;&amp; slots_allocated;</span>
-<span class="lineNum">    1047 </span><span class="lineCov">    1617907 : }</span>
+<span class="lineNum">    1033 </span><span class="lineCov">    2473707 :     bool hash_fn_nonnull = (map-&gt;hash_fn != NULL);</span>
+<span class="lineNum">    1034 </span><span class="lineCov">    2473707 :     bool equals_fn_nonnull = (map-&gt;equals_fn != NULL);</span>
+<span class="lineNum">    1035 </span><span class="lineCov">    2473707 :     /*destroy_key_fn and destroy_value_fn are both allowed to be NULL*/</span>
+<span class="lineNum">    1036 </span><span class="lineCov">    2473707 :     bool alloc_nonnull = (map-&gt;alloc != NULL);</span>
+<span class="lineNum">    1037 </span><span class="lineCov">    2473707 :     bool size_at_least_two = (map-&gt;size &gt;= 2);</span>
+<span class="lineNum">    1038 </span><span class="lineCov">    2473707 :     bool size_is_power_of_two = aws_is_power_of_two(map-&gt;size);</span>
+<span class="lineNum">    1039 </span><span class="lineCov">    2473707 :     bool entry_count = (map-&gt;entry_count &lt;= map-&gt;max_load);</span>
+<span class="lineNum">    1040 </span><span class="lineCov">    2473707 :     bool max_load = (map-&gt;max_load &lt; map-&gt;size);</span>
+<span class="lineNum">    1041 </span><span class="lineCov">    2473707 :     bool mask_is_correct = (map-&gt;mask == (map-&gt;size - 1));</span>
+<span class="lineNum">    1042 </span><span class="lineCov">    2473707 :     bool max_load_factor_bounded = map-&gt;max_load_factor == 0.95; //(map-&gt;max_load_factor &lt; 1.0);</span>
+<span class="lineNum">    1043 </span><span class="lineCov">    2473707 :     bool slots_allocated = AWS_MEM_IS_WRITABLE(&amp;map-&gt;slots[0], sizeof(map-&gt;slots[0]) * map-&gt;size);</span>
+<span class="lineNum">    1044 </span><span class="lineCov">    2473707 : </span>
+<span class="lineNum">    1045 </span><span class="lineCov">    2473707 :     return hash_fn_nonnull &amp;&amp; equals_fn_nonnull &amp;&amp; alloc_nonnull &amp;&amp; size_at_least_two &amp;&amp; size_is_power_of_two &amp;&amp;</span>
+<span class="lineNum">    1046 </span><span class="lineCov">    2473707 :            entry_count &amp;&amp; max_load &amp;&amp; mask_is_correct &amp;&amp; max_load_factor_bounded &amp;&amp; slots_allocated;</span>
+<span class="lineNum">    1047 </span><span class="lineCov">    2473707 : }</span>
 <span class="lineNum">    1048 </span>            : 
 <span class="lineNum">    1049 </span>            : /**
 <a name="1050"><span class="lineNum">    1050 </span>            :  * Given a pointer to a hash_iter, checks that it is well-formed, with all data-structure invariants.</a>
@@ -1147,19 +1147,19 @@
 <span class="lineNum">    1085 </span>            :  * AWS_OP_ERR; otherwise, return AWS_OP_SUCCESS with the result in
 <a name="1086"><span class="lineNum">    1086 </span>            :  * &quot;required_bytes&quot;.</a>
 <span class="lineNum">    1087 </span>            :  */
-<span class="lineNum">    1088 </span><span class="lineCov">    1523495 : int hash_table_state_required_bytes(size_t size, size_t *required_bytes) {</span>
-<span class="lineNum">    1089 </span><span class="lineCov">    1523495 : </span>
-<span class="lineNum">    1090 </span><span class="lineCov">    1523495 :     size_t elemsize;</span>
-<span class="lineNum">    1091 </span><span class="lineCov">    1523495 :     if (aws_mul_size_checked(size, sizeof(struct hash_table_entry), &amp;elemsize)) {</span>
+<span class="lineNum">    1088 </span><span class="lineCov">    2332051 : int hash_table_state_required_bytes(size_t size, size_t *required_bytes) {</span>
+<span class="lineNum">    1089 </span><span class="lineCov">    2332051 : </span>
+<span class="lineNum">    1090 </span><span class="lineCov">    2332051 :     size_t elemsize;</span>
+<span class="lineNum">    1091 </span><span class="lineCov">    2332051 :     if (aws_mul_size_checked(size, sizeof(struct hash_table_entry), &amp;elemsize)) {</span>
 <span class="lineNum">    1092 </span><span class="lineNoCov">          0 :         return AWS_OP_ERR;</span>
 <span class="lineNum">    1093 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">    1094 </span><span class="lineCov">    1523495 : </span>
-<span class="lineNum">    1095 </span><span class="lineCov">    1523495 :     if (aws_add_size_checked(elemsize, sizeof(struct hash_table_state), required_bytes)) {</span>
+<span class="lineNum">    1094 </span><span class="lineCov">    2332051 : </span>
+<span class="lineNum">    1095 </span><span class="lineCov">    2332051 :     if (aws_add_size_checked(elemsize, sizeof(struct hash_table_state), required_bytes)) {</span>
 <span class="lineNum">    1096 </span><span class="lineNoCov">          0 :         return AWS_OP_ERR;</span>
 <span class="lineNum">    1097 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">    1098 </span><span class="lineCov">    1523495 : </span>
-<span class="lineNum">    1099 </span><span class="lineCov">    1523495 :     return AWS_OP_SUCCESS;</span>
-<span class="lineNum">    1100 </span><span class="lineCov">    1523495 : }</span>
+<span class="lineNum">    1098 </span><span class="lineCov">    2332051 : </span>
+<span class="lineNum">    1099 </span><span class="lineCov">    2332051 :     return AWS_OP_SUCCESS;</span>
+<span class="lineNum">    1100 </span><span class="lineCov">    2332051 : }</span>
 </pre>
       </td>
     </tr>

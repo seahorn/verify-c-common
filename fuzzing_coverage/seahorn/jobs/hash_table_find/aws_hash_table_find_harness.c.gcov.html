@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -69,38 +69,38 @@
 <span class="lineNum">       7 </span>            : #include &lt;hash_table_helper.h&gt;
 <a name="8"><span class="lineNum">       8 </span>            : #include &lt;utils.h&gt;</a>
 <span class="lineNum">       9 </span>            : 
-<span class="lineNum">      10 </span><span class="lineCov">     100000 : int main(void) {</span>
-<span class="lineNum">      11 </span><span class="lineCov">     100000 :   /* data structure */</span>
-<span class="lineNum">      12 </span><span class="lineCov">     100000 :   struct aws_hash_table map;</span>
-<span class="lineNum">      13 </span><span class="lineCov">     100000 :   initialize_bounded_aws_hash_table(&amp;map, MAX_TABLE_SIZE);</span>
-<span class="lineNum">      14 </span><span class="lineCov">     100000 :   assume(aws_hash_table_is_valid(&amp;map));</span>
-<span class="lineNum">      15 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      16 </span><span class="lineCov">     100000 :   size_t empty_slot_idx;</span>
-<span class="lineNum">      17 </span><span class="lineCov">     100000 :   assume(aws_hash_table_has_an_empty_slot(&amp;map, &amp;empty_slot_idx));</span>
-<span class="lineNum">      18 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      19 </span><span class="lineCov">     100000 :   struct store_byte_from_buffer old_byte;</span>
-<span class="lineNum">      20 </span><span class="lineCov">     100000 :   save_byte_from_hash_table(&amp;map, &amp;old_byte);</span>
-<span class="lineNum">      21 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      22 </span><span class="lineCov">     100000 :   void *key = nd_voidp();</span>
-<span class="lineNum">      23 </span><span class="lineCov">     100000 :   struct aws_hash_element elem;</span>
-<span class="lineNum">      24 </span><span class="lineCov">     100000 :   struct aws_hash_element *p_elem = &amp;elem;</span>
-<span class="lineNum">      25 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      26 </span><span class="lineCov">     100000 :   /* Preconditions */</span>
-<span class="lineNum">      27 </span><span class="lineCov">     100000 :   assume(aws_hash_table_is_valid(&amp;map));</span>
-<span class="lineNum">      28 </span><span class="lineCov">     100000 :   assume(AWS_OBJECT_PTR_IS_WRITABLE(&amp;p_elem));</span>
-<span class="lineNum">      29 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      30 </span><span class="lineCov">     100000 :   int rval = aws_hash_table_find(&amp;map, key, &amp;p_elem);</span>
-<span class="lineNum">      31 </span><span class="lineCov">     100000 :   sassert(rval == AWS_OP_SUCCESS);</span>
-<span class="lineNum">      32 </span><span class="lineCov">     100000 :   if (p_elem) {</span>
+<span class="lineNum">      10 </span><span class="lineCov">     150000 : int main(void) {</span>
+<span class="lineNum">      11 </span><span class="lineCov">     150000 :   /* data structure */</span>
+<span class="lineNum">      12 </span><span class="lineCov">     150000 :   struct aws_hash_table map;</span>
+<span class="lineNum">      13 </span><span class="lineCov">     150000 :   initialize_bounded_aws_hash_table(&amp;map, MAX_TABLE_SIZE);</span>
+<span class="lineNum">      14 </span><span class="lineCov">     150000 :   assume(aws_hash_table_is_valid(&amp;map));</span>
+<span class="lineNum">      15 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      16 </span><span class="lineCov">     150000 :   size_t empty_slot_idx;</span>
+<span class="lineNum">      17 </span><span class="lineCov">     150000 :   assume(aws_hash_table_has_an_empty_slot(&amp;map, &amp;empty_slot_idx));</span>
+<span class="lineNum">      18 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      19 </span><span class="lineCov">     150000 :   struct store_byte_from_buffer old_byte;</span>
+<span class="lineNum">      20 </span><span class="lineCov">     150000 :   save_byte_from_hash_table(&amp;map, &amp;old_byte);</span>
+<span class="lineNum">      21 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      22 </span><span class="lineCov">     150000 :   void *key = nd_voidp();</span>
+<span class="lineNum">      23 </span><span class="lineCov">     150000 :   struct aws_hash_element elem;</span>
+<span class="lineNum">      24 </span><span class="lineCov">     150000 :   struct aws_hash_element *p_elem = &amp;elem;</span>
+<span class="lineNum">      25 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      26 </span><span class="lineCov">     150000 :   /* Preconditions */</span>
+<span class="lineNum">      27 </span><span class="lineCov">     150000 :   assume(aws_hash_table_is_valid(&amp;map));</span>
+<span class="lineNum">      28 </span><span class="lineCov">     150000 :   assume(AWS_OBJECT_PTR_IS_WRITABLE(&amp;p_elem));</span>
+<span class="lineNum">      29 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      30 </span><span class="lineCov">     150000 :   int rval = aws_hash_table_find(&amp;map, key, &amp;p_elem);</span>
+<span class="lineNum">      31 </span><span class="lineCov">     150000 :   sassert(rval == AWS_OP_SUCCESS);</span>
+<span class="lineNum">      32 </span><span class="lineCov">     150000 :   if (p_elem) {</span>
 <span class="lineNum">      33 </span><span class="lineNoCov">          0 :     sassert(AWS_OBJECT_PTR_IS_READABLE(p_elem));</span>
 <span class="lineNum">      34 </span>            : #ifdef __SEA_UNINTERP_FN__
 <span class="lineNum">      35 </span>            :     sassert(p_elem-&gt;key == key || uninterpreted_equals(p_elem-&gt;key, key));
 <span class="lineNum">      36 </span>            : #endif
 <span class="lineNum">      37 </span>            :   }
-<span class="lineNum">      38 </span><span class="lineCov">     100000 :   sassert(aws_hash_table_is_valid(&amp;map));</span>
-<span class="lineNum">      39 </span><span class="lineCov">     100000 :   assert_hash_table_unchanged(&amp;map, &amp;old_byte);</span>
-<span class="lineNum">      40 </span><span class="lineCov">     100000 :   return 0;</span>
-<span class="lineNum">      41 </span><span class="lineCov">     100000 : }</span>
+<span class="lineNum">      38 </span><span class="lineCov">     150000 :   sassert(aws_hash_table_is_valid(&amp;map));</span>
+<span class="lineNum">      39 </span><span class="lineCov">     150000 :   assert_hash_table_unchanged(&amp;map, &amp;old_byte);</span>
+<span class="lineNum">      40 </span><span class="lineCov">     150000 :   return 0;</span>
+<span class="lineNum">      41 </span><span class="lineCov">     150000 : }</span>
 </pre>
       </td>
     </tr>

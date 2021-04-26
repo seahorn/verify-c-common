@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -81,7 +81,7 @@
 <span class="lineNum">      19 </span>            : #define AWS_STATIC_ASSERT(cond) AWS_STATIC_ASSERT1(cond, __LINE__)
 <span class="lineNum">      20 </span>            : 
 <span class="lineNum">      21 </span>            : /* https://stackoverflow.com/questions/9183993/msvc-variadic-macro-expansion */
-<span class="lineNum">      22 </span><span class="lineCov">   19701025 : #define GLUE(x, y) x y</span>
+<span class="lineNum">      22 </span><span class="lineCov">   29047223 : #define GLUE(x, y) x y</span>
 <span class="lineNum">      23 </span>            : 
 <span class="lineNum">      24 </span>            : #define RETURN_ARG_COUNT(_1_, _2_, _3_, _4_, _5_, count, ...) count
 <span class="lineNum">      25 </span>            : #define EXPAND_ARGS(args) RETURN_ARG_COUNT args
@@ -91,7 +91,7 @@
 <span class="lineNum">      29 </span>            : #define OVERLOAD_MACRO1(name, count) OVERLOAD_MACRO2(name, count)
 <span class="lineNum">      30 </span>            : #define OVERLOAD_MACRO(name, count) OVERLOAD_MACRO1(name, count)
 <span class="lineNum">      31 </span>            : 
-<span class="lineNum">      32 </span><span class="lineCov">   19562429 : #define CALL_OVERLOAD(name, ...) GLUE(OVERLOAD_MACRO(name, COUNT_ARGS_MAX5(__VA_ARGS__)), (__VA_ARGS__))</span>
+<span class="lineNum">      32 </span><span class="lineCov">   28844699 : #define CALL_OVERLOAD(name, ...) GLUE(OVERLOAD_MACRO(name, COUNT_ARGS_MAX5(__VA_ARGS__)), (__VA_ARGS__))</span>
 <span class="lineNum">      33 </span>            : 
 <span class="lineNum">      34 </span>            : #define CALL_OVERLOAD_TEST1(x) x
 <span class="lineNum">      35 </span>            : #define CALL_OVERLOAD_TEST2(x, y) y
@@ -123,8 +123,8 @@
 <span class="lineNum">      61 </span>            : #    if defined(__GNUC__) || defined(__clang__)
 <span class="lineNum">      62 </span>            : #        define AWS_ALIGNED_TYPEDEF(from, to, alignment) typedef from to __attribute__((aligned(alignment)))
 <span class="lineNum">      63 </span>            : #        define AWS_TYPE_OF(a) __typeof__(a)
-<span class="lineNum">      64 </span><span class="lineCov">      67681 : #        define AWS_LIKELY(x) __builtin_expect(!!(x), 1)</span>
-<span class="lineNum">      65 </span><span class="lineCov">      83461 : #        define AWS_UNLIKELY(x) __builtin_expect(!!(x), 0)</span>
+<span class="lineNum">      64 </span><span class="lineCov">     102064 : #        define AWS_LIKELY(x) __builtin_expect(!!(x), 1)</span>
+<span class="lineNum">      65 </span><span class="lineCov">     119455 : #        define AWS_UNLIKELY(x) __builtin_expect(!!(x), 0)</span>
 <span class="lineNum">      66 </span>            : #        define AWS_FORCE_INLINE __attribute__((always_inline))
 <span class="lineNum">      67 </span>            : #        define AWS_NO_INLINE __attribute__((noinline))
 <span class="lineNum">      68 </span>            : #        define AWS_DECLSPEC_NORETURN

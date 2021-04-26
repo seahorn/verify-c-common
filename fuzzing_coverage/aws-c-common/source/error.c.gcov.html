@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -152,15 +152,15 @@
 <span class="lineNum">      90 </span><span class="lineNoCov">          0 :     return &quot;Unknown Error Code&quot;;</span>
 <a name="91"><span class="lineNum">      91 </span><span class="lineNoCov">          0 : }</span></a>
 <span class="lineNum">      92 </span>            : 
-<span class="lineNum">      93 </span><span class="lineCov">     335363 : void aws_raise_error_private(int err) {</span>
-<span class="lineNum">      94 </span><span class="lineCov">     335363 :     tl_last_error = err;</span>
-<span class="lineNum">      95 </span><span class="lineCov">     335363 : </span>
-<span class="lineNum">      96 </span><span class="lineCov">     335363 :     if (tl_thread_handler) {</span>
+<span class="lineNum">      93 </span><span class="lineCov">     534552 : void aws_raise_error_private(int err) {</span>
+<span class="lineNum">      94 </span><span class="lineCov">     534552 :     tl_last_error = err;</span>
+<span class="lineNum">      95 </span><span class="lineCov">     534552 : </span>
+<span class="lineNum">      96 </span><span class="lineCov">     534552 :     if (tl_thread_handler) {</span>
 <span class="lineNum">      97 </span><span class="lineNoCov">          0 :         tl_thread_handler(tl_last_error, tl_thread_handler_context);</span>
-<span class="lineNum">      98 </span><span class="lineCov">     335363 :     } else if (s_global_handler) {</span>
+<span class="lineNum">      98 </span><span class="lineCov">     534552 :     } else if (s_global_handler) {</span>
 <span class="lineNum">      99 </span><span class="lineNoCov">          0 :         s_global_handler(tl_last_error, s_global_error_context);</span>
 <span class="lineNum">     100 </span><span class="lineNoCov">          0 :     }</span>
-<a name="101"><span class="lineNum">     101 </span><span class="lineCov">     335363 : }</span></a>
+<a name="101"><span class="lineNum">     101 </span><span class="lineCov">     534552 : }</span></a>
 <span class="lineNum">     102 </span>            : 
 <span class="lineNum">     103 </span><span class="lineNoCov">          0 : void aws_reset_error(void) {</span>
 <span class="lineNum">     104 </span><span class="lineNoCov">          0 :     tl_last_error = 0;</span>

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -74,23 +74,23 @@
 <span class="lineNum">      12 </span>            : #include &lt;string_helper.h&gt;
 <a name="13"><span class="lineNum">      13 </span>            : #include &lt;utils.h&gt;</a>
 <span class="lineNum">      14 </span>            : 
-<span class="lineNum">      15 </span><span class="lineCov">     100000 : int main(void) {</span>
-<span class="lineNum">      16 </span><span class="lineCov">     100000 :   const struct aws_string *str1 =</span>
-<span class="lineNum">      17 </span><span class="lineCov">     100000 :       ensure_string_is_allocated_bounded_length(MAX_STRING_LEN);</span>
-<span class="lineNum">      18 </span><span class="lineCov">     100000 :   const struct aws_string *str2 =</span>
-<span class="lineNum">      19 </span><span class="lineCov">     100000 :       nd_bool() ? str1</span>
-<span class="lineNum">      20 </span><span class="lineCov">     100000 :                 : ensure_string_is_allocated_bounded_length(MAX_STRING_LEN);</span>
-<span class="lineNum">      21 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      22 </span><span class="lineCov">     100000 :   assume(aws_string_is_valid(str1));</span>
-<span class="lineNum">      23 </span><span class="lineCov">     100000 :   assume(aws_string_is_valid(str2));</span>
-<span class="lineNum">      24 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      25 </span><span class="lineCov">     100000 :   bool rval = aws_hash_callback_string_eq(str1, str2);</span>
-<span class="lineNum">      26 </span><span class="lineCov">     100000 :   if (rval) {</span>
-<span class="lineNum">      27 </span><span class="lineCov">      39322 :     sassert(str1-&gt;len == str2-&gt;len);</span>
-<span class="lineNum">      28 </span><span class="lineCov">      39322 :     assert_bytes_match(str1-&gt;bytes, str2-&gt;bytes, str1-&gt;len);</span>
-<span class="lineNum">      29 </span><span class="lineCov">      39322 :   }</span>
-<span class="lineNum">      30 </span><span class="lineCov">     100000 :   return 0;</span>
-<span class="lineNum">      31 </span><span class="lineCov">     100000 : }</span>
+<span class="lineNum">      15 </span><span class="lineCov">     150000 : int main(void) {</span>
+<span class="lineNum">      16 </span><span class="lineCov">     150000 :   const struct aws_string *str1 =</span>
+<span class="lineNum">      17 </span><span class="lineCov">     150000 :       ensure_string_is_allocated_bounded_length(MAX_STRING_LEN);</span>
+<span class="lineNum">      18 </span><span class="lineCov">     150000 :   const struct aws_string *str2 =</span>
+<span class="lineNum">      19 </span><span class="lineCov">     150000 :       nd_bool() ? str1</span>
+<span class="lineNum">      20 </span><span class="lineCov">     150000 :                 : ensure_string_is_allocated_bounded_length(MAX_STRING_LEN);</span>
+<span class="lineNum">      21 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      22 </span><span class="lineCov">     150000 :   assume(aws_string_is_valid(str1));</span>
+<span class="lineNum">      23 </span><span class="lineCov">     150000 :   assume(aws_string_is_valid(str2));</span>
+<span class="lineNum">      24 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      25 </span><span class="lineCov">     150000 :   bool rval = aws_hash_callback_string_eq(str1, str2);</span>
+<span class="lineNum">      26 </span><span class="lineCov">     150000 :   if (rval) {</span>
+<span class="lineNum">      27 </span><span class="lineCov">      59103 :     sassert(str1-&gt;len == str2-&gt;len);</span>
+<span class="lineNum">      28 </span><span class="lineCov">      59103 :     assert_bytes_match(str1-&gt;bytes, str2-&gt;bytes, str1-&gt;len);</span>
+<span class="lineNum">      29 </span><span class="lineCov">      59103 :   }</span>
+<span class="lineNum">      30 </span><span class="lineCov">     150000 :   return 0;</span>
+<span class="lineNum">      31 </span><span class="lineCov">     150000 : }</span>
 </pre>
       </td>
     </tr>

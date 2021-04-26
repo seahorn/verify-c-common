@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">2</td>
@@ -92,36 +92,36 @@
 <span class="lineNum">      30 </span>            : #define AWS_ATOMIC_STORE_HEAD_PTR(ring_buf, src_ptr)                                                                   \
 <a name="31"><span class="lineNum">      31 </span><span class="lineNoCov">          0 :     AWS_ATOMIC_STORE_PTR(ring_buf, &amp;(ring_buf)-&gt;head, src_ptr, aws_memory_order_relaxed);</span></a>
 <span class="lineNum">      32 </span>            : 
-<span class="lineNum">      33 </span><span class="lineCov">       4674 : int aws_ring_buffer_init(struct aws_ring_buffer *ring_buf, struct aws_allocator *allocator, size_t size) {</span>
-<span class="lineNum">      34 </span><span class="lineCov">       4674 :     AWS_PRECONDITION(ring_buf != NULL);</span>
-<span class="lineNum">      35 </span><span class="lineCov">       4674 :     AWS_PRECONDITION(allocator != NULL);</span>
-<span class="lineNum">      36 </span><span class="lineCov">       4674 :     AWS_PRECONDITION(size &gt; 0);</span>
-<span class="lineNum">      37 </span><span class="lineCov">       4674 : </span>
-<span class="lineNum">      38 </span><span class="lineCov">       4674 :     AWS_ZERO_STRUCT(*ring_buf);</span>
-<span class="lineNum">      39 </span><span class="lineCov">       4674 : </span>
-<span class="lineNum">      40 </span><span class="lineCov">       4674 :     ring_buf-&gt;allocation = aws_mem_acquire(allocator, size);</span>
-<span class="lineNum">      41 </span><span class="lineCov">       4674 : </span>
-<span class="lineNum">      42 </span><span class="lineCov">       4674 :     if (!ring_buf-&gt;allocation) {</span>
+<span class="lineNum">      33 </span><span class="lineCov">       7919 : int aws_ring_buffer_init(struct aws_ring_buffer *ring_buf, struct aws_allocator *allocator, size_t size) {</span>
+<span class="lineNum">      34 </span><span class="lineCov">       7919 :     AWS_PRECONDITION(ring_buf != NULL);</span>
+<span class="lineNum">      35 </span><span class="lineCov">       7919 :     AWS_PRECONDITION(allocator != NULL);</span>
+<span class="lineNum">      36 </span><span class="lineCov">       7919 :     AWS_PRECONDITION(size &gt; 0);</span>
+<span class="lineNum">      37 </span><span class="lineCov">       7919 : </span>
+<span class="lineNum">      38 </span><span class="lineCov">       7919 :     AWS_ZERO_STRUCT(*ring_buf);</span>
+<span class="lineNum">      39 </span><span class="lineCov">       7919 : </span>
+<span class="lineNum">      40 </span><span class="lineCov">       7919 :     ring_buf-&gt;allocation = aws_mem_acquire(allocator, size);</span>
+<span class="lineNum">      41 </span><span class="lineCov">       7919 : </span>
+<span class="lineNum">      42 </span><span class="lineCov">       7919 :     if (!ring_buf-&gt;allocation) {</span>
 <span class="lineNum">      43 </span><span class="lineNoCov">          0 :         return AWS_OP_ERR;</span>
 <span class="lineNum">      44 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">      45 </span><span class="lineCov">       4674 : </span>
-<span class="lineNum">      46 </span><span class="lineCov">       4674 :     ring_buf-&gt;allocator = allocator;</span>
-<span class="lineNum">      47 </span><span class="lineCov">       4674 :     aws_atomic_init_ptr(&amp;ring_buf-&gt;head, ring_buf-&gt;allocation);</span>
-<span class="lineNum">      48 </span><span class="lineCov">       4674 :     aws_atomic_init_ptr(&amp;ring_buf-&gt;tail, ring_buf-&gt;allocation);</span>
-<span class="lineNum">      49 </span><span class="lineCov">       4674 :     ring_buf-&gt;allocation_end = ring_buf-&gt;allocation + size;</span>
-<span class="lineNum">      50 </span><span class="lineCov">       4674 : </span>
-<span class="lineNum">      51 </span><span class="lineCov">       4674 :     AWS_POSTCONDITION(aws_ring_buffer_is_valid(ring_buf));</span>
-<span class="lineNum">      52 </span><span class="lineCov">       4674 :     return AWS_OP_SUCCESS;</span>
-<a name="53"><span class="lineNum">      53 </span><span class="lineCov">       4674 : }</span></a>
+<span class="lineNum">      45 </span><span class="lineCov">       7919 : </span>
+<span class="lineNum">      46 </span><span class="lineCov">       7919 :     ring_buf-&gt;allocator = allocator;</span>
+<span class="lineNum">      47 </span><span class="lineCov">       7919 :     aws_atomic_init_ptr(&amp;ring_buf-&gt;head, ring_buf-&gt;allocation);</span>
+<span class="lineNum">      48 </span><span class="lineCov">       7919 :     aws_atomic_init_ptr(&amp;ring_buf-&gt;tail, ring_buf-&gt;allocation);</span>
+<span class="lineNum">      49 </span><span class="lineCov">       7919 :     ring_buf-&gt;allocation_end = ring_buf-&gt;allocation + size;</span>
+<span class="lineNum">      50 </span><span class="lineCov">       7919 : </span>
+<span class="lineNum">      51 </span><span class="lineCov">       7919 :     AWS_POSTCONDITION(aws_ring_buffer_is_valid(ring_buf));</span>
+<span class="lineNum">      52 </span><span class="lineCov">       7919 :     return AWS_OP_SUCCESS;</span>
+<a name="53"><span class="lineNum">      53 </span><span class="lineCov">       7919 : }</span></a>
 <span class="lineNum">      54 </span>            : 
-<span class="lineNum">      55 </span><span class="lineCov">       7752 : void aws_ring_buffer_clean_up(struct aws_ring_buffer *ring_buf) {</span>
-<span class="lineNum">      56 </span><span class="lineCov">       7752 :     AWS_PRECONDITION(aws_ring_buffer_is_valid(ring_buf));</span>
-<span class="lineNum">      57 </span><span class="lineCov">       7752 :     if (ring_buf-&gt;allocation) {</span>
-<span class="lineNum">      58 </span><span class="lineCov">       7752 :         aws_mem_release(ring_buf-&gt;allocator, ring_buf-&gt;allocation);</span>
-<span class="lineNum">      59 </span><span class="lineCov">       7752 :     }</span>
-<span class="lineNum">      60 </span><span class="lineCov">       7752 : </span>
-<span class="lineNum">      61 </span><span class="lineCov">       7752 :     AWS_ZERO_STRUCT(*ring_buf);</span>
-<a name="62"><span class="lineNum">      62 </span><span class="lineCov">       7752 : }</span></a>
+<span class="lineNum">      55 </span><span class="lineCov">      11959 : void aws_ring_buffer_clean_up(struct aws_ring_buffer *ring_buf) {</span>
+<span class="lineNum">      56 </span><span class="lineCov">      11959 :     AWS_PRECONDITION(aws_ring_buffer_is_valid(ring_buf));</span>
+<span class="lineNum">      57 </span><span class="lineCov">      11959 :     if (ring_buf-&gt;allocation) {</span>
+<span class="lineNum">      58 </span><span class="lineCov">      11959 :         aws_mem_release(ring_buf-&gt;allocator, ring_buf-&gt;allocation);</span>
+<span class="lineNum">      59 </span><span class="lineCov">      11959 :     }</span>
+<span class="lineNum">      60 </span><span class="lineCov">      11959 : </span>
+<span class="lineNum">      61 </span><span class="lineCov">      11959 :     AWS_ZERO_STRUCT(*ring_buf);</span>
+<a name="62"><span class="lineNum">      62 </span><span class="lineCov">      11959 : }</span></a>
 <span class="lineNum">      63 </span>            : 
 <span class="lineNum">      64 </span><span class="lineNoCov">          0 : int aws_ring_buffer_acquire(struct aws_ring_buffer *ring_buf, size_t requested_size, struct aws_byte_buf *dest) {</span>
 <span class="lineNum">      65 </span><span class="lineNoCov">          0 :     AWS_PRECONDITION(aws_ring_buffer_is_valid(ring_buf));</span>

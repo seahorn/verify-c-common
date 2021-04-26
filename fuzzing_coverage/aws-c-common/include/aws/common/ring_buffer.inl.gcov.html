@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">6</td>
@@ -75,9 +75,9 @@
 <span class="lineNum">      13 </span>            :  */
 <a name="14"><span class="lineNum">      14 </span>            : AWS_STATIC_IMPL bool aws_ring_buffer_check_atomic_ptr(</a>
 <span class="lineNum">      15 </span>            :     const struct aws_ring_buffer *ring_buf,
-<span class="lineNum">      16 </span><span class="lineCov">      50500 :     const uint8_t *atomic_ptr) {</span>
-<span class="lineNum">      17 </span><span class="lineCov">      50500 :     return (atomic_ptr &gt;= ring_buf-&gt;allocation &amp;&amp; atomic_ptr &lt;= ring_buf-&gt;allocation_end);</span>
-<span class="lineNum">      18 </span><span class="lineCov">      50500 : }</span>
+<span class="lineNum">      16 </span><span class="lineCov">      80838 :     const uint8_t *atomic_ptr) {</span>
+<span class="lineNum">      17 </span><span class="lineCov">      80838 :     return (atomic_ptr &gt;= ring_buf-&gt;allocation &amp;&amp; atomic_ptr &lt;= ring_buf-&gt;allocation_end);</span>
+<span class="lineNum">      18 </span><span class="lineCov">      80838 : }</span>
 <span class="lineNum">      19 </span>            : 
 <span class="lineNum">      20 </span>            : /**
 <a name="21"><span class="lineNum">      21 </span>            :  * Checks whether the ring buffer is empty</a>
@@ -92,16 +92,16 @@
 <span class="lineNum">      30 </span>            :  * Evaluates the set of properties that define the shape of all valid aws_ring_buffer structures.
 <a name="31"><span class="lineNum">      31 </span>            :  * It is also a cheap check, in the sense it run in constant time (i.e., no loops or recursion).</a>
 <span class="lineNum">      32 </span>            :  */
-<span class="lineNum">      33 </span><span class="lineCov">      25250 : AWS_STATIC_IMPL bool aws_ring_buffer_is_valid(const struct aws_ring_buffer *ring_buf) {</span>
-<span class="lineNum">      34 </span><span class="lineCov">      25250 :     uint8_t *head = (uint8_t *)aws_atomic_load_ptr(&amp;ring_buf-&gt;head);</span>
-<span class="lineNum">      35 </span><span class="lineCov">      25250 :     uint8_t *tail = (uint8_t *)aws_atomic_load_ptr(&amp;ring_buf-&gt;tail);</span>
-<span class="lineNum">      36 </span><span class="lineCov">      25250 :     bool head_in_range = aws_ring_buffer_check_atomic_ptr(ring_buf, head);</span>
-<span class="lineNum">      37 </span><span class="lineCov">      25250 :     bool tail_in_range = aws_ring_buffer_check_atomic_ptr(ring_buf, tail);</span>
-<span class="lineNum">      38 </span><span class="lineCov">      25250 :     /* if head points-to the first element of the buffer then tail must too */</span>
-<span class="lineNum">      39 </span><span class="lineCov">      25250 :     bool valid_head_tail = (head != ring_buf-&gt;allocation) || (tail == ring_buf-&gt;allocation);</span>
-<span class="lineNum">      40 </span><span class="lineCov">      25250 :     return ring_buf &amp;&amp; AWS_MEM_IS_READABLE(ring_buf-&gt;allocation, ring_buf-&gt;allocation_end - ring_buf-&gt;allocation) &amp;&amp;</span>
-<span class="lineNum">      41 </span><span class="lineCov">      25250 :            head_in_range &amp;&amp; tail_in_range &amp;&amp; valid_head_tail &amp;&amp; (ring_buf-&gt;allocator != NULL);</span>
-<span class="lineNum">      42 </span><span class="lineCov">      25250 : }</span>
+<span class="lineNum">      33 </span><span class="lineCov">      40419 : AWS_STATIC_IMPL bool aws_ring_buffer_is_valid(const struct aws_ring_buffer *ring_buf) {</span>
+<span class="lineNum">      34 </span><span class="lineCov">      40419 :     uint8_t *head = (uint8_t *)aws_atomic_load_ptr(&amp;ring_buf-&gt;head);</span>
+<span class="lineNum">      35 </span><span class="lineCov">      40419 :     uint8_t *tail = (uint8_t *)aws_atomic_load_ptr(&amp;ring_buf-&gt;tail);</span>
+<span class="lineNum">      36 </span><span class="lineCov">      40419 :     bool head_in_range = aws_ring_buffer_check_atomic_ptr(ring_buf, head);</span>
+<span class="lineNum">      37 </span><span class="lineCov">      40419 :     bool tail_in_range = aws_ring_buffer_check_atomic_ptr(ring_buf, tail);</span>
+<span class="lineNum">      38 </span><span class="lineCov">      40419 :     /* if head points-to the first element of the buffer then tail must too */</span>
+<span class="lineNum">      39 </span><span class="lineCov">      40419 :     bool valid_head_tail = (head != ring_buf-&gt;allocation) || (tail == ring_buf-&gt;allocation);</span>
+<span class="lineNum">      40 </span><span class="lineCov">      40419 :     return ring_buf &amp;&amp; AWS_MEM_IS_READABLE(ring_buf-&gt;allocation, ring_buf-&gt;allocation_end - ring_buf-&gt;allocation) &amp;&amp;</span>
+<span class="lineNum">      41 </span><span class="lineCov">      40419 :            head_in_range &amp;&amp; tail_in_range &amp;&amp; valid_head_tail &amp;&amp; (ring_buf-&gt;allocator != NULL);</span>
+<span class="lineNum">      42 </span><span class="lineCov">      40419 : }</span>
 <span class="lineNum">      43 </span>            : AWS_EXTERN_C_END
 <span class="lineNum">      44 </span>            : #endif /* AWS_COMMON_RING_BUFFER_INL */
 </pre>

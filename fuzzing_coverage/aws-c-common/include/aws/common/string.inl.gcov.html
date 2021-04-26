@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">27</td>
@@ -74,10 +74,10 @@
 <span class="lineNum">      12 </span>            :  * Equivalent to str-&gt;bytes.
 <a name="13"><span class="lineNum">      13 </span>            :  */</a>
 <span class="lineNum">      14 </span>            : AWS_STATIC_IMPL
-<span class="lineNum">      15 </span><span class="lineCov">     376796 : const uint8_t *aws_string_bytes(const struct aws_string *str) {</span>
-<span class="lineNum">      16 </span><span class="lineCov">     376796 :     AWS_PRECONDITION(aws_string_is_valid(str));</span>
-<span class="lineNum">      17 </span><span class="lineCov">     376796 :     return str-&gt;bytes;</span>
-<span class="lineNum">      18 </span><span class="lineCov">     376796 : }</span>
+<span class="lineNum">      15 </span><span class="lineCov">     564425 : const uint8_t *aws_string_bytes(const struct aws_string *str) {</span>
+<span class="lineNum">      16 </span><span class="lineCov">     564425 :     AWS_PRECONDITION(aws_string_is_valid(str));</span>
+<span class="lineNum">      17 </span><span class="lineCov">     564425 :     return str-&gt;bytes;</span>
+<span class="lineNum">      18 </span><span class="lineCov">     564425 : }</span>
 <span class="lineNum">      19 </span>            : 
 <span class="lineNum">      20 </span>            : /**
 <span class="lineNum">      21 </span>            :  * Equivalent to `(const char *)str-&gt;bytes`.
@@ -93,22 +93,22 @@
 <span class="lineNum">      31 </span>            :  * It is also a cheap check, in the sense it run in constant time (i.e., no loops or recursion).
 <a name="32"><span class="lineNum">      32 </span>            :  */</a>
 <span class="lineNum">      33 </span>            : AWS_STATIC_IMPL
-<span class="lineNum">      34 </span><span class="lineCov">    3236610 : bool aws_string_is_valid(const struct aws_string *str) {</span>
-<span class="lineNum">      35 </span><span class="lineCov">    3236610 :     return str &amp;&amp; AWS_MEM_IS_READABLE(&amp;str-&gt;bytes[0], str-&gt;len + 1) &amp;&amp; str-&gt;bytes[str-&gt;len] == 0;</span>
-<span class="lineNum">      36 </span><span class="lineCov">    3236610 : }</span>
+<span class="lineNum">      34 </span><span class="lineCov">    4850809 : bool aws_string_is_valid(const struct aws_string *str) {</span>
+<span class="lineNum">      35 </span><span class="lineCov">    4850809 :     return str &amp;&amp; AWS_MEM_IS_READABLE(&amp;str-&gt;bytes[0], str-&gt;len + 1) &amp;&amp; str-&gt;bytes[str-&gt;len] == 0;</span>
+<span class="lineNum">      36 </span><span class="lineCov">    4850809 : }</span>
 <span class="lineNum">      37 </span>            : 
 <span class="lineNum">      38 </span>            : /**
 <span class="lineNum">      39 </span>            :  * Best-effort checks aws_string invariants, when the str-&gt;len is unknown
 <a name="40"><span class="lineNum">      40 </span>            :  */</a>
 <span class="lineNum">      41 </span>            : AWS_STATIC_IMPL
-<span class="lineNum">      42 </span><span class="lineCov">     639534 : bool aws_c_string_is_valid(const char *str) {</span>
-<span class="lineNum">      43 </span><span class="lineCov">     639534 :     /* Knowing the actual length to check would require strlen(), which is</span>
-<span class="lineNum">      44 </span><span class="lineCov">     639534 :      * a) linear time in the length of the string</span>
-<span class="lineNum">      45 </span><span class="lineCov">     639534 :      * b) could already cause a memory violation for a non-zero-terminated string.</span>
-<span class="lineNum">      46 </span><span class="lineCov">     639534 :      * But we know that a c-string must have at least one character, to store the null terminator</span>
-<span class="lineNum">      47 </span><span class="lineCov">     639534 :      */</span>
-<span class="lineNum">      48 </span><span class="lineCov">     639534 :     return str &amp;&amp; AWS_MEM_IS_READABLE(str, 1);</span>
-<span class="lineNum">      49 </span><span class="lineCov">     639534 : }</span>
+<span class="lineNum">      42 </span><span class="lineCov">     947649 : bool aws_c_string_is_valid(const char *str) {</span>
+<span class="lineNum">      43 </span><span class="lineCov">     947649 :     /* Knowing the actual length to check would require strlen(), which is</span>
+<span class="lineNum">      44 </span><span class="lineCov">     947649 :      * a) linear time in the length of the string</span>
+<span class="lineNum">      45 </span><span class="lineCov">     947649 :      * b) could already cause a memory violation for a non-zero-terminated string.</span>
+<span class="lineNum">      46 </span><span class="lineCov">     947649 :      * But we know that a c-string must have at least one character, to store the null terminator</span>
+<span class="lineNum">      47 </span><span class="lineCov">     947649 :      */</span>
+<span class="lineNum">      48 </span><span class="lineCov">     947649 :     return str &amp;&amp; AWS_MEM_IS_READABLE(str, 1);</span>
+<span class="lineNum">      49 </span><span class="lineCov">     947649 : }</span>
 <span class="lineNum">      50 </span>            : 
 <span class="lineNum">      51 </span>            : /**
 <span class="lineNum">      52 </span>            :  * Evaluates if a char is a white character.

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -140,7 +140,7 @@
 <span class="lineNum">      78 </span>            :      (defined(i386) || defined(__i386__) || defined(__i486__) || \
 <span class="lineNum">      79 </span>            :       defined(__i586__) || defined(__i686__) || defined(vax) || defined(MIPSEL) || \
 <span class="lineNum">      80 </span>            :       defined(_M_IX86) || defined(_M_X64) || defined(_M_IA64) || defined(_M_ARM))
-<span class="lineNum">      81 </span><span class="lineCov">     427194 : # define HASH_LITTLE_ENDIAN 1</span>
+<span class="lineNum">      81 </span><span class="lineCov">     644878 : # define HASH_LITTLE_ENDIAN 1</span>
 <span class="lineNum">      82 </span><span class="lineNoCov">          0 : # define HASH_BIG_ENDIAN 0</span>
 <span class="lineNum">      83 </span>            : #elif (defined(__BYTE_ORDER) &amp;&amp; defined(__BIG_ENDIAN) &amp;&amp; \
 <span class="lineNum">      84 </span>            :        __BYTE_ORDER == __BIG_ENDIAN) || \
@@ -154,7 +154,7 @@
 <span class="lineNum">      92 </span>            : 
 <span class="lineNum">      93 </span>            : #define hashsize(n) ((uint32_t)1&lt;&lt;(n))
 <span class="lineNum">      94 </span>            : #define hashmask(n) (hashsize(n)-1)
-<span class="lineNum">      95 </span><span class="lineCov">    1442315 : #define rot(x,k) (((x)&lt;&lt;(k)) | ((x)&gt;&gt;(32-(k))))</span>
+<span class="lineNum">      95 </span><span class="lineCov">    2177273 : #define rot(x,k) (((x)&lt;&lt;(k)) | ((x)&gt;&gt;(32-(k))))</span>
 <span class="lineNum">      96 </span>            : 
 <span class="lineNum">      97 </span>            : /*
 <span class="lineNum">      98 </span>            : -------------------------------------------------------------------------------
@@ -235,16 +235,16 @@
 <span class="lineNum">     173 </span>            :  11  8 15 26 3 22 24
 <span class="lineNum">     174 </span>            : -------------------------------------------------------------------------------
 <span class="lineNum">     175 </span>            : */
-<span class="lineNum">     176 </span><span class="lineCov">     412090 : #define final(a,b,c) \</span>
-<span class="lineNum">     177 </span><span class="lineCov">     412090 : { \</span>
-<span class="lineNum">     178 </span><span class="lineCov">     412090 :   c ^= b; c -= rot(b,14); \</span>
-<span class="lineNum">     179 </span><span class="lineCov">     412090 :   a ^= c; a -= rot(c,11); \</span>
-<span class="lineNum">     180 </span><span class="lineCov">     412090 :   b ^= a; b -= rot(a,25); \</span>
-<span class="lineNum">     181 </span><span class="lineCov">     412090 :   c ^= b; c -= rot(b,16); \</span>
-<span class="lineNum">     182 </span><span class="lineCov">     412090 :   a ^= c; a -= rot(c,4);  \</span>
-<span class="lineNum">     183 </span><span class="lineCov">     412090 :   b ^= a; b -= rot(a,14); \</span>
-<span class="lineNum">     184 </span><span class="lineCov">     412090 :   c ^= b; c -= rot(b,24); \</span>
-<span class="lineNum">     185 </span><span class="lineCov">     412090 : }</span>
+<span class="lineNum">     176 </span><span class="lineCov">     622078 : #define final(a,b,c) \</span>
+<span class="lineNum">     177 </span><span class="lineCov">     622078 : { \</span>
+<span class="lineNum">     178 </span><span class="lineCov">     622078 :   c ^= b; c -= rot(b,14); \</span>
+<span class="lineNum">     179 </span><span class="lineCov">     622078 :   a ^= c; a -= rot(c,11); \</span>
+<span class="lineNum">     180 </span><span class="lineCov">     622078 :   b ^= a; b -= rot(a,25); \</span>
+<span class="lineNum">     181 </span><span class="lineCov">     622078 :   c ^= b; c -= rot(b,16); \</span>
+<span class="lineNum">     182 </span><span class="lineCov">     622078 :   a ^= c; a -= rot(c,4);  \</span>
+<span class="lineNum">     183 </span><span class="lineCov">     622078 :   b ^= a; b -= rot(a,14); \</span>
+<span class="lineNum">     184 </span><span class="lineCov">     622078 :   c ^= b; c -= rot(b,24); \</span>
+<span class="lineNum">     185 </span><span class="lineCov">     622078 : }</span>
 <span class="lineNum">     186 </span>            : 
 <span class="lineNum">     187 </span>            : /*
 <span class="lineNum">     188 </span>            : --------------------------------------------------------------------
@@ -560,20 +560,20 @@
 <span class="lineNum">     498 </span>            :   size_t      length,    /* length of the key */
 <a name="499"><span class="lineNum">     499 </span>            :   uint32_t   *pc,        /* IN: primary initval, OUT: primary hash */</a>
 <span class="lineNum">     500 </span>            :   uint32_t   *pb)        /* IN: secondary initval, OUT: secondary hash */
-<span class="lineNum">     501 </span><span class="lineCov">     213597 : {</span>
-<span class="lineNum">     502 </span><span class="lineCov">     213597 :   uint32_t a,b,c;                                          /* internal state */</span>
-<span class="lineNum">     503 </span><span class="lineCov">     213597 :   union { const void *ptr; size_t i; } u;     /* needed for Mac Powerbook G4 */</span>
-<span class="lineNum">     504 </span><span class="lineCov">     213597 : </span>
-<span class="lineNum">     505 </span><span class="lineCov">     213597 :   /* Set up the internal state */</span>
-<span class="lineNum">     506 </span><span class="lineCov">     213597 :   a = b = c = 0xdeadbeef + ((uint32_t)length) + *pc;</span>
-<span class="lineNum">     507 </span><span class="lineCov">     213597 :   c += *pb;</span>
-<span class="lineNum">     508 </span><span class="lineCov">     213597 : </span>
-<span class="lineNum">     509 </span><span class="lineCov">     213597 :   u.ptr = key;</span>
-<span class="lineNum">     510 </span><span class="lineCov">     213597 :   if (HASH_LITTLE_ENDIAN &amp;&amp; ((u.i &amp; 0x3) == 0)) {</span>
-<span class="lineNum">     511 </span><span class="lineCov">     213597 :     const uint32_t *k = (const uint32_t *)key;         /* read 32-bit chunks */</span>
-<span class="lineNum">     512 </span><span class="lineCov">     213597 : </span>
-<span class="lineNum">     513 </span><span class="lineCov">     213597 :     /*------ all but last block: aligned reads and affect 32 bits of (a,b,c) */</span>
-<span class="lineNum">     514 </span><span class="lineCov">     213597 :     while (length &gt; 12)</span>
+<span class="lineNum">     501 </span><span class="lineCov">     322439 : {</span>
+<span class="lineNum">     502 </span><span class="lineCov">     322439 :   uint32_t a,b,c;                                          /* internal state */</span>
+<span class="lineNum">     503 </span><span class="lineCov">     322439 :   union { const void *ptr; size_t i; } u;     /* needed for Mac Powerbook G4 */</span>
+<span class="lineNum">     504 </span><span class="lineCov">     322439 : </span>
+<span class="lineNum">     505 </span><span class="lineCov">     322439 :   /* Set up the internal state */</span>
+<span class="lineNum">     506 </span><span class="lineCov">     322439 :   a = b = c = 0xdeadbeef + ((uint32_t)length) + *pc;</span>
+<span class="lineNum">     507 </span><span class="lineCov">     322439 :   c += *pb;</span>
+<span class="lineNum">     508 </span><span class="lineCov">     322439 : </span>
+<span class="lineNum">     509 </span><span class="lineCov">     322439 :   u.ptr = key;</span>
+<span class="lineNum">     510 </span><span class="lineCov">     322439 :   if (HASH_LITTLE_ENDIAN &amp;&amp; ((u.i &amp; 0x3) == 0)) {</span>
+<span class="lineNum">     511 </span><span class="lineCov">     322439 :     const uint32_t *k = (const uint32_t *)key;         /* read 32-bit chunks */</span>
+<span class="lineNum">     512 </span><span class="lineCov">     322439 : </span>
+<span class="lineNum">     513 </span><span class="lineCov">     322439 :     /*------ all but last block: aligned reads and affect 32 bits of (a,b,c) */</span>
+<span class="lineNum">     514 </span><span class="lineCov">     322439 :     while (length &gt; 12)</span>
 <span class="lineNum">     515 </span><span class="lineNoCov">          0 :     {</span>
 <span class="lineNum">     516 </span><span class="lineNoCov">          0 :       a += k[0];</span>
 <span class="lineNum">     517 </span><span class="lineNoCov">          0 :       b += k[1];</span>
@@ -582,41 +582,41 @@
 <span class="lineNum">     520 </span><span class="lineNoCov">          0 :       length -= 12;</span>
 <span class="lineNum">     521 </span><span class="lineNoCov">          0 :       k += 3;</span>
 <span class="lineNum">     522 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     523 </span><span class="lineCov">     213597 : </span>
-<span class="lineNum">     524 </span><span class="lineCov">     213597 :     /*----------------------------- handle the last (probably partial) block */</span>
-<span class="lineNum">     525 </span><span class="lineCov">     213597 :     /*</span>
-<span class="lineNum">     526 </span><span class="lineCov">     213597 :      * &quot;k[2]&amp;0xffffff&quot; actually reads beyond the end of the string, but</span>
-<span class="lineNum">     527 </span><span class="lineCov">     213597 :      * then masks off the part it's not allowed to read.  Because the</span>
-<span class="lineNum">     528 </span><span class="lineCov">     213597 :      * string is aligned, the masked-off tail is in the same word as the</span>
-<span class="lineNum">     529 </span><span class="lineCov">     213597 :      * rest of the string. Every machine with memory protection I've seen</span>
-<span class="lineNum">     530 </span><span class="lineCov">     213597 :      * does it on word boundaries, so is OK with this. But VALGRIND and CBMC</span>
-<span class="lineNum">     531 </span><span class="lineCov">     213597 :      * will still catch it and complain. CBMC will ignore this type of error</span>
-<span class="lineNum">     532 </span><span class="lineCov">     213597 :      * in the code block between the pragmas &quot;CPROVER check push&quot; and</span>
-<span class="lineNum">     533 </span><span class="lineCov">     213597 :      * &quot;CPROVER check pop&quot;. The masking trick does make the hash noticably</span>
-<span class="lineNum">     534 </span><span class="lineCov">     213597 :      * faster for short strings (like English words).</span>
-<span class="lineNum">     535 </span><span class="lineCov">     213597 :      */</span>
-<span class="lineNum">     536 </span><span class="lineCov">     213597 : #ifndef VALGRIND</span>
+<span class="lineNum">     523 </span><span class="lineCov">     322439 : </span>
+<span class="lineNum">     524 </span><span class="lineCov">     322439 :     /*----------------------------- handle the last (probably partial) block */</span>
+<span class="lineNum">     525 </span><span class="lineCov">     322439 :     /*</span>
+<span class="lineNum">     526 </span><span class="lineCov">     322439 :      * &quot;k[2]&amp;0xffffff&quot; actually reads beyond the end of the string, but</span>
+<span class="lineNum">     527 </span><span class="lineCov">     322439 :      * then masks off the part it's not allowed to read.  Because the</span>
+<span class="lineNum">     528 </span><span class="lineCov">     322439 :      * string is aligned, the masked-off tail is in the same word as the</span>
+<span class="lineNum">     529 </span><span class="lineCov">     322439 :      * rest of the string. Every machine with memory protection I've seen</span>
+<span class="lineNum">     530 </span><span class="lineCov">     322439 :      * does it on word boundaries, so is OK with this. But VALGRIND and CBMC</span>
+<span class="lineNum">     531 </span><span class="lineCov">     322439 :      * will still catch it and complain. CBMC will ignore this type of error</span>
+<span class="lineNum">     532 </span><span class="lineCov">     322439 :      * in the code block between the pragmas &quot;CPROVER check push&quot; and</span>
+<span class="lineNum">     533 </span><span class="lineCov">     322439 :      * &quot;CPROVER check pop&quot;. The masking trick does make the hash noticably</span>
+<span class="lineNum">     534 </span><span class="lineCov">     322439 :      * faster for short strings (like English words).</span>
+<span class="lineNum">     535 </span><span class="lineCov">     322439 :      */</span>
+<span class="lineNum">     536 </span><span class="lineCov">     322439 : #ifndef VALGRIND</span>
 <span class="lineNum">     537 </span>            : #ifdef CBMC
 <span class="lineNum">     538 </span>            : #    pragma CPROVER check push
 <span class="lineNum">     539 </span>            : #    pragma CPROVER check disable &quot;pointer&quot;
 <span class="lineNum">     540 </span>            : #endif
 <span class="lineNum">     541 </span>            :     // changed in aws-c-common: fix unused variable warning
-<span class="lineNum">     542 </span><span class="lineCov">     213597 : </span>
-<span class="lineNum">     543 </span><span class="lineCov">     213597 :     switch(length)</span>
-<span class="lineNum">     544 </span><span class="lineCov">     213597 :     {</span>
+<span class="lineNum">     542 </span><span class="lineCov">     322439 : </span>
+<span class="lineNum">     543 </span><span class="lineCov">     322439 :     switch(length)</span>
+<span class="lineNum">     544 </span><span class="lineCov">     322439 :     {</span>
 <span class="lineNum">     545 </span><span class="lineNoCov">          0 :     case 12: c+=k[2]; b+=k[1]; a+=k[0]; break;</span>
 <span class="lineNum">     546 </span><span class="lineNoCov">          0 :     case 11: c+=k[2]&amp;0xffffff; b+=k[1]; a+=k[0]; break;</span>
-<span class="lineNum">     547 </span><span class="lineCov">       2618 :     case 10: c+=k[2]&amp;0xffff; b+=k[1]; a+=k[0]; break;</span>
-<span class="lineNum">     548 </span><span class="lineCov">      13109 :     case 9 : c+=k[2]&amp;0xff; b+=k[1]; a+=k[0]; break;</span>
-<span class="lineNum">     549 </span><span class="lineCov">     104754 :     case 8 : b+=k[1]; a+=k[0]; break;</span>
-<span class="lineNum">     550 </span><span class="lineCov">      13989 :     case 7 : b+=k[1]&amp;0xffffff; a+=k[0]; break;</span>
-<span class="lineNum">     551 </span><span class="lineCov">      12946 :     case 6 : b+=k[1]&amp;0xffff; a+=k[0]; break;</span>
-<span class="lineNum">     552 </span><span class="lineCov">      13411 :     case 5 : b+=k[1]&amp;0xff; a+=k[0]; break;</span>
-<span class="lineNum">     553 </span><span class="lineCov">       9866 :     case 4 : a+=k[0]; break;</span>
-<span class="lineNum">     554 </span><span class="lineCov">      12210 :     case 3 : a+=k[0]&amp;0xffffff; break;</span>
-<span class="lineNum">     555 </span><span class="lineCov">      10316 :     case 2 : a+=k[0]&amp;0xffff; break;</span>
-<span class="lineNum">     556 </span><span class="lineCov">      12826 :     case 1 : a+=k[0]&amp;0xff; break;</span>
-<span class="lineNum">     557 </span><span class="lineCov">       7552 :     case 0 : *pc=c; *pb=b; return;  /* zero length strings require no mixing */</span>
+<span class="lineNum">     547 </span><span class="lineCov">       3965 :     case 10: c+=k[2]&amp;0xffff; b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     548 </span><span class="lineCov">      19493 :     case 9 : c+=k[2]&amp;0xff; b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     549 </span><span class="lineCov">     156623 :     case 8 : b+=k[1]; a+=k[0]; break;</span>
+<span class="lineNum">     550 </span><span class="lineCov">      21601 :     case 7 : b+=k[1]&amp;0xffffff; a+=k[0]; break;</span>
+<span class="lineNum">     551 </span><span class="lineCov">      20224 :     case 6 : b+=k[1]&amp;0xffff; a+=k[0]; break;</span>
+<span class="lineNum">     552 </span><span class="lineCov">      20660 :     case 5 : b+=k[1]&amp;0xff; a+=k[0]; break;</span>
+<span class="lineNum">     553 </span><span class="lineCov">      14819 :     case 4 : a+=k[0]; break;</span>
+<span class="lineNum">     554 </span><span class="lineCov">      18516 :     case 3 : a+=k[0]&amp;0xffffff; break;</span>
+<span class="lineNum">     555 </span><span class="lineCov">      15815 :     case 2 : a+=k[0]&amp;0xffff; break;</span>
+<span class="lineNum">     556 </span><span class="lineCov">      19323 :     case 1 : a+=k[0]&amp;0xff; break;</span>
+<span class="lineNum">     557 </span><span class="lineCov">      11400 :     case 0 : *pc=c; *pb=b; return;  /* zero length strings require no mixing */</span>
 <span class="lineNum">     558 </span><span class="lineNoCov">          0 :     }</span>
 <span class="lineNum">     559 </span><span class="lineNoCov">          0 : </span>
 <span class="lineNum">     560 </span>            : #ifdef CBMC
@@ -730,12 +730,12 @@
 <span class="lineNum">     668 </span><span class="lineNoCov">          0 :     case 1 : a+=k[0];</span>
 <span class="lineNum">     669 </span><span class="lineNoCov">          0 :              break;</span>
 <span class="lineNum">     670 </span><span class="lineNoCov">          0 :     case 0 : *pc=c; *pb=b; return;  /* zero length strings require no mixing */</span>
-<span class="lineNum">     671 </span><span class="lineCov">     206045 :     }</span>
-<span class="lineNum">     672 </span><span class="lineCov">     206045 :   }</span>
-<span class="lineNum">     673 </span><span class="lineCov">     206045 : </span>
-<span class="lineNum">     674 </span><span class="lineCov">     206045 :   final(a,b,c);</span>
-<span class="lineNum">     675 </span><span class="lineCov">     206045 :   *pc=c; *pb=b;</span>
-<span class="lineNum">     676 </span><span class="lineCov">     206045 : }</span>
+<span class="lineNum">     671 </span><span class="lineCov">     311039 :     }</span>
+<span class="lineNum">     672 </span><span class="lineCov">     311039 :   }</span>
+<span class="lineNum">     673 </span><span class="lineCov">     311039 : </span>
+<span class="lineNum">     674 </span><span class="lineCov">     311039 :   final(a,b,c);</span>
+<span class="lineNum">     675 </span><span class="lineCov">     311039 :   *pc=c; *pb=b;</span>
+<span class="lineNum">     676 </span><span class="lineCov">     311039 : }</span>
 <span class="lineNum">     677 </span>            : 
 <span class="lineNum">     678 </span>            : 
 <span class="lineNum">     679 </span>            : 

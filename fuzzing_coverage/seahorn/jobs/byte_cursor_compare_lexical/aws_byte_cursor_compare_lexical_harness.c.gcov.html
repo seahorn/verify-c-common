@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -69,60 +69,60 @@
 <span class="lineNum">       7 </span>            : #include &lt;byte_buf_helper.h&gt;
 <a name="8"><span class="lineNum">       8 </span>            : #include &lt;utils.h&gt;</a>
 <span class="lineNum">       9 </span>            : 
-<span class="lineNum">      10 </span><span class="lineCov">     100000 : int main() {</span>
-<span class="lineNum">      11 </span><span class="lineCov">     100000 :     /* parameters */</span>
-<span class="lineNum">      12 </span><span class="lineCov">     100000 :     struct aws_byte_cursor lhs;</span>
-<span class="lineNum">      13 </span><span class="lineCov">     100000 :     initialize_byte_cursor(&amp;lhs);</span>
-<span class="lineNum">      14 </span><span class="lineCov">     100000 :     struct aws_byte_cursor rhs;</span>
-<span class="lineNum">      15 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      16 </span><span class="lineCov">     100000 :     /* assumptions */</span>
-<span class="lineNum">      17 </span><span class="lineCov">     100000 :     assume(aws_byte_cursor_is_valid(&amp;lhs));</span>
+<span class="lineNum">      10 </span><span class="lineCov">     150000 : int main() {</span>
+<span class="lineNum">      11 </span><span class="lineCov">     150000 :     /* parameters */</span>
+<span class="lineNum">      12 </span><span class="lineCov">     150000 :     struct aws_byte_cursor lhs;</span>
+<span class="lineNum">      13 </span><span class="lineCov">     150000 :     initialize_byte_cursor(&amp;lhs);</span>
+<span class="lineNum">      14 </span><span class="lineCov">     150000 :     struct aws_byte_cursor rhs;</span>
+<span class="lineNum">      15 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      16 </span><span class="lineCov">     150000 :     /* assumptions */</span>
+<span class="lineNum">      17 </span><span class="lineCov">     150000 :     assume(aws_byte_cursor_is_valid(&amp;lhs));</span>
 <span class="lineNum">      18 </span>            :     #ifdef __KLEE__
 <span class="lineNum">      19 </span>            :         if (lhs.ptr == NULL) return 0;
 <span class="lineNum">      20 </span>            :     #else 
-<span class="lineNum">      21 </span><span class="lineCov">     100000 :         assume(lhs.ptr != NULL);</span>
-<span class="lineNum">      22 </span><span class="lineCov">     100000 :     #endif</span>
-<span class="lineNum">      23 </span><span class="lineCov">     100000 :     if (nd_bool()) {</span>
-<span class="lineNum">      24 </span><span class="lineCov">      63433 :         rhs = lhs;</span>
-<span class="lineNum">      25 </span><span class="lineCov">      63433 :     } else {</span>
-<span class="lineNum">      26 </span><span class="lineCov">      36567 :         initialize_byte_cursor(&amp;rhs);</span>
-<span class="lineNum">      27 </span><span class="lineCov">      36567 :         assume(aws_byte_cursor_is_valid(&amp;rhs));</span>
+<span class="lineNum">      21 </span><span class="lineCov">     150000 :         assume(lhs.ptr != NULL);</span>
+<span class="lineNum">      22 </span><span class="lineCov">     150000 :     #endif</span>
+<span class="lineNum">      23 </span><span class="lineCov">     150000 :     if (nd_bool()) {</span>
+<span class="lineNum">      24 </span><span class="lineCov">      93934 :         rhs = lhs;</span>
+<span class="lineNum">      25 </span><span class="lineCov">      93934 :     } else {</span>
+<span class="lineNum">      26 </span><span class="lineCov">      56066 :         initialize_byte_cursor(&amp;rhs);</span>
+<span class="lineNum">      27 </span><span class="lineCov">      56066 :         assume(aws_byte_cursor_is_valid(&amp;rhs));</span>
 <span class="lineNum">      28 </span>            :         #ifdef __KLEE__
 <span class="lineNum">      29 </span>            :             if (rhs.ptr == NULL) return 0;
 <span class="lineNum">      30 </span>            :         #else 
-<span class="lineNum">      31 </span><span class="lineCov">      36567 :             assume(rhs.ptr != NULL);</span>
-<span class="lineNum">      32 </span><span class="lineCov">      36567 :         #endif</span>
-<span class="lineNum">      33 </span><span class="lineCov">      36567 :     }</span>
-<span class="lineNum">      34 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      35 </span><span class="lineCov">     100000 :     /* save current state of the data structure */</span>
-<span class="lineNum">      36 </span><span class="lineCov">     100000 :     struct aws_byte_cursor old_lhs = lhs;</span>
-<span class="lineNum">      37 </span><span class="lineCov">     100000 :     struct store_byte_from_buffer old_byte_from_lhs;</span>
-<span class="lineNum">      38 </span><span class="lineCov">     100000 :     save_byte_from_array(lhs.ptr, lhs.len, &amp;old_byte_from_lhs);</span>
-<span class="lineNum">      39 </span><span class="lineCov">     100000 :     struct aws_byte_cursor old_rhs = rhs;</span>
-<span class="lineNum">      40 </span><span class="lineCov">     100000 :     struct store_byte_from_buffer old_byte_from_rhs;</span>
-<span class="lineNum">      41 </span><span class="lineCov">     100000 :     save_byte_from_array(rhs.ptr, rhs.len, &amp;old_byte_from_rhs);</span>
-<span class="lineNum">      42 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      43 </span><span class="lineCov">     100000 :     /* operation under verification */</span>
-<span class="lineNum">      44 </span><span class="lineCov">     100000 :     if (aws_byte_cursor_compare_lexical(&amp;lhs, &amp;rhs) == 0) {</span>
-<span class="lineNum">      45 </span><span class="lineCov">      20211 :         sassert(lhs.len == rhs.len);</span>
-<span class="lineNum">      46 </span><span class="lineCov">      20211 :         if (lhs.len &gt; 0) {</span>
-<span class="lineNum">      47 </span><span class="lineCov">      11036 :             assert_bytes_match(lhs.ptr, rhs.ptr, lhs.len);</span>
-<span class="lineNum">      48 </span><span class="lineCov">      11036 :         }</span>
-<span class="lineNum">      49 </span><span class="lineCov">      20211 :     }</span>
-<span class="lineNum">      50 </span><span class="lineCov">     100000 :     sassert(aws_byte_cursor_compare_lexical(&amp;lhs, &amp;lhs) == 0);</span>
-<span class="lineNum">      51 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      52 </span><span class="lineCov">     100000 :     /* assertions */</span>
-<span class="lineNum">      53 </span><span class="lineCov">     100000 :     sassert(aws_byte_cursor_is_valid(&amp;lhs));</span>
-<span class="lineNum">      54 </span><span class="lineCov">     100000 :     sassert(aws_byte_cursor_is_valid(&amp;rhs));</span>
-<span class="lineNum">      55 </span><span class="lineCov">     100000 :     if (lhs.len != 0) {</span>
-<span class="lineNum">      56 </span><span class="lineCov">       6246 :         assert_byte_from_buffer_matches(lhs.ptr, &amp;old_byte_from_lhs);</span>
-<span class="lineNum">      57 </span><span class="lineCov">       6246 :     }</span>
-<span class="lineNum">      58 </span><span class="lineCov">     100000 :     if (rhs.len != 0) {</span>
-<span class="lineNum">      59 </span><span class="lineCov">       2966 :         assert_byte_from_buffer_matches(rhs.ptr, &amp;old_byte_from_rhs);</span>
-<span class="lineNum">      60 </span><span class="lineCov">       2966 :     }</span>
-<span class="lineNum">      61 </span><span class="lineCov">     100000 : </span>
-<span class="lineNum">      62 </span><span class="lineCov">     100000 :     return 0;</span>
-<span class="lineNum">      63 </span><span class="lineCov">     100000 : }</span>
+<span class="lineNum">      31 </span><span class="lineCov">      56066 :             assume(rhs.ptr != NULL);</span>
+<span class="lineNum">      32 </span><span class="lineCov">      56066 :         #endif</span>
+<span class="lineNum">      33 </span><span class="lineCov">      56066 :     }</span>
+<span class="lineNum">      34 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      35 </span><span class="lineCov">     150000 :     /* save current state of the data structure */</span>
+<span class="lineNum">      36 </span><span class="lineCov">     150000 :     struct aws_byte_cursor old_lhs = lhs;</span>
+<span class="lineNum">      37 </span><span class="lineCov">     150000 :     struct store_byte_from_buffer old_byte_from_lhs;</span>
+<span class="lineNum">      38 </span><span class="lineCov">     150000 :     save_byte_from_array(lhs.ptr, lhs.len, &amp;old_byte_from_lhs);</span>
+<span class="lineNum">      39 </span><span class="lineCov">     150000 :     struct aws_byte_cursor old_rhs = rhs;</span>
+<span class="lineNum">      40 </span><span class="lineCov">     150000 :     struct store_byte_from_buffer old_byte_from_rhs;</span>
+<span class="lineNum">      41 </span><span class="lineCov">     150000 :     save_byte_from_array(rhs.ptr, rhs.len, &amp;old_byte_from_rhs);</span>
+<span class="lineNum">      42 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      43 </span><span class="lineCov">     150000 :     /* operation under verification */</span>
+<span class="lineNum">      44 </span><span class="lineCov">     150000 :     if (aws_byte_cursor_compare_lexical(&amp;lhs, &amp;rhs) == 0) {</span>
+<span class="lineNum">      45 </span><span class="lineCov">      30305 :         sassert(lhs.len == rhs.len);</span>
+<span class="lineNum">      46 </span><span class="lineCov">      30305 :         if (lhs.len &gt; 0) {</span>
+<span class="lineNum">      47 </span><span class="lineCov">      16637 :             assert_bytes_match(lhs.ptr, rhs.ptr, lhs.len);</span>
+<span class="lineNum">      48 </span><span class="lineCov">      16637 :         }</span>
+<span class="lineNum">      49 </span><span class="lineCov">      30305 :     }</span>
+<span class="lineNum">      50 </span><span class="lineCov">     150000 :     sassert(aws_byte_cursor_compare_lexical(&amp;lhs, &amp;lhs) == 0);</span>
+<span class="lineNum">      51 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      52 </span><span class="lineCov">     150000 :     /* assertions */</span>
+<span class="lineNum">      53 </span><span class="lineCov">     150000 :     sassert(aws_byte_cursor_is_valid(&amp;lhs));</span>
+<span class="lineNum">      54 </span><span class="lineCov">     150000 :     sassert(aws_byte_cursor_is_valid(&amp;rhs));</span>
+<span class="lineNum">      55 </span><span class="lineCov">     150000 :     if (lhs.len != 0) {</span>
+<span class="lineNum">      56 </span><span class="lineCov">       9569 :         assert_byte_from_buffer_matches(lhs.ptr, &amp;old_byte_from_lhs);</span>
+<span class="lineNum">      57 </span><span class="lineCov">       9569 :     }</span>
+<span class="lineNum">      58 </span><span class="lineCov">     150000 :     if (rhs.len != 0) {</span>
+<span class="lineNum">      59 </span><span class="lineCov">       4543 :         assert_byte_from_buffer_matches(rhs.ptr, &amp;old_byte_from_rhs);</span>
+<span class="lineNum">      60 </span><span class="lineCov">       4543 :     }</span>
+<span class="lineNum">      61 </span><span class="lineCov">     150000 : </span>
+<span class="lineNum">      62 </span><span class="lineCov">     150000 :     return 0;</span>
+<span class="lineNum">      63 </span><span class="lineCov">     150000 : }</span>
 </pre>
       </td>
     </tr>

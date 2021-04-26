@@ -1,0 +1,510 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - all_fuzz.info - seahorn/lib/linked_list_helper.c</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">seahorn/lib</a> - linked_list_helper.c<span style="font-size: 80%;"> (source / <a href="linked_list_helper.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">all_fuzz.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">313</td>
+            <td class="headerCovTableEntry">378</td>
+            <td class="headerCovTableEntryMed">82.8 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">22</td>
+            <td class="headerCovTableEntry">23</td>
+            <td class="headerCovTableEntryHi">95.7 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #include &lt;linked_list_helper.h&gt;</a>
+<span class="lineNum">       2 </span>            : #include &lt;nondet.h&gt;
+<span class="lineNum">       3 </span>            : #include &lt;proof_allocators.h&gt;
+<span class="lineNum">       4 </span>            : #include &lt;seahorn/seahorn.h&gt;
+<span class="lineNum">       5 </span>            : 
+<a name="6"><span class="lineNum">       6 </span>            : // init helper for length &lt;= 2</a>
+<span class="lineNum">       7 </span>            : static inline void init_short_aws_linked_list(struct aws_linked_list *list,
+<span class="lineNum">       8 </span><span class="lineCov">      21316 :                                               size_t length) {</span>
+<span class="lineNum">       9 </span><span class="lineCov">      21316 :   struct aws_linked_list_node *front;</span>
+<span class="lineNum">      10 </span><span class="lineCov">      21316 :   struct aws_linked_list_node *back;</span>
+<span class="lineNum">      11 </span><span class="lineCov">      21316 :   // initialize</span>
+<span class="lineNum">      12 </span><span class="lineCov">      21316 :   list-&gt;head.prev = NULL;</span>
+<span class="lineNum">      13 </span><span class="lineCov">      21316 :   list-&gt;tail.next = NULL;</span>
+<span class="lineNum">      14 </span><span class="lineCov">      21316 :   // populate linked list based on nd length</span>
+<span class="lineNum">      15 </span><span class="lineCov">      21316 :   if (length == 0) {</span>
+<span class="lineNum">      16 </span><span class="lineCov">      13564 :     aws_linked_list_attach_after(&amp;list-&gt;head, &amp;list-&gt;tail, true);</span>
+<span class="lineNum">      17 </span><span class="lineCov">      13564 :   } else if (length == 1) {</span>
+<span class="lineNum">      18 </span><span class="lineCov">       5678 :     front = malloc(sizeof(struct aws_linked_list_node));</span>
+<span class="lineNum">      19 </span><span class="lineCov">       5678 :     aws_linked_list_attach_after(&amp;list-&gt;head, front, true);</span>
+<span class="lineNum">      20 </span><span class="lineCov">       5678 :     aws_linked_list_attach_after(front, &amp;list-&gt;tail, true);</span>
+<span class="lineNum">      21 </span><span class="lineCov">       5700 :   } else if (length == 2) {</span>
+<span class="lineNum">      22 </span><span class="lineCov">       2074 :     front = malloc(sizeof(struct aws_linked_list_node));</span>
+<span class="lineNum">      23 </span><span class="lineCov">       2074 :     back = malloc(sizeof(struct aws_linked_list_node));</span>
+<span class="lineNum">      24 </span><span class="lineCov">       2074 :     aws_linked_list_attach_after(&amp;list-&gt;head, front, true);</span>
+<span class="lineNum">      25 </span><span class="lineCov">       2074 :     aws_linked_list_attach_after(front, back, true);</span>
+<span class="lineNum">      26 </span><span class="lineCov">       2074 :     aws_linked_list_attach_after(back, &amp;list-&gt;tail, true);</span>
+<span class="lineNum">      27 </span><span class="lineCov">       2074 :   }</span>
+<a name="28"><span class="lineNum">      28 </span><span class="lineCov">      21316 : }</span></a>
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span><span class="lineCov">    1112130 : void init_node(struct aws_linked_list_node *node) {</span>
+<span class="lineNum">      31 </span><span class="lineCov">    1112130 :   assume(node);</span>
+<span class="lineNum">      32 </span><span class="lineCov">    1112130 :   node-&gt;next = NULL;</span>
+<span class="lineNum">      33 </span><span class="lineCov">    1112130 :   node-&gt;prev = NULL;</span>
+<span class="lineNum">      34 </span><span class="lineCov">    1112130 : }</span>
+<a name="35"><span class="lineNum">      35 </span>            : </a>
+<span class="lineNum">      36 </span>            : void sea_nd_init_aws_linked_list_from_head(struct aws_linked_list *list,
+<span class="lineNum">      37 </span><span class="lineCov">     250000 :                                            size_t *length) {</span>
+<span class="lineNum">      38 </span><span class="lineCov">     250000 :   list-&gt;head.prev = NULL;</span>
+<span class="lineNum">      39 </span><span class="lineCov">     250000 :   list-&gt;tail.next = NULL;</span>
+<span class="lineNum">      40 </span><span class="lineCov">     250000 : </span>
+<span class="lineNum">      41 </span><span class="lineCov">     250000 :   size_t nd_len = nd_size_t();</span>
+<span class="lineNum">      42 </span><span class="lineCov">     250000 :   *length = nd_len;</span>
+<span class="lineNum">      43 </span><span class="lineCov">     250000 :   if (nd_len &lt;= 2) {</span>
+<span class="lineNum">      44 </span><span class="lineCov">       2830 :     init_short_aws_linked_list(list, nd_len);</span>
+<span class="lineNum">      45 </span><span class="lineCov">     247170 :   } else {</span>
+<span class="lineNum">      46 </span><span class="lineCov">     247170 :     // HEAD &lt;--&gt; front &lt;--&gt; front_next --&gt; nd ... nd &lt;-- TAIL</span>
+<span class="lineNum">      47 </span><span class="lineCov">     247170 :     struct aws_linked_list_node *front =</span>
+<span class="lineNum">      48 </span><span class="lineCov">     247170 :         malloc(sizeof(struct aws_linked_list_node));</span>
+<span class="lineNum">      49 </span><span class="lineCov">     247170 :     init_node(front);</span>
+<span class="lineNum">      50 </span><span class="lineCov">     247170 :     struct aws_linked_list_node *front_next =</span>
+<span class="lineNum">      51 </span><span class="lineCov">     247170 :         malloc(sizeof(struct aws_linked_list_node));</span>
+<span class="lineNum">      52 </span><span class="lineCov">     247170 :     init_node(front_next);</span>
+<span class="lineNum">      53 </span><span class="lineCov">     247170 :     aws_linked_list_attach_after(&amp;list-&gt;head, front, true);</span>
+<span class="lineNum">      54 </span><span class="lineCov">     247170 :     aws_linked_list_attach_after(front, front_next, true);</span>
+<span class="lineNum">      55 </span><span class="lineCov">     247170 :     aws_linked_list_attach_after(front_next, &amp;list-&gt;tail, false);</span>
+<span class="lineNum">      56 </span><span class="lineCov">     247170 :   }</span>
+<span class="lineNum">      57 </span><span class="lineCov">     250000 : }</span>
+<a name="58"><span class="lineNum">      58 </span>            : </a>
+<span class="lineNum">      59 </span>            : void sea_nd_init_aws_linked_list_from_tail(struct aws_linked_list *list,
+<span class="lineNum">      60 </span><span class="lineCov">     250000 :                                            size_t *length) {</span>
+<span class="lineNum">      61 </span><span class="lineCov">     250000 :   list-&gt;head.prev = NULL;</span>
+<span class="lineNum">      62 </span><span class="lineCov">     250000 :   list-&gt;tail.next = NULL;</span>
+<span class="lineNum">      63 </span><span class="lineCov">     250000 : </span>
+<span class="lineNum">      64 </span><span class="lineCov">     250000 :   size_t nd_len = nd_size_t();</span>
+<span class="lineNum">      65 </span><span class="lineCov">     250000 :   *length = nd_len;</span>
+<span class="lineNum">      66 </span><span class="lineCov">     250000 :   if (nd_len &lt;= 2) {</span>
+<span class="lineNum">      67 </span><span class="lineCov">       2518 :     init_short_aws_linked_list(list, nd_len);</span>
+<span class="lineNum">      68 </span><span class="lineCov">     247482 :   } else {</span>
+<span class="lineNum">      69 </span><span class="lineCov">     247482 :     // HEAD --&gt; nd ... nd &lt;-- back_prev &lt;--&gt; back &lt;--&gt; TAIL</span>
+<span class="lineNum">      70 </span><span class="lineCov">     247482 :     struct aws_linked_list_node *back =</span>
+<span class="lineNum">      71 </span><span class="lineCov">     247482 :         malloc(sizeof(struct aws_linked_list_node));</span>
+<span class="lineNum">      72 </span><span class="lineCov">     247482 :     init_node(back);</span>
+<span class="lineNum">      73 </span><span class="lineCov">     247482 :     struct aws_linked_list_node *back_prev =</span>
+<span class="lineNum">      74 </span><span class="lineCov">     247482 :         malloc(sizeof(struct aws_linked_list_node));</span>
+<span class="lineNum">      75 </span><span class="lineCov">     247482 :     init_node(back_prev);</span>
+<span class="lineNum">      76 </span><span class="lineCov">     247482 :     aws_linked_list_attach_after(&amp;list-&gt;head, back_prev, false);</span>
+<span class="lineNum">      77 </span><span class="lineCov">     247482 :     aws_linked_list_attach_after(back_prev, back, true);</span>
+<span class="lineNum">      78 </span><span class="lineCov">     247482 :     aws_linked_list_attach_after(back, &amp;list-&gt;tail, true);</span>
+<span class="lineNum">      79 </span><span class="lineCov">     247482 :   }</span>
+<span class="lineNum">      80 </span><span class="lineCov">     250000 : }</span>
+<a name="81"><span class="lineNum">      81 </span>            : </a>
+<span class="lineNum">      82 </span>            : void sea_nd_init_aws_linked_list(struct aws_linked_list *list,
+<span class="lineNum">      83 </span><span class="lineCov">      92355 :                                  size_t *length) {</span>
+<span class="lineNum">      84 </span><span class="lineCov">      92355 :   list-&gt;head.prev = NULL;</span>
+<span class="lineNum">      85 </span><span class="lineCov">      92355 :   list-&gt;tail.next = NULL;</span>
+<span class="lineNum">      86 </span><span class="lineCov">      92355 : </span>
+<span class="lineNum">      87 </span><span class="lineCov">      92355 :   size_t nd_len = nd_size_t();</span>
+<span class="lineNum">      88 </span><span class="lineCov">      92355 :   *length = nd_len;</span>
+<span class="lineNum">      89 </span><span class="lineCov">      92355 :   if (nd_len &lt;= 2) {</span>
+<span class="lineNum">      90 </span><span class="lineCov">      15968 :     init_short_aws_linked_list(list, nd_len);</span>
+<span class="lineNum">      91 </span><span class="lineCov">      15968 :   }</span>
+<span class="lineNum">      92 </span><span class="lineCov">      76387 :   else {</span>
+<span class="lineNum">      93 </span><span class="lineCov">      76387 :     // HEAD &lt;--&gt; front --&gt; nd ... nd &lt;-- back &lt;--&gt; TAIL</span>
+<span class="lineNum">      94 </span><span class="lineCov">      76387 :     struct aws_linked_list_node *front =</span>
+<span class="lineNum">      95 </span><span class="lineCov">      76387 :         malloc(sizeof(struct aws_linked_list_node));</span>
+<span class="lineNum">      96 </span><span class="lineCov">      76387 :     init_node(front);</span>
+<span class="lineNum">      97 </span><span class="lineCov">      76387 :     struct aws_linked_list_node *back =</span>
+<span class="lineNum">      98 </span><span class="lineCov">      76387 :         malloc(sizeof(struct aws_linked_list_node));</span>
+<span class="lineNum">      99 </span><span class="lineCov">      76387 :     init_node(back);</span>
+<span class="lineNum">     100 </span><span class="lineCov">      76387 :     aws_linked_list_attach_after(&amp;list-&gt;head, front, true);</span>
+<span class="lineNum">     101 </span><span class="lineCov">      76387 :     aws_linked_list_attach_after(front, back, false);</span>
+<span class="lineNum">     102 </span><span class="lineCov">      76387 :     aws_linked_list_attach_after(back, &amp;list-&gt;tail, true);</span>
+<span class="lineNum">     103 </span><span class="lineCov">      76387 :   }</span>
+<span class="lineNum">     104 </span><span class="lineCov">      92355 : }</span>
+<a name="105"><span class="lineNum">     105 </span>            : </a>
+<span class="lineNum">     106 </span>            : bool nodes_prev_equal(struct aws_linked_list_node *node,
+<span class="lineNum">     107 </span><span class="lineCov">    1152038 :                       struct saved_aws_linked_list_node *saved) {</span>
+<span class="lineNum">     108 </span><span class="lineCov">    1152038 :   return node == saved-&gt;node &amp;&amp; node-&gt;prev == saved-&gt;node_prev;</span>
+<span class="lineNum">     109 </span><span class="lineCov">    1152038 : }</span>
+<a name="110"><span class="lineNum">     110 </span>            : </a>
+<span class="lineNum">     111 </span>            : bool nodes_next_equal(struct aws_linked_list_node *node,
+<span class="lineNum">     112 </span><span class="lineCov">    1154863 :                       struct saved_aws_linked_list_node *saved) {</span>
+<span class="lineNum">     113 </span><span class="lineCov">    1154863 :   return node == saved-&gt;node &amp;&amp; node-&gt;next == saved-&gt;node_next;</span>
+<span class="lineNum">     114 </span><span class="lineCov">    1154863 : }</span>
+<a name="115"><span class="lineNum">     115 </span>            : </a>
+<span class="lineNum">     116 </span>            : bool nodes_equal(struct aws_linked_list_node *node,
+<span class="lineNum">     117 </span><span class="lineCov">     909536 :                  struct saved_aws_linked_list_node *saved) {</span>
+<span class="lineNum">     118 </span><span class="lineCov">     909536 :   return nodes_prev_equal(node, saved) &amp;&amp; nodes_next_equal(node, saved);</span>
+<span class="lineNum">     119 </span><span class="lineCov">     909536 : }</span>
+<a name="120"><span class="lineNum">     120 </span>            : </a>
+<span class="lineNum">     121 </span>            : void sea_save_aws_node_to_sea_node(struct aws_linked_list_node *s,
+<span class="lineNum">     122 </span><span class="lineCov">    1916419 :                                    struct saved_aws_linked_list_node *d) {</span>
+<span class="lineNum">     123 </span><span class="lineCov">    1916419 :   d-&gt;node = s;</span>
+<span class="lineNum">     124 </span><span class="lineCov">    1916419 :   d-&gt;node_prev = s-&gt;prev;</span>
+<span class="lineNum">     125 </span><span class="lineCov">    1916419 :   d-&gt;node_next = s-&gt;next;</span>
+<span class="lineNum">     126 </span><span class="lineCov">    1916419 : }</span>
+<a name="127"><span class="lineNum">     127 </span>            : </a>
+<span class="lineNum">     128 </span>            : bool check_tail_unchanged(struct aws_linked_list *list,
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :                           struct saved_aws_linked_list *saved) {</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :   return nodes_equal(&amp;list-&gt;tail, &amp;saved-&gt;tail);</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 : }</span>
+<a name="132"><span class="lineNum">     132 </span>            : </a>
+<span class="lineNum">     133 </span>            : bool is_aws_list_unchanged_to_tail(struct aws_linked_list *list,
+<span class="lineNum">     134 </span><span class="lineCov">     192382 :                                    struct saved_aws_linked_list *saved) {</span>
+<span class="lineNum">     135 </span><span class="lineCov">     192382 :   if (saved-&gt;saved_size == 0) {</span>
+<span class="lineNum">     136 </span><span class="lineCov">        425 :     // if saved size is zero, only check that tail is unchanged</span>
+<span class="lineNum">     137 </span><span class="lineCov">        425 :     return nodes_next_equal(&amp;list-&gt;tail, &amp;saved-&gt;tail);</span>
+<span class="lineNum">     138 </span><span class="lineCov">     191957 :   } else if (saved-&gt;saved_size == 1) {</span>
+<span class="lineNum">     139 </span><span class="lineCov">      40252 :     // if saved size is 1 then check start and tail are unchanged</span>
+<span class="lineNum">     140 </span><span class="lineCov">      40252 :     return nodes_next_equal(saved-&gt;save_point, &amp;saved-&gt;nodes[0]) &amp;&amp;</span>
+<span class="lineNum">     141 </span><span class="lineCov">      40252 :            nodes_equal(&amp;list-&gt;tail, &amp;saved-&gt;tail);</span>
+<span class="lineNum">     142 </span><span class="lineCov">      40252 : </span>
+<span class="lineNum">     143 </span><span class="lineCov">     190681 :   } else if (saved-&gt;saved_size == 2) {</span>
+<span class="lineNum">     144 </span><span class="lineCov">      38284 :     // if saved size is 2 then check start, start.next and tail are unchanged</span>
+<span class="lineNum">     145 </span><span class="lineCov">      38284 :     return nodes_next_equal(saved-&gt;save_point, &amp;saved-&gt;nodes[0]) &amp;&amp;</span>
+<span class="lineNum">     146 </span><span class="lineCov">      38284 :            nodes_equal(saved-&gt;save_point-&gt;next, &amp;saved-&gt;nodes[1]) &amp;&amp;</span>
+<span class="lineNum">     147 </span><span class="lineCov">      38284 :            nodes_equal(&amp;list-&gt;tail, &amp;saved-&gt;tail);</span>
+<span class="lineNum">     148 </span><span class="lineCov">      38284 : </span>
+<span class="lineNum">     149 </span><span class="lineCov">     151491 :   } else if (saved-&gt;saved_size == 3) {</span>
+<span class="lineNum">     150 </span><span class="lineCov">     113421 :     // we only save a maximum of three nodes since that is the maximum we</span>
+<span class="lineNum">     151 </span><span class="lineCov">     113421 :     // construct concretely are head &lt;--&gt; node1 &lt;--&gt; node2</span>
+<span class="lineNum">     152 </span><span class="lineCov">     113421 :     return nodes_next_equal(saved-&gt;save_point, &amp;saved-&gt;nodes[0]) &amp;&amp;</span>
+<span class="lineNum">     153 </span><span class="lineCov">     113421 :            nodes_equal(saved-&gt;save_point-&gt;next, &amp;saved-&gt;nodes[1]) &amp;&amp;</span>
+<span class="lineNum">     154 </span><span class="lineCov">     113421 :            nodes_equal(saved-&gt;save_point-&gt;next-&gt;next, &amp;saved-&gt;nodes[2]) &amp;&amp;</span>
+<span class="lineNum">     155 </span><span class="lineCov">     113421 :            nodes_equal(&amp;list-&gt;tail, &amp;saved-&gt;tail);</span>
+<span class="lineNum">     156 </span><span class="lineCov">     113421 :   } else {</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :     return false;</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :   }</span>
+<span class="lineNum">     159 </span><span class="lineCov">     192382 :   // do nothing here: if condition should be exhaustive</span>
+<span class="lineNum">     160 </span><span class="lineCov">     192382 : }</span>
+<a name="161"><span class="lineNum">     161 </span>            : </a>
+<span class="lineNum">     162 </span>            : bool is_aws_list_unchanged_to_head(struct aws_linked_list *list,
+<span class="lineNum">     163 </span><span class="lineCov">     189557 :                                    struct saved_aws_linked_list *saved) {</span>
+<span class="lineNum">     164 </span><span class="lineCov">     189557 :   if (saved-&gt;saved_size == 0) {</span>
+<span class="lineNum">     165 </span><span class="lineCov">        360 :     // if saved size is zero, only check that head is unchanged</span>
+<span class="lineNum">     166 </span><span class="lineCov">        360 :     return nodes_prev_equal(&amp;list-&gt;head, &amp;saved-&gt;head);</span>
+<span class="lineNum">     167 </span><span class="lineCov">     189197 :   } else if (saved-&gt;saved_size == 1) {</span>
+<span class="lineNum">     168 </span><span class="lineCov">      38596 :     // if saved size is 1 then check start and head are unchanged</span>
+<span class="lineNum">     169 </span><span class="lineCov">      38596 :     return nodes_prev_equal(saved-&gt;save_point, &amp;saved-&gt;nodes[0]) &amp;&amp;</span>
+<span class="lineNum">     170 </span><span class="lineCov">      38596 :            nodes_equal(&amp;list-&gt;head, &amp;saved-&gt;head);</span>
+<span class="lineNum">     171 </span><span class="lineCov">      38596 :     ;</span>
+<span class="lineNum">     172 </span><span class="lineCov">     150601 :   } else if (saved-&gt;saved_size == 2) {</span>
+<span class="lineNum">     173 </span><span class="lineCov">      37946 :     // if saved size is 2 then check start, start.prev and head are unchanged</span>
+<span class="lineNum">     174 </span><span class="lineCov">      37946 :     return nodes_prev_equal(saved-&gt;save_point, &amp;saved-&gt;nodes[0]) &amp;&amp;</span>
+<span class="lineNum">     175 </span><span class="lineCov">      37946 :            nodes_equal(saved-&gt;save_point-&gt;prev, &amp;saved-&gt;nodes[1]) &amp;&amp;</span>
+<span class="lineNum">     176 </span><span class="lineCov">      37946 :            nodes_equal(&amp;list-&gt;head, &amp;saved-&gt;head);</span>
+<span class="lineNum">     177 </span><span class="lineCov">      37946 :     ;</span>
+<span class="lineNum">     178 </span><span class="lineCov">     112655 :   } else if (saved-&gt;saved_size == 3) {</span>
+<span class="lineNum">     179 </span><span class="lineCov">     112655 :     // we only save a maximum of three nodes since that is the maximum we</span>
+<span class="lineNum">     180 </span><span class="lineCov">     112655 :     // construct concretely are node1 &lt;--&gt; node2 &lt;--&gt; tail</span>
+<span class="lineNum">     181 </span><span class="lineCov">     112655 :     return nodes_prev_equal(saved-&gt;save_point, &amp;saved-&gt;nodes[0]) &amp;&amp;</span>
+<span class="lineNum">     182 </span><span class="lineCov">     112655 :            nodes_equal(saved-&gt;save_point-&gt;prev, &amp;saved-&gt;nodes[1]) &amp;&amp;</span>
+<span class="lineNum">     183 </span><span class="lineCov">     112655 :            nodes_equal(saved-&gt;save_point-&gt;prev-&gt;prev, &amp;saved-&gt;nodes[2]) &amp;&amp;</span>
+<span class="lineNum">     184 </span><span class="lineCov">     112655 :            nodes_equal(&amp;list-&gt;head, &amp;saved-&gt;head);</span>
+<span class="lineNum">     185 </span><span class="lineCov">     112655 :   } else {</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :     return false;</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :   }</span>
+<span class="lineNum">     188 </span><span class="lineCov">     189557 :   // do nothing here: if condition should be exhaustive</span>
+<span class="lineNum">     189 </span><span class="lineCov">     189557 : }</span>
+<a name="190"><span class="lineNum">     190 </span>            : </a>
+<span class="lineNum">     191 </span>            : bool is_aws_list_unchanged_full(struct aws_linked_list *list,
+<span class="lineNum">     192 </span><span class="lineCov">      65886 :                                    struct saved_aws_linked_list *saved) {</span>
+<span class="lineNum">     193 </span><span class="lineCov">      65886 :   if (saved-&gt;saved_size == 0)</span>
+<span class="lineNum">     194 </span><span class="lineCov">       8582 :   { /* saved zero nodes */</span>
+<span class="lineNum">     195 </span><span class="lineCov">       8582 :     return saved-&gt;head.node_next == saved-&gt;tail.node &amp;&amp;</span>
+<span class="lineNum">     196 </span><span class="lineCov">       8582 :            saved-&gt;tail.node_prev == saved-&gt;head.node;</span>
+<span class="lineNum">     197 </span><span class="lineCov">       8582 :   }</span>
+<span class="lineNum">     198 </span><span class="lineCov">      57304 :   else if (saved-&gt;saved_size == 1)</span>
+<span class="lineNum">     199 </span><span class="lineCov">       4359 :   {</span>
+<span class="lineNum">     200 </span><span class="lineCov">       4359 :     // when content consists of one node, only check equality of the node itself</span>
+<span class="lineNum">     201 </span><span class="lineCov">       4359 :     return saved-&gt;save_point == saved-&gt;save_point_end &amp;&amp;</span>
+<span class="lineNum">     202 </span><span class="lineCov">       4359 :            saved-&gt;save_point == saved-&gt;nodes[0].node;</span>
+<span class="lineNum">     203 </span><span class="lineCov">       4359 :   }</span>
+<span class="lineNum">     204 </span><span class="lineCov">      52945 :   else if (saved-&gt;saved_size == 2)</span>
+<span class="lineNum">     205 </span><span class="lineCov">      52945 :   {</span>
+<span class="lineNum">     206 </span><span class="lineCov">      52945 :     return nodes_next_equal(saved-&gt;save_point, &amp;saved-&gt;nodes[0]) &amp;&amp;</span>
+<span class="lineNum">     207 </span><span class="lineCov">      52945 :            nodes_prev_equal(saved-&gt;save_point_end, &amp;saved-&gt;nodes[1]);</span>
+<span class="lineNum">     208 </span><span class="lineCov">      52945 :   }</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :   else if (saved-&gt;saved_size == 3)</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :   {</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :     if (nodes_next_equal(saved-&gt;save_point, &amp;saved-&gt;nodes[0]) &amp;&amp;</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :         nodes_prev_equal(saved-&gt;save_point_end, &amp;saved-&gt;nodes[2]))</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :     {</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :       if (saved-&gt;nodes[1].node == saved-&gt;save_point-&gt;next)</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :       {</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :         return nodes_equal(saved-&gt;save_point-&gt;next, &amp;saved-&gt;nodes[1]);</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :       }</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :       else if (saved-&gt;nodes[1].node == saved-&gt;save_point_end-&gt;prev)</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :       {</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :         return nodes_equal(saved-&gt;save_point_end-&gt;prev, &amp;saved-&gt;nodes[1]);</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :       }</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :       else</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :         return false;</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :     else</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :       return false;</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :   }</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :   else if (saved-&gt;saved_size == 4)</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :   {</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :     return nodes_next_equal(saved-&gt;save_point, &amp;saved-&gt;nodes[0]) &amp;&amp;</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :            nodes_equal(saved-&gt;save_point-&gt;next, &amp;saved-&gt;nodes[1]) &amp;&amp;</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :            nodes_equal(saved-&gt;save_point_end-&gt;prev, &amp;saved-&gt;nodes[2]) &amp;&amp;</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :            nodes_prev_equal(saved-&gt;save_point_end, &amp;saved-&gt;nodes[3]);</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :   }</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :   else</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :     return false;</span>
+<span class="lineNum">     237 </span><span class="lineCov">      65886 : }</span>
+<a name="238"><span class="lineNum">     238 </span>            : </a>
+<span class="lineNum">     239 </span>            : // iterator function for save*Node
+<span class="lineNum">     240 </span><span class="lineCov">     378547 : struct aws_linked_list_node *getNext(struct aws_linked_list_node *node) {</span>
+<span class="lineNum">     241 </span><span class="lineCov">     378547 :   return node-&gt;next;</span>
+<span class="lineNum">     242 </span><span class="lineCov">     378547 : }</span>
+<a name="243"><span class="lineNum">     243 </span>            : </a>
+<span class="lineNum">     244 </span>            : // iterator function for save*Node
+<span class="lineNum">     245 </span><span class="lineCov">     375911 : struct aws_linked_list_node *getPrev(struct aws_linked_list_node *node) {</span>
+<span class="lineNum">     246 </span><span class="lineCov">     375911 :   return node-&gt;prev;</span>
+<span class="lineNum">     247 </span><span class="lineCov">     375911 : }</span>
+<a name="248"><span class="lineNum">     248 </span>            : </a>
+<span class="lineNum">     249 </span>            : void save_one_node(struct aws_linked_list_node *start,
+<span class="lineNum">     250 </span><span class="lineCov">      83535 :                    struct saved_aws_linked_list *to_save) {</span>
+<span class="lineNum">     251 </span><span class="lineCov">      83535 :   sea_save_aws_node_to_sea_node(start, &amp;to_save-&gt;nodes[0]);</span>
+<span class="lineNum">     252 </span><span class="lineCov">      83535 :   to_save-&gt;saved_size = 1;</span>
+<span class="lineNum">     253 </span><span class="lineCov">      83535 : }</span>
+<a name="254"><span class="lineNum">     254 </span>            : void save_two_nodes(</a>
+<span class="lineNum">     255 </span>            :     struct aws_linked_list_node *start, struct saved_aws_linked_list *to_save,
+<span class="lineNum">     256 </span><span class="lineCov">      76230 :     struct aws_linked_list_node *(*next)(struct aws_linked_list_node *)) {</span>
+<span class="lineNum">     257 </span><span class="lineCov">      76230 :   sea_save_aws_node_to_sea_node(start, &amp;to_save-&gt;nodes[0]);</span>
+<span class="lineNum">     258 </span><span class="lineCov">      76230 :   sea_save_aws_node_to_sea_node((*next)(start), &amp;to_save-&gt;nodes[1]);</span>
+<span class="lineNum">     259 </span><span class="lineCov">      76230 :   to_save-&gt;saved_size = 2;</span>
+<span class="lineNum">     260 </span><span class="lineCov">      76230 : }</span>
+<a name="261"><span class="lineNum">     261 </span>            : void save_three_nodes(</a>
+<span class="lineNum">     262 </span>            :     struct aws_linked_list_node *start, struct saved_aws_linked_list *to_save,
+<span class="lineNum">     263 </span><span class="lineCov">     226076 :     struct aws_linked_list_node *(*next)(struct aws_linked_list_node *)) {</span>
+<span class="lineNum">     264 </span><span class="lineCov">     226076 :   sea_save_aws_node_to_sea_node(start, &amp;to_save-&gt;nodes[0]);</span>
+<span class="lineNum">     265 </span><span class="lineCov">     226076 :   sea_save_aws_node_to_sea_node((*next)(start), &amp;to_save-&gt;nodes[1]);</span>
+<span class="lineNum">     266 </span><span class="lineCov">     226076 :   sea_save_aws_node_to_sea_node((*next)((*next)(start)), &amp;to_save-&gt;nodes[2]);</span>
+<span class="lineNum">     267 </span><span class="lineCov">     226076 :   to_save-&gt;saved_size = 3;</span>
+<span class="lineNum">     268 </span><span class="lineCov">     226076 : }</span>
+<a name="269"><span class="lineNum">     269 </span>            : void aws_linked_list_save_to_tail(struct aws_linked_list *list, size_t size,</a>
+<span class="lineNum">     270 </span>            :                                   struct aws_linked_list_node *start,
+<span class="lineNum">     271 </span><span class="lineCov">     192710 :                                   struct saved_aws_linked_list *to_save) {</span>
+<span class="lineNum">     272 </span><span class="lineCov">     192710 :   sea_save_aws_node_to_sea_node(&amp;list-&gt;head, &amp;to_save-&gt;head);</span>
+<span class="lineNum">     273 </span><span class="lineCov">     192710 :   sea_save_aws_node_to_sea_node(&amp;list-&gt;tail, &amp;to_save-&gt;tail);</span>
+<span class="lineNum">     274 </span><span class="lineCov">     192710 : </span>
+<span class="lineNum">     275 </span><span class="lineCov">     192710 :   to_save-&gt;save_point = start;</span>
+<span class="lineNum">     276 </span><span class="lineCov">     192710 : </span>
+<span class="lineNum">     277 </span><span class="lineCov">     192710 :   if (size == 0) {</span>
+<span class="lineNum">     278 </span><span class="lineCov">       1907 :     // only possibility is to save head or tail.</span>
+<span class="lineNum">     279 </span><span class="lineCov">       1907 :     // Note tail is never saved in nodes[..] array</span>
+<span class="lineNum">     280 </span><span class="lineCov">       1907 :     if (&amp;list-&gt;head == start) {</span>
+<span class="lineNum">     281 </span><span class="lineCov">       1527 :       save_one_node(start, to_save);</span>
+<span class="lineNum">     282 </span><span class="lineCov">       1907 :     } else {</span>
+<span class="lineNum">     283 </span><span class="lineCov">        380 :       to_save-&gt;saved_size = 0;</span>
+<span class="lineNum">     284 </span><span class="lineCov">        380 :     }</span>
+<span class="lineNum">     285 </span><span class="lineCov">     190803 :   } else if (size == 1) {</span>
+<span class="lineNum">     286 </span><span class="lineCov">        336 :     // either save head, head.next or only head.next</span>
+<span class="lineNum">     287 </span><span class="lineCov">        336 :     if (&amp;list-&gt;head == start) {</span>
+<span class="lineNum">     288 </span><span class="lineCov">        214 :       save_two_nodes(start, to_save, getNext);</span>
+<span class="lineNum">     289 </span><span class="lineCov">        336 :     } else if (list-&gt;head.next == start) {</span>
+<span class="lineNum">     290 </span><span class="lineCov">         77 :       save_one_node(start, to_save);</span>
+<span class="lineNum">     291 </span><span class="lineCov">        122 :     } else {</span>
+<span class="lineNum">     292 </span><span class="lineCov">         45 :       to_save-&gt;saved_size = 0;</span>
+<span class="lineNum">     293 </span><span class="lineCov">         45 :     }</span>
+<span class="lineNum">     294 </span><span class="lineCov">     190467 :   } else if (size &gt; 1) {</span>
+<span class="lineNum">     295 </span><span class="lineCov">     190467 :     // either save</span>
+<span class="lineNum">     296 </span><span class="lineCov">     190467 :     // 1) head, head.next, head.next.next OR</span>
+<span class="lineNum">     297 </span><span class="lineCov">     190467 :     // 2) head.next, head.next.next OR</span>
+<span class="lineNum">     298 </span><span class="lineCov">     190467 :     // 3) head.next.next</span>
+<span class="lineNum">     299 </span><span class="lineCov">     190467 :     if (&amp;list-&gt;head == start) {</span>
+<span class="lineNum">     300 </span><span class="lineCov">     113421 :       save_three_nodes(start, to_save, getNext);</span>
+<span class="lineNum">     301 </span><span class="lineCov">     190467 :     } else if (list-&gt;head.next == start) {</span>
+<span class="lineNum">     302 </span><span class="lineCov">      38070 :       save_two_nodes(start, to_save, getNext);</span>
+<span class="lineNum">     303 </span><span class="lineCov">      77046 :     } else if (list-&gt;head.next-&gt;next == start) {</span>
+<span class="lineNum">     304 </span><span class="lineCov">      38976 :       save_one_node(start, to_save);</span>
+<span class="lineNum">     305 </span><span class="lineCov">      38976 :     } else {</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :       to_save-&gt;saved_size = 0;</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     308 </span><span class="lineCov">     190467 :   }</span>
+<span class="lineNum">     309 </span><span class="lineCov">     192710 : }</span>
+<span class="lineNum">     310 </span>            : 
+<a name="311"><span class="lineNum">     311 </span>            : void aws_linked_list_save_to_head(struct aws_linked_list *list, size_t size,</a>
+<span class="lineNum">     312 </span>            :                                   struct aws_linked_list_node *start,
+<span class="lineNum">     313 </span><span class="lineCov">     189557 :                                   struct saved_aws_linked_list *to_save) {</span>
+<span class="lineNum">     314 </span><span class="lineCov">     189557 :   sea_save_aws_node_to_sea_node(&amp;list-&gt;head, &amp;to_save-&gt;head);</span>
+<span class="lineNum">     315 </span><span class="lineCov">     189557 :   sea_save_aws_node_to_sea_node(&amp;list-&gt;tail, &amp;to_save-&gt;tail);</span>
+<span class="lineNum">     316 </span><span class="lineCov">     189557 : </span>
+<span class="lineNum">     317 </span><span class="lineCov">     189557 :   to_save-&gt;save_point = start;</span>
+<span class="lineNum">     318 </span><span class="lineCov">     189557 : </span>
+<span class="lineNum">     319 </span><span class="lineCov">     189557 :   if (size == 0) {</span>
+<span class="lineNum">     320 </span><span class="lineCov">       1501 :     // only possibility is to save tail or head</span>
+<span class="lineNum">     321 </span><span class="lineCov">       1501 :     // Note: head is never saved in nodes[..] array</span>
+<span class="lineNum">     322 </span><span class="lineCov">       1501 :     if (&amp;list-&gt;tail == start) {</span>
+<span class="lineNum">     323 </span><span class="lineCov">       1184 :       save_one_node(start, to_save);</span>
+<span class="lineNum">     324 </span><span class="lineCov">       1501 :     } else {</span>
+<span class="lineNum">     325 </span><span class="lineCov">        317 :       to_save-&gt;saved_size = 0;</span>
+<span class="lineNum">     326 </span><span class="lineCov">        317 :     }</span>
+<span class="lineNum">     327 </span><span class="lineCov">     188056 :   } else if (size == 1) {</span>
+<span class="lineNum">     328 </span><span class="lineCov">        320 :     // either save (in-order) tail, tail.prev or only tail.prev</span>
+<span class="lineNum">     329 </span><span class="lineCov">        320 :     if (&amp;list-&gt;tail == start) {</span>
+<span class="lineNum">     330 </span><span class="lineCov">        204 :       save_two_nodes(start, to_save, getPrev);</span>
+<span class="lineNum">     331 </span><span class="lineCov">        320 :     } else if (list-&gt;tail.prev == start) {</span>
+<span class="lineNum">     332 </span><span class="lineCov">         73 :       save_one_node(start, to_save);</span>
+<span class="lineNum">     333 </span><span class="lineCov">        116 :     } else {</span>
+<span class="lineNum">     334 </span><span class="lineCov">         43 :       to_save-&gt;saved_size = 0;</span>
+<span class="lineNum">     335 </span><span class="lineCov">         43 :     }</span>
+<span class="lineNum">     336 </span><span class="lineCov">     187736 :   } else if (size &gt; 1) {</span>
+<span class="lineNum">     337 </span><span class="lineCov">     187736 :     // either save (in-order)</span>
+<span class="lineNum">     338 </span><span class="lineCov">     187736 :     // 1) tail, tail.prev, tail.prev.prev OR</span>
+<span class="lineNum">     339 </span><span class="lineCov">     187736 :     // 2) tail.prev, tail.prev.prev OR</span>
+<span class="lineNum">     340 </span><span class="lineCov">     187736 :     // 3) tail.prev.prev</span>
+<span class="lineNum">     341 </span><span class="lineCov">     187736 :     if (&amp;list-&gt;tail == start) {</span>
+<span class="lineNum">     342 </span><span class="lineCov">     112655 :       save_three_nodes(start, to_save, getPrev);</span>
+<span class="lineNum">     343 </span><span class="lineCov">     187736 :     } else if (list-&gt;tail.prev == start) {</span>
+<span class="lineNum">     344 </span><span class="lineCov">      37742 :       save_two_nodes(start, to_save, getPrev);</span>
+<span class="lineNum">     345 </span><span class="lineCov">      75081 :     } else if (list-&gt;tail.prev-&gt;prev == start) {</span>
+<span class="lineNum">     346 </span><span class="lineCov">      37339 :       save_one_node(start, to_save);</span>
+<span class="lineNum">     347 </span><span class="lineCov">      37339 :     } else {</span>
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :       to_save-&gt;saved_size = 0;</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     350 </span><span class="lineCov">     187736 :   }</span>
+<span class="lineNum">     351 </span><span class="lineCov">     189557 : }</span>
+<span class="lineNum">     352 </span>            : 
+<span class="lineNum">     353 </span>            : void aws_linked_list_save_full(struct aws_linked_list *list, size_t size,
+<span class="lineNum">     354 </span>            :                                struct aws_linked_list_node *start,
+<a name="355"><span class="lineNum">     355 </span>            :                                struct aws_linked_list_node *end,</a>
+<span class="lineNum">     356 </span>            :                                struct saved_aws_linked_list *to_save)
+<span class="lineNum">     357 </span><span class="lineCov">      65886 : {</span>
+<span class="lineNum">     358 </span><span class="lineCov">      65886 :   sea_save_aws_node_to_sea_node(&amp;list-&gt;head, &amp;to_save-&gt;head);</span>
+<span class="lineNum">     359 </span><span class="lineCov">      65886 :   sea_save_aws_node_to_sea_node(&amp;list-&gt;tail, &amp;to_save-&gt;tail);</span>
+<span class="lineNum">     360 </span><span class="lineCov">      65886 :   to_save-&gt;save_point = start;</span>
+<span class="lineNum">     361 </span><span class="lineCov">      65886 :   to_save-&gt;save_point_end = end;</span>
+<span class="lineNum">     362 </span><span class="lineCov">      65886 :   if (start == end) {</span>
+<span class="lineNum">     363 </span><span class="lineCov">       4359 :     save_one_node(start, to_save);</span>
+<span class="lineNum">     364 </span><span class="lineCov">       4359 :     return;</span>
+<span class="lineNum">     365 </span><span class="lineCov">       4359 :   }</span>
+<span class="lineNum">     366 </span><span class="lineCov">      61527 :   if (size == 0) {</span>
+<span class="lineNum">     367 </span><span class="lineCov">       8582 :     /* only save head and tail */</span>
+<span class="lineNum">     368 </span><span class="lineCov">       8582 :     if (start == &amp;list-&gt;head) {</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :       save_two_nodes(start, to_save, getNext);</span>
+<span class="lineNum">     370 </span><span class="lineCov">       8582 :     } else {</span>
+<span class="lineNum">     371 </span><span class="lineCov">       8582 :       /* save content when empty */</span>
+<span class="lineNum">     372 </span><span class="lineCov">       8582 :       to_save-&gt;saved_size = 0;</span>
+<span class="lineNum">     373 </span><span class="lineCov">       8582 :     }</span>
+<span class="lineNum">     374 </span><span class="lineCov">      52945 :   } else if (size == 1) {</span>
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :     /* front nodes: [head, head.next...] or [head.next...] */</span>
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :     /* back nodes: [...tail] or same as front nodes */</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :     size_t back_nodes_start = 0;</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :     if (start == &amp;list-&gt;head) {</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :       sea_save_aws_node_to_sea_node(&amp;list-&gt;head, &amp;to_save-&gt;nodes[0]);</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :       sea_save_aws_node_to_sea_node(list-&gt;head.next, &amp;to_save-&gt;nodes[1]);</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :       to_save-&gt;saved_size = 2;</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :       back_nodes_start = 2;</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :     } else if (start == list-&gt;head.next) {</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :       sea_save_aws_node_to_sea_node(list-&gt;head.next, &amp;to_save-&gt;nodes[0]);</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :       to_save-&gt;saved_size = 1;</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :       back_nodes_start = 1;</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :     /* head.next == tail.prev, so only conditionally add tail */</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :     if (end == &amp;list-&gt;tail) {</span>
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :       sea_save_aws_node_to_sea_node(end, &amp;to_save-&gt;nodes[back_nodes_start]);</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :       to_save-&gt;saved_size += 1;</span>
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     393 </span><span class="lineCov">      52945 :   } else if (size &gt; 1) {</span>
+<span class="lineNum">     394 </span><span class="lineCov">      52945 :     size_t back_nodes_start = 0;</span>
+<span class="lineNum">     395 </span><span class="lineCov">      52945 :     /* front nodes: [head, head.next...] or [head.next...] */</span>
+<span class="lineNum">     396 </span><span class="lineCov">      52945 :     /* back nodes: [...tail.prev] or [...tail.prev, tail] */</span>
+<span class="lineNum">     397 </span><span class="lineCov">      52945 :     if (start == &amp;list-&gt;head) {</span>
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :       sea_save_aws_node_to_sea_node(&amp;list-&gt;head, &amp;to_save-&gt;nodes[0]);</span>
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :       sea_save_aws_node_to_sea_node(list-&gt;head.next, &amp;to_save-&gt;nodes[1]);</span>
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 :       to_save-&gt;saved_size = 2;</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :       back_nodes_start = 2;</span>
+<span class="lineNum">     402 </span><span class="lineCov">      52945 :     } else if (start == list-&gt;head.next) {</span>
+<span class="lineNum">     403 </span><span class="lineCov">      52945 :       sea_save_aws_node_to_sea_node(list-&gt;head.next, &amp;to_save-&gt;nodes[0]);</span>
+<span class="lineNum">     404 </span><span class="lineCov">      52945 :       to_save-&gt;saved_size = 1;</span>
+<span class="lineNum">     405 </span><span class="lineCov">      52945 :       back_nodes_start = 1;</span>
+<span class="lineNum">     406 </span><span class="lineCov">      52945 :     }</span>
+<span class="lineNum">     407 </span><span class="lineCov">      52945 :     if (end == &amp;list-&gt;tail) {</span>
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 :       sea_save_aws_node_to_sea_node(list-&gt;tail.prev, &amp;to_save-&gt;nodes[back_nodes_start]);</span>
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :       sea_save_aws_node_to_sea_node(&amp;list-&gt;tail, &amp;to_save-&gt;nodes[back_nodes_start + 1]);</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :       to_save-&gt;saved_size += 2;</span>
+<span class="lineNum">     411 </span><span class="lineCov">      52945 :     } else if (end == list-&gt;tail.prev) {</span>
+<span class="lineNum">     412 </span><span class="lineCov">      52945 :       sea_save_aws_node_to_sea_node(list-&gt;tail.prev, &amp;to_save-&gt;nodes[back_nodes_start]);</span>
+<span class="lineNum">     413 </span><span class="lineCov">      52945 :       to_save-&gt;saved_size += 1;</span>
+<span class="lineNum">     414 </span><span class="lineCov">      52945 :     }</span>
+<span class="lineNum">     415 </span><span class="lineCov">      52945 :   }</span>
+<span class="lineNum">     416 </span><span class="lineCov">      61527 : }</span>
+<span class="lineNum">     417 </span>            : 
+<a name="418"><span class="lineNum">     418 </span>            : void aws_linked_list_attach_after(struct aws_linked_list_node *after,</a>
+<span class="lineNum">     419 </span>            :                                   struct aws_linked_list_node *to_attach,
+<span class="lineNum">     420 </span><span class="lineCov">    1869771 :                                   bool directly_attached) {</span>
+<span class="lineNum">     421 </span><span class="lineCov">    1869771 :   if (directly_attached) {</span>
+<span class="lineNum">     422 </span><span class="lineCov">    1313706 :     after-&gt;next = to_attach;</span>
+<span class="lineNum">     423 </span><span class="lineCov">    1313706 :     to_attach-&gt;prev = after;</span>
+<span class="lineNum">     424 </span><span class="lineCov">    1313706 :   } else {</span>
+<span class="lineNum">     425 </span><span class="lineCov">     556065 :     after-&gt;next = nd_linked_list_node();</span>
+<span class="lineNum">     426 </span><span class="lineCov">     556065 :     to_attach-&gt;prev = nd_linked_list_node();</span>
+<span class="lineNum">     427 </span><span class="lineCov">     556065 :   }</span>
+<span class="lineNum">     428 </span><span class="lineCov">    1869771 : }</span>
+<span class="lineNum">     429 </span>            : 
+<a name="430"><span class="lineNum">     430 </span>            : bool is_aws_linked_list_node_attached_after(</a>
+<span class="lineNum">     431 </span>            :     struct aws_linked_list_node *after,
+<span class="lineNum">     432 </span><span class="lineCov">     422318 :     struct aws_linked_list_node *to_attach) {</span>
+<span class="lineNum">     433 </span><span class="lineCov">     422318 :   return after-&gt;next == to_attach &amp;&amp; to_attach-&gt;prev == after;</span>
+<span class="lineNum">     434 </span><span class="lineCov">     422318 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

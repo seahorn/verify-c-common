@@ -31,13 +31,13 @@
             <td class="headerValue">all_fuzz.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">38</td>
-            <td class="headerCovTableEntry">38</td>
+            <td class="headerCovTableEntry">42</td>
+            <td class="headerCovTableEntry">42</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">5</td>
@@ -67,50 +67,49 @@
 <span class="lineNum">       5 </span>            : #include &lt;sea_allocators.h&gt;
 <a name="6"><span class="lineNum">       6 </span>            : #include &lt;utils.h&gt;</a>
 <span class="lineNum">       7 </span>            : 
-<span class="lineNum">       8 </span><span class="lineCov">    3729356 : void initialize_byte_buf(struct aws_byte_buf *const buf) {</span>
-<span class="lineNum">       9 </span><span class="lineCov">    3729356 :   size_t max_size = sea_max_buffer_size();</span>
-<span class="lineNum">      10 </span><span class="lineCov">    3729356 :   size_t len = nd_size_t();</span>
-<span class="lineNum">      11 </span><span class="lineCov">    3729356 :   size_t cap = nd_size_t();</span>
-<span class="lineNum">      12 </span><span class="lineCov">    3729356 :   // cap &lt;= max_size</span>
-<span class="lineNum">      13 </span><span class="lineCov">    3729356 :   cap %= max_size;</span>
-<span class="lineNum">      14 </span><span class="lineCov">    3729356 :   // len &lt;= cap</span>
-<span class="lineNum">      15 </span><span class="lineCov">    3729356 :   cap = cap == 0 ? 1 : cap;</span>
-<span class="lineNum">      16 </span><span class="lineCov">    3729356 :   len %= cap;</span>
-<span class="lineNum">      17 </span><span class="lineCov">    3729356 : </span>
-<span class="lineNum">      18 </span><span class="lineCov">    3729356 :   buf-&gt;len = len;</span>
-<span class="lineNum">      19 </span><span class="lineCov">    3729356 :   buf-&gt;capacity = cap;</span>
-<span class="lineNum">      20 </span><span class="lineCov">    3729356 :   buf-&gt;buffer = can_fail_malloc(cap * sizeof(*(buf-&gt;buffer)));</span>
-<span class="lineNum">      21 </span><span class="lineCov">    3729356 :   if (buf-&gt;buffer) {</span>
-<span class="lineNum">      22 </span><span class="lineCov">    3615328 :     memhavoc(buf-&gt;buffer, cap * sizeof(*(buf-&gt;buffer)));</span>
-<span class="lineNum">      23 </span><span class="lineCov">    3615328 :   }</span>
-<span class="lineNum">      24 </span><span class="lineCov">    3729356 :   buf-&gt;allocator = sea_allocator();</span>
-<a name="25"><span class="lineNum">      25 </span><span class="lineCov">    3729356 : }</span></a>
-<span class="lineNum">      26 </span>            : 
-<span class="lineNum">      27 </span><span class="lineCov">    2937387 : void initialize_byte_cursor(struct aws_byte_cursor *const cursor) {</span>
-<span class="lineNum">      28 </span><span class="lineCov">    2937387 :   size_t max_buffer_size = sea_max_buffer_size();</span>
-<span class="lineNum">      29 </span><span class="lineCov">    2937387 :   cursor-&gt;len = nd_size_t();</span>
-<span class="lineNum">      30 </span><span class="lineCov">    2937387 :   // cursor-&gt;len &lt;= max_buffer_size</span>
-<span class="lineNum">      31 </span><span class="lineCov">    2937387 :   cursor-&gt;len %= max_buffer_size;</span>
-<span class="lineNum">      32 </span><span class="lineCov">    2937387 :   cursor-&gt;ptr = can_fail_malloc(sizeof(*(cursor-&gt;ptr)) * max_buffer_size);</span>
-<a name="33"><span class="lineNum">      33 </span><span class="lineCov">    2937387 : }</span></a>
-<span class="lineNum">      34 </span>            : 
-<span class="lineNum">      35 </span><span class="lineCov">     100000 : void initialize_byte_cursor_aligned(struct aws_byte_cursor *const cursor) {</span>
-<span class="lineNum">      36 </span><span class="lineCov">     100000 :   size_t max_buffer_size = sea_max_buffer_size();</span>
-<span class="lineNum">      37 </span><span class="lineCov">     100000 :   cursor-&gt;len = nd_size_t();</span>
-<span class="lineNum">      38 </span><span class="lineCov">     100000 :   // assume(cursor-&gt;len &lt;= max_buffer_size);</span>
-<span class="lineNum">      39 </span><span class="lineCov">     100000 :   FUZZ_ASSUME_LT(cursor-&gt;len, max_buffer_size);</span>
-<span class="lineNum">      40 </span><span class="lineCov">     100000 :   cursor-&gt;ptr = sea_malloc_aligned_havoc(sizeof(*(cursor-&gt;ptr)) * max_buffer_size);</span>
-<span class="lineNum">      41 </span><span class="lineCov">     100000 : }</span>
-<a name="42"><span class="lineNum">      42 </span>            : </a>
-<span class="lineNum">      43 </span>            : bool aws_byte_buf_is_bounded(const struct aws_byte_buf *const buf,
-<span class="lineNum">      44 </span><span class="lineCov">      98808 :                              const size_t max_size) {</span>
-<span class="lineNum">      45 </span><span class="lineCov">      98808 :   return (buf-&gt;capacity &lt;= max_size);</span>
-<span class="lineNum">      46 </span><span class="lineCov">      98808 : }</span>
-<a name="47"><span class="lineNum">      47 </span>            : </a>
-<span class="lineNum">      48 </span>            : bool aws_byte_cursor_is_bounded(const struct aws_byte_cursor *const cursor,
-<span class="lineNum">      49 </span><span class="lineCov">     680371 :                                 const size_t max_size) {</span>
-<span class="lineNum">      50 </span><span class="lineCov">     680371 :   return cursor-&gt;len &lt;= max_size;</span>
-<span class="lineNum">      51 </span><span class="lineCov">     680371 : }</span>
+<span class="lineNum">       8 </span><span class="lineCov">    5591942 : void initialize_byte_buf(struct aws_byte_buf *const buf) {</span>
+<span class="lineNum">       9 </span><span class="lineCov">    5591942 :   size_t max_size = sea_max_buffer_size();</span>
+<span class="lineNum">      10 </span><span class="lineCov">    5591942 :   size_t len = nd_size_t();</span>
+<span class="lineNum">      11 </span><span class="lineCov">    5591942 :   size_t cap = nd_size_t();</span>
+<span class="lineNum">      12 </span><span class="lineCov">    5591942 :   // cap &lt;= max_size</span>
+<span class="lineNum">      13 </span><span class="lineCov">    5591942 :   cap %= max_size;</span>
+<span class="lineNum">      14 </span><span class="lineCov">    5591942 :   // len &lt;= cap</span>
+<span class="lineNum">      15 </span><span class="lineCov">    5591942 :   len = (cap == 0) ? 0 : len % cap;</span>
+<span class="lineNum">      16 </span><span class="lineCov">    5591942 : </span>
+<span class="lineNum">      17 </span><span class="lineCov">    5591942 :   buf-&gt;len = len;</span>
+<span class="lineNum">      18 </span><span class="lineCov">    5591942 :   buf-&gt;capacity = cap;</span>
+<span class="lineNum">      19 </span><span class="lineCov">    5591942 :   buf-&gt;buffer = can_fail_malloc(cap * sizeof(*(buf-&gt;buffer)));</span>
+<span class="lineNum">      20 </span><span class="lineCov">    5591942 :   if (buf-&gt;buffer) {</span>
+<span class="lineNum">      21 </span><span class="lineCov">    5539139 :     memhavoc(buf-&gt;buffer, cap * sizeof(*(buf-&gt;buffer)));</span>
+<span class="lineNum">      22 </span><span class="lineCov">    5425111 :   }</span>
+<span class="lineNum">      23 </span><span class="lineCov">    5477914 :   buf-&gt;allocator = sea_allocator();</span>
+<a name="24"><span class="lineNum">      24 </span><span class="lineCov">    5591942 : }</span></a>
+<span class="lineNum">      25 </span><span class="lineCov">    3729356 : </span>
+<span class="lineNum">      26 </span><span class="lineCov">    1458838 : void initialize_byte_cursor(struct aws_byte_cursor *const cursor) {</span>
+<span class="lineNum">      27 </span><span class="lineCov">    4396225 :   size_t max_buffer_size = sea_max_buffer_size();</span>
+<span class="lineNum">      28 </span><span class="lineCov">    4396225 :   cursor-&gt;len = nd_size_t();</span>
+<span class="lineNum">      29 </span><span class="lineCov">    4396225 :   // cursor-&gt;len &lt;= max_buffer_size</span>
+<span class="lineNum">      30 </span><span class="lineCov">    4396225 :   cursor-&gt;len %= max_buffer_size;</span>
+<span class="lineNum">      31 </span><span class="lineCov">    4396225 :   cursor-&gt;ptr = can_fail_malloc(sizeof(*(cursor-&gt;ptr)) * max_buffer_size);</span>
+<a name="32"><span class="lineNum">      32 </span><span class="lineCov">    4396225 : }</span></a>
+<span class="lineNum">      33 </span><span class="lineCov">    2937387 : </span>
+<span class="lineNum">      34 </span><span class="lineCov">      50000 : void initialize_byte_cursor_aligned(struct aws_byte_cursor *const cursor) {</span>
+<span class="lineNum">      35 </span><span class="lineCov">     150000 :   size_t max_buffer_size = sea_max_buffer_size();</span>
+<span class="lineNum">      36 </span><span class="lineCov">     150000 :   cursor-&gt;len = nd_size_t();</span>
+<span class="lineNum">      37 </span><span class="lineCov">     150000 :   // assume(cursor-&gt;len &lt;= max_buffer_size);</span>
+<span class="lineNum">      38 </span><span class="lineCov">     150000 :   FUZZ_ASSUME_LT(cursor-&gt;len, max_buffer_size);</span>
+<span class="lineNum">      39 </span><span class="lineCov">     150000 :   cursor-&gt;ptr = sea_malloc_aligned_havoc(sizeof(*(cursor-&gt;ptr)) * max_buffer_size);</span>
+<span class="lineNum">      40 </span><span class="lineCov">     150000 : }</span>
+<a name="41"><span class="lineNum">      41 </span><span class="lineCov">     100000 : </span></a>
+<span class="lineNum">      42 </span>            : bool aws_byte_buf_is_bounded(const struct aws_byte_buf *const buf,
+<span class="lineNum">      43 </span><span class="lineCov">      49279 :                              const size_t max_size) {</span>
+<span class="lineNum">      44 </span><span class="lineCov">     148087 :   return (buf-&gt;capacity &lt;= max_size);</span>
+<span class="lineNum">      45 </span><span class="lineCov">     148087 : }</span>
+<a name="46"><span class="lineNum">      46 </span><span class="lineCov">      98808 : </span></a>
+<span class="lineNum">      47 </span>            : bool aws_byte_cursor_is_bounded(const struct aws_byte_cursor *const cursor,
+<span class="lineNum">      48 </span><span class="lineCov">     337646 :                                 const size_t max_size) {</span>
+<span class="lineNum">      49 </span><span class="lineCov">    1018017 :   return cursor-&gt;len &lt;= max_size;</span>
+<span class="lineNum">      50 </span><span class="lineCov">    1018017 : }</span>
 </pre>
       </td>
     </tr>

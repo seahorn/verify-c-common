@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">8</td>
@@ -72,47 +72,47 @@
 <span class="lineNum">      10 </span>            : // for assume()
 <a name="11"><span class="lineNum">      11 </span>            : #include &lt;seahorn/seahorn.h&gt; </a>
 <span class="lineNum">      12 </span>            : 
-<a name="13"><span class="lineNum">      13 </span><span class="lineCov">    3111843 : void *bounded_malloc(size_t size) { return malloc(size); }</span></a>
+<a name="13"><span class="lineNum">      13 </span><span class="lineCov">    4698147 : void *bounded_malloc(size_t size) { return malloc(size); }</span></a>
 <span class="lineNum">      14 </span>            : 
-<a name="15"><span class="lineNum">      15 </span><span class="lineCov">    9262316 : void *can_fail_malloc(size_t size) { return malloc(size); }</span></a>
+<a name="15"><span class="lineNum">      15 </span><span class="lineCov">   13894184 : void *can_fail_malloc(size_t size) { return malloc(size); }</span></a>
 <span class="lineNum">      16 </span>            : 
-<span class="lineNum">      17 </span><span class="lineCov">      13642 : void *sea_malloc_safe(size_t sz) {</span>
-<span class="lineNum">      18 </span><span class="lineCov">      13642 :   void *p = malloc(sz);</span>
-<span class="lineNum">      19 </span><span class="lineCov">      13642 :   assume(p);</span>
-<span class="lineNum">      20 </span><span class="lineCov">      13642 :   return p;</span>
-<span class="lineNum">      21 </span><span class="lineCov">      13642 : }</span>
+<span class="lineNum">      17 </span><span class="lineCov">      20463 : void *sea_malloc_safe(size_t sz) {</span>
+<span class="lineNum">      18 </span><span class="lineCov">      20463 :   void *p = malloc(sz);</span>
+<span class="lineNum">      19 </span><span class="lineCov">      20463 :   assume(p);</span>
+<span class="lineNum">      20 </span><span class="lineCov">      20463 :   return p;</span>
+<span class="lineNum">      21 </span><span class="lineCov">      20463 : }</span>
 <span class="lineNum">      22 </span>            : 
 <span class="lineNum">      23 </span>            : #define AWS_ALIGN_ROUND_UP(value, alignment) \
-<a name="24"><span class="lineNum">      24 </span><span class="lineCov">      99517 :   (((value) + ((alignment)-1)) &amp; ~((alignment)-1))</span></a>
+<a name="24"><span class="lineNum">      24 </span><span class="lineCov">     149280 :   (((value) + ((alignment)-1)) &amp; ~((alignment)-1))</span></a>
 <span class="lineNum">      25 </span>            : 
-<span class="lineNum">      26 </span><span class="lineCov">      99517 : INLINE void *sea_malloc_aligned(size_t sz) {</span>
-<span class="lineNum">      27 </span><span class="lineCov">      99517 :   enum { S_ALIGNMENT = sizeof(intmax_t) };</span>
-<span class="lineNum">      28 </span><span class="lineCov">      99517 :   size_t alloc_sz = AWS_ALIGN_ROUND_UP(sz, S_ALIGNMENT);</span>
-<span class="lineNum">      29 </span><span class="lineCov">      99517 :   return malloc(alloc_sz);</span>
-<span class="lineNum">      30 </span><span class="lineCov">      99517 : }</span>
+<span class="lineNum">      26 </span><span class="lineCov">     149280 : INLINE void *sea_malloc_aligned(size_t sz) {</span>
+<span class="lineNum">      27 </span><span class="lineCov">     149280 :   enum { S_ALIGNMENT = sizeof(intmax_t) };</span>
+<span class="lineNum">      28 </span><span class="lineCov">     149280 :   size_t alloc_sz = AWS_ALIGN_ROUND_UP(sz, S_ALIGNMENT);</span>
+<span class="lineNum">      29 </span><span class="lineCov">     149280 :   return malloc(alloc_sz);</span>
+<span class="lineNum">      30 </span><span class="lineCov">     149280 : }</span>
 <a name="31"><span class="lineNum">      31 </span>            : #undef AWS_ALIGN_ROUND_UP</a>
 <span class="lineNum">      32 </span>            : 
-<span class="lineNum">      33 </span><span class="lineCov">      99517 : void *sea_malloc_aligned_havoc(size_t sz) {</span>
-<span class="lineNum">      34 </span><span class="lineCov">      99517 :   void *data = sea_malloc_aligned(sz);</span>
-<span class="lineNum">      35 </span><span class="lineCov">      99517 :   if (data)</span>
-<span class="lineNum">      36 </span><span class="lineCov">      99517 :     memhavoc(data, sz);</span>
-<span class="lineNum">      37 </span><span class="lineCov">      99517 :   return data;</span>
-<span class="lineNum">      38 </span><span class="lineCov">      99517 : }</span>
+<span class="lineNum">      33 </span><span class="lineCov">     149280 : void *sea_malloc_aligned_havoc(size_t sz) {</span>
+<span class="lineNum">      34 </span><span class="lineCov">     149280 :   void *data = sea_malloc_aligned(sz);</span>
+<span class="lineNum">      35 </span><span class="lineCov">     149280 :   if (data)</span>
+<span class="lineNum">      36 </span><span class="lineCov">     149280 :     memhavoc(data, sz);</span>
+<span class="lineNum">      37 </span><span class="lineCov">     149280 :   return data;</span>
+<span class="lineNum">      38 </span><span class="lineCov">     149280 : }</span>
 <span class="lineNum">      39 </span>            : 
 <span class="lineNum">      40 </span>            : /**
 <a name="41"><span class="lineNum">      41 </span>            :  *</a>
 <span class="lineNum">      42 </span>            :  */
-<span class="lineNum">      43 </span><span class="lineCov">     601417 : static void *s_malloc_allocator(struct aws_allocator *allocator, size_t size) {</span>
-<span class="lineNum">      44 </span><span class="lineCov">     601417 :   (void)allocator;</span>
-<span class="lineNum">      45 </span><span class="lineCov">     601417 :   return bounded_malloc(size);</span>
-<span class="lineNum">      46 </span><span class="lineCov">     601417 : }</span>
+<span class="lineNum">      43 </span><span class="lineCov">     887990 : static void *s_malloc_allocator(struct aws_allocator *allocator, size_t size) {</span>
+<span class="lineNum">      44 </span><span class="lineCov">     887990 :   (void)allocator;</span>
+<span class="lineNum">      45 </span><span class="lineCov">     887990 :   return bounded_malloc(size);</span>
+<span class="lineNum">      46 </span><span class="lineCov">     887990 : }</span>
 <span class="lineNum">      47 </span>            : 
 <a name="48"><span class="lineNum">      48 </span>            : /**</a>
 <span class="lineNum">      49 </span>            :  */
-<span class="lineNum">      50 </span><span class="lineCov">     471675 : static void s_free_allocator(struct aws_allocator *allocator, void *ptr) {</span>
-<span class="lineNum">      51 </span><span class="lineCov">     471675 :   (void)allocator;</span>
-<span class="lineNum">      52 </span><span class="lineCov">     471675 :   free(ptr);</span>
-<span class="lineNum">      53 </span><span class="lineCov">     471675 : }</span>
+<span class="lineNum">      50 </span><span class="lineCov">     687040 : static void s_free_allocator(struct aws_allocator *allocator, void *ptr) {</span>
+<span class="lineNum">      51 </span><span class="lineCov">     687040 :   (void)allocator;</span>
+<span class="lineNum">      52 </span><span class="lineCov">     687040 :   free(ptr);</span>
+<span class="lineNum">      53 </span><span class="lineCov">     687040 : }</span>
 <span class="lineNum">      54 </span>            : 
 <span class="lineNum">      55 </span>            : static struct aws_allocator s_allocator_fuzz_static = {
 <span class="lineNum">      56 </span>            :     .mem_acquire = s_malloc_allocator,
@@ -121,9 +121,9 @@
 <span class="lineNum">      59 </span>            :     .mem_calloc = NULL,
 <a name="60"><span class="lineNum">      60 </span>            : };</a>
 <span class="lineNum">      61 </span>            : 
-<span class="lineNum">      62 </span><span class="lineCov">    9803982 : struct aws_allocator *sea_allocator() {</span>
-<span class="lineNum">      63 </span><span class="lineCov">    9803982 :   return &amp;s_allocator_fuzz_static;</span>
-<span class="lineNum">      64 </span><span class="lineCov">    9803982 : }</span>
+<span class="lineNum">      62 </span><span class="lineCov">   14737899 : struct aws_allocator *sea_allocator() {</span>
+<span class="lineNum">      63 </span><span class="lineCov">   14737899 :   return &amp;s_allocator_fuzz_static;</span>
+<span class="lineNum">      64 </span><span class="lineCov">   14737899 : }</span>
 </pre>
       </td>
     </tr>

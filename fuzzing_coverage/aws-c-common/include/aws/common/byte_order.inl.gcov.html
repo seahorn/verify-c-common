@@ -37,11 +37,11 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">12</td>
-            <td class="headerCovTableEntry">1474</td>
+            <td class="headerCovTableEntry">1507</td>
             <td class="headerCovTableEntryLo">0.8 %</td>
           </tr>
           <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
@@ -85,22 +85,22 @@
 <span class="lineNum">      23 </span>            :  * out at compile time and code which calls &quot;if (aws_is_big_endian())&quot; will do
 <a name="24"><span class="lineNum">      24 </span>            :  * the right thing without branching.</a>
 <span class="lineNum">      25 </span>            :  */
-<span class="lineNum">      26 </span><span class="lineCov">      74837 : AWS_STATIC_IMPL int aws_is_big_endian(void) {</span>
-<span class="lineNum">      27 </span><span class="lineCov">      74837 :     const uint16_t z = 0x100;</span>
-<span class="lineNum">      28 </span><span class="lineCov">      74837 :     return *(const uint8_t *)&amp;z;</span>
-<span class="lineNum">      29 </span><span class="lineCov">      74837 : }</span>
+<span class="lineNum">      26 </span><span class="lineCov">     111236 : AWS_STATIC_IMPL int aws_is_big_endian(void) {</span>
+<span class="lineNum">      27 </span><span class="lineCov">     111236 :     const uint16_t z = 0x100;</span>
+<span class="lineNum">      28 </span><span class="lineCov">     111236 :     return *(const uint8_t *)&amp;z;</span>
+<span class="lineNum">      29 </span><span class="lineCov">     111236 : }</span>
 <span class="lineNum">      30 </span>            : 
 <span class="lineNum">      31 </span>            : /**
 <a name="32"><span class="lineNum">      32 </span>            :  * Convert 64 bit integer from host to network byte order.</a>
 <span class="lineNum">      33 </span>            :  */
-<span class="lineNum">      34 </span><span class="lineCov">      74837 : AWS_STATIC_IMPL uint64_t aws_hton64(uint64_t x) {</span>
-<span class="lineNum">      35 </span><span class="lineCov">      74837 :     if (aws_is_big_endian()) {</span>
+<span class="lineNum">      34 </span><span class="lineCov">     111236 : AWS_STATIC_IMPL uint64_t aws_hton64(uint64_t x) {</span>
+<span class="lineNum">      35 </span><span class="lineCov">     111236 :     if (aws_is_big_endian()) {</span>
 <span class="lineNum">      36 </span><span class="lineNoCov">          0 :         return x;</span>
 <span class="lineNum">      37 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">      38 </span><span class="lineCov">      74837 : #if defined(__x86_64__) &amp;&amp; (defined(__GNUC__) || defined(__clang__)) &amp;&amp; !defined(CBMC)</span>
-<span class="lineNum">      39 </span><span class="lineCov">      74837 :     uint64_t v;</span>
-<span class="lineNum">      40 </span><span class="lineCov">      74837 :     __asm__(&quot;bswap %q0&quot; : &quot;=r&quot;(v) : &quot;0&quot;(x));</span>
-<span class="lineNum">      41 </span><span class="lineCov">      74837 :     return v;</span>
+<span class="lineNum">      38 </span><span class="lineCov">     111236 : #if defined(__x86_64__) &amp;&amp; (defined(__GNUC__) || defined(__clang__)) &amp;&amp; !defined(CBMC)</span>
+<span class="lineNum">      39 </span><span class="lineCov">     111236 :     uint64_t v;</span>
+<span class="lineNum">      40 </span><span class="lineCov">     111236 :     __asm__(&quot;bswap %q0&quot; : &quot;=r&quot;(v) : &quot;0&quot;(x));</span>
+<span class="lineNum">      41 </span><span class="lineCov">     111236 :     return v;</span>
 <span class="lineNum">      42 </span><span class="lineNoCov">          0 : #elif defined(_MSC_VER)</span>
 <span class="lineNum">      43 </span><span class="lineNoCov">          0 :     return _byteswap_uint64(x);</span>
 <span class="lineNum">      44 </span><span class="lineNoCov">          0 : #else</span>
@@ -113,20 +113,20 @@
 <span class="lineNum">      51 </span>            : /**
 <a name="52"><span class="lineNum">      52 </span>            :  * Convert 64 bit integer from network to host byte order.</a>
 <span class="lineNum">      53 </span>            :  */
-<span class="lineNum">      54 </span><span class="lineCov">      35854 : AWS_STATIC_IMPL uint64_t aws_ntoh64(uint64_t x) {</span>
-<span class="lineNum">      55 </span><span class="lineCov">      35854 :     return aws_hton64(x);</span>
-<span class="lineNum">      56 </span><span class="lineCov">      35854 : }</span>
+<span class="lineNum">      54 </span><span class="lineCov">      55918 : AWS_STATIC_IMPL uint64_t aws_ntoh64(uint64_t x) {</span>
+<span class="lineNum">      55 </span><span class="lineCov">      55918 :     return aws_hton64(x);</span>
+<span class="lineNum">      56 </span><span class="lineCov">      55918 : }</span>
 <span class="lineNum">      57 </span>            : 
 <span class="lineNum">      58 </span>            : /**
 <a name="59"><span class="lineNum">      59 </span>            :  * Convert 32 bit integer from host to network byte order.</a>
 <span class="lineNum">      60 </span>            :  */
-<span class="lineNum">      61 </span><span class="lineCov">      37712 : AWS_STATIC_IMPL uint32_t aws_hton32(uint32_t x) {</span>
+<span class="lineNum">      61 </span><span class="lineCov">      53153 : AWS_STATIC_IMPL uint32_t aws_hton32(uint32_t x) {</span>
 <span class="lineNum">      62 </span><span class="lineNoCov">          0 : #ifdef _WIN32</span>
 <span class="lineNum">      63 </span><span class="lineNoCov">          0 :     return aws_is_big_endian() ? x : _byteswap_ulong(x);</span>
 <span class="lineNum">      64 </span><span class="lineNoCov">          0 : #else</span>
 <span class="lineNum">      65 </span><span class="lineNoCov">          0 :     return htonl(x);</span>
-<span class="lineNum">      66 </span><span class="lineCov">      37712 : #endif</span>
-<span class="lineNum">      67 </span><span class="lineCov">      37712 : }</span>
+<span class="lineNum">      66 </span><span class="lineCov">      53153 : #endif</span>
+<span class="lineNum">      67 </span><span class="lineCov">      53153 : }</span>
 <span class="lineNum">      68 </span>            : 
 <span class="lineNum">      69 </span>            : /**
 <a name="70"><span class="lineNum">      70 </span>            :  * Convert 32 bit float from host to network byte order.</a>
@@ -177,13 +177,13 @@
 <span class="lineNum">     115 </span>            : /**
 <a name="116"><span class="lineNum">     116 </span>            :  * Convert 32 bit integer from network to host byte order.</a>
 <span class="lineNum">     117 </span>            :  */
-<span class="lineNum">     118 </span><span class="lineCov">      48996 : AWS_STATIC_IMPL uint32_t aws_ntoh32(uint32_t x) {</span>
+<span class="lineNum">     118 </span><span class="lineCov">      72396 : AWS_STATIC_IMPL uint32_t aws_ntoh32(uint32_t x) {</span>
 <span class="lineNum">     119 </span><span class="lineNoCov">          0 : #ifdef _WIN32</span>
 <span class="lineNum">     120 </span><span class="lineNoCov">          0 :     return aws_is_big_endian() ? x : _byteswap_ulong(x);</span>
 <span class="lineNum">     121 </span><span class="lineNoCov">          0 : #else</span>
 <span class="lineNum">     122 </span><span class="lineNoCov">          0 :     return ntohl(x);</span>
-<span class="lineNum">     123 </span><span class="lineCov">      48996 : #endif</span>
-<span class="lineNum">     124 </span><span class="lineCov">      48996 : }</span>
+<span class="lineNum">     123 </span><span class="lineCov">      72396 : #endif</span>
+<span class="lineNum">     124 </span><span class="lineCov">      72396 : }</span>
 <span class="lineNum">     125 </span>            : 
 <span class="lineNum">     126 </span>            : /**
 <a name="127"><span class="lineNum">     127 </span>            :  * Convert 32 bit float from network to host byte order.</a>
@@ -202,24 +202,24 @@
 <span class="lineNum">     140 </span>            : /**
 <a name="141"><span class="lineNum">     141 </span>            :  * Convert 16 bit integer from host to network byte order.</a>
 <span class="lineNum">     142 </span>            :  */
-<span class="lineNum">     143 </span><span class="lineCov">      39999 : AWS_STATIC_IMPL uint16_t aws_hton16(uint16_t x) {</span>
+<span class="lineNum">     143 </span><span class="lineCov">      58165 : AWS_STATIC_IMPL uint16_t aws_hton16(uint16_t x) {</span>
 <span class="lineNum">     144 </span><span class="lineNoCov">          0 : #ifdef _WIN32</span>
 <span class="lineNum">     145 </span><span class="lineNoCov">          0 :     return aws_is_big_endian() ? x : _byteswap_ushort(x);</span>
 <span class="lineNum">     146 </span><span class="lineNoCov">          0 : #else</span>
 <span class="lineNum">     147 </span><span class="lineNoCov">          0 :     return htons(x);</span>
-<span class="lineNum">     148 </span><span class="lineCov">      39999 : #endif</span>
-<span class="lineNum">     149 </span><span class="lineCov">      39999 : }</span>
+<span class="lineNum">     148 </span><span class="lineCov">      58165 : #endif</span>
+<span class="lineNum">     149 </span><span class="lineCov">      58165 : }</span>
 <span class="lineNum">     150 </span>            : 
 <span class="lineNum">     151 </span>            : /**
 <a name="152"><span class="lineNum">     152 </span>            :  * Convert 16 bit integer from network to host byte order.</a>
 <span class="lineNum">     153 </span>            :  */
-<span class="lineNum">     154 </span><span class="lineCov">      50512 : AWS_STATIC_IMPL uint16_t aws_ntoh16(uint16_t x) {</span>
+<span class="lineNum">     154 </span><span class="lineCov">      75814 : AWS_STATIC_IMPL uint16_t aws_ntoh16(uint16_t x) {</span>
 <span class="lineNum">     155 </span><span class="lineNoCov">          0 : #ifdef _WIN32</span>
 <span class="lineNum">     156 </span><span class="lineNoCov">          0 :     return aws_is_big_endian() ? x : _byteswap_ushort(x);</span>
 <span class="lineNum">     157 </span><span class="lineNoCov">          0 : #else</span>
 <span class="lineNum">     158 </span><span class="lineNoCov">          0 :     return ntohs(x);</span>
-<span class="lineNum">     159 </span><span class="lineCov">      50512 : #endif</span>
-<span class="lineNum">     160 </span><span class="lineCov">      50512 : }</span>
+<span class="lineNum">     159 </span><span class="lineCov">      75814 : #endif</span>
+<span class="lineNum">     160 </span><span class="lineCov">      75814 : }</span>
 <span class="lineNum">     161 </span>            : 
 <span class="lineNum">     162 </span>            : AWS_EXTERN_C_END
 <span class="lineNum">     163 </span>            : 

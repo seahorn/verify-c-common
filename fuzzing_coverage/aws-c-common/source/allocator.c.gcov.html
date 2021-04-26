@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-20 17:56:48</td>
+            <td class="headerValue">2021-04-23 16:28:21</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">4</td>
@@ -173,52 +173,52 @@
 <span class="lineNum">     111 </span><span class="lineNoCov">          0 :     return &amp;default_allocator;</span>
 <a name="112"><span class="lineNum">     112 </span><span class="lineNoCov">          0 : }</span></a>
 <span class="lineNum">     113 </span>            : 
-<span class="lineNum">     114 </span><span class="lineCov">     415909 : void *aws_mem_acquire(struct aws_allocator *allocator, size_t size) {</span>
-<span class="lineNum">     115 </span><span class="lineCov">     415909 :     AWS_FATAL_PRECONDITION(allocator != NULL);</span>
-<span class="lineNum">     116 </span><span class="lineCov">     415909 :     AWS_FATAL_PRECONDITION(allocator-&gt;mem_acquire != NULL);</span>
-<span class="lineNum">     117 </span><span class="lineCov">     415909 :     /* Protect against https://wiki.sei.cmu.edu/confluence/display/c/MEM04-C.+Beware+of+zero-length+allocations */</span>
-<span class="lineNum">     118 </span><span class="lineCov">     415909 :     AWS_FATAL_PRECONDITION(size != 0);</span>
-<span class="lineNum">     119 </span><span class="lineCov">     415909 : </span>
-<span class="lineNum">     120 </span><span class="lineCov">     415909 :     void *mem = allocator-&gt;mem_acquire(allocator, size);</span>
-<span class="lineNum">     121 </span><span class="lineCov">     415909 :     if (!mem) {</span>
+<span class="lineNum">     114 </span><span class="lineCov">     616115 : void *aws_mem_acquire(struct aws_allocator *allocator, size_t size) {</span>
+<span class="lineNum">     115 </span><span class="lineCov">     616115 :     AWS_FATAL_PRECONDITION(allocator != NULL);</span>
+<span class="lineNum">     116 </span><span class="lineCov">     616115 :     AWS_FATAL_PRECONDITION(allocator-&gt;mem_acquire != NULL);</span>
+<span class="lineNum">     117 </span><span class="lineCov">     616115 :     /* Protect against https://wiki.sei.cmu.edu/confluence/display/c/MEM04-C.+Beware+of+zero-length+allocations */</span>
+<span class="lineNum">     118 </span><span class="lineCov">     616115 :     AWS_FATAL_PRECONDITION(size != 0);</span>
+<span class="lineNum">     119 </span><span class="lineCov">     616115 : </span>
+<span class="lineNum">     120 </span><span class="lineCov">     616115 :     void *mem = allocator-&gt;mem_acquire(allocator, size);</span>
+<span class="lineNum">     121 </span><span class="lineCov">     616115 :     if (!mem) {</span>
 <span class="lineNum">     122 </span><span class="lineNoCov">          0 :         aws_raise_error(AWS_ERROR_OOM);</span>
 <span class="lineNum">     123 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     124 </span><span class="lineCov">     415909 :     return mem;</span>
-<a name="125"><span class="lineNum">     125 </span><span class="lineCov">     415909 : }</span></a>
+<span class="lineNum">     124 </span><span class="lineCov">     616115 :     return mem;</span>
+<a name="125"><span class="lineNum">     125 </span><span class="lineCov">     616115 : }</span></a>
 <span class="lineNum">     126 </span>            : 
-<span class="lineNum">     127 </span><span class="lineCov">      98947 : void *aws_mem_calloc(struct aws_allocator *allocator, size_t num, size_t size) {</span>
-<span class="lineNum">     128 </span><span class="lineCov">      98947 :     AWS_FATAL_PRECONDITION(allocator != NULL);</span>
-<span class="lineNum">     129 </span><span class="lineCov">      98947 :     AWS_FATAL_PRECONDITION(allocator-&gt;mem_calloc || allocator-&gt;mem_acquire);</span>
-<span class="lineNum">     130 </span><span class="lineCov">      98947 :     /* Protect against https://wiki.sei.cmu.edu/confluence/display/c/MEM04-C.+Beware+of+zero-length+allocations */</span>
-<span class="lineNum">     131 </span><span class="lineCov">      98947 :     AWS_FATAL_PRECONDITION(num != 0 &amp;&amp; size != 0);</span>
-<span class="lineNum">     132 </span><span class="lineCov">      98947 : </span>
-<span class="lineNum">     133 </span><span class="lineCov">      98947 :     /* Defensive check: never use calloc with size * num that would overflow</span>
-<span class="lineNum">     134 </span><span class="lineCov">      98947 :      * https://wiki.sei.cmu.edu/confluence/display/c/MEM07-C.+Ensure+that+the+arguments+to+calloc%28%29%2C+when+multiplied%2C+do+not+wrap</span>
-<span class="lineNum">     135 </span><span class="lineCov">      98947 :      */</span>
-<span class="lineNum">     136 </span><span class="lineCov">      98947 :     size_t required_bytes;</span>
-<span class="lineNum">     137 </span><span class="lineCov">      98947 :     if (aws_mul_size_checked(num, size, &amp;required_bytes)) {</span>
+<span class="lineNum">     127 </span><span class="lineCov">     148439 : void *aws_mem_calloc(struct aws_allocator *allocator, size_t num, size_t size) {</span>
+<span class="lineNum">     128 </span><span class="lineCov">     148439 :     AWS_FATAL_PRECONDITION(allocator != NULL);</span>
+<span class="lineNum">     129 </span><span class="lineCov">     148439 :     AWS_FATAL_PRECONDITION(allocator-&gt;mem_calloc || allocator-&gt;mem_acquire);</span>
+<span class="lineNum">     130 </span><span class="lineCov">     148439 :     /* Protect against https://wiki.sei.cmu.edu/confluence/display/c/MEM04-C.+Beware+of+zero-length+allocations */</span>
+<span class="lineNum">     131 </span><span class="lineCov">     148439 :     AWS_FATAL_PRECONDITION(num != 0 &amp;&amp; size != 0);</span>
+<span class="lineNum">     132 </span><span class="lineCov">     148439 : </span>
+<span class="lineNum">     133 </span><span class="lineCov">     148439 :     /* Defensive check: never use calloc with size * num that would overflow</span>
+<span class="lineNum">     134 </span><span class="lineCov">     148439 :      * https://wiki.sei.cmu.edu/confluence/display/c/MEM07-C.+Ensure+that+the+arguments+to+calloc%28%29%2C+when+multiplied%2C+do+not+wrap</span>
+<span class="lineNum">     135 </span><span class="lineCov">     148439 :      */</span>
+<span class="lineNum">     136 </span><span class="lineCov">     148439 :     size_t required_bytes;</span>
+<span class="lineNum">     137 </span><span class="lineCov">     148439 :     if (aws_mul_size_checked(num, size, &amp;required_bytes)) {</span>
 <span class="lineNum">     138 </span><span class="lineNoCov">          0 :         return NULL;</span>
 <span class="lineNum">     139 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     140 </span><span class="lineCov">      98947 : </span>
-<span class="lineNum">     141 </span><span class="lineCov">      98947 :     /* If there is a defined calloc, use it */</span>
-<span class="lineNum">     142 </span><span class="lineCov">      98947 :     if (allocator-&gt;mem_calloc) {</span>
+<span class="lineNum">     140 </span><span class="lineCov">     148439 : </span>
+<span class="lineNum">     141 </span><span class="lineCov">     148439 :     /* If there is a defined calloc, use it */</span>
+<span class="lineNum">     142 </span><span class="lineCov">     148439 :     if (allocator-&gt;mem_calloc) {</span>
 <span class="lineNum">     143 </span><span class="lineNoCov">          0 :         void *mem = allocator-&gt;mem_calloc(allocator, num, size);</span>
 <span class="lineNum">     144 </span><span class="lineNoCov">          0 :         if (!mem) {</span>
 <span class="lineNum">     145 </span><span class="lineNoCov">          0 :             aws_raise_error(AWS_ERROR_OOM);</span>
 <span class="lineNum">     146 </span><span class="lineNoCov">          0 :         }</span>
 <span class="lineNum">     147 </span><span class="lineNoCov">          0 :         return mem;</span>
 <span class="lineNum">     148 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     149 </span><span class="lineCov">      98947 : </span>
-<span class="lineNum">     150 </span><span class="lineCov">      98947 :     /* Otherwise, emulate calloc */</span>
-<span class="lineNum">     151 </span><span class="lineCov">      98947 :     void *mem = allocator-&gt;mem_acquire(allocator, required_bytes);</span>
-<span class="lineNum">     152 </span><span class="lineCov">      98947 :     if (!mem) {</span>
+<span class="lineNum">     149 </span><span class="lineCov">     148439 : </span>
+<span class="lineNum">     150 </span><span class="lineCov">     148439 :     /* Otherwise, emulate calloc */</span>
+<span class="lineNum">     151 </span><span class="lineCov">     148439 :     void *mem = allocator-&gt;mem_acquire(allocator, required_bytes);</span>
+<span class="lineNum">     152 </span><span class="lineCov">     148439 :     if (!mem) {</span>
 <span class="lineNum">     153 </span><span class="lineNoCov">          0 :         aws_raise_error(AWS_ERROR_OOM);</span>
 <span class="lineNum">     154 </span><span class="lineNoCov">          0 :         return NULL;</span>
 <span class="lineNum">     155 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     156 </span><span class="lineCov">      98947 :     memset(mem, 0, required_bytes);</span>
-<span class="lineNum">     157 </span><span class="lineCov">      98947 :     AWS_POSTCONDITION(mem != NULL);</span>
-<span class="lineNum">     158 </span><span class="lineCov">      98947 :     return mem;</span>
-<span class="lineNum">     159 </span><span class="lineCov">      98947 : }</span>
+<span class="lineNum">     156 </span><span class="lineCov">     148439 :     memset(mem, 0, required_bytes);</span>
+<span class="lineNum">     157 </span><span class="lineCov">     148439 :     AWS_POSTCONDITION(mem != NULL);</span>
+<span class="lineNum">     158 </span><span class="lineCov">     148439 :     return mem;</span>
+<span class="lineNum">     159 </span><span class="lineCov">     148439 : }</span>
 <span class="lineNum">     160 </span>            : 
 <a name="161"><span class="lineNum">     161 </span><span class="lineNoCov">          0 : #define AWS_ALIGN_ROUND_UP(value, alignment) (((value) + ((alignment)-1)) &amp; ~((alignment)-1))</span></a>
 <span class="lineNum">     162 </span>            : 
@@ -273,28 +273,28 @@
 <span class="lineNum">     211 </span>            : 
 <a name="212"><span class="lineNum">     212 </span>            : #undef AWS_ALIGN_ROUND_UP</a>
 <span class="lineNum">     213 </span>            : 
-<span class="lineNum">     214 </span><span class="lineCov">     471675 : void aws_mem_release(struct aws_allocator *allocator, void *ptr) {</span>
-<span class="lineNum">     215 </span><span class="lineCov">     471675 :     AWS_FATAL_PRECONDITION(allocator != NULL);</span>
-<span class="lineNum">     216 </span><span class="lineCov">     471675 :     AWS_FATAL_PRECONDITION(allocator-&gt;mem_release != NULL);</span>
-<span class="lineNum">     217 </span><span class="lineCov">     471675 : </span>
-<span class="lineNum">     218 </span><span class="lineCov">     471675 :     if (ptr != NULL) {</span>
-<span class="lineNum">     219 </span><span class="lineCov">     471675 :         allocator-&gt;mem_release(allocator, ptr);</span>
-<span class="lineNum">     220 </span><span class="lineCov">     471675 :     }</span>
-<a name="221"><span class="lineNum">     221 </span><span class="lineCov">     471675 : }</span></a>
+<span class="lineNum">     214 </span><span class="lineCov">     687040 : void aws_mem_release(struct aws_allocator *allocator, void *ptr) {</span>
+<span class="lineNum">     215 </span><span class="lineCov">     687040 :     AWS_FATAL_PRECONDITION(allocator != NULL);</span>
+<span class="lineNum">     216 </span><span class="lineCov">     687040 :     AWS_FATAL_PRECONDITION(allocator-&gt;mem_release != NULL);</span>
+<span class="lineNum">     217 </span><span class="lineCov">     687040 : </span>
+<span class="lineNum">     218 </span><span class="lineCov">     687040 :     if (ptr != NULL) {</span>
+<span class="lineNum">     219 </span><span class="lineCov">     687040 :         allocator-&gt;mem_release(allocator, ptr);</span>
+<span class="lineNum">     220 </span><span class="lineCov">     687040 :     }</span>
+<a name="221"><span class="lineNum">     221 </span><span class="lineCov">     687040 : }</span></a>
 <span class="lineNum">     222 </span>            : 
-<span class="lineNum">     223 </span><span class="lineCov">      86561 : int aws_mem_realloc(struct aws_allocator *allocator, void **ptr, size_t oldsize, size_t newsize) {</span>
-<span class="lineNum">     224 </span><span class="lineCov">      86561 :     AWS_FATAL_PRECONDITION(allocator != NULL);</span>
-<span class="lineNum">     225 </span><span class="lineCov">      86561 :     AWS_FATAL_PRECONDITION(allocator-&gt;mem_realloc || allocator-&gt;mem_acquire);</span>
-<span class="lineNum">     226 </span><span class="lineCov">      86561 :     AWS_FATAL_PRECONDITION(allocator-&gt;mem_release);</span>
-<span class="lineNum">     227 </span><span class="lineCov">      86561 : </span>
-<span class="lineNum">     228 </span><span class="lineCov">      86561 :     /* Protect against https://wiki.sei.cmu.edu/confluence/display/c/MEM04-C.+Beware+of+zero-length+allocations */</span>
-<span class="lineNum">     229 </span><span class="lineCov">      86561 :     if (newsize == 0) {</span>
+<span class="lineNum">     223 </span><span class="lineCov">     123436 : int aws_mem_realloc(struct aws_allocator *allocator, void **ptr, size_t oldsize, size_t newsize) {</span>
+<span class="lineNum">     224 </span><span class="lineCov">     123436 :     AWS_FATAL_PRECONDITION(allocator != NULL);</span>
+<span class="lineNum">     225 </span><span class="lineCov">     123436 :     AWS_FATAL_PRECONDITION(allocator-&gt;mem_realloc || allocator-&gt;mem_acquire);</span>
+<span class="lineNum">     226 </span><span class="lineCov">     123436 :     AWS_FATAL_PRECONDITION(allocator-&gt;mem_release);</span>
+<span class="lineNum">     227 </span><span class="lineCov">     123436 : </span>
+<span class="lineNum">     228 </span><span class="lineCov">     123436 :     /* Protect against https://wiki.sei.cmu.edu/confluence/display/c/MEM04-C.+Beware+of+zero-length+allocations */</span>
+<span class="lineNum">     229 </span><span class="lineCov">     123436 :     if (newsize == 0) {</span>
 <span class="lineNum">     230 </span><span class="lineNoCov">          0 :         aws_mem_release(allocator, *ptr);</span>
 <span class="lineNum">     231 </span><span class="lineNoCov">          0 :         *ptr = NULL;</span>
 <span class="lineNum">     232 </span><span class="lineNoCov">          0 :         return AWS_OP_SUCCESS;</span>
 <span class="lineNum">     233 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     234 </span><span class="lineCov">      86561 : </span>
-<span class="lineNum">     235 </span><span class="lineCov">      86561 :     if (allocator-&gt;mem_realloc) {</span>
+<span class="lineNum">     234 </span><span class="lineCov">     123436 : </span>
+<span class="lineNum">     235 </span><span class="lineCov">     123436 :     if (allocator-&gt;mem_realloc) {</span>
 <span class="lineNum">     236 </span><span class="lineNoCov">          0 :         void *newptr = allocator-&gt;mem_realloc(allocator, *ptr, oldsize, newsize);</span>
 <span class="lineNum">     237 </span><span class="lineNoCov">          0 :         if (!newptr) {</span>
 <span class="lineNum">     238 </span><span class="lineNoCov">          0 :             return aws_raise_error(AWS_ERROR_OOM);</span>
@@ -302,26 +302,26 @@
 <span class="lineNum">     240 </span><span class="lineNoCov">          0 :         *ptr = newptr;</span>
 <span class="lineNum">     241 </span><span class="lineNoCov">          0 :         return AWS_OP_SUCCESS;</span>
 <span class="lineNum">     242 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     243 </span><span class="lineCov">      86561 : </span>
-<span class="lineNum">     244 </span><span class="lineCov">      86561 :     /* Since the allocator doesn't support realloc, we'll need to emulate it (inefficiently). */</span>
-<span class="lineNum">     245 </span><span class="lineCov">      86561 :     if (oldsize &gt;= newsize) {</span>
+<span class="lineNum">     243 </span><span class="lineCov">     123436 : </span>
+<span class="lineNum">     244 </span><span class="lineCov">     123436 :     /* Since the allocator doesn't support realloc, we'll need to emulate it (inefficiently). */</span>
+<span class="lineNum">     245 </span><span class="lineCov">     123436 :     if (oldsize &gt;= newsize) {</span>
 <span class="lineNum">     246 </span><span class="lineNoCov">          0 :         return AWS_OP_SUCCESS;</span>
 <span class="lineNum">     247 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     248 </span><span class="lineCov">      86561 : </span>
-<span class="lineNum">     249 </span><span class="lineCov">      86561 :     void *newptr = allocator-&gt;mem_acquire(allocator, newsize);</span>
-<span class="lineNum">     250 </span><span class="lineCov">      86561 :     if (!newptr) {</span>
+<span class="lineNum">     248 </span><span class="lineCov">     123436 : </span>
+<span class="lineNum">     249 </span><span class="lineCov">     123436 :     void *newptr = allocator-&gt;mem_acquire(allocator, newsize);</span>
+<span class="lineNum">     250 </span><span class="lineCov">     123436 :     if (!newptr) {</span>
 <span class="lineNum">     251 </span><span class="lineNoCov">          0 :         return aws_raise_error(AWS_ERROR_OOM);</span>
 <span class="lineNum">     252 </span><span class="lineNoCov">          0 :     }</span>
-<span class="lineNum">     253 </span><span class="lineCov">      86561 : </span>
-<span class="lineNum">     254 </span><span class="lineCov">      86561 :     memcpy(newptr, *ptr, oldsize);</span>
-<span class="lineNum">     255 </span><span class="lineCov">      86561 :     memset((uint8_t *)newptr + oldsize, 0, newsize - oldsize);</span>
-<span class="lineNum">     256 </span><span class="lineCov">      86561 : </span>
-<span class="lineNum">     257 </span><span class="lineCov">      86561 :     aws_mem_release(allocator, *ptr);</span>
-<span class="lineNum">     258 </span><span class="lineCov">      86561 : </span>
-<span class="lineNum">     259 </span><span class="lineCov">      86561 :     *ptr = newptr;</span>
-<span class="lineNum">     260 </span><span class="lineCov">      86561 : </span>
-<span class="lineNum">     261 </span><span class="lineCov">      86561 :     return AWS_OP_SUCCESS;</span>
-<span class="lineNum">     262 </span><span class="lineCov">      86561 : }</span>
+<span class="lineNum">     253 </span><span class="lineCov">     123436 : </span>
+<span class="lineNum">     254 </span><span class="lineCov">     123436 :     memcpy(newptr, *ptr, oldsize);</span>
+<span class="lineNum">     255 </span><span class="lineCov">     123436 :     memset((uint8_t *)newptr + oldsize, 0, newsize - oldsize);</span>
+<span class="lineNum">     256 </span><span class="lineCov">     123436 : </span>
+<span class="lineNum">     257 </span><span class="lineCov">     123436 :     aws_mem_release(allocator, *ptr);</span>
+<span class="lineNum">     258 </span><span class="lineCov">     123436 : </span>
+<span class="lineNum">     259 </span><span class="lineCov">     123436 :     *ptr = newptr;</span>
+<span class="lineNum">     260 </span><span class="lineCov">     123436 : </span>
+<span class="lineNum">     261 </span><span class="lineCov">     123436 :     return AWS_OP_SUCCESS;</span>
+<span class="lineNum">     262 </span><span class="lineCov">     123436 : }</span>
 <span class="lineNum">     263 </span>            : 
 <span class="lineNum">     264 </span>            : /* Wraps a CFAllocator around aws_allocator. For Mac only. */
 <span class="lineNum">     265 </span>            : #ifdef __MACH__
