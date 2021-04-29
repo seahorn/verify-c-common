@@ -38,6 +38,6 @@ RUN cd aws-c-common/verification/cbmc && git checkout main && \
     git submodule init && git submodule update
 
 WORKDIR /home/aws-c-common/verification/cbmc/proofs/scripts/
-COPY scripts/run_aws_res.py .
+#COPY scripts/run_aws_res.py .
 
 WORKDIR /home/aws-c-common/verification/cbmc/proofs/
