@@ -40,6 +40,10 @@ uint64_t nd_uint64_t(void) {
   return __VERIFIER_nondet_unsigned_long_long_int();
 }
 
+void __SEA_assume(bool pre_cond) {
+  __VERIFIER_assume(pre_cond);
+}
+
 void __VERIFIER_error(void) {
   __VERIFIER_assert(0);
 }
