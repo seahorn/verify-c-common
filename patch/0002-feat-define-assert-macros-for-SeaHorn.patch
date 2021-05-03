@@ -1,0 +1,76 @@
+From 47fedd89f8d82517f459e7a07a15b9b4615e8325 Mon Sep 17 00:00:00 2001
+From: Arie Gurfinkel <arie.gurfinkel@gmail.com>
+Date: Mon, 3 May 2021 13:14:29 -0400
+Subject: [PATCH] feat: define assert macros for SeaHorn
+
+---
+ include/aws/common/assert.h | 29 +++++++++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 4 deletions(-)
+
+diff --git a/include/aws/common/assert.h b/include/aws/common/assert.h
+index 7ab9973..dc8e292 100644
+--- a/include/aws/common/assert.h
++++ b/include/aws/common/assert.h
+@@ -18,8 +18,14 @@ void aws_fatal_assert(const char *cond_str, const char *file, int line) AWS_ATTR
+ 
+ AWS_EXTERN_C_END
+ 
++#if defined(__SEAHORN__)
++#    include <seahorn/seahorn.h>
++#endif
++
+ #if defined(CBMC)
+ #    define AWS_ASSUME(cond) __CPROVER_assume(cond)
++#elif defined(__SEAHORN__)
++#    define AWS_ASSUME(cond) sassume(cond)
+ #elif defined(_MSC_VER)
+ #    define AWS_ASSUME(cond) __assume(cond)
+ #    define AWS_UNREACHABLE() __assume(0)
+@@ -41,6 +47,8 @@ AWS_EXTERN_C_END
+ #if defined(CBMC)
+ #    include <assert.h>
+ #    define AWS_ASSERT(cond) assert(cond)
++#elif defined(__SEAHORN__)
++#    define AWS_ASSERT(cond) sassert(cond)
+ #elif defined(DEBUG_BUILD) || __clang_analyzer__
+ #    define AWS_ASSERT(cond) AWS_FATAL_ASSERT(cond)
+ #else
+@@ -49,11 +57,13 @@ AWS_EXTERN_C_END
+ 
+ #if defined(CBMC)
+ #    define AWS_FATAL_ASSERT(cond) AWS_ASSERT(cond)
++#elif defined(CBMC)
++#    define AWS_FATAL_ASSERT(cond) AWS_ASSERT(cond)
+ #elif __clang_analyzer__
+-#    define AWS_FATAL_ASSERT(cond)                                                                                     \
+-        if (!(cond)) {                                                                                                 \
+-            abort();                                                                                                   \
+-        }
++#            define AWS_FATAL_ASSERT(cond)                                                                             \
++                if (!(cond)) {                                                                                         \
++                    abort();                                                                                           \
++                }
+ #else
+ #    if defined(_MSC_VER)
+ #        define AWS_FATAL_ASSERT(cond)                                                                                 \
+@@ -88,6 +98,17 @@ AWS_EXTERN_C_END
+ #    define AWS_FATAL_POSTCONDITION1(cond) __CPROVER_assert((cond), #    cond " check failed")
+ #    define AWS_MEM_IS_READABLE(base, len) (((len) == 0) || (__CPROVER_r_ok((base), (len))))
+ #    define AWS_MEM_IS_WRITABLE(base, len) (((len) == 0) || (__CPROVER_r_ok((base), (len))))
++#elif defined(__SEAHORN__)
++#    define AWS_PRECONDITION2(cond, expl) AWS_ASSERT(cond)
++#    define AWS_PRECONDITION1(cond) AWS_ASSERT(cond)
++#    define AWS_FATAL_PRECONDITION2(cond, expl) AWS_FATAL_ASSERT(cond)
++#    define AWS_FATAL_PRECONDITION1(cond) AWS_FATAL_ASSERT(cond)
++#    define AWS_POSTCONDITION2(cond, expl) AWS_ASSERT(cond)
++#    define AWS_POSTCONDITION1(cond) AWS_ASSERT(cond)
++#    define AWS_FATAL_POSTCONDITION2(cond, expl) AWS_FATAL_ASSERT(cond)
++#    define AWS_FATAL_POSTCONDITION1(cond) AWS_FATAL_ASSERT(cond)
++#    define AWS_MEM_IS_READABLE(base, len) (((len) == 0) || sea_is_dereferenceable(base, len))
++#    define AWS_MEM_IS_WRITABLE(base, len) (((len) == 0) || sea_is_dereferenceable(base, len))
+ #else
+ #    define AWS_PRECONDITION2(cond, expl) AWS_ASSERT(cond)
+ #    define AWS_PRECONDITION1(cond) AWS_ASSERT(cond)
+-- 
+2.30.1 (Apple Git-130)
+
