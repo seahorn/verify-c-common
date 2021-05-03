@@ -3,18 +3,18 @@ import re
 import csv
 import argparse
 import subprocess
-​
+
 # parser = argparse.ArgumentParser()
 # parser.add_argument('-csv', type=str, help='give an output csv name', required=True)
 # args = parser.parse_args()
-​
+
 BENCHDIR = '../'
 BENCHDIRABSPATH = os.path.abspath(BENCHDIR)
 TABLEFILE = 'aws-cbmc.csv'
 PATTERN = re.compile(".*log$")
 ATTRS = ['bench name', 'total times (s)', 'vc gen times (s)', 'dec proc times (s)', 'symb exec times (s)', 'postprocess eq (s)', 'SSA times (s)', 'solver times (s)', 'iterations', 'result (success/fail)']
 BENCHSUBDIRS = []
-​
+
 def convert_time_to_seconds(str_time):
     m, s = str_time.split("m")
     _, m = m.split("real")
@@ -22,7 +22,7 @@ def convert_time_to_seconds(str_time):
     m,s = int(m), float(s)
     result = m * 60 + s
     return result
-​
+
 def manipulate_input_data(data):
     res_data = []
     for x in data:
@@ -31,11 +31,11 @@ def manipulate_input_data(data):
         else:
             res_data.append(x)
     return res_data
-​
+
 def add_time_format(timing_data):
     _, raw_time = timing_data.replace(" ", "").split(":")
     return "{:0.3f}".format(round(float(raw_time[:-1]), 3))
-​
+
 def read_output_from_file(benchsubdir, file_name):
     """
         According to src files on cbmc:
@@ -110,20 +110,20 @@ def read_output_from_file(benchsubdir, file_name):
         print(f'Bench {benchsubdir} recording error! Please check log file on that folder.')
     file.close()
     return res_data
-​
+
 def get_all_res_from_log_file(table_lst):
     idx_output = 0
     for benchsubdir in BENCHSUBDIRS:
         log_path = "../"+benchsubdir+"/logs/result.txt"
         res_data = read_output_from_file(benchsubdir, log_path)
         table_lst.append(res_data)
-​
+
 def search_get_all_subdirse():
     global BENCHSUBDIRS
     BENCHSUBDIRS = sorted(next(os.walk(BENCHDIR))[1])[:-1]
     # BENCHSUBDIRS = BENCHSUBDIRS[:1]
     # print(os.getcwd())
-​
+
 def run_benchs_cbmc():
     command_lst = ["rm -rf gotos logs log", "( time make result; ) 2> log", "cat log >> logs/result.txt "]
     print("Start making results ...")
@@ -136,7 +136,7 @@ def run_benchs_cbmc():
         process = subprocess.Popen('/bin/bash', stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         _ = process.communicate(cddir.encode())
     print("Benchmark end-of-run. Start gathering info...")
-​
+
 def write_info_into_csv(table_lst):
     print(f'Writing data into {TABLEFILE} at current directory...')
     try:
@@ -151,13 +151,13 @@ def write_info_into_csv(table_lst):
                         quotechar='|', quoting=csv.QUOTE_MINIMAL)
         for out_data in table_lst:
             writer.writerow(out_data)
-​
+
 def main():
     table_list = []
     search_get_all_subdirse()
     run_benchs_cbmc()
     get_all_res_from_log_file(table_list)
     write_info_into_csv(table_list)
-​
+
 if __name__ == '__main__':
-	main()
+    main()
