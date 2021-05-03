@@ -14,10 +14,10 @@ RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/nul
 RUN apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
 RUN apt -y update
 RUN apt -y install cmake
-RUN git config --global user.email "person@place.com" && git config --global user.name "Name Thee"
 
 ## clone verify-c-common repository
 USER usea
+RUN git config --global user.email "person@place.com" && git config --global user.name "Name Thee"
 WORKDIR /home/usea
 #RUN git clone https://github.com/yvizel/verify-c-common.git 
 
