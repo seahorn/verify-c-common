@@ -29,6 +29,9 @@ WORKDIR /home/usea/verify-c-common
 RUN rm -rf aws-c-common && git clone https://github.com/awslabs/aws-c-common.git
 
 WORKDIR /home/usea/verify-c-common/aws-c-common
+# apply patches from verify-c-common
+RUN git am ../patch/*.patch
+# build aws-c-common
 RUN mkdir build && cd build && cmake -DCMAKE_C_COMPILER=clang-10 -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_INSTALL_PREFIX=$(pwd)/run ../ -GNinja && cmake --build . --target install
 
 WORKDIR /home/usea/verify-c-common
