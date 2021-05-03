@@ -9,11 +9,12 @@ int main(void) {
   size_t size;
   sea_nd_init_aws_linked_list_from_tail(&list, &size);
   struct saved_aws_linked_list to_save = {.saved_size = 0};
-  #ifdef __KLEE__
-    if (size == 0) return 0;
-  #else
-    assume(size > 0);
-  #endif
+#ifdef __KLEE__
+  if (aws_linked_list_empty(&list))
+    return 0;
+#else
+  assume(!aws_linked_list_empty(&list));
+#endif
 
   /* Keep the old last node of the linked list */
   struct aws_linked_list_node *to_pop = list.tail.prev;
@@ -27,7 +28,8 @@ int main(void) {
   // -- removed node is detached
   sassert(ret->next == NULL && ret->prev == NULL);
   // -- tail of list is properly updated
-  sassert(is_aws_linked_list_node_attached_after(to_save.save_point, &list.tail));
+  sassert(
+      is_aws_linked_list_node_attached_after(to_save.save_point, &list.tail));
   // -- list is ok
   sassert(list.head.prev == NULL);
   sassert(list.tail.next == NULL);
