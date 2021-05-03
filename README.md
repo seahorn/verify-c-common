@@ -68,6 +68,16 @@ $ docker build -t verify-c-common:fuzz . --file docker/verify-c-common-fuzz.Dock
 $ docker run -t verify-c-common:fuzz /bin/bash -c "cd build && ctest -R fuzz_ --timeout 2000"
 ```
 
+### aws-c-common
+Dockerfile: [`docker/aws-c-common.Dockerfile`](docker/aws-c-common.Dockerfile).
+
+To build and run all aws-c-common jobs by cbmc:
+```
+$ docker build -t aws-c-common:latest . --file docker/aws-c-common.Dockerfile
+$ docker run -t aws-c-common:latest /bin/bash -c "cd scripts && python3 run_aws_res.py"
+```
+Note that, it will copy a python script [`run_aws_res.py`](scripts/run_aws_res.py) under `scripts` folder in the container.
+
 ## Build locally with CMake and Clang-10
 
 
