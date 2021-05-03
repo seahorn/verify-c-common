@@ -179,6 +179,8 @@ function(sea_attach_bc name)
   set_property(TARGET ${SOURCE_EXE} PROPERTY EXCLUDE_FROM_ALL ON)
 
   target_compile_definitions(${SOURCE_EXE} PRIVATE __SEAHORN__)
+  # when defined, check AWS_ASSERT as well as sassert
+  target_compile_definitions(${SOURCE_EXE} PRIVATE __SEAHORN_ASSERT__)
   target_compile_definitions(${SOURCE_EXE} PRIVATE VACCHECK)
 
   # convert ${SOURCE_EXE} target to llvm
