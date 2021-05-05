@@ -7,6 +7,11 @@ include(CTest)
 
 enable_testing()
 
+# Enables LLVM builtin functions for memory operations. We do not check these for memory safety.
+# To check for memory safety, set this option to OFF. Then our wrappers will be used instead that
+# check for memory safety and call builtin functions directly.
+option(SEA_LLVM_MEM_BUILTINS "Use LLVM builtins memcpy/memmove without memory safety checks" OFF)
+
 
 option(SEA_ENABLE_FUZZ "Enable fuzzing" OFF)
 option(SEA_WITH_BLEEDING_EDGE "Enable bleeding edge proofs" OFF)
@@ -16,15 +21,19 @@ option(SEA_ENABLE_SMACK "Enable SMACK" OFF)
 
 option(SEA_ALLOCATOR_CAN_FAIL "Use can fail allocator" OFF)
 
-if (CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR )
-  message (FATAL_ERROR
-    "In-source builds are not allowed. Please clean your source tree and try again.")
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+  message(
+    FATAL_ERROR
+    "In-source builds are not allowed. Please clean your source tree and try again."
+  )
 endif()
 
 # Default is release with debug info
 if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
-    "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
+  set(
+    CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
+    "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE
+  )
 endif()
 
 if(SEA_ENABLE_SMACK)
@@ -35,13 +44,13 @@ endif()
 set(SEAHORN_ROOT "/usr" CACHE PATH "Path to SeaHorn installation")
 set(SEA_LINK "llvm-link" CACHE STRING "Path to llvm-link")
 set(LLVMIR_LINK ${SEA_LINK})
-set(SEA_OPT "${SEAHORN_ROOT}/bin/seaopt" CACHE STRING  "Path to seaopt binary")
-set(SEA_PP "${SEAHORN_ROOT}/bin/seapp" CACHE STRING  "Path to seapp binary")
+set(SEA_OPT "${SEAHORN_ROOT}/bin/seaopt" CACHE STRING "Path to seaopt binary")
+set(SEA_PP "${SEAHORN_ROOT}/bin/seapp" CACHE STRING "Path to seapp binary")
 set(LLVMIR_OPT ${SEA_OPT})
 
 set(AWS_C_COMMON_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/aws-c-common)
 
-if (SEA_ENABLE_FUZZ)
+if(SEA_ENABLE_FUZZ)
   find_package(aws-c-common REQUIRED)
 endif()
 
@@ -59,4 +68,3 @@ include_directories(seahorn/include)
 include_directories(aws-c-common/include)
 include_directories(${SEAHORN_ROOT}/include)
 add_subdirectory(seahorn)
-

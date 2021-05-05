@@ -176,6 +176,10 @@ function(sea_attach_bc name)
   target_compile_options(${SOURCE_EXE} PUBLIC -Wno-macro-redefined)
   target_compile_options(${SOURCE_EXE} PUBLIC -g)
   target_compile_options(${SOURCE_EXE} PUBLIC -fdeclspec)
+  # do not override memcpy/memmove, we provide our own wrappers
+  if (NOT SEA_LLVM_MEM_BUILTINS)
+    target_compile_options(${SOURCE_EXE} PUBLIC -fno-builtin-memcpy -fno-builtin-memmove)
+  endif()
   set_property(TARGET ${SOURCE_EXE} PROPERTY EXCLUDE_FROM_ALL ON)
 
   target_compile_definitions(${SOURCE_EXE} PRIVATE __SEAHORN__)

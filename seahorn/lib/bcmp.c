@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 #include <strings.h>
 
 #define INLINE __attribute__((always_inline))
@@ -80,4 +81,16 @@ INLINE void *__memcpy_chk(void *dest, const void *src, size_t len,
 INLINE void *__memset_chk(void *dest, int c, size_t len, size_t dstlen) {
   sassert(!(dstlen < len));
   return __builtin_memset(dest, c, len);
+}
+
+INLINE void* memmove(void *dst, const void *src, size_t len)  {
+  sassert(sea_is_dereferenceable(dst, len));
+  sassert(sea_is_dereferenceable(src, len));
+  return __builtin_memmove(dst, src, len);
+}
+
+INLINE void *memcpy(void *dst, const void *src, size_t len) {
+  sassert(sea_is_dereferenceable(dst, len));
+  sassert(sea_is_dereferenceable(src, len));
+  return __builtin_memcpy(dst, src, len);
 }
