@@ -5,6 +5,7 @@ import csv
 import glob
 import subprocess
 import argparse
+from get_exper_brunch_stat import read_brunchstat_from_log, write_brunchstat_into_csv
 
 BUILDABSPATH = os.path.abspath('../build/')
 DATAABSPATH = os.path.abspath('../') + "/data"
@@ -64,22 +65,20 @@ def collect_res_from_ctest(file_name):
         "{dir}/{file}".format(dir="../data", file=file_name), res_data)
     print("Done, find result csv file at: %s" % file_name)
 
-def extra_to_filename(extra):
+def extra_to_filename(extra, suffix='csv'):
     '''extra: --a=b --c=d to filename: a.b.c.d.csv'''
     if (len(extra) == 0):
-        return 'base.csv'
+        return f'base.{suffix}'
     parts = []
     for flag in extra:
         if flag.startswith('--'):
             flag = flag[2:]
         parts.extend(flag.split('='))
-    return f'{"_".join(parts)}.csv'
+    return f'{"_".join(parts)}.{suffix}'
 
 
 def run_ctest_for_seahorn():
-    # env_lst = ["", "--horn-bmc-solver=smt-y2"]
     print("Start making SeaHorn results...")
-    # for verify_flag in env_lst:
     set_env = ''
     if extra and len(extra) > 0:
         verify_flags = " ".join(extra)
@@ -101,6 +100,18 @@ def run_ctest_for_seahorn():
         stdout=get_output_level())
     _ = process.communicate(cddir.encode())
     collect_res_from_ctest(extra_to_filename(extra))
+    collect_stat_from_ctest_log(extra_to_filename(extra, suffix='brunch.csv'))
+
+def collect_stat_from_ctest_log(outfile):
+    test_tmpdir = os.path.join(BUILDABSPATH, 'Testing', 'Temporary')
+    logfiles = [i for i in os.listdir(
+        test_tmpdir)if os.path.isfile(os.path.join(test_tmpdir, i)) and i.startswith("LastTest_")]
+    latest_log = logfiles[0]
+    print("collecting brunch stat from " + logfiles[0])
+    data = read_brunchstat_from_log(os.path.join(test_tmpdir, latest_log))
+    outpath = os.path.join(DATAABSPATH, outfile)
+    write_brunchstat_into_csv(data, outpath)
+
 
 
 def run_ctest_for_klee():
