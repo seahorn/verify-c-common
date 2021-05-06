@@ -17,8 +17,6 @@ jobs:
     steps:
       - name: Check Out Repo 
         uses: actions/checkout@v2
-        with:
-          persist-credentials: false
 
       - name: Docker
         run: docker build -t verify-c-common:fuzz . --file docker/verify-c-common-fuzz.Dockerfile
