@@ -51,7 +51,7 @@ RUN mkdir build && cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_I
 
 WORKDIR /home/usea/verify-c-common
 
-RUN mkdir build && cd build && cmake -DSEA_LINK=llvm-link-10 -DCMAKE_C_COMPILER=clang-10 -DCMAKE_CXX_COMPILER=clang++-10 -DSEAHORN_ROOT=/home/usea/seahorn -DSEA_ENABLE_SMACK=ON ../ -GNinja && cmake --build .
+RUN mkdir build && cd build && cmake -DSEA_LINK=llvm-link-10 -DCMAKE_C_COMPILER=clang-10 -DCMAKE_CXX_COMPILER=clang++-10 -DSEAHORN_ROOT=/home/usea/seahorn -DSEA_ENABLE_SMACK=ON -DSMACK_ENABLE_NO_MEM_SPLIT=ON ../ -GNinja && cmake --build .
 
 # Add smack envinronment
 RUN echo "source /home/usea/smack-toolchain/smack.environment" >> ~/.bashrc

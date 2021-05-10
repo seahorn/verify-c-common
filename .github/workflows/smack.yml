@@ -20,5 +20,9 @@ jobs:
       - name: Docker 
         run: docker build -t verify-c-common . --file docker/verify-c-common-smack.Dockerfile
 
+      - name: Get number of Cores
+        id: cores
+        run: echo "::set-output name=num_cores::$(nproc --all)"
+
       - name: Run Tests 
-        run: docker run -t verify-c-common /bin/bash -c "source /home/usea/smack-toolchain/smack.environment && cd build && ctest -R smack_ --output-on-failure --timeout 2000"
+        run: docker run -t verify-c-common /bin/bash -c "source /home/usea/smack-toolchain/smack.environment && cd build && ctest -j ${{steps.cores.outputs.num_cores}} -R smack_ --output-on-failure --timeout 2000"
