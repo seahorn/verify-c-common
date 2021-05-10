@@ -3,6 +3,7 @@
  */
 
 #include <proof_allocators.h>
+#include <sea_allocators.h>
 
 #include <stdarg.h>
 #include <stdlib.h>
@@ -13,8 +14,13 @@ void *bounded_malloc(size_t size) {
     return size == 0 ? NULL : malloc(size);
 }
 
-void *can_fail_malloc(size_t size) { 
-    return size == 0 ? NULL : malloc(size); 
+void *can_fail_malloc(size_t size) {
+  if (size == 0)
+    return NULL;
+  // initialize nondetermined values into allocated memory
+  void *data = malloc(size);
+  memhavoc(data, size);
+  return data;
 }
 
 /**
