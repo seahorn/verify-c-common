@@ -1,9 +1,10 @@
+#include <math.h>
 #include <stdbool.h>
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+#include <string.h>
 
 #include "smack/smack.h"
 
@@ -53,3 +54,13 @@ void *nd_voidp(void) {
 }
 
 bool nd_malloc_is_fail(void) { return nd_bool(); }
+
+#define INLINE __attribute__((always_inline))
+
+// wrapper memcpy for smack
+INLINE void *memcpy(void *dst, const void *src, size_t len) {
+  // smack treats invalid pointer dereference to call memcpy if size n is zero.
+  if (len == 0)
+    return dst;
+  return __builtin_memcpy(dst, src, len);
+}
