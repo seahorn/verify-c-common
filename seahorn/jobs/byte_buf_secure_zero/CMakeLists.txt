@@ -11,4 +11,11 @@ sea_add_klee(byte_buf_secure_zero ${AWS_C_COMMON_ROOT}/source/byte_buf.c
 ${AWS_C_COMMON_ROOT}/source/common.c
 aws_byte_buf_secure_zero_harness.c)
 
+# fuzz
 sea_add_fuzz(byte_buf_secure_zero aws_byte_buf_secure_zero_harness.c)
+
+# smack
+sea_add_smack(byte_buf_secure_zero
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  ${AWS_C_COMMON_ROOT}/source/common.c
+  aws_byte_buf_secure_zero_harness.c)
