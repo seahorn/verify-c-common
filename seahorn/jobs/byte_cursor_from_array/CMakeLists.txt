@@ -9,5 +9,11 @@ sea_add_klee(byte_cursor_from_array
   ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   aws_byte_cursor_from_array_harness.c)
 
+# fuzz
 sea_add_fuzz(byte_cursor_from_array
+  aws_byte_cursor_from_array_harness.c)
+
+# smack
+sea_add_smack(byte_cursor_from_array
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   aws_byte_cursor_from_array_harness.c)

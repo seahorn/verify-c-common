@@ -6,4 +6,5 @@ sea_attach_bc_link(byte_cursor_read)
 configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(byte_cursor_read)
 
+# fuzz
 sea_add_fuzz(byte_cursor_read aws_byte_cursor_read_harness.c)

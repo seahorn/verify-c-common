@@ -4,5 +4,6 @@ add_executable(byte_cursor_advance_nospec
 sea_attach_bc_link(byte_cursor_advance_nospec)
 sea_add_unsat_test(byte_cursor_advance_nospec)
 
+# fuzz
 sea_add_fuzz(byte_cursor_advance_nospec
   aws_byte_cursor_advance_nospec_harness.c)

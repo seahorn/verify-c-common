@@ -10,5 +10,11 @@ sea_add_klee(byte_cursor_eq_ignore_case
   ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   aws_byte_cursor_eq_ignore_case_harness.c)
 
+# fuzz
 sea_add_fuzz(byte_cursor_eq_ignore_case
+  aws_byte_cursor_eq_ignore_case_harness.c)
+
+# smack
+sea_add_smack(byte_cursor_eq_ignore_case
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   aws_byte_cursor_eq_ignore_case_harness.c)
