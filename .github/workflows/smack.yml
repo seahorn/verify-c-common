@@ -20,9 +20,13 @@ jobs:
       - name: Docker 
         run: docker build -t verify-c-common . --file docker/verify-c-common-smack.Dockerfile
 
+      - name: Get exclude test
+        id: exclude_files
+        run: (test -f ".github/workflows/blacklist.smack.txt" && echo ::set-output name=exclude_files::"($(cut -f 1 ".github/workflows/blacklist.smack.txt" | head -c -1 | tr '\n' '|'))" ) || (echo ::set-output name=exclude_files::" ")
+
       - name: Get number of Cores
         id: cores
         run: echo "::set-output name=num_cores::$(nproc --all)"
 
       - name: Run Tests 
-        run: docker run -t verify-c-common /bin/bash -c "source /home/usea/smack-toolchain/smack.environment && cd build && ctest -j ${{steps.cores.outputs.num_cores}} -R smack_ --output-on-failure --timeout 2000"
+        run: docker run -t verify-c-common /bin/bash -c "source /home/usea/smack-toolchain/smack.environment && cd build && ctest -j ${{steps.cores.outputs.num_cores}} -R smack_ --output-on-failure --timeout 2000 -E \"${{ steps.exclude_files.outputs.exclude_files }}\""
