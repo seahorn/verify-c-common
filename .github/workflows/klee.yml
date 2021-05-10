@@ -22,5 +22,9 @@ jobs:
       - name: Docker 
         run: docker build -t verify-c-common . --file docker/verify-c-common-klee.Dockerfile
 
+      - name: Get number of Cores
+        id: cores
+        run: echo "::set-output name=num_cores::$(nproc --all)"
+
       - name: Run Tests 
-        run: docker run -t verify-c-common /bin/bash -c "cd build && ctest -R klee_ --output-on-failure --timeout 2000"
+        run: docker run -t verify-c-common /bin/bash -c "cd build && ctest -j ${{steps.cores.outputs.num_cores}} -R klee_ --output-on-failure --timeout 2000"
