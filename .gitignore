@@ -2,5 +2,7 @@ build
 build_fuzz
 debug
 cex
+data
 aws-c-common/*
 compile_commands.json
+__pycache__
