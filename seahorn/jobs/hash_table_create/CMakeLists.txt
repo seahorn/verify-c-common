@@ -18,3 +18,9 @@ configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(hash_table_create)
 
 sea_add_fuzz(hash_table_create aws_hash_table_create_harness.c)
+
+# smack
+sea_add_smack(hash_table_create
+  ${AWS_C_COMMON_ROOT}/source/common.c
+  ${AWS_C_COMMON_ROOT}/source/hash_table.c
+  aws_hash_table_create_harness.c)

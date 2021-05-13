@@ -9,4 +9,11 @@ sea_attach_bc_link(hash_iter_delete)
 configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(hash_iter_delete)
 
+# fuzz
 sea_add_fuzz(hash_iter_delete aws_hash_iter_delete_harness.c)
+
+# smack
+sea_add_smack(hash_iter_delete
+  ${AWS_C_COMMON_ROOT}/source/common.c
+  ${AWS_C_COMMON_ROOT}/source/hash_table.c
+  aws_hash_iter_delete_harness.c)

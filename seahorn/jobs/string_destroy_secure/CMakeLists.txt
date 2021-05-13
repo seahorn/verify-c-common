@@ -19,7 +19,7 @@ sea_add_klee(
   aws_string_destroy_secure_harness.c
 )
 
-
+# fuzz
 sea_add_fuzz(
   string_destroy_secure
   aws_string_destroy_secure_harness.c
@@ -28,3 +28,12 @@ sea_add_fuzz(
 if(SEA_ENABLE_FUZZ)
   set_tests_properties(string_destroy_secure_fuzz_test PROPERTIES WILL_FAIL TRUE)
 endif()
+
+# smack
+sea_add_smack(
+  string_destroy_secure
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  ${AWS_C_COMMON_ROOT}/source/string.c
+  ${AWS_C_COMMON_ROOT}/source/common.c
+  aws_string_destroy_secure_harness.c
+)

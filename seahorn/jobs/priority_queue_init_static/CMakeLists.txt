@@ -15,7 +15,16 @@ sea_add_klee(
   aws_priority_queue_init_static_harness.c
 )
 
+# fuzz
 sea_add_fuzz(
   priority_queue_init_static
+  aws_priority_queue_init_static_harness.c
+)
+
+# smack
+sea_add_smack(
+  priority_queue_init_static
+  ${AWS_C_COMMON_ROOT}/source/array_list.c
+  ${AWS_C_COMMON_ROOT}/source/priority_queue.c
   aws_priority_queue_init_static_harness.c
 )

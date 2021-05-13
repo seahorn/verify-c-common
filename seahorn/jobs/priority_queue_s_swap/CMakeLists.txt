@@ -18,3 +18,16 @@ if(SEA_ENABLE_KLEE)
   klee_attach_bc_link(priority_queue_s_swap.klee)
   sea_add_klee_test(priority_queue_s_swap)
 endif()
+
+# smack
+if(SEA_ENABLE_SMACK)
+  add_executable(
+    priority_queue_s_swap.smack
+    ${AWS_C_COMMON_ROOT}/source/array_list.c
+    aws_priority_queue_s_swap_harness.c
+  )
+  target_compile_definitions(priority_queue_s_swap.smack PRIVATE __SMACK__)
+  sea_link_libraries(priority_queue_s_swap.smack priority_queue.opt.ir)
+  smack_attach_bc_link(priority_queue_s_swap.smack)
+  sea_add_smack_test(priority_queue_s_swap)
+endif()
