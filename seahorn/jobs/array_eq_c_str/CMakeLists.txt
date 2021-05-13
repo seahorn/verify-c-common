@@ -12,3 +12,7 @@ sea_add_fuzz(array_eq_c_str
 # klee
 sea_add_klee(array_eq_c_str ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   aws_array_eq_c_str_harness.c)
+
+# smack
+sea_add_smack(array_eq_c_str ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  aws_array_eq_c_str_harness.c)

@@ -17,7 +17,7 @@ sea_add_fuzz(byte_buf_write_from_whole_string
   aws_byte_buf_write_from_whole_string_harness.c)
 
 # smack
-# sea_add_smack(byte_buf_write_from_whole_string 
-#   ${AWS_C_COMMON_ROOT}/source/byte_buf.c
-#   ${AWS_C_COMMON_ROOT}/source/string.c
-#   aws_byte_buf_write_from_whole_string_harness.c)
+sea_add_smack(byte_buf_write_from_whole_string 
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  ${AWS_C_COMMON_ROOT}/source/string.c
+  aws_byte_buf_write_from_whole_string_harness.c)

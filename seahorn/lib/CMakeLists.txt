@@ -65,6 +65,10 @@ if(SEA_ENABLE_SMACK)
     sea_allocators.c
     array_list_helper.c
     byte_buf_helper.c
+    linked_list_helper.c
+    priority_queue_helper.c
+    ring_buffer_helper.c
+    hash_table_helper.c
     smack_allocators.c
     allocator_override.c
     string_helper.c

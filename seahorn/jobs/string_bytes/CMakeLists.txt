@@ -17,8 +17,17 @@ sea_add_klee(
   aws_string_bytes_harness.c
 )
 
-
+# fuzz
 sea_add_fuzz(
   string_bytes
+  aws_string_bytes_harness.c
+)
+
+# smack
+sea_add_smack(
+  string_bytes
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  ${AWS_C_COMMON_ROOT}/source/string.c
+  ${AWS_C_COMMON_ROOT}/source/common.c
   aws_string_bytes_harness.c
 )

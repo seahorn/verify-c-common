@@ -18,8 +18,17 @@ sea_add_klee(
   aws_string_eq_c_str_ignore_case_harness.c
 )
 
-
+# fuzz
 sea_add_fuzz(
   string_eq_c_str_ignore_case
+  aws_string_eq_c_str_ignore_case_harness.c
+)
+
+# smack
+sea_add_smack(
+  string_eq_c_str_ignore_case
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  ${AWS_C_COMMON_ROOT}/source/string.c
+  ${AWS_C_COMMON_ROOT}/source/common.c
   aws_string_eq_c_str_ignore_case_harness.c
 )

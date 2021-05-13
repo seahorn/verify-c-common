@@ -8,3 +8,7 @@ sea_add_unsat_test(array_eq_ignore_case)
 # klee
 sea_add_klee(array_eq_ignore_case ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   aws_array_eq_ignore_case_harness.c)
+
+# smack
+sea_add_smack(array_eq_ignore_case ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  aws_array_eq_ignore_case_harness.c)

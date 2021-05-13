@@ -17,4 +17,15 @@ sea_attach_bc_link(hash_table_put)
 configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(hash_table_put)
 
+# fuzz
 sea_add_fuzz(hash_table_put aws_hash_table_put_harness.c)
+
+# smack
+if(SEA_ENABLE_SMACK)
+  sea_add_smack_bc(
+    hash_table_put
+    ${AWS_C_COMMON_ROOT}/source/common.c
+    ${AWS_C_COMMON_ROOT}/source/hash_table.c
+    aws_hash_table_put_harness.c)
+  sea_add_smack_test(hash_table_put --float)
+endif()

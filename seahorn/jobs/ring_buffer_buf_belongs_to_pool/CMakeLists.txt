@@ -19,3 +19,11 @@ sea_add_klee(
 #   ring_buffer_buf_belongs_to_pool
 #   aws_ring_buffer_buf_belongs_to_pool_harness.c
 # )
+
+# smack
+sea_add_smack(
+  ring_buffer_buf_belongs_to_pool
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  ${AWS_C_COMMON_ROOT}/source/ring_buffer.c
+  aws_ring_buffer_buf_belongs_to_pool_harness.c
+)

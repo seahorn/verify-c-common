@@ -17,4 +17,11 @@ sea_add_klee(hash_iter_next
   ${AWS_C_COMMON_ROOT}/source/hash_table.c
   aws_hash_iter_next_harness.c)
 
+# fuzz
 sea_add_fuzz(hash_iter_next aws_hash_iter_next_harness.c)
+
+# smack
+sea_add_smack(hash_iter_next
+  ${AWS_C_COMMON_ROOT}/source/common.c
+  ${AWS_C_COMMON_ROOT}/source/hash_table.c
+  aws_hash_iter_next_harness.c)

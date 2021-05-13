@@ -15,5 +15,14 @@ sea_add_klee(hash_callback_string_destroy
   ${AWS_C_COMMON_ROOT}/source/hash_table.c
   aws_hash_callback_string_destroy_harness.c)
 
+# fuzz
 sea_add_fuzz(hash_callback_string_destroy
+  aws_hash_callback_string_destroy_harness.c)
+
+# smack
+sea_add_smack(hash_callback_string_destroy
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  ${AWS_C_COMMON_ROOT}/source/string.c
+  ${AWS_C_COMMON_ROOT}/source/common.c
+  ${AWS_C_COMMON_ROOT}/source/hash_table.c
   aws_hash_callback_string_destroy_harness.c)

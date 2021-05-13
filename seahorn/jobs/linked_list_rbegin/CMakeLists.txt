@@ -10,7 +10,12 @@ configure_file(sea.yaml sea.yaml @ONLY)
 
 # klee
 sea_add_klee(linked_list_rbegin
-aws_linked_list_rbegin_harness.c)
+  aws_linked_list_rbegin_harness.c)
 
+# fuzz
 sea_add_fuzz(linked_list_rbegin
+  aws_linked_list_rbegin_harness.c)
+
+# smack
+sea_add_smack(linked_list_rbegin
   aws_linked_list_rbegin_harness.c)

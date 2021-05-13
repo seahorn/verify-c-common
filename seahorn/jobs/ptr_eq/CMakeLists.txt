@@ -8,3 +8,8 @@ sea_add_unsat_test(ptr_eq)
 sea_add_klee(ptr_eq
   ${AWS_C_COMMON_ROOT}/source/hash_table.c
   aws_ptr_eq_harness.c)
+
+# smack
+sea_add_smack(ptr_eq
+  ${AWS_C_COMMON_ROOT}/source/hash_table.c
+  aws_ptr_eq_harness.c)

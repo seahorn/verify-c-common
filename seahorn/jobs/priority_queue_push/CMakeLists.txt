@@ -22,7 +22,16 @@ if(SEA_ENABLE_KLEE)
   sea_add_klee_test(priority_queue_push)
 endif()
 
+# fuzz
 sea_add_fuzz(
   priority_queue_push
+  aws_priority_queue_push_harness.c
+)
+
+# smack
+sea_add_smack(
+  priority_queue_push
+  ${AWS_C_COMMON_ROOT}/source/array_list.c
+  ${AWS_C_COMMON_ROOT}/source/priority_queue.c
   aws_priority_queue_push_harness.c
 )

@@ -13,3 +13,13 @@ sea_add_klee(hash_table_init_unbounded
   ${AWS_C_COMMON_ROOT}/source/common.c
   ${AWS_C_COMMON_ROOT}/source/hash_table.c
   aws_hash_table_init_unbounded_harness.c)
+
+# smack
+if(SEA_ENABLE_SMACK)
+  sea_add_smack_bc(
+    hash_table_init_unbounded
+    ${AWS_C_COMMON_ROOT}/source/common.c
+    ${AWS_C_COMMON_ROOT}/source/hash_table.c
+    aws_hash_table_init_unbounded_harness.c)
+  sea_add_smack_test(hash_table_init_unbounded --float)
+endif()
