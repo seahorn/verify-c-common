@@ -8,7 +8,7 @@
 #include <seahorn/seahorn.h>
 #include <utils.h>
 
-void s_sift_down(struct aws_priority_queue *queue, size_t root);
+bool s_sift_down(struct aws_priority_queue *queue, size_t root);
 
 int main(void) {
   /* Data structure */
