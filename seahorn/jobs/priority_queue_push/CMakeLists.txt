@@ -29,9 +29,14 @@ sea_add_fuzz(
 )
 
 # smack
-sea_add_smack(
-  priority_queue_push
-  ${AWS_C_COMMON_ROOT}/source/array_list.c
-  ${AWS_C_COMMON_ROOT}/source/priority_queue.c
-  aws_priority_queue_push_harness.c
-)
+if(SEA_ENABLE_SMACK)
+  add_executable(
+    priority_queue_push.smack
+    ${AWS_C_COMMON_ROOT}/source/array_list.c
+    aws_priority_queue_push_harness.c
+  )
+  target_compile_definitions(priority_queue_push.smack PRIVATE __SMACK__)
+  sea_link_libraries(priority_queue_push.smack priority_queue.opt.ir)
+  smack_attach_bc_link(priority_queue_push.smack)
+  sea_add_smack_test(priority_queue_push)
+endif()
