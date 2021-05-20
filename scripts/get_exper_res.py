@@ -30,12 +30,15 @@ def get_output_level():
 def make_new_cmake_conf():
     use_klee = "ON" if args.klee else "OFF"
     use_bleeding_edge = "ON" if args.bleed_edge else "OFF"
-    use_smack = "ON" if args.smack else "OFF"
-    smack_enable_no_mem_split = "ON" if args.mem_no_split else "OFF"
+    if args.smack_parser:
+        use_smack = "ON" if args.smack else "OFF"
+        smack_enable_no_mem_split = "ON" if args.mem_no_split else "OFF"
+        smack_args = f'-DSEA_ENABLE_SMACK={use_smack} -DSMACK_ENCODING={args.precise} -DSMACK_PROPERTY_CHECK={args.checks}\
+        -DSMACK_ENABLE_NO_MEM_SPLIT={smack_enable_no_mem_split}'
+    else:
+        smack_args = ""
     return f'cmake -DSEA_LINK=llvm-link-10 -DCMAKE_C_COMPILER=clang-10\
-    -DCMAKE_CXX_COMPILER=clang++-10 -DSEA_ENABLE_KLEE={use_klee}\
-    -DSEA_ENABLE_SMACK={use_smack} -DSMACK_ENCODING={args.precise} -DSMACK_PROPERTY_CHECK={args.checks}\
-    -DSMACK_ENABLE_NO_MEM_SPLIT={smack_enable_no_mem_split}\
+    -DCMAKE_CXX_COMPILER=clang++-10 -DSEA_ENABLE_KLEE={use_klee} {smack_args}\
     -DSEA_WITH_BLEEDING_EDGE={use_bleeding_edge} -DSEAHORN_ROOT={SEAHORN_ROOT} ../ -GNinja'
 
 
@@ -122,7 +125,7 @@ def collect_stat_from_ctest_log(outfile):
 def run_ctest_for_klee():
     cmake_conf = make_new_cmake_conf()
     command_lst = ["rm -rf *", cmake_conf, "ninja",
-                   f'ctest -D ExperimentalTest -R klee_ --timeout 2000']
+                   f'ctest -j{os.cpu_count()} -D ExperimentalTest -R klee_ --timeout {args.timeout}']
     print("Start making KLEE results...")
     cddir = "cd " + BUILDABSPATH
     for strcmd in command_lst:
@@ -161,7 +164,7 @@ def main():
         run_ctest_for_seahorn()
     if args.klee:
         run_ctest_for_klee()
-    if args.smack:
+    if args.smack_parser:
         run_ctest_for_smack()
 
 
@@ -175,7 +178,7 @@ if __name__ == "__main__":
     parser.add_argument('--debug', action='store_true', default=False)
     parser.add_argument('--timeout', type=int, default=2000,
         help='Seconds before timeout for each test')
-    subparsers = parser.add_subparsers(help='sub-commands help')
+    subparsers = parser.add_subparsers(help='sub-commands help', dest="smack_parser")
     smack_parser = subparsers.add_parser('smack', help="smack help")
     smack_parser.add_argument('--smack', action='store_true', default=False)
     smack_parser.add_argument('--precise', type=str, default='unbounded-integer',
@@ -187,6 +190,6 @@ if __name__ == "__main__":
     args, extra = parser.parse_known_args()
     if args.klee:
         args.seahorn = False
-    if args.smack:
+    if args.smack_parser:
         args.seahorn = False
     main()
