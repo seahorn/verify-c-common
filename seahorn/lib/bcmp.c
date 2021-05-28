@@ -83,14 +83,20 @@ INLINE void *__memset_chk(void *dest, int c, size_t len, size_t dstlen) {
   return __builtin_memset(dest, c, len);
 }
 
+/* on OSX memmove is a macro */
+#ifndef memmove
 INLINE void* memmove(void *dst, const void *src, size_t len)  {
   sassert(sea_is_dereferenceable(dst, len));
   sassert(sea_is_dereferenceable(src, len));
   return __builtin_memmove(dst, src, len);
 }
+#endif
 
+/* on OSX memcpy is a macro */
+#ifndef memcpy
 INLINE void *memcpy(void *dst, const void *src, size_t len) {
   sassert(sea_is_dereferenceable(dst, len));
   sassert(sea_is_dereferenceable(src, len));
   return __builtin_memcpy(dst, src, len);
 }
+#endif
