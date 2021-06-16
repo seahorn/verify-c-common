@@ -33,9 +33,8 @@ int main() {
     if (aws_array_eq_c_str(array, array_len, c_str)) {
         /* asserts equivalence */
         sassert(array_len == str_len);
-        if (array_len > 0) {
-            assert_bytes_match(array, (uint8_t *)c_str, array_len);
-        }
+        sassert(!array == !c_str); // not sure why assert is not delegated to sassert
+        assert_bytes_match(array, (uint8_t *)c_str, array_len);
     }
 
     /* asserts both parameters remain unchanged */

@@ -1,0 +1,26 @@
+From cedf24403daa044fe50b0cf052043ce65d8bc2a2 Mon Sep 17 00:00:00 2001
+From: Xiang Zhou <x245zhou@uwaterloo.ca>
+Date: Tue, 15 Jun 2021 18:45:13 -0400
+Subject: [PATCH 2/2] patch(bug-eg):revert to buggy version of
+ assert_bytes_match
+
+---
+ verification/cbmc/sources/utils.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/verification/cbmc/sources/utils.c b/verification/cbmc/sources/utils.c
+index 231ddc8..5e40191 100644
+--- a/verification/cbmc/sources/utils.c
++++ b/verification/cbmc/sources/utils.c
+@@ -7,7 +7,7 @@
+ #include <proof_helpers/utils.h>
+ 
+ void assert_bytes_match(const uint8_t *const a, const uint8_t *const b, const size_t len) {
+-    assert(len == 0 || !a == !b);
++    assert(!a == !b);
+     if (len > 0 && a != NULL && b != NULL) {
+         size_t i;
+         __CPROVER_assume(i < len && len < MAX_MALLOC); /* prevent spurious pointer overflows */
+-- 
+2.17.1
+
