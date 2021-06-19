@@ -387,6 +387,7 @@ configure_file(include/config.h.in ${PROJECT_BINARY_DIR}/include/config.h)
 configure_file(sea.yaml sea.yaml @ONLY)
 configure_file(sea_cex_base.yaml sea.cex.yaml @ONLY)
 configure_file(sea_vac.yaml sea.vac.yaml @ONLY)
+configure_file(sea_pcond.yaml sea.pcond.yaml @ONLY)
 
 # compilation recipes for aws-c-common library
 add_subdirectory(aws-c-common-stubs)
