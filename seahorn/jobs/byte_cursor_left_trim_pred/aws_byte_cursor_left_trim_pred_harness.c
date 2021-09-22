@@ -6,7 +6,7 @@
 #include <byte_buf_helper.h>
 #include <utils.h>
 
-#if defined(__KLEE__) || defined(__FUZZ__) || defined(__SYMBIOTIC__)
+#if defined(__KLEE__) || defined(__FUZZ__) || defined(__SYMBIOTIC__) || defined(__CRAB__)
 bool uninterpreted_predicate_fn(uint8_t value) {
     return nd_bool();
 }
