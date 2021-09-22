@@ -59,6 +59,8 @@ def main(argv):
                               help='Vacuity mode')
             argp.add_argument('--pcond', action='store_true', default=False,
                               help='Path condition mode')
+            argp.add_argument('--crab', action='store_true', default=False,
+                              help='Using crab')
             argp.add_argument('input_file', nargs=1)
             argp.add_argument('--dry-run', dest='dry_run',
                               action='store_true', default=False,
@@ -90,7 +92,10 @@ def main(argv):
                    'yama', '--yforce']
 
             # base config
-            base_config = os.path.join(script_dir, 'seahorn', 'sea.yaml')
+            if args.crab:
+                base_config = os.path.join(script_dir, 'seahorn', 'sea.crab.yaml')
+            else:
+                base_config = os.path.join(script_dir, 'seahorn', 'sea.yaml')
             if args.cex:
                 base_config = os.path.join(script_dir, 'seahorn',
                                            'sea.cex.yaml')

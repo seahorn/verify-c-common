@@ -186,6 +186,9 @@ function(sea_attach_bc name)
   set_property(TARGET ${SOURCE_EXE} PROPERTY EXCLUDE_FROM_ALL ON)
 
   target_compile_definitions(${SOURCE_EXE} PRIVATE __SEAHORN__)
+  if(SEA_ENABLE_CRAB)
+    target_compile_definitions(${SOURCE_EXE} PRIVATE __CRAB__)
+  endif()
   # when defined, check AWS_ASSERT as well as sassert
   target_compile_definitions(${SOURCE_EXE} PRIVATE __SEAHORN_ASSERT__)
   target_compile_definitions(${SOURCE_EXE} PRIVATE VACCHECK)
@@ -245,6 +248,9 @@ endmacro()
 
 function(sea_attach_bc_link name)
   sea_link_libraries(${name} sea_proofs.ir sea_bounds.ir str_proofs.ir)
+  if(SEA_ENABLE_CRAB)
+    sea_link_libraries(${name} crab_proofs.ir)
+  endif()
   sea_attach_bc(${name})
 endfunction()
 
@@ -424,6 +430,7 @@ add_definitions(
 
 configure_file(include/config.h.in ${PROJECT_BINARY_DIR}/include/config.h)
 configure_file(sea.yaml sea.yaml @ONLY)
+configure_file(sea_crab_base.yaml sea.crab.yaml @ONLY)
 configure_file(sea_cex_base.yaml sea.cex.yaml @ONLY)
 configure_file(sea_vac.yaml sea.vac.yaml @ONLY)
 configure_file(sea_pcond.yaml sea.pcond.yaml @ONLY)
