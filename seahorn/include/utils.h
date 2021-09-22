@@ -29,6 +29,12 @@ extern void klee_assume(uintptr_t condition);
 #define FUZZ_ASSUME(X)
 #endif
 
+#ifdef __CRAB__
+#define CRAB_ASSUME(X) assume(X)
+#else
+#define CRAB_ASSUME(X)
+#endif
+
 #ifdef __FUZZ__ // set upper bound of X to Y during fuzzing
 #define FUZZ_ASSUME_LT(X, Y) X %= Y
 #else
