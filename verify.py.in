@@ -92,10 +92,7 @@ def main(argv):
                    'yama', '--yforce']
 
             # base config
-            if args.crab:
-                base_config = os.path.join(script_dir, 'seahorn', 'sea.crab.yaml')
-            else:
-                base_config = os.path.join(script_dir, 'seahorn', 'sea.yaml')
+            base_config = os.path.join(script_dir, 'seahorn', 'sea.yaml')
             if args.cex:
                 base_config = os.path.join(script_dir, 'seahorn',
                                            'sea.cex.yaml')
@@ -106,6 +103,12 @@ def main(argv):
                 vac_config = os.path.join(script_dir, 'seahorn',
                                           'sea.vac.yaml')
                 cmd.extend(['-y', vac_config])
+            
+            # Crab in Opsem config
+            if args.crab:
+                crab_config = os.path.join(script_dir, 'seahorn', 
+                                          'sea.crab.yaml')
+                cmd.extend(['-y', crab_config])
 
             # pcond config
             if args.pcond:
