@@ -40,6 +40,27 @@ def make_build_path(extra, build_path='../build'):
     BUILDABSPATH = os.path.abspath(build_path)
 
 
+def extra_to_filename(extra, suffix='.csv', prefix=''):
+    '''extra: --a=b --c=d to filename: a.b.c.d.csv'''
+    if (len(extra) == 0):
+        return f'base{suffix}'
+    parts = []
+    for flag in extra:
+        if flag.startswith('--'):
+            flag = flag[2:]
+        parts.extend(flag.split('='))
+    return f'{prefix}{"_".join(parts)}{suffix}'
+
+
+def make_build_path(extra, build_path='../build'):
+    build_path += extra_to_filename(extra, '', '_') if extra else '_base'
+    print(f'[Build Path] {build_path}')
+    if not os.path.exists(build_path):
+        os.mkdir(build_path)
+    global BUILDABSPATH
+    BUILDABSPATH = os.path.abspath(build_path)
+
+
 def get_output_level():
     if args.debug:
         output_level = sys.stdout
@@ -178,6 +199,7 @@ def run_ctest_for_smack():
     command_lst = ["rm -rf *", cmake_conf, "ninja",
                    f'ctest -j{os.cpu_count()} -D ExperimentalTest -R smack_ --timeout {args.timeout}']
     print("Start making SMACK results...")
+    make_build_path(["--smack"])
     cddir = "cd " + BUILDABSPATH
     for strcmd in command_lst:
         cddir += " ; " + strcmd
