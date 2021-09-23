@@ -19,6 +19,27 @@ FILE_DICT = {
     "klee": "klee.csv", "symbiotic": "symbiotic.csv"}
 
 
+def extra_to_filename(extra, suffix='.csv', prefix=''):
+    '''extra: --a=b --c=d to filename: a.b.c.d.csv'''
+    if (len(extra) == 0):
+        return f'base{suffix}'
+    parts = []
+    for flag in extra:
+        if flag.startswith('--'):
+            flag = flag[2:]
+        parts.extend(flag.split('='))
+    return f'{prefix}{"_".join(parts)}{suffix}'
+
+
+def make_build_path(extra, build_path='../build'):
+    build_path += extra_to_filename(extra, '', '_') if extra else '_base'
+    print(f'[Build Path] {build_path}')
+    if not os.path.exists(build_path):
+        os.mkdir(build_path)
+    global BUILDABSPATH
+    BUILDABSPATH = os.path.abspath(build_path)
+
+
 def get_output_level():
     if args.debug:
         output_level = sys.stdout
@@ -31,6 +52,7 @@ def make_new_cmake_conf():
     use_klee = "ON" if args.klee else "OFF"
     use_symbiotic = "ON" if args.symbiotic else "OFF"
     use_bleeding_edge = "ON" if args.bleed_edge else "OFF"
+    use_crab = "ON" if "--crab" in extra else "OFF"
     if args.smack_parser:
         use_smack = "ON" if args.smack else "OFF"
         smack_enable_no_mem_split = "ON" if args.mem_no_split else "OFF"
@@ -40,8 +62,8 @@ def make_new_cmake_conf():
         smack_args = ""
     return f'cmake -DSEA_LINK=llvm-link-10 -DCMAKE_C_COMPILER=clang-10\
     -DCMAKE_CXX_COMPILER=clang++-10 -DSEA_ENABLE_KLEE={use_klee} {smack_args}\
-    -DSEA_WITH_BLEEDING_EDGE={use_bleeding_edge} -DSEA_ENABLE_SYMBIOTIC={use_symbiotic}\
-    -DSEAHORN_ROOT={SEAHORN_ROOT} ../ -GNinja'
+    -DSEA_WITH_BLEEDING_EDGE={use_bleeding_edge} -DSEA_ENABLE_CRAB={use_crab}\
+    -DSEA_ENABLE_SYMBIOTIC={use_symbiotic} -DSEAHORN_ROOT={SEAHORN_ROOT} ../ -GNinja'
 
 
 def read_data_from_xml(res_data):
@@ -74,6 +96,7 @@ def collect_res_from_ctest(file_name):
     read_data_from_xml(res_data)
     write_data_into_csv(
         "{dir}/{file}".format(dir="../data", file=file_name), res_data)
+<<<<<<< HEAD
     print("Done, find result csv file at: %s" % file_name)
 
 
@@ -87,10 +110,13 @@ def extra_to_filename(extra, suffix='csv'):
             flag = flag[2:]
         parts.extend(flag.split('='))
     return f'{"_".join(parts)}.{suffix}'
+=======
+    print("[Results] Please find result csv file at: ../data/%s" % file_name)
+>>>>>>> a12af01 (fix(py): update script to collect crab's results)
 
 
 def run_ctest_for_seahorn():
-    print("Start making SeaHorn results...")
+    print("[SeaHorn] Start making SeaHorn results...")
     set_env = ''
     if extra and len(extra) > 0:
         verify_flags = " ".join(extra)
@@ -99,11 +125,12 @@ def run_ctest_for_seahorn():
     cmake_conf = make_new_cmake_conf()
     command_lst = ["rm -rf *", cmake_conf, "ninja",
                    f'{set_env} ctest -j{os.cpu_count()} -D ExperimentalTest -R . --timeout {args.timeout}']
+    make_build_path(extra)
     cddir = "cd " + BUILDABSPATH
     for strcmd in command_lst:
         cddir += " ; " + strcmd
     if args.debug:
-        print(cddir)
+        print(f'[Command] {cddir}')
     process = subprocess.Popen(
         '/bin/bash',
         shell=True,
@@ -111,13 +138,14 @@ def run_ctest_for_seahorn():
         stdout=get_output_level())
     _ = process.communicate(cddir.encode())
     collect_res_from_ctest(extra_to_filename(extra))
-    collect_stat_from_ctest_log(extra_to_filename(extra, suffix='brunch.csv'))
+    collect_stat_from_ctest_log(extra_to_filename(extra, suffix='.brunch.csv'))
+
 
 
 def collect_stat_from_ctest_log(outfile):
     test_tmpdir = os.path.join(BUILDABSPATH, 'Testing', 'Temporary')
-    logfiles = [i for i in os.listdir(
-        test_tmpdir)if os.path.isfile(os.path.join(test_tmpdir, i)) and i.startswith("LastTest_")]
+    logfiles = [i for i in os.listdir(test_tmpdir)if os.path.isfile(
+        os.path.join(test_tmpdir, i)) and i.startswith("LastTest_")]
     latest_log = logfiles[0]
     print("collecting brunch stat from " + logfiles[0])
     if args.seahorn:
@@ -130,17 +158,17 @@ def collect_stat_from_ctest_log(outfile):
         outpath = os.path.join(DATAABSPATH, outfile)
         write_symbiotic_bruchstat_into_csv(data, outpath)
 
-
 def run_ctest_for_klee():
     cmake_conf = make_new_cmake_conf()
     command_lst = ["rm -rf *", cmake_conf, "ninja",
                    f'ctest -j{os.cpu_count()} -D ExperimentalTest -R klee_ --timeout {args.timeout}']
-    print("Start making KLEE results...")
+    print("[KLEE] Start making KLEE results...")
+    make_build_path(["--klee"])
     cddir = "cd " + BUILDABSPATH
     for strcmd in command_lst:
         cddir += " ; " + strcmd
     if args.debug:
-        print(cddir)
+        print(f'[Command] {cddir}')
     process = subprocess.Popen(
         '/bin/bash',
         stdin=subprocess.PIPE,
@@ -152,13 +180,14 @@ def run_ctest_for_klee():
 def run_ctest_for_smack():
     cmake_conf = make_new_cmake_conf()
     command_lst = ["rm -rf *", cmake_conf, "ninja",
-                   f'ctest -j{os.cpu_count()} -D ExperimentalTest -R smack_ --timeout {args.timeout}']
-    print("Start making SMACK results...")
+                   f'ctest -j{os.cpu_count()} -D ExperimentalTest -R smack_ --timeout 200']
+    print("[SMACK] Start making SMACK results...")
+    make_build_path(["--smack"])
     cddir = "cd " + BUILDABSPATH
     for strcmd in command_lst:
         cddir += " ; " + strcmd
     if args.debug:
-        print(cddir)
+        print(f'[Command] {cddir}')
     process = subprocess.Popen(
         '/bin/bash',
         stdin=subprocess.PIPE,
@@ -209,18 +238,27 @@ if __name__ == "__main__":
     parser.add_argument('--symbiotic', action='store_true', default=False)
     parser.add_argument('--bleed_edge', action='store_true', default=False)
     parser.add_argument('--debug', action='store_true', default=False)
-    parser.add_argument('--timeout', type=int, default=200,
+    parser.add_argument('--timeout', type=int, default=2000,
                         help='Seconds before timeout for each test')
     subparsers = parser.add_subparsers(
         help='sub-commands help', dest="smack_parser")
     smack_parser = subparsers.add_parser('smack', help="smack help")
     smack_parser.add_argument('--smack', action='store_true', default=False)
-    smack_parser.add_argument('--precise', type=str, default='unbounded-integer',
-                              help='Set Smack precise: unbounded-integer or bit vector')
-    smack_parser.add_argument('--checks', type=str, default='assertions',
-                              help='Set Smack property checks: assertions or valid-deref')
-    smack_parser.add_argument('--mem_no_split', action='store_true', default=False,
-                              help='Set Smack uses no memory split')
+    smack_parser.add_argument(
+        '--precise',
+        type=str,
+        default='unbounded-integer',
+        help='Set Smack precise: unbounded-integer or bit vector')
+    smack_parser.add_argument(
+        '--checks',
+        type=str,
+        default='assertions',
+        help='Set Smack property checks: assertions or valid-deref')
+    smack_parser.add_argument(
+        '--mem_no_split',
+        action='store_true',
+        default=False,
+        help='Set Smack uses no memory split')
     args, extra = parser.parse_known_args()
     if args.klee:
         args.seahorn = False

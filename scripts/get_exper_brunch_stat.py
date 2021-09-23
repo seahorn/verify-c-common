@@ -15,6 +15,8 @@ def read_brunchstat_from_log(log_file_name):
     line = log_file.readline()
     data = list() # list of metric_name->metric
     cur_test = None
+    first = False
+    second = False
     while line:
         # look for next test
         new_test = re.search("Test: ", line)
@@ -30,8 +32,22 @@ def read_brunchstat_from_log(log_file_name):
             stat = line.split()
             stat_name = " ".join(stat[1:-1])
             if stat_name in metrics:
-                stat_num = stat[-1]
-                data[-1][stat_name] = stat_num
+                if stat_name == "crab.isderef.not.solve":
+                    first = True
+                if stat_name == "crab.isderef.solve":
+                    if not first:
+                        data[cur_test].append(0)
+                        first = True
+                    second = True
+                if stat_name == "BMC":
+                    if not first:
+                        data[-1][stat_name] = 0
+                    if not second:
+                        data[-1][stat_name] = 0
+                    first = False
+                    second = False
+            stat_num = stat[-1]
+            data[-1][stat_name] = stat_num
         line = log_file.readline()
 
     log_file.close()
@@ -120,8 +136,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='in and out files')
     parser.add_argument('logfile', type=str, help=".log file to read from")
-    parser.add_argument('--outfile', '-o', type=str,
-                        default="brunch_stat.csv", help="ouput csv filename")
+    parser.add_argument(
+        '--outfile',
+        '-o',
+        type=str,
+        default="brunch_stat.csv",
+        help="ouput csv filename")
     args = parser.parse_args()
     data = read_brunchstat_from_log(args.logfile)
     write_brunchstat_into_csv(data, args.outfile)
