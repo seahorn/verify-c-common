@@ -2,6 +2,8 @@ job_name: "job_name"
 Result: "result"
 bmc.circ_sz: "bmc_circuit_size"
 bmc.dag_sz: "bmc_dag_size"
+crab.isderef.not.solve: "crab.isderef.not.solve" # for crab
+crab.isderef.solve: "crab.isderef.solve" # for crab
 BMC: "bmc_time"
 BMC.solve: "bmc_solve_time"
 Control dependence analysis: "cda_time"

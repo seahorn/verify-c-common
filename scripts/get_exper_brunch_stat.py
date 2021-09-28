@@ -15,11 +15,12 @@ def read_brunchstat_from_log(log_file_name):
     line = log_file.readline()
     data = list() # list of metric_name->metric
     cur_test = None
-    first = False
-    second = False
+    if not use_crab:
+        del BRUNCH_DICT["crab.isderef.not.solve"]
+        del BRUNCH_DICT["crab.isderef.solve"]
     while line:
         # look for next test
-        new_test = re.search("Test: ", line)
+        new_test = re.search(BRUNCH_DICT["job_name"], line)
         if new_test:
             new_test_data = defaultdict(lambda: 'n/a')
             span = new_test.span()
@@ -32,24 +33,9 @@ def read_brunchstat_from_log(log_file_name):
             stat = line.split()
             stat_name = " ".join(stat[1:-1])
             if stat_name in metrics:
-                if stat_name == "crab.isderef.not.solve":
-                    first = True
-                if stat_name == "crab.isderef.solve":
-                    if not first:
-                        data[cur_test].append(0)
-                        first = True
-                    second = True
-                if stat_name == "BMC":
-                    if not first:
-                        data[-1][stat_name] = 0
-                    if not second:
-                        data[-1][stat_name] = 0
-                    first = False
-                    second = False
-            stat_num = stat[-1]
-            data[-1][stat_name] = stat_num
+                stat_num = stat[-1]
+                data[-1][stat_name] = stat_num
         line = log_file.readline()
-
     log_file.close()
     return data
 

@@ -96,7 +96,6 @@ def collect_res_from_ctest(file_name):
     read_data_from_xml(res_data)
     write_data_into_csv(
         "{dir}/{file}".format(dir="../data", file=file_name), res_data)
-<<<<<<< HEAD
     print("Done, find result csv file at: %s" % file_name)
 
 
@@ -110,9 +109,6 @@ def extra_to_filename(extra, suffix='csv'):
             flag = flag[2:]
         parts.extend(flag.split('='))
     return f'{"_".join(parts)}.{suffix}'
-=======
-    print("[Results] Please find result csv file at: ../data/%s" % file_name)
->>>>>>> a12af01 (fix(py): update script to collect crab's results)
 
 
 def run_ctest_for_seahorn():
@@ -138,7 +134,8 @@ def run_ctest_for_seahorn():
         stdout=get_output_level())
     _ = process.communicate(cddir.encode())
     collect_res_from_ctest(extra_to_filename(extra))
-    collect_stat_from_ctest_log(extra_to_filename(extra, suffix='.brunch.csv'))
+    collect_stat_from_ctest_log(extra_to_filename(extra, suffix='.brunch.csv'),
+                                True if "--crab" in extra else False)
 
 
 
