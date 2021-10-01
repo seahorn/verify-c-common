@@ -9,11 +9,8 @@ USER root
 ## Install latest cmake
 RUN apt -y remove --purge cmake
 RUN apt -y update
-RUN apt -y install wget
-RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
-RUN apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
-RUN apt -y update
-RUN apt -y install cmake
+RUN apt -y install wget python3-pip
+RUN pip3 install cmake --upgrade
 
 ## clone verify-c-common repository
 USER usea
