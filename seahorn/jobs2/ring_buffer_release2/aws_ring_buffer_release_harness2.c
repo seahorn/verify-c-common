@@ -49,7 +49,7 @@ int main(void) {
   // uint8_t *old_head = aws_atomic_load_ptr(&ring_buf_old.head);
   // uint8_t *old_tail = aws_atomic_load_ptr(&ring_buf_old.tail);
   // uint8_t *new_head = aws_atomic_load_ptr(&ring_buf.head);
-  // uint8_t *new_tail = aws_atomic_load_ptr(&ring_buf.tail);
+  uint8_t *new_tail = aws_atomic_load_ptr(&ring_buf.tail);
   sassert(aws_ring_buffer_is_valid(&ring_buf));
 
   sassert(!sea_is_modified((char *)&ring_buf.allocator));
@@ -58,7 +58,7 @@ int main(void) {
   // sassert(ring_buf.allocation == ring_buf_old.allocation);
   sassert(!sea_is_modified((char *)&ring_buf.head));
   // sassert(new_head == old_head);
-  sassert(&ring_buf.tail == buf_old.buffer + buf_old.capacity);
+  sassert(new_tail == buf_old.buffer + buf_old.capacity);
   sassert(!sea_is_modified((char *)&ring_buf.allocation_end));
   // sassert(ring_buf.allocation_end == ring_buf_old.allocation_end);
   sassert(buf.allocator == NULL);
