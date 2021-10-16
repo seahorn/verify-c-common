@@ -1,0 +1,3 @@
+verify_options:
+  horn-bv2-word-size: 1
+  horn-bv2-tracking-mem: true
