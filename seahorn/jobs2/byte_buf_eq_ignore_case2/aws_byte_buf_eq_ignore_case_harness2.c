@@ -31,11 +31,8 @@ int main() {
     save_byte_from_array(rhs.buffer, rhs.len, &old_byte_from_rhs);
 
     /* operation under verification */
-    if (aws_byte_buf_eq(&lhs, &rhs)) {
+    if (aws_byte_buf_eq_ignore_case(&lhs, &rhs)) {
         sassert(lhs.len == rhs.len);
-        if (lhs.len > 0) {
-            assert_bytes_match(lhs.buffer, rhs.buffer, lhs.len);
-        }
     }
 
     /* assertions */
