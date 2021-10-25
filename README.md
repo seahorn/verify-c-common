@@ -20,7 +20,7 @@ Notebook][data] in Google Collab. Coverage reports from fuzzing are available
 
 # Publication(s)
 
-1. Siddharth Priya, Xiang Zhou, Yusen Su, Yakir Vizel, Yuyan Bao, Arie Gurfinkel: [Verifying Verified Code](assets/paper_expanded.pdf). The 19th International Symposium on Automated Technology for Verification and Analysis ([ATVA 2021](https://formal-analysis.com/atva/2021/)) ([ArXiv](https://arxiv.org/abs/2107.00723))
+1. Siddharth Priya, Xiang Zhou, Yusen Su, Yakir Vizel, Yuyan Bao, Arie Gurfinkel: [Verifying Verified Code](assets/paper_expanded.pdf). The 19th International Symposium on Automated Technology for Verification and Analysis ([ATVA 2021](https://formal-analysis.com/atva/2021/)) ([ArXiv](https://arxiv.org/abs/2107.00723)) ([Video](https://youtu.be/1TYTNXaI6PM?list=PLLMKcH6wIK2S42wjtFjNDg6AP4BTzH5Uu&t=6429))
 
 # Architecture
 Below is the high level architecture graph of our case study.
