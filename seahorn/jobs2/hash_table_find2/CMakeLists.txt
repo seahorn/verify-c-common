@@ -1,0 +1,14 @@
+add_executable(hash_table_find2
+  ${AWS_C_COMMON_ROOT}/source/common.c
+  aws_hash_table_find_harness2.c)
+set(MAX_TABLE_SIZE 8)
+target_compile_definitions(hash_table_find2
+                            PUBLIC
+                            MAX_TABLE_SIZE=${MAX_TABLE_SIZE})
+sea_link_libraries(hash_table_find2 hash_table.opt.ir)
+sea_overlink_libraries(hash_table_find2 safe_eq_check_override.ir)
+sea_overlink_libraries(hash_table_find2 hash_for_override.ir)
+sea_overlink_libraries(hash_table_find2 hash_table_state_is_valid_override.ir)
+sea_attach_bc_link(hash_table_find2)
+configure_file(sea.yaml sea.yaml @ONLY)
+sea_add_unsat_test(hash_table_find2)
