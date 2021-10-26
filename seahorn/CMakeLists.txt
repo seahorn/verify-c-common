@@ -555,7 +555,10 @@ add_subdirectory(jobs/priority_queue_init_static)
 add_subdirectory(jobs/priority_queue_init_dynamic)
 add_subdirectory(jobs/priority_queue_clean_up)
 add_subdirectory(jobs/ring_buffer_clean_up)
-add_subdirectory(jobs2/byte_buf_eq2)
+
+add_subdirectory(jobs2/priority_queue_top2)
+add_subdirectory(jobs2/priority_queue_capacity2)
+add_subdirectory(jobs2/priority_queue_size2)
 
 add_subdirectory(jobs/ring_buffer_init)
 
