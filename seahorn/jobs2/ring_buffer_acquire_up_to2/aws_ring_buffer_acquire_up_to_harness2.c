@@ -26,7 +26,6 @@ int main(void) {
 
   size_t minimum_size = nd_size_t();
   size_t requested_size = nd_size_t();
-  KLEE_ASSUME(requested_size <= KLEE_MAX_SIZE);
 
   /* assumptions */
   assume(requested_size >= minimum_size);
@@ -36,6 +35,10 @@ int main(void) {
   /* copy of state before call */
   struct aws_ring_buffer ring_buf_old = ring_buf;
 
+  sea_tracking_on();
+  sea_reset_modified((char *)&ring_buf);
+
+  /* operation under verification */
   int result = aws_ring_buffer_acquire_up_to(&ring_buf, minimum_size,
                                              requested_size, &buf);
 
@@ -59,7 +62,7 @@ int main(void) {
     sassert(!(is_front_valid_state(&ring_buf_old) &&
               is_middle_valid_state(&ring_buf)));
   } else {
-    sassert(ring_buffers_are_equal(&ring_buf, &ring_buf_old));
+    sassert(!sea_is_modified((char *)&ring_buf));
   }
   sassert(ring_buf.allocator == ring_buf_old.allocator);
   sassert(ring_buf.allocation == ring_buf_old.allocation);
