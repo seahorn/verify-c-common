@@ -25,7 +25,6 @@ int main(void) {
   initialize_ring_buffer(&ring_buf, ring_buf_size);
 
   size_t requested_size = nd_size_t();
-  KLEE_ASSUME(requested_size <= KLEE_MAX_SIZE);
 
   /* assumptions */
   assume(aws_ring_buffer_is_valid(&ring_buf));
@@ -33,6 +32,10 @@ int main(void) {
   /* copy of state before call */
   struct aws_ring_buffer ring_buf_old = ring_buf;
 
+  sea_tracking_on();
+  sea_reset_modified((char *)&ring_buf);
+
+  /* operation under verification */
   int result = aws_ring_buffer_acquire(&ring_buf, requested_size, &buf);
 
   /* sassertions */
@@ -44,8 +47,7 @@ int main(void) {
     sassert(aws_byte_buf_is_valid(&buf));
     sassert(buf.capacity == requested_size);
     sassert(AWS_MEM_IS_WRITABLE(buf.buffer, buf.capacity));
-    /* aws_byte_buf always created with aws_byte_buf_from_empty_array */
-    sassert(buf.len == 0);
+    /* aws_byte_buf always created with aws_byte_buf_from_empty_array */ sassert(buf.len == 0);
     sassert(aws_ring_buffer_buf_belongs_to_pool(&ring_buf, &buf));
     if (aws_ring_buffer_is_empty(&ring_buf_old)) {
       sassert(new_head == ring_buf_old.allocation + requested_size);
@@ -67,7 +69,7 @@ int main(void) {
     sassert(!(is_front_valid_state(&ring_buf_old) &&
               is_middle_valid_state(&ring_buf)));
   } else {
-    sassert(ring_buffers_are_equal(&ring_buf, &ring_buf_old));
+    sassert(!sea_is_modified((char *)&ring_buf));
   }
   sassert(aws_ring_buffer_is_valid(&ring_buf));
   sassert(ring_buf.allocator == ring_buf_old.allocator);

@@ -26,16 +26,7 @@ int main(void) {
   /* nondet assignment required to force true/false */
   bool is_member = nd_bool();
   if (is_member) {
-    #ifdef __KLEE__
-    /* Inside ensure_byte_buf_has_allocated_buffer_member_in_ring_buf, 
-     * the ring buffer requires the following be True
-     * Use the following code to exclude unqualified program path
-     */
-    if (aws_ring_buffer_is_empty(&ring_buf))
-        return 0;
-    #else
-      assume(!aws_ring_buffer_is_empty(&ring_buf));
-    #endif
+    assume(!aws_ring_buffer_is_empty(&ring_buf));
     ensure_byte_buf_has_allocated_buffer_member_in_ring_buf(&buf, &ring_buf);
   } else {
     ensure_byte_buf_has_allocated_buffer_member(&buf);
@@ -43,8 +34,9 @@ int main(void) {
   assume(aws_ring_buffer_is_valid(&ring_buf));
   assume(aws_byte_buf_is_valid(&buf));
 
-  struct aws_ring_buffer ring_buf_old = ring_buf;
-  struct aws_byte_buf buf_old = buf;
+  sea_tracking_on();
+  sea_reset_modified((char *)&ring_buf);
+  sea_reset_modified((char *)&buf);
 
   bool result = aws_ring_buffer_buf_belongs_to_pool(&ring_buf, &buf);
 
@@ -52,7 +44,7 @@ int main(void) {
   sassert(is_member == result);
   sassert(aws_ring_buffer_is_valid(&ring_buf));
   sassert(aws_byte_buf_is_valid(&buf));
-  sassert(ring_buffers_are_equal(&ring_buf_old, &ring_buf));
-  sassert(byte_bufs_are_equal(&buf_old, &buf));
+  sassert(!sea_is_modified((char *)&ring_buf));
+  sassert(!sea_is_modified((char *)&buf));
   return 0;
 }

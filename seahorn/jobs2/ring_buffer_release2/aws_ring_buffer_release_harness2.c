@@ -22,24 +22,17 @@ int main(void) {
   initialize_ring_buffer(&ring_buf, ring_buf_size);
 
   /* assumptions */
-  #ifdef __KLEE__
-  /* Inside ensure_byte_buf_has_allocated_buffer_member_in_ring_buf, 
-   * the ring buffer requires the following be True
-   * Use the following code to exclude unqualified program path
-   */
-  if (aws_ring_buffer_is_empty(&ring_buf))
-      return 0;
-  #else
-    assume(!aws_ring_buffer_is_empty(&ring_buf));
-  #endif
+  assume(!aws_ring_buffer_is_empty(&ring_buf));
   assume(aws_ring_buffer_is_valid(&ring_buf));
-
   ensure_byte_buf_has_allocated_buffer_member_in_ring_buf(&buf, &ring_buf);
 
   /* copy of state before call */
   struct aws_ring_buffer ring_buf_old = ring_buf;
   struct aws_byte_buf buf_old = buf;
+  sea_tracking_on();
+  sea_reset_modified((char *)&ring_buf);
 
+  /* operation under verification */
   aws_ring_buffer_release(&ring_buf, &buf);
 
   /* assertions */
