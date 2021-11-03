@@ -24,6 +24,8 @@ int main() {
     struct store_byte_from_buffer old_byte;
     save_byte_from_array(src.buffer, src.len, &old_byte);
 
+    sea_tracking_on();
+
     /* operation under verification */
     if (!aws_byte_buf_init_copy(dest, allocator, &src)) {
         /* assertions */
@@ -34,7 +36,8 @@ int main() {
         assert_bytes_match(dest->buffer, src.buffer, dest->len);
         sassert(aws_byte_buf_is_valid(&src));
         if (src.len > 0) {
-            assert_byte_from_buffer_matches(src.buffer, &old_byte);
+            sassert(!sea_is_modified((char *)&src));
+            sassert(!sea_is_modified((char *)src.buffer));
             assert_byte_from_buffer_matches(dest->buffer, &old_byte);
         }
     }

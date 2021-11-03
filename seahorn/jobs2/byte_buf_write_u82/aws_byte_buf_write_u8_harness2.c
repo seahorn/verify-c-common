@@ -17,17 +17,18 @@ int main(void) {
   assume(aws_byte_buf_is_valid(&buf));
 
   /* save current state of the parameters */
-  struct aws_byte_buf old = buf;
-  struct store_byte_from_buffer old_byte_from_buf;
-  save_byte_from_array(buf.buffer, buf.len, &old_byte_from_buf);
+  size_t old_len = buf.len;
+  size_t old_capacity = buf.capacity;
+  sea_tracking_on();
 
   /* operation under verification */
   if (aws_byte_buf_write_u8(&buf, x)) {
-    sassert(buf.len == old.len + 1);
-    sassert(old.capacity == buf.capacity);
-    sassert(old.allocator == buf.allocator);
+    sassert(buf.len == old_len + 1);
+    sassert(buf.capacity == old_capacity);
+    sassert(!sea_is_modified((char *)buf.allocator));
   } else {
-    assert_byte_buf_equivalence(&buf, &old, &old_byte_from_buf);
+    sassert(!sea_is_modified((char *)&buf));
+    sassert(!sea_is_modified((char *)buf.buffer));
   }
 
   sassert(aws_byte_buf_is_valid(&buf));

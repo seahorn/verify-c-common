@@ -20,6 +20,7 @@ int main() {
     assume(aws_array_list_is_valid(&list));
 
     /* save current state of the data structure */
+    sea_tracking_on();
     struct aws_array_list old = list;
     struct store_byte_from_buffer old_byte;
     save_byte_from_array((uint8_t *)list.data, list.current_size, &old_byte);
@@ -33,7 +34,7 @@ int main() {
     if (n == 0) {
         assert_array_list_equivalence(&list, &old, &old_byte);
     } else {
-        sassert(list.alloc == old.alloc);
+        sassert(!sea_is_modified((char *)list.alloc));
         sassert(list.current_size == old.current_size);
         sassert(list.item_size == old.item_size);
         (n >= old.length) ? sassert(list.length == 0) : sassert(list.length == old.length - n);

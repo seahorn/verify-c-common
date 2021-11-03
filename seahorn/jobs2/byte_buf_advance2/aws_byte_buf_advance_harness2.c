@@ -24,23 +24,27 @@ int main() {
     }
 
     /* save current state of the parameters */
-    struct aws_byte_buf old = buf;
-    struct store_byte_from_buffer old_byte_from_buf;
-    save_byte_from_array(buf.buffer, buf.len, &old_byte_from_buf);
+    sea_tracking_on();
+    size_t old_len = buf.len;
+    size_t old_capacity = buf.capacity;
 
     /* operation under verification */
     if (aws_byte_buf_advance(&buf, &output, len)) {
-        sassert(buf.len == old.len + len);
-        sassert(buf.capacity == old.capacity);
-        sassert(buf.allocator == old.allocator);
-        if (old.len > 0) {
-            assert_byte_from_buffer_matches(buf.buffer, &old_byte_from_buf);
+        sassert(buf.len == old_len + len);
+
+        sassert(buf.capacity == old_capacity);
+        sassert(!sea_is_modified((char *)buf.allocator));
+
+        if (old_len > 0) {
+            sassert(!sea_is_modified((char *)buf.buffer));
         }
         sassert(output.len == 0);
         sassert(output.capacity == len);
         sassert(output.allocator == NULL);
     } else {
-        assert_byte_buf_equivalence(&buf, &old, &old_byte_from_buf);
+        sassert(!sea_is_modified((char *)&buf));
+        sassert(!sea_is_modified((char *)buf.buffer));
+
         sassert(output.len == 0);
         sassert(output.capacity == 0);
         sassert(output.allocator == NULL);
