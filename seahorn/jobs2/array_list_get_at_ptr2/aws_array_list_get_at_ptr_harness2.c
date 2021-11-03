@@ -21,14 +21,12 @@ int main() {
     void **val = bounded_malloc_havoc(sizeof(void *));
     size_t index = nd_size_t();
 
-    /* save current state of the data structure */
-    struct aws_array_list old = list;
-    struct store_byte_from_buffer old_byte;
-    save_byte_from_array((uint8_t *)list.data, list.current_size, &old_byte);
-
     /* assume preconditions */
     assume(aws_array_list_is_valid(&list));
     assume(val);
+
+    /* save current state of the data structure */
+    sea_tracking_on();
 
     /* perform operation under verification */
     if (!aws_array_list_get_at_ptr(&list, val, index)) {
@@ -41,7 +39,8 @@ int main() {
 
     /* assertions */
     sassert(aws_array_list_is_valid(&list));
-    assert_array_list_equivalence(&list, &old, &old_byte);
+    sassert(!sea_is_modified((char *)&list));
+    sassert(!sea_is_modified((char *)list.data));
 
     return 0;
 }

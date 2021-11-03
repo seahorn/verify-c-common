@@ -19,18 +19,20 @@ int main() {
     assume(aws_array_list_is_valid(&list));
 
     /* save current state of the data structure */
-    struct aws_array_list old = list;
+    sea_tracking_on();
+    size_t old_current_size = list.current_size;
+    size_t old_item_size = list.item_size;
 
     /* perform operation under verification */
     aws_array_list_clear(&list);
 
-    /* assertions */
+   /* assertions */
     sassert(aws_array_list_is_valid(&list));
+    sassert(!sea_is_modified((char *)list.alloc));
+    sassert(list.current_size == old_current_size);
     sassert(list.length == 0);
-    sassert(list.alloc == old.alloc);
-    sassert(list.current_size == old.current_size);
-    sassert(list.item_size == old.item_size);
-    sassert(list.data == old.data);
-
+    sassert(list.item_size == old_item_size);
+    sassert(!sea_is_modified((char *)list.data));
+    
     return 0;
 }

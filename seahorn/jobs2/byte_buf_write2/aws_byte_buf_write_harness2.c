@@ -24,15 +24,21 @@ int main() {
     struct store_byte_from_buffer old_byte_from_buf;
     save_byte_from_array(buf.buffer, buf.len, &old_byte_from_buf);
 
+    size_t old_len = buf.len;
+    size_t old_capacity = buf.capacity;
+    sea_tracking_on();
+
+    /* operation under verification */
     if (aws_byte_buf_write(&buf, array, len)) {
-        sassert(buf.len == old.len + len);
-        sassert(old.capacity == buf.capacity);
-        sassert(old.allocator == buf.allocator);
+        sassert(buf.len == old_len + len);
+        sassert(buf.capacity == old_capacity);
+        sassert(!sea_is_modified((char *)buf.allocator));
         if (len > 0 && buf.len > 0) {
-            assert_bytes_match(buf.buffer + old.len, array, len);
+            assert_bytes_match(buf.buffer + old_len, array, len);
         }
     } else {
-        assert_byte_buf_equivalence(&buf, &old, &old_byte_from_buf);
+        sassert(!sea_is_modified((char *)&buf));
+        sassert(!sea_is_modified((char *)buf.buffer));
     }
 
     sassert(aws_byte_buf_is_valid(&buf));
