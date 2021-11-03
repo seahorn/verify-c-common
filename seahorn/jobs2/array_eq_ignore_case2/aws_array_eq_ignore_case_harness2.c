@@ -25,16 +25,12 @@ int main() {
         rhs = bounded_malloc(rhs_len);
     }
 
-    /* save current state of the parameters */
-    struct store_byte_from_buffer old_byte_from_lhs;
-    save_byte_from_array((uint8_t *)lhs, lhs_len, &old_byte_from_lhs);
-    
-    struct store_byte_from_buffer old_byte_from_rhs;
-    save_byte_from_array((uint8_t *)rhs, rhs_len, &old_byte_from_rhs);
-
     /* pre-conditions */
     assume((lhs_len == 0) || AWS_MEM_IS_READABLE(lhs, lhs_len));
     assume((rhs_len == 0) || AWS_MEM_IS_READABLE(rhs, rhs_len));
+
+    /* save current state of the parameters */
+    sea_tracking_on();
 
     /* operation under verification */
     if (aws_array_eq_ignore_case(lhs, lhs_len, rhs, rhs_len)) {
@@ -42,12 +38,8 @@ int main() {
     }
 
     /* asserts both parameters remain unchanged */
-    if (lhs_len > 0) {
-        assert_byte_from_buffer_matches((uint8_t *)lhs, &old_byte_from_lhs);
-    }
-    if (rhs_len > 0) {
-        assert_byte_from_buffer_matches((uint8_t *)rhs, &old_byte_from_rhs);
-    }
+    sassert(!sea_is_modified((char *)lhs));
+    sassert(!sea_is_modified((char *)rhs));
 
     return 0;
 }

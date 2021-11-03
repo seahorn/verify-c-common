@@ -12,29 +12,27 @@ int main() {
     initialize_byte_buf(&to);
     assume(aws_byte_buf_is_valid(&to));
 
-    /* save current state of the data structure */
-    struct aws_byte_buf to_old = to;
-
     struct aws_byte_cursor from;
     initialize_byte_cursor(&from);
     assume(aws_byte_cursor_is_valid(&from));
 
     /* save current state of the data structure */
-    struct aws_byte_cursor from_old = from;
-
+    sea_tracking_on();
+    size_t to_old_len = to.len;
+    
     if (aws_byte_buf_append_dynamic(&to, &from) == AWS_OP_SUCCESS) {
-        sassert(to.len == to_old.len + from.len);
+	sassert(to.len == to_old_len + from.len);
     } else {
         /* if the operation return an error, to must not change */
-        assert_bytes_match(to_old.buffer, to.buffer, to.len);
-        sassert(to_old.len == to.len);
+	sassert(!sea_is_modified((char *)&to));
+	sassert(!sea_is_modified((char *)to.buffer));
     }
 
     sassert(aws_byte_buf_is_valid(&to));
     sassert(aws_byte_cursor_is_valid(&from));
-    sassert(to_old.allocator == to.allocator);
-    assert_bytes_match(from_old.ptr, from.ptr, from.len);
-    sassert(from_old.len == from.len);
+    sassert(!sea_is_modified((char *)to.allocator));
+    sassert(!sea_is_modified((char *)&from));
+    sassert(!sea_is_modified((char *)from.ptr));
 
     return 0;
 }

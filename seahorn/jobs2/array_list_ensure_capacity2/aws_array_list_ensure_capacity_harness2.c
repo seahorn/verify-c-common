@@ -19,9 +19,10 @@ int main() {
     assume(aws_array_list_is_valid(&list));
 
     /* save current state of the data structure */
-    struct aws_array_list old = list;
-    struct store_byte_from_buffer old_byte;
-    save_byte_from_array((uint8_t *)list.data, list.current_size, &old_byte);
+    sea_tracking_on();
+    size_t old_item_size = list.item_size;
+    size_t old_length = list.length;
+    size_t old_current_size = list.current_size;
 
     /* perform operation under verification */
     size_t index = nd_size_t();
@@ -29,13 +30,14 @@ int main() {
     if (!aws_array_list_ensure_capacity(&list, index)) {
         /* assertions */
         sassert(aws_array_list_is_valid(&list));
-        sassert(list.item_size == old.item_size);
-        sassert(list.alloc == old.alloc);
-        sassert(list.length == old.length);
-        sassert(list.current_size >= old.current_size);
+        sassert(list.item_size == old_item_size);
+        sassert(!sea_is_modified((char *)list.alloc));
+        sassert(list.length == old_length);
+        sassert(list.current_size >= old_current_size);
     } else {
         /* In the case aws_array_list_ensure_capacity is not successful, the list must not change */
-        assert_array_list_equivalence(&list, &old, &old_byte);
+        sassert(!sea_is_modified((char *)&list));
+        sassert(!sea_is_modified((char *)list.data));
     }
 
     return 0;

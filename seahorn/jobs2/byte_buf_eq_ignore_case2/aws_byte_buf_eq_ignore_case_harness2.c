@@ -23,12 +23,7 @@ int main() {
     }
 
     /* save current state of the data structure */
-    struct aws_byte_buf old_lhs = lhs;
-    struct store_byte_from_buffer old_byte_from_lhs;
-    save_byte_from_array(lhs.buffer, lhs.len, &old_byte_from_lhs);
-    struct aws_byte_buf old_rhs = rhs;
-    struct store_byte_from_buffer old_byte_from_rhs;
-    save_byte_from_array(rhs.buffer, rhs.len, &old_byte_from_rhs);
+    sea_tracking_on();
 
     /* operation under verification */
     if (aws_byte_buf_eq_ignore_case(&lhs, &rhs)) {
@@ -36,10 +31,10 @@ int main() {
     }
 
     /* assertions */
-    sassert(aws_byte_buf_is_valid(&lhs));
-    sassert(aws_byte_buf_is_valid(&rhs));
-    assert_byte_buf_equivalence(&lhs, &old_lhs, &old_byte_from_lhs);
-    assert_byte_buf_equivalence(&rhs, &old_rhs, &old_byte_from_rhs);
+    sassert(!sea_is_modified((char *)&lhs));
+    sassert(!sea_is_modified((char *)lhs.buffer));
+    sassert(!sea_is_modified((char *)&rhs));
+    sassert(!sea_is_modified((char *)rhs.buffer));
 
     return 0;
 }
