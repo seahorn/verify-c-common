@@ -125,9 +125,10 @@ void initialize_aws_hash_iter(struct aws_hash_iter *iter,
   iter->element.value = nd_voidp();
   iter->slot = nd_size_t();
   iter->limit = nd_size_t();
-  assume(iter->limit > 0);
-  // iter->limit <= iter->map->p_impl->size
+  // 0 < iter->limit <= iter->map->p_impl->size
   iter->limit %= iter->map->p_impl->size;
+  if (iter->limit == 0)
+    iter->limit = iter->map->p_impl->size;
   // iter->slot < iter->limit
   iter->slot %= iter->limit;
   iter->status = nd_hash_iter_status();
