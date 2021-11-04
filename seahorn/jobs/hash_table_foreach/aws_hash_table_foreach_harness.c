@@ -20,7 +20,10 @@ int main(void) {
   struct aws_hash_table map;
   initialize_bounded_aws_hash_table(&map, MAX_TABLE_SIZE);
   ensure_hash_table_has_valid_destroy_functions(&map);
-//   assume(aws_hash_table_entry_count_is_valid(&map));
+  #ifdef __FUZZ__
+  // otherwise pre-condition for deletion might fail
+  assume(aws_hash_table_entry_count_is_valid(&map));
+  #endif
   map.p_impl->equals_fn = nondet_equals;
   map.p_impl->hash_fn = uninterpreted_hasher;
   assume(aws_hash_table_is_valid(&map));

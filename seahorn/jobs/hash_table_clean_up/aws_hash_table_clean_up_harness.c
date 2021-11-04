@@ -31,8 +31,9 @@ int main(void) {
 
   // this reads memory that has been freed, but we are not currently modelling
   // freeing memory
-  #ifdef __KLEE__
+  #if defined(__KLEE__) || defined(__FUZZ__)
     // klee does not allow to access memory after free.
+    // run-time UAF will be detected as by Address Sanitizer used by libFuzzer
   #else
   size_t i = nd_size_t();
   size_t len = state->size * sizeof(state->slots[0]);
