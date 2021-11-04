@@ -11,7 +11,7 @@ int main() {
     /* assumptions */
     size_t lhs_len = nd_size_t();
     assume(lhs_len <= MAX_BUFFER_SIZE);
-    void *lhs = can_fail_malloc(lhs_len);
+    void *lhs = can_fail_malloc_havoc(lhs_len);
 
     #ifdef __KLEE__
         // The program path for a failed case which 
@@ -26,7 +26,7 @@ int main() {
         rhs = lhs;
     } else {
         assume(rhs_len <= MAX_BUFFER_SIZE);
-        rhs = can_fail_malloc(rhs_len);
+        rhs = can_fail_malloc_havoc(rhs_len);
     }
 
     #ifdef __KLEE__

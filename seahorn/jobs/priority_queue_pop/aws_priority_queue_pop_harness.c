@@ -27,7 +27,7 @@ int main() {
 
   /* Assume the function preconditions */
   assume(aws_priority_queue_is_valid(&queue));
-  void *item = can_fail_malloc(queue.container.item_size);
+  void *item = can_fail_malloc_havoc(queue.container.item_size);
   assume(item);
   assume(AWS_MEM_IS_WRITABLE(item, queue.container.item_size));
 
@@ -38,10 +38,10 @@ int main() {
     size_t len = queue.backpointers.length;
     if (0 < len) {
       ((struct aws_priority_queue_node **)queue.backpointers.data)[0] =
-          can_fail_malloc(sizeof(struct aws_priority_queue_node));
+          can_fail_malloc_havoc(sizeof(struct aws_priority_queue_node));
       if (0 != len - 1) {
         ((struct aws_priority_queue_node **)queue.backpointers.data)[len - 1] =
-            can_fail_malloc(sizeof(struct aws_priority_queue_node));
+            can_fail_malloc_havoc(sizeof(struct aws_priority_queue_node));
       }
     }
   }

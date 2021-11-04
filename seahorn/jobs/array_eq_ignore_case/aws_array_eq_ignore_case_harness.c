@@ -13,7 +13,7 @@ int main() {
     /* assumptions */
     size_t lhs_len = nd_size_t();
     assume(lhs_len <= MAX_BUFFER_SIZE);
-    void *lhs = bounded_malloc(lhs_len);
+    void *lhs = bounded_malloc_havoc(lhs_len);
 
     void *rhs;
     size_t rhs_len = nd_size_t();
@@ -22,7 +22,7 @@ int main() {
         rhs = lhs;
     } else {
         assume(rhs_len <= MAX_BUFFER_SIZE);
-        rhs = bounded_malloc(rhs_len);
+        rhs = bounded_malloc_havoc(rhs_len);
     }
 
     /* save current state of the parameters */

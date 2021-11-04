@@ -30,7 +30,7 @@ void initialize_bounded_aws_hash_table(struct aws_hash_table *map,
   /* assume setting required_bytes is successful */
   assume(hash_table_state_required_bytes(num_entries, &required_bytes) ==
          AWS_OP_SUCCESS);
-  struct hash_table_state *impl = bounded_malloc(required_bytes);
+  struct hash_table_state *impl = bounded_malloc_havoc(required_bytes);
   impl->size = num_entries;
   impl->mask = num_entries - 1;
   impl->max_load_factor = 0.95;
@@ -38,7 +38,7 @@ void initialize_bounded_aws_hash_table(struct aws_hash_table *map,
   impl->hash_fn = &nd_hash_fn;
   impl->equals_fn = &nd_hash_equals_fn;
 #ifdef EXPLICIT_HASH_INIT
-  /** hash_table_state is implicitly initializaed by memhavoc() inside bounded_malloc() */
+  /** hash_table_state is implicitly initializaed by memhavoc() inside bounded_malloc_havoc() */
   impl->destroy_key_fn = &hash_proof_destroy_noop;
   impl->destroy_value_fn = &hash_proof_destroy_noop;
   impl->entry_count = nd_size_t();

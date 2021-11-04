@@ -12,7 +12,7 @@ int main() {
     /* parameters */
     struct aws_byte_cursor cur;
     initialize_byte_cursor(&cur);
-    uint64_t *dest = can_fail_malloc(sizeof(*dest));
+    uint64_t *dest = can_fail_malloc_havoc(sizeof(*dest));
 
     /* assumptions */
     assume(aws_byte_cursor_is_valid(&cur));

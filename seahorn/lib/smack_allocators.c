@@ -8,13 +8,14 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-
-
-void *bounded_malloc(size_t size) {
-    return size == 0 ? NULL : malloc(size);
+// Always succeeds in allocating memory to have same behaviour as SEAHORN
+void *bounded_malloc_havoc(size_t size) {
+  void *data = malloc(size);
+  memhavoc(data, size);
+  return data;
 }
 
-void *can_fail_malloc(size_t size) {
+void *can_fail_malloc_havoc(size_t size) {
   if (size == 0)
     return NULL;
   // initialize nondetermined values into allocated memory
@@ -28,7 +29,7 @@ void *can_fail_malloc(size_t size) {
  */
 static void *s_malloc_allocator(struct aws_allocator *allocator, size_t size) {
   (void)allocator;
-  return bounded_malloc(size);
+  return bounded_malloc_havoc(size);
 }
 
 /**

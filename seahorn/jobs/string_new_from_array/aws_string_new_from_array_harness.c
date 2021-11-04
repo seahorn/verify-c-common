@@ -14,7 +14,7 @@ int main() {
     /* parameters */
     size_t alloc_size = nd_size_t();
     KLEE_ASSUME(alloc_size < MAX_STRING_LEN);
-    uint8_t *array = bounded_malloc(alloc_size);
+    uint8_t *array = bounded_malloc_havoc(alloc_size);
     struct aws_allocator *allocator = sea_allocator();
     size_t reported_size = nd_size_t();
 
