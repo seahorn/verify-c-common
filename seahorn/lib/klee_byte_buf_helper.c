@@ -18,7 +18,7 @@
 void initialize_byte_buf(struct aws_byte_buf *const buf) {
     size_t cap = nd_size_t();
     assume(cap <= sea_max_buffer_size());
-    buf->buffer = can_fail_malloc(cap * sizeof(*(buf->buffer)));
+    buf->buffer = can_fail_malloc_havoc(cap * sizeof(*(buf->buffer)));
     if (buf->buffer) {
         size_t len = nd_size_t();
         assume(len <= cap);
@@ -34,7 +34,7 @@ void initialize_byte_buf(struct aws_byte_buf *const buf) {
 
 void initialize_byte_cursor(struct aws_byte_cursor *const cursor) {
     size_t max_buffer_size = sea_max_buffer_size();
-    cursor->ptr = can_fail_malloc(sizeof(*(cursor->ptr)) * max_buffer_size);
+    cursor->ptr = can_fail_malloc_havoc(sizeof(*(cursor->ptr)) * max_buffer_size);
     if (cursor->ptr){
         cursor->len = nd_size_t();
         assume(cursor->len <= max_buffer_size);
@@ -67,7 +67,7 @@ bool aws_byte_cursor_is_bounded(
 void ensure_byte_buf_has_allocated_buffer_member(
     struct aws_byte_buf *const buf) {
     buf->allocator = sea_allocator();
-    buf->buffer = bounded_malloc(sizeof(*(buf->buffer)) * buf->capacity);
+    buf->buffer = bounded_malloc_havoc(sizeof(*(buf->buffer)) * buf->capacity);
     size_t len = nd_size_t();
     assume(len <= buf->capacity);
     buf->len = len;

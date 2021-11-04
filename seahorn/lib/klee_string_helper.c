@@ -6,7 +6,7 @@
 
 struct aws_string *ensure_string_is_allocated(size_t len) {
   size_t alloc_size = sizeof(struct aws_string) + len + 1;
-  struct aws_string *str = bounded_malloc(alloc_size);
+  struct aws_string *str = bounded_malloc_havoc(alloc_size);
 
   if (str) {
     memhavoc(str, alloc_size); // only memhavoc if allocation succeeded
@@ -55,10 +55,10 @@ static const char *_ensure_c_str_is_nd_allocated(size_t max_size, size_t *len,
 
     char *str = NULL;
     if (safe) {
-      str = bounded_malloc(alloc_size);
+      str = bounded_malloc_havoc(alloc_size);
     }
     else {
-      str = can_fail_malloc(alloc_size);
+      str = can_fail_malloc_havoc(alloc_size);
       if (!str) {
         return NULL;
       }

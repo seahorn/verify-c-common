@@ -23,7 +23,7 @@ int main() {
     #else 
         assume(list.data != NULL);
     #endif
-    void *val = bounded_malloc(list.item_size);
+    void *val = bounded_malloc_havoc(list.item_size);
 
     /* save current state of the data structure */
     struct aws_array_list old = list;

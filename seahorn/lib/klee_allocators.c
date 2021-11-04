@@ -3,12 +3,18 @@
 #include <klee_switch.h>
 #include <nondet.h>
 
-void *bounded_malloc(size_t size) {
-  return size == 0 ? NULL : malloc(alloc_size(size));
+// Note this behaviour deviates from SEAHORN since this can fail to allocate
+// memory.
+void *bounded_malloc_havoc(size_t size) {
+  void* data = size == 0 ? NULL : malloc(alloc_size(size));
+  if (data) {
+    memhavoc(data, size);
+  }
+  return data;
 }
 
-void *can_fail_malloc(size_t size) { 
-    return nd_bool() ? NULL : bounded_malloc(size); 
+void *can_fail_malloc_havoc(size_t size) {
+    return nd_bool() ? NULL : bounded_malloc_havoc(size);
 }
 
 /**
@@ -16,7 +22,7 @@ void *can_fail_malloc(size_t size) {
  */
 static void *s_malloc_allocator(struct aws_allocator *allocator, size_t size) {
   (void)allocator;
-  return bounded_malloc(size);
+  return bounded_malloc_havoc(size);
 }
 
 /**

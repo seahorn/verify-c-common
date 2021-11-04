@@ -19,14 +19,14 @@ void *realloc(void *ptr, size_t new_size);
  * Deterministically allocates [size] bytes and returns a pointer;
  * memory allocated will be marked as containing non-det content using memhavoc
  */
-void *bounded_malloc(size_t size);
+void *bounded_malloc_havoc(size_t size);
 
 /**
  * Can non-deterministically fail;
  * if successful, allocate [size] bytes and returns a pointer;
  * memory allocated will be marked as containing non-det content using memhavoc
  */
-void *can_fail_malloc(size_t size);
+void *can_fail_malloc_havoc(size_t size);
 
 /**
  * Pointer to SeaHorn-based allocator

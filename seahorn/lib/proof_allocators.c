@@ -13,11 +13,11 @@
 
 void *realloc(void *ptr, size_t new_size) { return sea_realloc(ptr, new_size); }
 
-void *bounded_malloc(size_t size) {
+void *bounded_malloc_havoc(size_t size) {
   return size == 0 ? NULL : sea_malloc_havoc_safe(size);
 }
 
-void *can_fail_malloc(size_t size) {
+void *can_fail_malloc_havoc(size_t size) {
   return size == 0 ? NULL : sea_malloc_havoc(size);
 }
 
@@ -27,9 +27,9 @@ void *can_fail_malloc(size_t size) {
 static void *s_malloc_allocator(struct aws_allocator *allocator, size_t size) {
   (void)allocator;
 #ifdef SEA_ALLOCATOR_CAN_FAIL
-  return can_fail_malloc(size);
+  return can_fail_malloc_havoc(size);
 #else
-  return bounded_malloc(size);
+  return bounded_malloc_havoc(size);
 #endif
 }
 

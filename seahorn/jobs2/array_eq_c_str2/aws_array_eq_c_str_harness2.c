@@ -13,7 +13,7 @@ int main() {
   /* assumptions */
   size_t array_len = nd_size_t();
   assume(array_len <= MAX_BUFFER_SIZE);
-  uint8_t *array = bounded_malloc(array_len);
+  uint8_t *array = bounded_malloc_havoc(array_len);
 
   size_t str_len = 0;
   const char *c_str =

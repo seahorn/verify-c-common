@@ -14,7 +14,7 @@ int main() {
     initialize_byte_cursor(&cur);
     size_t length = nd_size_t();
     assume(length <= MAX_BUFFER_SIZE);
-    void *dest = bounded_malloc(length);
+    void *dest = bounded_malloc_havoc(length);
 
     /* assumptions */
     assume(aws_byte_cursor_is_valid(&cur));

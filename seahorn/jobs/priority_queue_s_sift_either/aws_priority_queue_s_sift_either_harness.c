@@ -42,7 +42,7 @@ int main(void) {
     for (i = 0; i < MAX_PRIORITY_QUEUE_ITEMS; i++) {
       if (i < queue.container.length) {
         ((struct aws_priority_queue_node **)queue.backpointers.data)[i] =
-            can_fail_malloc(sizeof(struct aws_priority_queue_node));
+            can_fail_malloc_havoc(sizeof(struct aws_priority_queue_node));
       }
     }
 

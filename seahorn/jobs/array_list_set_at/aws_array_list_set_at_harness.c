@@ -23,7 +23,7 @@ int main() {
     #else 
         assume(list.data != NULL);
     #endif
-    void *val = bounded_malloc(list.item_size);
+    void *val = bounded_malloc_havoc(list.item_size);
     size_t index = nd_size_t();
     KLEE_ASSUME(index <= KLEE_MAX_SIZE);
 

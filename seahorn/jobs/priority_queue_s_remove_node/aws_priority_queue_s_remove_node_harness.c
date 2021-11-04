@@ -32,7 +32,7 @@ int main(void) {
   assume(index < queue.container.length);
 
   struct aws_priority_queue_node *node =
-      can_fail_malloc(sizeof(struct aws_priority_queue_node));
+      can_fail_malloc_havoc(sizeof(struct aws_priority_queue_node));
 
   if (queue.backpointers.data) {
     /* Assume that the two backpointers index, len-1 are valid,
@@ -44,7 +44,7 @@ int main(void) {
           node;
       if (index != len - 1) {
         ((struct aws_priority_queue_node **)queue.backpointers.data)[len - 1] =
-            can_fail_malloc(sizeof(struct aws_priority_queue_node));
+            can_fail_malloc_havoc(sizeof(struct aws_priority_queue_node));
       }
     }
   }

@@ -32,7 +32,7 @@ int main(void) {
 
   /* perform operation under verification */
   #ifdef __KLEE__
-    raw_array = bounded_malloc(sizeof(uint8_t) * len);
+    raw_array = bounded_malloc_havoc(sizeof(uint8_t) * len);
     if (!raw_array) return 0; // assume(raw_array)
   #else 
     raw_array = sea_malloc_safe(sizeof(uint8_t) * len);
