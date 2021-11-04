@@ -13,7 +13,7 @@ void initialize_ring_buffer(struct aws_ring_buffer *ring_buf,
   // assume(size <= MAX_BUFFER_SIZE);
   size_t alloc_sz = size % MAX_BUFFER_SIZE;
 
-  ring_buf->allocation = bounded_malloc(alloc_sz);
+  ring_buf->allocation = bounded_malloc_havoc(alloc_sz);
   size_t position_head = nd_size_t();
   size_t position_tail = nd_size_t();
   assume(position_head < alloc_sz);

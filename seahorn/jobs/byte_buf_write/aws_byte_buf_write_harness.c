@@ -14,7 +14,7 @@ int main() {
     initialize_byte_buf(&buf);
     size_t len = nd_size_t();
     assume (len <= MAX_BUFFER_SIZE);
-    uint8_t *array = bounded_malloc(MAX_BUFFER_SIZE);
+    uint8_t *array = bounded_malloc_havoc(MAX_BUFFER_SIZE);
 
     /* assumptions */
     assume(aws_byte_buf_is_valid(&buf));

@@ -32,7 +32,7 @@ void initialize_bounded_array_list(struct aws_array_list *const list) {
   list->current_size = nd_size_t();
   assume(list->current_size <= klee_max_memory_size());
   list->item_size = nd_size_t();
-  list->data = can_fail_malloc(list->current_size);
+  list->data = can_fail_malloc_havoc(list->current_size);
   if (list->data) {
     list->length = nd_size_t();
   }

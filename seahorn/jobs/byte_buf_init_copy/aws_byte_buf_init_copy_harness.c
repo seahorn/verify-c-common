@@ -10,7 +10,7 @@
 
 int main() {
     /* data structure */
-    struct aws_byte_buf *dest = (struct aws_byte_buf *)bounded_malloc(sizeof(*dest));
+    struct aws_byte_buf *dest = (struct aws_byte_buf *)bounded_malloc_havoc(sizeof(*dest));
 
     /* parameters */
     struct aws_allocator *allocator = sea_allocator();

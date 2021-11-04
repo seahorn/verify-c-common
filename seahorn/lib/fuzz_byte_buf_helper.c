@@ -16,7 +16,7 @@ void initialize_byte_buf(struct aws_byte_buf *const buf) {
 
   buf->len = len;
   buf->capacity = cap;
-  buf->buffer = can_fail_malloc(cap * sizeof(*(buf->buffer)));
+  buf->buffer = can_fail_malloc_havoc(cap * sizeof(*(buf->buffer)));
   if (buf->buffer) {
     memhavoc(buf->buffer, cap * sizeof(*(buf->buffer)));
   }
@@ -28,7 +28,7 @@ void initialize_byte_cursor(struct aws_byte_cursor *const cursor) {
   cursor->len = nd_size_t();
   // cursor->len <= max_buffer_size
   cursor->len %= max_buffer_size;
-  cursor->ptr = can_fail_malloc(sizeof(*(cursor->ptr)) * max_buffer_size);
+  cursor->ptr = can_fail_malloc_havoc(sizeof(*(cursor->ptr)) * max_buffer_size);
 }
 
 void initialize_byte_cursor_aligned(struct aws_byte_cursor *const cursor) {

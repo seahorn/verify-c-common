@@ -18,7 +18,7 @@ void initialize_array_list(struct aws_array_list *const list) {
   list->length = nd_size_t();
   list->item_size = nd_size_t();
   /// XXX Cannot do this for now
-  list->data = can_fail_malloc(list->current_size);
+  list->data = can_fail_malloc_havoc(list->current_size);
   list->alloc = sea_allocator();
 }
 
@@ -26,7 +26,7 @@ void initialize_bounded_array_list(struct aws_array_list *const list) {
   list->current_size = nd_size_t();
   list->item_size = nd_size_t();
   list->length = nd_size_t();
-  list->data = can_fail_malloc(list->current_size);
+  list->data = can_fail_malloc_havoc(list->current_size);
   list->alloc = sea_allocator();
   assume(aws_array_list_is_bounded(list, 
       sea_max_array_list_len(), sea_max_array_list_item_size()));

@@ -10,7 +10,7 @@ void initialize_ring_buffer(struct aws_ring_buffer *ring_buf,
   ring_buf->allocator = sea_allocator();
   /* The `aws_ring_buffer_init` function requires size > 0. */
   assume(0 < size);
-  ring_buf->allocation = bounded_malloc(size);
+  ring_buf->allocation = bounded_malloc_havoc(size);
   size_t position_head = nd_size_t();
   size_t position_tail = nd_size_t();
   assume(position_head < size);
