@@ -22,13 +22,11 @@ jmp_buf g_jmp_buf;
   }
 
 bool nd_bool(void) {
-  bool res;
-
+  int tmp;
   UPDATE_FUZZ_ITERATOR(bool)
-  memcpy(&res, g_fuzz_data_iterator, sizeof(bool));
+  memcpy(&tmp, g_fuzz_data_iterator, sizeof(bool));
   g_fuzz_data_iterator += sizeof(bool);
-
-  return res;
+  return (tmp > 0);
 }
 
 int nd_int(void) {
