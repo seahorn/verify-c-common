@@ -25,12 +25,12 @@ int main(void) {
   if (aws_byte_buf_write_u8(&buf, x)) {
     sassert(buf.len == old_len + 1);
     sassert(buf.capacity == old_capacity);
-    sassert(!sea_is_modified((char *)buf.allocator));
   } else {
     sassert(!sea_is_modified((char *)&buf));
     sassert(!sea_is_modified((char *)buf.buffer));
   }
 
   sassert(aws_byte_buf_is_valid(&buf));
+  sassert(!sea_is_modified((char *)buf.allocator));
   return 0;
 }

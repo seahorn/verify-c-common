@@ -26,9 +26,8 @@ int main() {
     /* perform operation under verification */
     if (aws_array_list_erase(&list, index) == AWS_OP_SUCCESS) {
         sassert(list.length == old_length - 1);
-        sassert(!sea_is_modified((char *)list.alloc));
         sassert(list.current_size == old_current_size);
-	sassert(list.item_size == old_item_size);
+        sassert(list.item_size == old_item_size);
         sassert(index < old_length);
     } else {
         sassert(!sea_is_modified((char *)&list));
@@ -36,6 +35,7 @@ int main() {
     }
 
     sassert(aws_array_list_is_valid(&list));
+    sassert(!sea_is_modified((char *)list.alloc));
 
     return 0;
 }

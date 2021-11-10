@@ -41,6 +41,7 @@ int main() {
     sassert(aws_array_list_is_valid(&list));
     sassert(!sea_is_modified((char *)&list));
     sassert(!sea_is_modified((char *)list.data));
+    sassert(!sea_is_modified((char *)list.alloc));
 
     return 0;
 }

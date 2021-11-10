@@ -36,7 +36,6 @@ int main(void) {
     if (nondet_parameter) {
       sassert(buf.len == buf_old_len + str->len);
       sassert(buf.capacity == buf_old_capacity);
-      sassert(!sea_is_modified((char *)buf.allocator));
       if (str->len > 0 && buf.len > 0) {
         assert_bytes_match(buf.buffer + buf_old_len, str->bytes, str->len);
       }
@@ -47,6 +46,8 @@ int main(void) {
   }
 
   sassert(aws_byte_buf_is_valid(&buf));
+
+  sassert(!sea_is_modified((char *)buf.allocator));
 
   return 0;
 }
