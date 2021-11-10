@@ -80,10 +80,13 @@ int main() {
   sassert(aws_byte_buf_is_valid(&dest));
   sassert(!sea_is_modified((char *)&buffer1));
   sassert(!sea_is_modified((char *)buffer1.buffer));
+  sassert(!sea_is_modified((char *)buffer1.allocator));
   sassert(!sea_is_modified((char *)&buffer2));
   sassert(!sea_is_modified((char *)buffer2.buffer));
+  sassert(!sea_is_modified((char *)buffer2.allocator));
   sassert(!sea_is_modified((char *)&buffer3));
   sassert(!sea_is_modified((char *)buffer3.buffer));
+  sassert(!sea_is_modified((char *)buffer3.allocator));
 
   return 0;
 }

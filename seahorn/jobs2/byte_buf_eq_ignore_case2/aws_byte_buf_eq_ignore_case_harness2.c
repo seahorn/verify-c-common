@@ -33,8 +33,10 @@ int main() {
     /* assertions */
     sassert(!sea_is_modified((char *)&lhs));
     sassert(!sea_is_modified((char *)lhs.buffer));
+    sassert(!sea_is_modified((char *)lhs.allocator));
     sassert(!sea_is_modified((char *)&rhs));
     sassert(!sea_is_modified((char *)rhs.buffer));
+    sassert(!sea_is_modified((char *)rhs.allocator));
 
     return 0;
 }

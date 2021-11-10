@@ -29,13 +29,13 @@ int main() {
     if (aws_byte_buf_write_be64(&buf, x)) {
         sassert(buf.len == old_len + 8);
         sassert(old_capacity == buf.capacity);
-        sassert(!sea_is_modified((char *)buf.allocator));
     } else {
         sassert(!sea_is_modified((char *)&buf));
         sassert(!sea_is_modified((char *)buf.buffer));
     }
 
     sassert(aws_byte_buf_is_valid(&buf));
+    sassert(!sea_is_modified((char *)buf.allocator));
 
     return 0;
 }
