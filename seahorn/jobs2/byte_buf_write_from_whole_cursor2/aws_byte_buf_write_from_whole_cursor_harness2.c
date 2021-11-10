@@ -27,7 +27,6 @@ int main() {
     if (aws_byte_buf_write_from_whole_cursor(&buf, src)) {
         sassert(buf.len == buf_old_len + src.len);
         sassert(buf.capacity == buf_old_capacity);
-        sassert(!sea_is_modified((char *)buf.allocator));
         if (src.len > 0 && buf.len > 0) {
             assert_bytes_match(buf.buffer + buf_old_len, src.ptr, src.len);
         }
@@ -38,6 +37,9 @@ int main() {
 
     sassert(aws_byte_buf_is_valid(&buf));
     sassert(aws_byte_cursor_is_valid(&src));
+
+    sassert(!sea_is_modified((char *)buf.allocator));
+   
     sassert(!sea_is_modified((char *)&src));
     sassert(!sea_is_modified((char *)src.ptr));
     return 0;

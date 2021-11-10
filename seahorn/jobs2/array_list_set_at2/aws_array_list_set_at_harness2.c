@@ -38,6 +38,7 @@ int main() {
         /* In the case aws_array_list_set_at is not successful, the list must not change */
         sassert(!sea_is_modified((char *)&list));
         sassert(!sea_is_modified((char *)list.data));
+        sassert(!sea_is_modified((char *)list.alloc));
     }
     sassert(aws_array_list_is_valid(&list));
 

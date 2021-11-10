@@ -33,7 +33,6 @@ int main() {
         sassert(buf.len == old_len + len);
 
         sassert(buf.capacity == old_capacity);
-        sassert(!sea_is_modified((char *)buf.allocator));
 
         if (old_len > 0) {
             sassert(!sea_is_modified((char *)buf.buffer));
@@ -52,6 +51,7 @@ int main() {
     }
     sassert(aws_byte_buf_is_valid(&buf));
     sassert(aws_byte_buf_is_valid(&output));
+    sassert(!sea_is_modified((char *)buf.allocator));
 
     return 0;
 }

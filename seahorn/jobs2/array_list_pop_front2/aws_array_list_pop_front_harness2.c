@@ -29,7 +29,6 @@ int main() {
     if (!aws_array_list_pop_front(&list)) {
         sassert(list.length == old_length - 1);
         sassert(list.data);
-        sassert(!sea_is_modified((char *)list.alloc));
         sassert(list.current_size == old_current_size);
         sassert(list.item_size == old_item_size);	
     } else {
@@ -39,6 +38,7 @@ int main() {
     }
 
     sassert(aws_array_list_is_valid(&list));
+    sassert(!sea_is_modified((char *)list.alloc));
 
     return 0;
 }

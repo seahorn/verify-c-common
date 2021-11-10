@@ -30,6 +30,7 @@ int main() {
     /* asserts both parameters remain unchanged */
     sassert(!sea_is_modified((char *)&buf));
     sassert(!sea_is_modified((char *)buf.buffer));
+    sassert(!sea_is_modified((char *)buf.allocator));
     sassert(!sea_is_modified((char *)c_str));
 
     return 0;

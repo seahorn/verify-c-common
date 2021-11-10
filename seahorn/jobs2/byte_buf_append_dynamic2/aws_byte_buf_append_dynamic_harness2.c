@@ -21,11 +21,11 @@ int main() {
     size_t to_old_len = to.len;
     
     if (aws_byte_buf_append_dynamic(&to, &from) == AWS_OP_SUCCESS) {
-	sassert(to.len == to_old_len + from.len);
+        sassert(to.len == to_old_len + from.len);
     } else {
         /* if the operation return an error, to must not change */
-	sassert(!sea_is_modified((char *)&to));
-	sassert(!sea_is_modified((char *)to.buffer));
+        sassert(!sea_is_modified((char *)&to));
+        sassert(!sea_is_modified((char *)to.buffer));
     }
 
     sassert(aws_byte_buf_is_valid(&to));

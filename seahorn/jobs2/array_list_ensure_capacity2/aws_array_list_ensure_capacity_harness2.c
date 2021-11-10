@@ -31,7 +31,6 @@ int main() {
         /* assertions */
         sassert(aws_array_list_is_valid(&list));
         sassert(list.item_size == old_item_size);
-        sassert(!sea_is_modified((char *)list.alloc));
         sassert(list.length == old_length);
         sassert(list.current_size >= old_current_size);
     } else {
@@ -40,5 +39,6 @@ int main() {
         sassert(!sea_is_modified((char *)list.data));
     }
 
+    sassert(!sea_is_modified((char *)list.alloc));
     return 0;
 }
