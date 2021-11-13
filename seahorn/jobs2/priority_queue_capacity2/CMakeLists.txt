@@ -5,4 +5,5 @@ add_executable(
   aws_priority_queue_capacity_harness2.c
 )
 sea_attach_bc_link(priority_queue_capacity2)
+configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(priority_queue_capacity2)

@@ -15,27 +15,16 @@ int main(void) {
   initialize_priority_queue(&queue);
 
   /* assumptions */
-  #ifdef __KLEE__
-    // Inside aws_priority_queue_is_valid, the priority queue require the following be True
-    // Use the following code to exclude unqualified program path
-    if (!(queue.backpointers.item_size == sizeof(struct aws_priority_queue_node *)))
-      return 0;
-  #endif
   assume(aws_priority_queue_is_bounded(&queue, MAX_INITIAL_ITEM_ALLOCATION,
                                        MAX_ITEM_SIZE));
   assume(aws_priority_queue_is_valid(&queue));
 
   /* save current state of the container structure */
-  struct aws_array_list old_container = queue.container;
-  struct store_byte_from_buffer old_byte_container;
-  save_byte_from_array((uint8_t *)old_container.data,
-                       old_container.current_size, &old_byte_container);
-
-  /* save current state of the backpointers structure */
-  struct aws_array_list old_backpointers = queue.backpointers;
-  struct store_byte_from_buffer old_byte_backpointers;
-  save_byte_from_array((uint8_t *)old_backpointers.data,
-                       old_backpointers.current_size, &old_byte_backpointers);
+  sea_tracking_on();
+  sea_reset_modified((char *)&queue.container);
+  sea_reset_modified((char *)queue.container.data);
+  sea_reset_modified((char *)&queue.backpointers);
+  sea_reset_modified((char *)queue.backpointers.data);
 
   /* perform operation under verification */
   void *top_val_ptr = NULL;
@@ -43,9 +32,10 @@ int main(void) {
 
   /* assertions */
   sassert(aws_priority_queue_is_valid(&queue));
-  assert_array_list_equivalence(&queue.container, &old_container,
-                                &old_byte_container);
-  assert_array_list_equivalence(&queue.backpointers, &old_backpointers,
-                                &old_byte_backpointers);
+  sassert(!sea_is_modified((char *)&queue.container));
+  sassert(!sea_is_modified((char *)queue.container.data));
+  sassert(!sea_is_modified((char *)&queue.backpointers));
+  sassert(!sea_is_modified((char *)queue.backpointers.data));
   return 0;
 }
+
