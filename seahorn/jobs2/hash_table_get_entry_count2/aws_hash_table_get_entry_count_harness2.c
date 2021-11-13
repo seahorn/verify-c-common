@@ -9,27 +9,33 @@
 #include <utils.h>
 
 int main(void) {
+  /* parameters */
   struct aws_hash_table table;
-#if defined(__KLEE__) || defined(__FUZZ__)
-  initialize_bounded_aws_hash_table(&table, MAX_TABLE_SIZE);
-#else
   /* There are no loops in the code under test, so use the biggest possible
    * value */
   initialize_bounded_aws_hash_table(&table, SIZE_MAX);
-#endif
-  assume(aws_hash_table_is_valid(&table));
-  struct hash_table_state *state = table.p_impl;
 
-  struct store_byte_from_buffer stored_byte;
-  save_byte_from_hash_table(&table, &stored_byte);
+  /* assumptions */
+  assume(aws_hash_table_is_valid(&table));
+
+  /* save the current state */
+  struct hash_table_state *state = table.p_impl;
   size_t old_entry_count = state->entry_count;
+
+  sea_tracking_on();
+  sea_reset_modified((char *)&table);
+  sea_reset_modified((char *)table.p_impl);
+
+  /* operation under verification */
   size_t rval = aws_hash_table_get_entry_count(&table);
+
+  /* assertions */
   sassert(rval == old_entry_count);
   /* Ensure that the table remains valid */
   sassert(aws_hash_table_is_valid(&table));
 
   /* Ensure that table is unchanged */
-  assert_hash_table_unchanged(&table, &stored_byte);
+  sassert(!sea_is_modified((char *)&table));
+  sassert(!sea_is_modified((char *)table.p_impl));
   return 0;
 }
-
