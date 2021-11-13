@@ -12,30 +12,33 @@
 #include <utils.h>
 
 int main(void) {
+  /* parameters */
   struct aws_hash_table map;
   initialize_bounded_aws_hash_table(&map, MAX_TABLE_SIZE);
-  assume(aws_hash_table_is_valid(&map));
-
   struct aws_hash_iter iter;
   mk_valid_aws_hash_iter(&iter, &map);
+  
+  /* assumptions */
+  assume(aws_hash_table_is_valid(&map));
 
+  /* save current state */
   enum aws_hash_iter_status old_status = iter.status;
-  struct store_byte_from_buffer old_byte;
-  save_byte_from_hash_table(&map, &old_byte);
+  sea_tracking_on();
+  sea_reset_modified((char *)&map);
+  sea_reset_modified((char *)map.p_impl);
 
+  /* operation under verification */
   aws_hash_iter_next(&iter);
 
+  /* assertions */
   sassert(aws_hash_iter_is_valid(&iter));
-  #ifdef __KLEE__
-  if (iter.status == AWS_HASH_ITER_STATUS_DELETE_CALLED)
-       return 0;
-  #else
   assume(iter.status == AWS_HASH_ITER_STATUS_DONE ||
          iter.status == AWS_HASH_ITER_STATUS_READY_FOR_USE);
-  #endif
   sassert(IMPLIES(old_status == AWS_HASH_ITER_STATUS_DONE,
                   iter.status == AWS_HASH_ITER_STATUS_DONE));
   sassert(aws_hash_table_is_valid(&map));
-  assert_hash_table_unchanged(&map, &old_byte);
+  sassert(!sea_is_modified((char *)map.p_impl));
+  sassert(!sea_is_modified((char *)&map));
+
   return 0;
 }

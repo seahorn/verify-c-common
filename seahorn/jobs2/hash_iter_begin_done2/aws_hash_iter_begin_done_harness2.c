@@ -12,15 +12,23 @@
 #include <utils.h>
 
 int main(void) {
+  /* parameters */
   struct aws_hash_table map;
-
   initialize_bounded_aws_hash_table(&map, MAX_TABLE_SIZE);
+
+  /* assumptions */
   assume(aws_hash_table_is_valid(&map));
   assume((map.p_impl->entry_count == 0) == aws_hash_table_deep_is_empty(&map));
-  struct store_byte_from_buffer old_byte;
-  save_byte_from_hash_table(&map, &old_byte);
+
+  /* save current state */
+  sea_tracking_on();
+  sea_reset_modified((char *)&map);
+  sea_reset_modified((char *)map.p_impl);
+
+  /* operation under verification */
   struct aws_hash_iter iter = aws_hash_iter_begin(&map);
 
+  /* assertions */
   sassert(aws_hash_iter_is_valid(&iter));
   sassert(iter.status == AWS_HASH_ITER_STATUS_DONE ||
           iter.status == AWS_HASH_ITER_STATUS_READY_FOR_USE);
@@ -32,6 +40,7 @@ int main(void) {
     sassert(aws_hash_iter_done(&iter));
   }
   sassert(aws_hash_table_is_valid(&map));
-  assert_hash_table_unchanged(&map, &old_byte);
+  sassert(!sea_is_modified((char *)&map));
+  sassert(!sea_is_modified((char *)map.p_impl));
   return 0;
 }
