@@ -1,4 +1,4 @@
 verify_options:
   horn-bv2-word-size: 1
-  horn-bmc-tactic: smtfd
+  horn-bmc-tactic: default
   horn-bv2-tracking-mem: true
