@@ -19,7 +19,7 @@ int main() {
     /* assumptions */
     assume(aws_array_list_is_valid(&list)); 
     assume(list.data != NULL);
-    void *val = bounded_malloc(list.item_size);
+    void *val = bounded_malloc_havoc(list.item_size);
     size_t index = nd_size_t();
 
     /* save current state of the data structure */
