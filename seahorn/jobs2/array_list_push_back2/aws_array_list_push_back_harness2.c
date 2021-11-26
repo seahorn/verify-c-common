@@ -21,7 +21,7 @@ int main() {
  
     assume(list.data != NULL);
 
-    void *val = bounded_malloc(list.item_size);
+    void *val = bounded_malloc_havoc(list.item_size);
 
     /* save current state of the data structure */
     sea_tracking_on();

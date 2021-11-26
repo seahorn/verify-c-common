@@ -31,7 +31,7 @@ int main() {
     sea_tracking_on();
 
     /* operation under verification */
-    uint8_t *raw_array = bounded_malloc(len); 
+    uint8_t *raw_array = bounded_malloc_havoc(len);
     aws_array_list_init_static(&list, raw_array, initial_item_allocation, item_size);
 
     /* assertions */
