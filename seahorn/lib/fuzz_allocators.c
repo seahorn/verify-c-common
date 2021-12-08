@@ -10,9 +10,23 @@
 // for assume()
 #include <seahorn/seahorn.h> 
 
-void *bounded_malloc(size_t size) { return malloc(size); }
+// Note that for SEAHORN this function will always succeed in reserving memory
+// For fuzzing, this may fail.
+void *bounded_malloc_havoc(size_t size) {
+  void* data = malloc(size);
+  if (data) {
+    memhavoc(data, size);
+  }
+  return data;
+}
 
-void *can_fail_malloc(size_t size) { return malloc(size); }
+void *can_fail_malloc_havoc(size_t size) {
+  void* data = malloc(size);
+  if (data) {
+    memhavoc(data, size);
+  }
+  return data;
+}
 
 void *sea_malloc_safe(size_t sz) {
   void *p = malloc(sz);
@@ -42,7 +56,7 @@ void *sea_malloc_aligned_havoc(size_t sz) {
  */
 static void *s_malloc_allocator(struct aws_allocator *allocator, size_t size) {
   (void)allocator;
-  return bounded_malloc(size);
+  return bounded_malloc_havoc(size);
 }
 
 /**

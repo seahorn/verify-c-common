@@ -15,7 +15,7 @@ int main() {
     initialize_bounded_array_list(&list);
 
     KLEE_ASSUME(list.item_size != 0);
-    void *val = bounded_malloc(list.item_size);
+    void *val = bounded_malloc_havoc(list.item_size);
 
     /* assumptions */
     assume(aws_array_list_is_valid(&list));

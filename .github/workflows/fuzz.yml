@@ -30,10 +30,10 @@ jobs:
           cp -r /home/usea/verify-c-common/fuzzing_coverage /host/fuzzing_coverage"
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v2
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./all_fuzz.info
+          token: ${{ secrets.VCC_CODECOV_TOKEN }}
+          files: ./all_fuzz.info
           name: codecov-verify-c-common
           fail_ci_if_error: true
           verbose: true

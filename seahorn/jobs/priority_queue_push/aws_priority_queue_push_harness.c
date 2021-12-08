@@ -24,7 +24,7 @@ int main() {
   assume(aws_priority_queue_is_valid(&queue));
 
   /* Assumptions */
-  void *item = can_fail_malloc(queue.container.item_size);
+  void *item = can_fail_malloc_havoc(queue.container.item_size);
   assume(item);
   assume(AWS_MEM_IS_WRITABLE(item, queue.container.item_size));
 

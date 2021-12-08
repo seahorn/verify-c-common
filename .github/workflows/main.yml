@@ -15,6 +15,19 @@ jobs:
       fail-fast: false
       matrix:
         verify_flag: ["", "--vac", "--horn-bmc-solver=smt-y2", "--cex", "--cex --horn-bmc-solver=smt-y2"]
+        # includes a new variable blacklist for every
+        # verify_flag element
+        include:
+          - verify_flag: ""
+            blacklist: "df-coi"
+          - verify_flag: "--vac"
+            blacklist: "vac"
+          - verify_flag: "--horn-bmc-solver=smt-y2"
+            blacklist: "y2"
+          - verify_flag: "--cex"
+            blacklist: "cex"
+          - verify_flag: "--cex --horn-bmc-solver=smt-y2"
+            blacklist: "cex-y2"
        
     steps:
       - name: Checkout 
@@ -22,7 +35,7 @@ jobs:
 
       - name: Get type
         id: type
-        run: echo ::set-output name=type::$(echo ${{ matrix.verify_flag }} | awk '{ print substr($1,3,5) "" substr($2,22) }')
+        run: echo ::set-output name=type::${{ matrix.blacklist }}
        
       - name: Get exclude test
         id: exclude_files

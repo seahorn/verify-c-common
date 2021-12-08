@@ -24,12 +24,12 @@ int main(void) {
   assume(aws_priority_queue_is_valid(&queue));
 
   /* Assumptions */
-  void *item = can_fail_malloc(queue.container.item_size);
+  void *item = can_fail_malloc_havoc(queue.container.item_size);
   assume(item);
   assume(AWS_MEM_IS_WRITABLE(item, queue.container.item_size));
 
   struct aws_priority_queue_node *backpointer =
-      can_fail_malloc(sizeof(struct aws_priority_queue_node));
+      can_fail_malloc_havoc(sizeof(struct aws_priority_queue_node));
 
   /* Perform operation under verification */
   aws_priority_queue_push_ref(&queue, item, backpointer);
