@@ -15,7 +15,7 @@ int main() {
     size_t length = nd_size_t();
     assume(length >= 1);
     FUZZ_ASSUME_LT(length, MAX_BUFFER_SIZE);
-    uint8_t *dest = bounded_malloc(length);
+    uint8_t *dest = bounded_malloc_havoc(length);
 
     /* assumptions */
     assume(aws_byte_cursor_is_valid(&cur));
