@@ -1,4 +1,5 @@
 verify_options:
   horn-explicit-sp0: true
   horn-bv2-tracking-mem: true
+  horn-bmc-logic: ALL
 
