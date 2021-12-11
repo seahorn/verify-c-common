@@ -1,3 +1,5 @@
 verify_options:
   bound: "@MAX_TABLE_SIZE@"
   horn-bmc-tactic: smtfd
+  horn-bv2-tracking-mem: true
+
