@@ -1,2 +1,0 @@
-# spurious failure in CI
-nospec_mask_unsat_test
