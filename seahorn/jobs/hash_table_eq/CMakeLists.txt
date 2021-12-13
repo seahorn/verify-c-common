@@ -12,10 +12,20 @@ configure_file(sea.yaml sea.yaml @ONLY)
 sea_add_unsat_test(hash_table_eq)
 
 # klee
-sea_add_klee(hash_table_eq
-  ${AWS_C_COMMON_ROOT}/source/common.c
-  ${AWS_C_COMMON_ROOT}/source/hash_table.c
-  aws_hash_table_eq_harness.c)
+if(SEA_ENABLE_KLEE)
+  add_executable(
+    hash_table_eq.klee
+    ${AWS_C_COMMON_ROOT}/source/common.c
+    ${AWS_C_COMMON_ROOT}/source/hash_table.c
+    aws_hash_table_eq_harness.c
+  )
+  target_compile_definitions(hash_table_eq.klee
+                            PUBLIC
+                            MAX_TABLE_SIZE=2)
+  target_compile_definitions(hash_table_eq.klee PRIVATE __KLEE__)
+  klee_attach_bc_link(hash_table_eq.klee)
+  sea_add_klee_test(hash_table_eq)
+endif()
 
 # fuzz
 sea_add_fuzz(hash_table_eq aws_hash_table_eq_harness.c)
