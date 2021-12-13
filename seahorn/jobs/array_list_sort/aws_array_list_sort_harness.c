@@ -16,7 +16,19 @@ size_t item_size;
 int compare(const void *a, const void *b) {
     assume(AWS_MEM_IS_READABLE(a, item_size));// first element readable in compare function
     assume(AWS_MEM_IS_READABLE(b, item_size)); //second element readable in compare function
+#ifdef __KLEE__
+    // For KLEE, the implementation is followed by:
+    //  https://github.com/klee/klee-uclibc/blob/klee_0_9_29/libc/stdlib/stdlib.c
+    // where the qsort algorithm does not randomly choose a index as pivot
+    // Because CBMC expects qsort always not modifying data (post condition),
+    //  qsort function for klee we need expect compare function always behave the following:
+    //   < 0 The element pointed by a goes before the element pointed by b
+    int comp = nd_int();
+    assume(comp < 0);
+    return comp;
+#else
     return nd_int();
+#endif
 }
 
 /**
