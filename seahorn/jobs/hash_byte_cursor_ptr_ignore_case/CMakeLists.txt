@@ -23,7 +23,7 @@ sea_add_smack(hash_byte_cursor_ptr_ignore_case
   aws_hash_byte_cursor_ptr_ignore_case_harness.c)
 
 # symbiotic
-sea_add_symbiotic(hash_byte_cursor_ptr_ignore_case
-  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
-  ${AWS_C_COMMON_ROOT}/source/hash_table.c
-  aws_hash_byte_cursor_ptr_ignore_case_harness.c)
+# sea_add_symbiotic(hash_byte_cursor_ptr_ignore_case
+#   ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+#   ${AWS_C_COMMON_ROOT}/source/hash_table.c
+#   aws_hash_byte_cursor_ptr_ignore_case_harness.c)
