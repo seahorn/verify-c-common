@@ -32,3 +32,12 @@ sea_add_smack(
   ${AWS_C_COMMON_ROOT}/source/common.c
   aws_string_eq_c_str_harness.c
 )
+
+# symbiotic
+sea_add_symbiotic(
+  string_eq_c_str
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  ${AWS_C_COMMON_ROOT}/source/string.c
+  ${AWS_C_COMMON_ROOT}/source/common.c
+  aws_string_eq_c_str_harness.c
+)

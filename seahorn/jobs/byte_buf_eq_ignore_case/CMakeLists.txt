@@ -12,3 +12,7 @@ sea_add_fuzz(byte_buf_eq_ignore_case
 # smack
 sea_add_smack(byte_buf_eq_ignore_case ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   aws_byte_buf_eq_ignore_case_harness.c)
+
+# symbiotic
+sea_add_symbiotic(byte_buf_eq_ignore_case ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  aws_byte_buf_eq_ignore_case_harness.c)

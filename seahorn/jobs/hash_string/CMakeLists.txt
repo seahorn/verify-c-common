@@ -19,3 +19,9 @@ sea_add_smack(hash_string
   ${AWS_C_COMMON_ROOT}/source/string.c
   ${AWS_C_COMMON_ROOT}/source/hash_table.c
   aws_hash_string_harness.c)
+
+# symbiotic
+sea_add_symbiotic(hash_string
+  ${AWS_C_COMMON_ROOT}/source/string.c
+  ${AWS_C_COMMON_ROOT}/source/hash_table.c
+  aws_hash_string_harness.c)

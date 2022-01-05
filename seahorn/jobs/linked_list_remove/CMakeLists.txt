@@ -15,3 +15,7 @@ sea_add_fuzz(linked_list_remove
 # smack
 sea_add_smack(linked_list_remove
   aws_linked_list_remove_harness.c)
+
+# symbiotic
+sea_add_symbiotic(linked_list_remove
+  aws_linked_list_remove_harness.c)

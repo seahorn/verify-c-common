@@ -12,3 +12,7 @@ sea_add_klee(byte_buf_write ${AWS_C_COMMON_ROOT}/source/byte_buf.c
 # smack
 sea_add_smack(byte_buf_write ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   aws_byte_buf_write_harness.c)
+
+# symbiotic
+sea_add_symbiotic(byte_buf_write ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  aws_byte_buf_write_harness.c)

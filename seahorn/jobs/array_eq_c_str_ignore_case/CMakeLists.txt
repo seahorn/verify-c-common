@@ -12,3 +12,7 @@ sea_add_klee(array_eq_c_str_ignore_case ${AWS_C_COMMON_ROOT}/source/byte_buf.c
 # smack
 sea_add_smack(array_eq_c_str_ignore_case ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   aws_array_eq_c_str_ignore_case_harness.c)
+
+# symbiotic
+sea_add_symbiotic(array_eq_c_str_ignore_case ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  aws_array_eq_c_str_ignore_case_harness.c)

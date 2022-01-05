@@ -12,7 +12,8 @@ sea_add_klee(string_eq_ignore_case
   ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   ${AWS_C_COMMON_ROOT}/source/string.c
   ${AWS_C_COMMON_ROOT}/source/common.c
-  aws_string_eq_ignore_case_harness.c)
+  aws_string_eq_ignore_case_harness.c
+)
 
 # fuzz
 sea_add_fuzz(string_eq_ignore_case
@@ -20,6 +21,15 @@ sea_add_fuzz(string_eq_ignore_case
 
 # smack
 sea_add_smack(
+  string_eq_ignore_case
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  ${AWS_C_COMMON_ROOT}/source/string.c
+  ${AWS_C_COMMON_ROOT}/source/common.c
+  aws_string_eq_ignore_case_harness.c
+)
+
+# symbiotic
+sea_add_symbiotic(
   string_eq_ignore_case
   ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   ${AWS_C_COMMON_ROOT}/source/string.c

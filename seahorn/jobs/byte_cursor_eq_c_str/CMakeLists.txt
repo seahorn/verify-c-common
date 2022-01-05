@@ -18,3 +18,8 @@ sea_add_fuzz(byte_cursor_eq_c_str
 sea_add_smack(byte_cursor_eq_c_str
   ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   aws_byte_cursor_eq_c_str_harness.c)
+
+# symbiotic
+sea_add_symbiotic(byte_cursor_eq_c_str
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  aws_byte_cursor_eq_c_str_harness.c)

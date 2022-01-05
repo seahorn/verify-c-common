@@ -14,3 +14,7 @@ sea_add_fuzz(array_list_set_at aws_array_list_set_at_harness.c)
 # smack
 sea_add_smack(array_list_set_at ${AWS_C_COMMON_ROOT}/source/array_list.c
   aws_array_list_set_at_harness.c)
+
+# symbiotic
+sea_add_symbiotic(array_list_set_at ${AWS_C_COMMON_ROOT}/source/array_list.c
+  aws_array_list_set_at_harness.c)

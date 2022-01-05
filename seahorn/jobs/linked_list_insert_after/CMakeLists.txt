@@ -14,3 +14,7 @@ sea_add_fuzz(linked_list_insert_after
 # smack
 sea_add_smack(linked_list_insert_after
   aws_linked_list_insert_after_harness.c)
+
+# symbiotic
+sea_add_symbiotic(linked_list_insert_after
+  aws_linked_list_insert_after_harness.c)
