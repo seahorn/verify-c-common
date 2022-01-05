@@ -6,7 +6,11 @@
 // Note this behaviour deviates from SEAHORN since this can fail to allocate
 // memory.
 void *bounded_malloc_havoc(size_t size) {
-  void* data = size == 0 ? NULL : malloc(alloc_size(size));
+  #ifdef __SYMBIOTIC__
+    void* data = size == 0 ? NULL : malloc(size);
+  #else
+    void* data = size == 0 ? NULL : malloc(alloc_size(size));
+  #endif
   if (data) {
     memhavoc(data, size);
   }

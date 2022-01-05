@@ -85,18 +85,82 @@ INLINE void *__memset_chk(void *dest, int c, size_t len, size_t dstlen) {
 
 /* on OSX memmove is a macro */
 #ifndef memmove
+#ifdef __SYMBIOTIC__
+INLINE void *memmove(void *to, const void *from, size_t n)
+{
+	unsigned long rem, chunks, tmp1, tmp2;
+	unsigned char *tmp_to;
+	unsigned char *tmp_from = (unsigned char *)from;
+
+	if (tmp_from >= (unsigned char *)to)
+		return memcpy(to, from, n);
+	chunks = n / 8;
+	tmp_from += n;
+	tmp_to = to + n;
+	if (!chunks)
+		goto lessthan8;
+	rem = (unsigned long )tmp_to % 4;
+	if (rem)
+		goto align;
+ copy_chunks:
+	do {
+		/* make gcc to load all data, then store it */
+		tmp1 = *(unsigned long *)(tmp_from-4);
+		tmp_from -= 8;
+		tmp2 = *(unsigned long *)tmp_from;
+		*(unsigned long *)(tmp_to-4) = tmp1;
+		tmp_to -= 8;
+		*(unsigned long *)tmp_to = tmp2;
+	} while (--chunks);
+ lessthan8:
+	n = n % 8;
+	if (n >= 4) {
+		*(unsigned long *)(tmp_to-4) = *(unsigned long *)(tmp_from-4);
+		tmp_from -= 4;
+		tmp_to -= 4;
+		n = n-4;
+	}
+	if (!n ) return to;
+	do {
+		*--tmp_to = *--tmp_from;
+	} while (--n);
+	
+	return to;
+ align:
+	rem = 4 - rem;
+	n = n - rem;
+	do {
+		*--tmp_to = *--tmp_from;
+	} while (--rem);
+	chunks = n / 8;
+	if (chunks)
+		goto copy_chunks;
+	goto lessthan8;
+}
+#else
 INLINE void* memmove(void *dst, const void *src, size_t len)  {
   sassert(sea_is_dereferenceable(dst, len));
   sassert(sea_is_dereferenceable(src, len));
   return __builtin_memmove(dst, src, len);
 }
 #endif
+#endif
 
 /* on OSX memcpy is a macro */
 #ifndef memcpy
+#ifdef __SYMBIOTIC__
+INLINE void *memcpy(void *dest, void const *from, size_t n) {
+  char const *ifrom = from;
+  char *idest = dest;
+  while (n--)
+    *idest++ = *ifrom++;
+  return dest;
+}
+#else
 INLINE void *memcpy(void *dst, const void *src, size_t len) {
   sassert(sea_is_dereferenceable(dst, len));
   sassert(sea_is_dereferenceable(src, len));
   return __builtin_memcpy(dst, src, len);
 }
+#endif
 #endif
