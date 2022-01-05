@@ -32,3 +32,12 @@ if(SEA_ENABLE_SMACK)
   aws_string_compare_harness.c)
   sea_add_smack_test(string_compare --strings)
 endif()
+
+# symbiotic
+sea_add_symbiotic(
+  string_compare
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  ${AWS_C_COMMON_ROOT}/source/string.c
+  ${AWS_C_COMMON_ROOT}/source/common.c
+  aws_string_compare_harness.c
+)

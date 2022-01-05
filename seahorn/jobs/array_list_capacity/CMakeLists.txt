@@ -13,3 +13,7 @@ sea_add_fuzz(array_list_capacity aws_array_list_capacity_harness.c)
 # smack
 sea_add_smack(array_list_capacity ${AWS_C_COMMON_ROOT}/source/array_list.c
   aws_array_list_capacity_harness.c)
+
+# symbiotic
+sea_add_symbiotic(array_list_capacity ${AWS_C_COMMON_ROOT}/source/array_list.c
+  aws_array_list_capacity_harness.c)

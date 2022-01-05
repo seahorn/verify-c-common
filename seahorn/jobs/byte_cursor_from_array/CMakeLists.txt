@@ -17,3 +17,8 @@ sea_add_fuzz(byte_cursor_from_array
 sea_add_smack(byte_cursor_from_array
   ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   aws_byte_cursor_from_array_harness.c)
+
+# symbiotic
+sea_add_symbiotic(byte_cursor_from_array
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  aws_byte_cursor_from_array_harness.c)

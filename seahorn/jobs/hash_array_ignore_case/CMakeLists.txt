@@ -17,3 +17,9 @@ sea_add_smack(hash_array_ignore_case
   ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   ${AWS_C_COMMON_ROOT}/source/hash_table.c
   aws_hash_array_ignore_case_harness.c)
+
+# symbiotic
+sea_add_symbiotic(hash_array_ignore_case
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  ${AWS_C_COMMON_ROOT}/source/hash_table.c
+  aws_hash_array_ignore_case_harness.c)

@@ -28,3 +28,11 @@ sea_add_smack(
   ${AWS_C_COMMON_ROOT}/source/priority_queue.c
   aws_priority_queue_init_dynamic_harness.c
 )
+
+# symbiotic
+sea_add_symbiotic(
+  priority_queue_init_dynamic
+  ${AWS_C_COMMON_ROOT}/source/array_list.c
+  ${AWS_C_COMMON_ROOT}/source/priority_queue.c
+  aws_priority_queue_init_dynamic_harness.c
+)

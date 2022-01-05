@@ -19,3 +19,7 @@ if(SEA_ENABLE_SMACK)
   aws_byte_buf_eq_harness.c)
   sea_add_smack_test(byte_buf_eq --strings)
 endif()
+
+# symbiotic
+sea_add_symbiotic(byte_buf_eq ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  aws_byte_buf_eq_harness.c)

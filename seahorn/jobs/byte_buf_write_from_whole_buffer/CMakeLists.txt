@@ -16,3 +16,7 @@ sea_add_fuzz(byte_buf_write_from_whole_buffer
 # smack
 sea_add_smack(byte_buf_write_from_whole_buffer ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   aws_byte_buf_write_from_whole_buffer_harness.c)
+
+# symbiotic
+sea_add_symbiotic(byte_buf_write_from_whole_buffer ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  aws_byte_buf_write_from_whole_buffer_harness.c)

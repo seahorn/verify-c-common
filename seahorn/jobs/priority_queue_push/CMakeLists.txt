@@ -40,3 +40,16 @@ if(SEA_ENABLE_SMACK)
   smack_attach_bc_link(priority_queue_push.smack)
   sea_add_smack_test(priority_queue_push)
 endif()
+
+# symbiotic
+if(SEA_ENABLE_SYMBIOTIC)
+  add_executable(
+    priority_queue_push.symbiotic
+    ${AWS_C_COMMON_ROOT}/source/array_list.c
+    aws_priority_queue_push_harness.c
+  )
+  target_compile_definitions(priority_queue_push.symbiotic PRIVATE __SYMBIOTIC__)
+  sea_link_libraries(priority_queue_push.symbiotic priority_queue.opt.ir)
+  symbiotic_attach_bc_link(priority_queue_push.symbiotic)
+  sea_add_symbiotic_test(priority_queue_push)
+endif()

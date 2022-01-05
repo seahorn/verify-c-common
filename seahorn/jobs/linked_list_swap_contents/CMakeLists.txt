@@ -15,3 +15,7 @@ sea_add_fuzz(linked_list_swap_contents
 # smack
 sea_add_smack(linked_list_swap_contents
   aws_linked_list_swap_contents_harness.c)
+
+# symbiotic
+sea_add_symbiotic(linked_list_swap_contents
+  aws_linked_list_swap_contents_harness.c)

@@ -27,3 +27,16 @@ if(SEA_ENABLE_SMACK)
   smack_attach_bc_link(priority_queue_s_remove_node.smack)
   sea_add_smack_test(priority_queue_s_remove_node)
 endif()
+
+# symbiotic
+if(SEA_ENABLE_SYMBIOTIC)
+  add_executable(
+    priority_queue_s_remove_node.symbiotic
+    ${AWS_C_COMMON_ROOT}/source/array_list.c
+    aws_priority_queue_s_remove_node_harness.c
+  )
+  target_compile_definitions(priority_queue_s_remove_node.symbiotic PRIVATE __SYMBIOTIC__)
+  sea_link_libraries(priority_queue_s_remove_node.symbiotic priority_queue.opt.ir)
+  symbiotic_attach_bc_link(priority_queue_s_remove_node.symbiotic)
+  sea_add_symbiotic_test(priority_queue_s_remove_node)
+endif()

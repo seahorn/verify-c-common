@@ -10,3 +10,6 @@ sea_add_klee(add_size_saturating aws_add_size_saturating_harness.c)
 
 # smack
 sea_add_smack(add_size_saturating aws_add_size_saturating_harness.c)
+
+# symbiotic
+sea_add_symbiotic(add_size_saturating aws_add_size_saturating_harness.c)

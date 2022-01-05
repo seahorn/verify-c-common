@@ -17,3 +17,7 @@ sea_add_fuzz(byte_cursor_compare_lookup
 # smack
 sea_add_smack(byte_cursor_compare_lookup ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   aws_byte_cursor_compare_lookup_harness.c)
+
+# symbiotic
+sea_add_symbiotic(byte_cursor_compare_lookup ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  aws_byte_cursor_compare_lookup_harness.c)

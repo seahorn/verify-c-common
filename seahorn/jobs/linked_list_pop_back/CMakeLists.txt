@@ -19,3 +19,7 @@ sea_add_fuzz(linked_list_pop_back
 # smack
 sea_add_smack(linked_list_pop_back
   aws_linked_list_pop_back_harness.c)
+
+# symbiotic
+sea_add_symbiotic(linked_list_pop_back
+  aws_linked_list_pop_back_harness.c)

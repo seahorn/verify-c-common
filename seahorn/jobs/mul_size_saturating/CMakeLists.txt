@@ -12,3 +12,6 @@ sea_add_fuzz(mul_size_saturating aws_mul_size_saturating_harness.c)
 
 # smack
 sea_add_smack(mul_size_saturating aws_mul_size_saturating_harness.c)
+
+# symbiotic
+sea_add_symbiotic(mul_size_saturating aws_mul_size_saturating_harness.c)

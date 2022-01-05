@@ -21,3 +21,9 @@ sea_add_fuzz(byte_cursor_from_string
 #   ${AWS_C_COMMON_ROOT}/source/byte_buf.c
 #   ${AWS_C_COMMON_ROOT}/source/string.c
 #   aws_byte_cursor_from_string_harness.c)
+
+# symbiotic
+sea_add_symbiotic(byte_cursor_from_string
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  ${AWS_C_COMMON_ROOT}/source/string.c
+  aws_byte_cursor_from_string_harness.c)

@@ -9,3 +9,6 @@ sea_add_klee(add_size_checked aws_add_size_checked_harness.c)
 
 # smack
 sea_add_smack(add_size_checked aws_add_size_checked_harness.c)
+
+# symbiotic
+sea_add_symbiotic(add_size_checked aws_add_size_checked_harness.c)

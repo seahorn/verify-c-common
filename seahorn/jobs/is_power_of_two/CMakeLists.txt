@@ -10,3 +10,7 @@ sea_add_klee(is_power_of_two
 # smack
 sea_add_smack(is_power_of_two
   aws_is_power_of_two_harness.c)
+
+# symbiotic
+sea_add_symbiotic(is_power_of_two
+  aws_is_power_of_two_harness.c)

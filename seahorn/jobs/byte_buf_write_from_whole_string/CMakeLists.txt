@@ -8,8 +8,8 @@ sea_add_unsat_test(byte_buf_write_from_whole_string)
 
 # klee
 sea_add_klee(byte_buf_write_from_whole_string
-  ${AWS_C_COMMON_ROOT}/source/string.c
   ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  ${AWS_C_COMMON_ROOT}/source/string.c
 aws_byte_buf_write_from_whole_string_harness.c)
 
 # fuzz
@@ -18,6 +18,12 @@ sea_add_fuzz(byte_buf_write_from_whole_string
 
 # smack
 sea_add_smack(byte_buf_write_from_whole_string 
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  ${AWS_C_COMMON_ROOT}/source/string.c
+  aws_byte_buf_write_from_whole_string_harness.c)
+
+# symbiotic
+sea_add_symbiotic(byte_buf_write_from_whole_string
   ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   ${AWS_C_COMMON_ROOT}/source/string.c
   aws_byte_buf_write_from_whole_string_harness.c)
