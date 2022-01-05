@@ -18,6 +18,7 @@ option(SEA_WITH_BLEEDING_EDGE "Enable bleeding edge proofs" OFF)
 
 option(SEA_ENABLE_KLEE "Enable klee" OFF)
 option(SEA_ENABLE_SMACK "Enable SMACK" OFF)
+option(SEA_ENABLE_SYMBIOTIC "Enable symbiotic" OFF)
 
 option(SEA_ALLOCATOR_CAN_FAIL "Use can fail allocator" OFF)
 

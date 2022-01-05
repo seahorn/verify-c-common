@@ -292,6 +292,35 @@ macro(sea_add_klee)
   endif()
 endmacro()
 
+# Start SYMBIOTIC CMAKE config
+function(symbiotic_attach_bc_link name)
+  sea_link_libraries(${name} sea_symbiotic.ir sea_bounds.ir)
+  sea_attach_bc(${name})
+endfunction()
+
+macro(sea_add_symbiotic_bc name)
+  cmake_parse_arguments(ARG
+    "EXCLUDE_FROM_ALL" "" "" ${ARGN})
+
+  set(TARGET_SYMBIOTIC "${name}.symbiotic")
+  add_executable(${TARGET_SYMBIOTIC} ${ARG_UNPARSED_ARGUMENTS})
+  target_compile_definitions(${TARGET_SYMBIOTIC} PRIVATE __SYMBIOTIC__)
+  symbiotic_attach_bc_link(${TARGET_SYMBIOTIC})
+endmacro()
+
+function(sea_add_symbiotic_test TARGET)
+  sea_get_file_name(BC ${TARGET}.symbiotic.ir)
+  add_test(NAME "symbiotic_${TARGET}_test" COMMAND symbiotic --exit-on-error --prp=assert ${BC})
+endfunction()
+
+macro(sea_add_symbiotic)
+  if(SEA_ENABLE_SYMBIOTIC)
+  sea_add_symbiotic_bc(${ARGV})
+  sea_add_symbiotic_test(${ARGV0})
+  endif()
+endmacro()
+# End SYMBIOTIC CMAKE config
+
 # Start SMACK CMAKE config
 function(smack_attach_bc_link name)
   sea_link_libraries(${name} sea_smack.ir sea_bounds.ir)

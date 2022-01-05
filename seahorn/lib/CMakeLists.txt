@@ -80,6 +80,29 @@ if(SEA_ENABLE_SMACK)
   sea_attach_bc(sea_smack)
 endif()
 
+if(SEA_ENABLE_SYMBIOTIC)
+  add_library(
+    sea_symbiotic
+    klee_array_list_helper.c
+    klee_byte_buf_helper.c
+    linked_list_helper.c
+    klee_string_helper.c
+    klee_priority_queue_helper.c
+    utils.c
+    klee_ring_buffer_helper.c
+    klee_allocators.c
+    klee_hash_table_helper.c
+    sea_allocators.c
+    allocator_override.c
+    sea_string.cc
+    error_override.c
+    nd_symbiotic.c
+    bcmp.c
+  )
+  target_compile_definitions(sea_symbiotic PRIVATE __SYMBIOTIC__)
+  sea_attach_bc(sea_symbiotic)
+endif()
+
 add_library(
   sea_fuzz
   nd_fuzz.c
