@@ -19,3 +19,10 @@ sea_add_smack(hash_table_move
   ${AWS_C_COMMON_ROOT}/source/common.c
   ${AWS_C_COMMON_ROOT}/source/hash_table.c
   aws_hash_table_move_harness.c)
+
+# symbiotic
+sea_add_symbiotic(hash_table_move
+  ${AWS_C_COMMON_ROOT}/source/common.c
+  ${AWS_C_COMMON_ROOT}/source/hash_table.c
+  aws_hash_table_move_harness.c
+)

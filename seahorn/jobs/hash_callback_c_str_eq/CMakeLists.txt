@@ -29,9 +29,9 @@ sea_add_smack(hash_callback_c_str_eq
   aws_hash_callback_c_str_eq_harness.c)
 
 # symbiotic
-# sea_add_symbiotic(hash_callback_c_str_eq
-#   ${AWS_C_COMMON_ROOT}/source/byte_buf.c
-#   ${AWS_C_COMMON_ROOT}/source/string.c
-#   ${AWS_C_COMMON_ROOT}/source/common.c
-#   ${AWS_C_COMMON_ROOT}/source/hash_table.c
-#   aws_hash_callback_c_str_eq_harness.c)
+sea_add_symbiotic(hash_callback_c_str_eq
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  ${AWS_C_COMMON_ROOT}/source/string.c
+  ${AWS_C_COMMON_ROOT}/source/common.c
+  ${AWS_C_COMMON_ROOT}/source/hash_table.c
+  aws_hash_callback_c_str_eq_harness.c)

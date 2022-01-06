@@ -26,7 +26,7 @@ int main(void) {
   /* nondet assignment required to force true/false */
   bool is_member = nd_bool();
   if (is_member) {
-    #ifdef __KLEE__
+    #if defined(__KLEE__) || defined(__SYMBIOTIC__)
     /* Inside ensure_byte_buf_has_allocated_buffer_member_in_ring_buf, 
      * the ring buffer requires the following be True
      * Use the following code to exclude unqualified program path

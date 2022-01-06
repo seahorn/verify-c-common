@@ -28,3 +28,12 @@ sea_add_smack(
   ${AWS_C_COMMON_ROOT}/source/ring_buffer.c
   aws_ring_buffer_acquire_harness.c
 )
+
+# symbiotic
+if(SEA_ENABLE_SYMBIOTIC)
+  sea_add_symbiotic_bc(ring_buffer_acquire
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
+  ${AWS_C_COMMON_ROOT}/source/ring_buffer.c
+  aws_ring_buffer_acquire_harness.c)
+  sea_add_symbiotic_test(ring_buffer_acquire --optimize=O2)
+endif()

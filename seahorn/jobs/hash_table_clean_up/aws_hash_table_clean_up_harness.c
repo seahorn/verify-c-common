@@ -31,7 +31,7 @@ int main(void) {
 
   // this reads memory that has been freed, but we are not currently modelling
   // freeing memory
-  #if defined(__KLEE__) || defined(__FUZZ__)
+  #if defined(__KLEE__) || defined(__FUZZ__) || defined(__SYMBIOTIC__)
     // klee does not allow to access memory after free.
     // run-time UAF will be detected as by Address Sanitizer used by libFuzzer
   #else
