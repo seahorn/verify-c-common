@@ -23,3 +23,9 @@ sea_add_smack(hash_iter_done
   ${AWS_C_COMMON_ROOT}/source/common.c
   ${AWS_C_COMMON_ROOT}/source/hash_table.c
   aws_hash_iter_done_harness.c)
+
+# symbiotic
+sea_add_symbiotic(hash_iter_done
+  ${AWS_C_COMMON_ROOT}/source/common.c
+  ${AWS_C_COMMON_ROOT}/source/hash_table.c
+  aws_hash_iter_done_harness.c)

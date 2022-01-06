@@ -170,6 +170,9 @@ function(sea_attach_bc name)
   if(SEA_ENABLE_SMACK) # Add compile flag for smack ONLY
     target_compile_options(${SOURCE_EXE} PUBLIC -O0 -gcolumn-info -Xclang 
       -disable-O0-optnone -DMEMORY_MODEL_NO_REUSE_IMPLS)
+  elseif(SEA_ENABLE_SYMBIOTIC)
+    target_compile_options(${SOURCE_EXE} PUBLIC -O0 -gcolumn-info -Xclang 
+      -disable-O0-optnone)
   else()
     target_compile_options(${SOURCE_EXE} PUBLIC -O1 -Xclang -disable-llvm-optzns)
   endif()
@@ -310,7 +313,7 @@ endmacro()
 
 function(sea_add_symbiotic_test TARGET)
   sea_get_file_name(BC ${TARGET}.symbiotic.ir)
-  add_test(NAME "symbiotic_${TARGET}_test" COMMAND symbiotic --exit-on-error --prp=assert ${BC})
+  add_test(NAME "symbiotic_${TARGET}_test" COMMAND symbiotic --report=short --exit-on-error --prp=assert ${ARGN} ${BC})
 endfunction()
 
 macro(sea_add_symbiotic)

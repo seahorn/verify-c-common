@@ -28,3 +28,10 @@ if(SEA_ENABLE_SMACK)
     aws_hash_table_init_bounded_harness.c)
   sea_add_smack_test(hash_table_init_bounded --float)
 endif()
+
+# symbiotic
+sea_add_symbiotic(hash_table_init_bounded
+  ${AWS_C_COMMON_ROOT}/source/common.c
+  ${AWS_C_COMMON_ROOT}/source/hash_table.c
+  aws_hash_table_init_bounded_harness.c
+)
