@@ -313,7 +313,7 @@ endmacro()
 
 function(sea_add_symbiotic_test TARGET)
   sea_get_file_name(BC ${TARGET}.symbiotic.ir)
-  add_test(NAME "symbiotic_${TARGET}_test" COMMAND symbiotic --report=short --exit-on-error --prp=assert ${ARGN} ${BC})
+  add_test(NAME "symbiotic_${TARGET}_test" COMMAND symbiotic --replay-error --report=short --prp=assert ${ARGN} ${BC})
 endfunction()
 
 macro(sea_add_symbiotic)
