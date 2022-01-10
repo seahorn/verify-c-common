@@ -26,7 +26,7 @@ extern unsigned long __VERIFIER_nondet_ulong(void);
 extern void *__VERIFIER_nondet_pointer(void);
 extern void *__VERIFIER_malloc(size_t size);
 extern void *__VERIFIER_malloc0(size_t size);
-extern void klee_make_symbolic(void *addr, size_t nbytes, const char *name);
+extern void klee_make_symbolic(void *, size_t, const char *);
 /**------------- End symbiotic nd definitions -------------------**/
 
 size_t nd_size_t(void) {
@@ -69,8 +69,4 @@ bool nd_malloc_is_fail(void) { return nd_bool(); }
 
 struct aws_linked_list_node *nd_linked_list_node(void) {
   return (struct aws_linked_list_node *)nd_voidp();
-}
-
-void *malloc(size_t sz) {
-  return __VERIFIER_malloc0(sz);
 }
