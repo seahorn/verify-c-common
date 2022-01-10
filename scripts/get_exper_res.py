@@ -176,9 +176,8 @@ def run_ctest_for_klee():
 def run_ctest_for_smack():
     cmake_conf = make_new_cmake_conf()
     command_lst = ["rm -rf *", cmake_conf, "ninja",
-                   f'ctest -j{os.cpu_count()} -D ExperimentalTest -R smack_ --timeout 200']
-    print("[SMACK] Start making SMACK results...")
-    make_build_path(["--smack"])
+                   f'ctest -j{os.cpu_count()} -D ExperimentalTest -R smack_ --timeout {args.timeout}']
+    print("Start making SMACK results...")
     cddir = "cd " + BUILDABSPATH
     for strcmd in command_lst:
         cddir += " ; " + strcmd
