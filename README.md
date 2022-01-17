@@ -24,7 +24,7 @@ Notebook][data] in Google Collab. Coverage reports from fuzzing are available
 
 # Architecture
 Below is the high level architecture graph of our case study.
-![arch-img](./assets/vcc_arch.svg "Architecture Graph")
+![arch-img](./assets/arch.png "Architecture Graph")
 
 ## Unit proof
 A *unit proof* is a small piece of code (usually main function only) that verifies a function by doing the following:
@@ -53,6 +53,24 @@ $ docker build -t verify-c-common . --file docker/verify-c-common.Dockerfile
 $ docker run -t verify-c-common /bin/bash -c "cd build && mkdir -p /tmp/verify-c-common && env VERIFY_FLAGS=\"<FLAGS>\" ctest -j<THREAD_NUM> --output-on-failure --timeout 2000"
 ```
 Set `<FLAGS>` to a space delimited string to specify flags for every verification job. For example set `<FLAGS>` to `--cex --horn-bmc-solver=smt-y2` will run every job under counter example mode and use [Yices 2](https://yices.csl.sri.com/) as the SMT solver instead of [z3](https://github.com/Z3Prover/z3). More details on verification options can be found in [a later section](#basic-verification-options). Set `<THREAD_NUM>` to a number suitable for your machine to run verification jobs in parallel.
+
+### SMACK
+Dockerfile: [`docker/verify-c-common-smack.Dockerfile`](docker/verify-c-common-smack.Dockerfile).
+
+To build and run all SMACK jobs:
+```
+$ docker build -t verify-c-common:smack . --file docker/verify-c-common-smack.Dockerfile
+$ docker run -t verify-c-common:smack /bin/bash -c "cd build && ctest -R smack_ --timeout 2000"
+```
+
+### Symbiotic
+Dockerfile: [`docker/verify-c-common-symbiotic.Dockerfile`](docker/verify-c-common-symbiotic.Dockerfile).
+
+To build and run all Symbiotic jobs:
+```
+$ docker build -t verify-c-common:symbiotic . --file docker/verify-c-common-symbiotic.Dockerfile
+$ docker run -t verify-c-common:symbiotic /bin/bash -c "cd build && ctest -R symbiotic_ --timeout 5000"
+```
 
 ### KLEE
 Dockerfile: [`docker/verify-c-common-klee.Dockerfile`](docker/verify-c-common-klee.Dockerfile).
@@ -174,10 +192,93 @@ time, but could be very useful for debugging.
 
 `--horn-bmc-solver=[smt-z3, smt-y2]`: chooses the smt-solver that will be used for BMC verification. Z3 is used by default; set this flag to `smt-y2` to choose Yices2 instead. Yices2 can sometimes yield a much shorter verification time under cex mode.
 
+## Build and run verification jobs for SMACK
+Leave `aws-c-common` library as is if you have already built verification jobs for SeaHorn.
+
+As a prerequisite, build SMACK following [this guide](https://github.com/smackers/smack/blob/main/docs/installation.md). Note, we require to use [LLVM](http://llvm.org/) [10.0.1](https://releases.llvm.org/download.html#10.0.1). The last commit that SMACK supports LLVM 10 is [4894245](https://github.com/smackers/smack/commit/48942451a1f48e56442c70256f3f20d117f1b309).
+
+Enter the verification build directory and reconfigure CMake to enable SMACK:
+```bash
+$ cmake \
+   -DSEA_LINK=llvm-link-10 \
+   -DCMAKE_C_COMPILER=clang-10 \
+   -DCMAKE_CXX_COMPILER=clang++-10 \
+   -DSEAHORN_ROOT=<SEAHORN_ROOT> \
+   -DSEA_ENABLE_SMACK=ON \
+   -Daws-c-common_DIR=<AWS_C_COMMON_CMAKE_DIR> \
+   ../ -GNinja
+```
+Rebuild with:
+```bash
+$ cmake --build .
+```
+or
+```bash
+$ ninja
+```
+
+To run all SMACK tests:
+```bash
+$ ctest -R smack_
+```
+
+To run a individual test for job with `NAME`, find SMACK specific LLVM assembly file under `seahorn/jobs/NAME/llvm-ir/NAME.smack.ir/NAME.smack.ir.ll`.
+
+Run with your local SMACK executable:
+```bash
+$ smack --check assertions --time-limit 300 --no-memory-splitting \
+   --integer-encoding unbounded-integer --pointer-encoding unbounded-integer \
+   seahorn/jobs/${NAME}/llvm-ir/${NAME}.smack.ir/${NAME}.smack.ir.bc
+```
+### SMACK experiment with different options
+We used to adapte SMACK by using different configurations supported by the tool, including options for ineger / pointer encoding, options for property checks, and options for its memory model. The shown one is the configuration which SMACK performs best as we collected.
+All verification results by giving different options we collected and reasoning on a jupyter [notebook](https://colab.research.google.com/drive/1tr37scaF4zOrgAYHUBCYi5mk1vwKhF1n?usp=sharing).
+
+## Build and run verification jobs for Symbiotic
+Leave `aws-c-common` library as is if you have already built verification jobs for SeaHorn.
+
+As a prerequisite, build Symbiotic following [this guide](https://github.com/staticafi/symbiotic#building-symbiotic-from-sources). Note, we require to use [LLVM](http://llvm.org/) [10.0.1](https://releases.llvm.org/download.html#10.0.1).
+
+Enter the verification build directory and reconfigure CMake to enable Symbiotic:
+```bash
+$ cmake \
+   -DSEA_LINK=llvm-link-10 \
+   -DCMAKE_C_COMPILER=clang-10 \
+   -DCMAKE_CXX_COMPILER=clang++-10 \
+   -DSEAHORN_ROOT=<SEAHORN_ROOT> \
+   -DSEA_ENABLE_SYMBIOTIC=ON \
+   -Daws-c-common_DIR=<AWS_C_COMMON_CMAKE_DIR> \
+   ../ -GNinja
+```
+Rebuild with:
+```bash
+$ cmake --build .
+```
+or
+```bash
+$ ninja
+```
+
+To run all Symbiotic tests:
+```bash
+$ ctest -R symbiotic_
+```
+Note, the CTest **does not** report error properly for Symbiotic. The verification result for Symbiotic should strictly follow the outputs of the tool.
+
+To run a individual test for job with `NAME`, find Symbiotic specific BC file under `seahorn/jobs/NAME/llvm-ir/NAME.symbiotic.ir/NAME.symbiotic.ir.bc`.
+
+Run with your local Symbiotic executable:
+```bash
+$ symbiotic --replay-error --report=short --prp=assert seahorn/jobs/${NAME}/llvm-ir/${NAME}.symbiotic.ir/${NAME}.symbiotic.ir.bc
+```
+
+### Issues we found
+We reasoned why Symbiotic can take less times on verifying `priority_queue` and `ring_buffer` categories where other tools may take longer. We tried to add some failed assertions like `sassert(false)` (aka. `__VERIFIER_assert(false)`) on the proofs such as `priority_queue_push`, `priority_queue_push_ref`, and `priority_queue_s_swap`. However, Symbiotic still report no error found on all those cases. The details can be found on issue [124](https://github.com/seahorn/verify-c-common/issues/124).
+
 ## Build and run verification jobs for KLEE
 Leave `aws-c-common` library as is if you have already built verification jobs for SeaHorn.
 
-As a prerequisite, build KLEE following [this guide](https://klee.github.io/build-llvm9/).
+As a prerequisite, build KLEE following [this guide](https://klee.github.io/build-llvm9/). Note, we require to use [LLVM](http://llvm.org/) [10.0.1](https://releases.llvm.org/download.html#10.0.1).
 
 Enter the verification build directory and reconfigure CMake to enable KLEE:
 ```bash
