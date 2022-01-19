@@ -23,7 +23,7 @@ RUN update-alternatives --config llvm-config
 # Install symbiotic lastest
 WORKDIR /home/usea
 RUN git clone https://github.com/staticafi/symbiotic
-RUN cd symbiotic && ./system-build.sh
+RUN cd symbiotic && git checkout 792b3b8 && ./system-build.sh
 ENV PATH="$PATH:/home/usea/symbiotic/install/bin"
 
 # Remove redundant pkgs
