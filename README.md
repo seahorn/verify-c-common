@@ -231,7 +231,7 @@ $ smack --check assertions --time-limit 300 --no-memory-splitting \
    seahorn/jobs/${NAME}/llvm-ir/${NAME}.smack.ir/${NAME}.smack.ir.bc
 ```
 ### SMACK experiment with different options
-We used to adapte SMACK by using different configurations supported by the tool, including options for ineger / pointer encoding, options for property checks, and options for its memory model. The shown one is the configuration which SMACK performs best as we collected.
+We have adapted SMACK by using different configurations supported by the tool, including options for ineger / pointer encoding, options for property checks, and options for its memory model. The shown one is the configuration which SMACK performs best as we collected.
 All verification results by giving different options we collected and reasoning on a jupyter [notebook](https://colab.research.google.com/drive/1tr37scaF4zOrgAYHUBCYi5mk1vwKhF1n?usp=sharing).
 
 ## Build and run verification jobs for Symbiotic
