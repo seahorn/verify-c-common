@@ -31,7 +31,7 @@ RUN cd klee-uclibc && ./configure --make-llvm-lib --with-llvm-config /usr/bin/ll
 # Install klee-lastest
 WORKDIR /home/usea/tmp
 RUN rm -rf klee && git clone https://github.com/klee/klee.git
-RUN cd klee && mkdir build && cd build && cmake \
+RUN cd klee && git checkout 5719d28 && mkdir build && cd build && cmake \
   -DENABLE_SOLVER_STP=ON \
   -DENABLE_POSIX_RUNTIME=ON \
   -DENABLE_KLEE_UCLIBC=ON \
