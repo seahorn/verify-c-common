@@ -6,10 +6,11 @@ USER root
 RUN apt-get update && apt -y install software-properties-common
 RUN add-apt-repository 'ppa:ubuntu-toolchain-r/test'
 RUN apt-get update && \
-    apt-get install -y python3 python3-pip gcc-10 g++-10 ninja-build gnuplot \
+    apt-get install -y python3.8 python3-pip gcc-10 g++-10 ninja-build gnuplot \
     flex bison make wget git libwww-perl patch ccache libc6-dev-i386 libc6-dev jq cmake && \
     apt-get clean
 
+RUN rm /usr/bin/python3 && ln /usr/bin/python3.8 /usr/bin/python3
 RUN pip3 install jinja2 voluptuous
 
 # RUN wget https://github.com/diffblue/cbmc/releases/download/cbmc-5.21.0/ubuntu-18.04-cbmc-5.21.0-Linux.deb
@@ -17,7 +18,7 @@ RUN pip3 install jinja2 voluptuous
 
 WORKDIR /home/
 RUN git clone https://github.com/diffblue/cbmc.git
-RUN cd cbmc && git checkout develop && \
+RUN cd cbmc && git checkout be9b3b4 && \
     make DOWNLOADER='wget' -C src minisat2-download && \
     make -C src CXX=g++-10 -j8
 RUN mkdir bin
