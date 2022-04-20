@@ -138,8 +138,7 @@ def run_ctest_for_seahorn():
                                 True if "--crab" in extra else False)
 
 
-
-def collect_stat_from_ctest_log(outfile):
+def collect_stat_from_ctest_log(outfile, use_crab):
     test_tmpdir = os.path.join(BUILDABSPATH, 'Testing', 'Temporary')
     logfiles = [i for i in os.listdir(test_tmpdir)if os.path.isfile(
         os.path.join(test_tmpdir, i)) and i.startswith("LastTest_")]
