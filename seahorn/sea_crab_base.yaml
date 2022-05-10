@@ -5,5 +5,12 @@ verify_options:
   horn-vcgen-only-dataflow: false
 # reduce by data dependence
   horn-bmc-coi: false
-  horn-bv2-crab-lower-is-deref: ''
+# Use crab solve sea.is_deref
+  horn-bv2-crab-check-is-deref: ''
+# reduce used by object domain
+  horn-bv2-crab-reduce: ''
+# Use crab infer allocation range
+  # horn-bv2-crab-rng: ''
   horn-bmc-crab-dom: 'zones'
+# Statistics
+  # horn-bv2-crab-stats: ''
