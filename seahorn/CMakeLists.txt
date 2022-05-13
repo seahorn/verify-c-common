@@ -697,3 +697,8 @@ if(${SEA_WITH_BLEEDING_EDGE})
   add_subdirectory(jobs/hash_table_foreach_deep_precise)
 
 endif()
+
+if(SEA_ENABLE_CRAB_JOBS)
+  add_subdirectory(jobs_crab/byte_buf_advance_crab)
+  add_subdirectory(jobs_crab/byte_buf_append_crab)
+endif()
