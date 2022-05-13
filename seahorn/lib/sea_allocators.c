@@ -10,6 +10,7 @@ extern NONDET_FN_ATTR bool nd_malloc_is_fail(void);
 INLINE void *sea_malloc(size_t sz) {
   #ifdef __CRAB__
   assume(sz > 0);
+  return malloc(sz);
   #endif
   return nd_malloc_is_fail() ? NULL : malloc(sz);
 }
