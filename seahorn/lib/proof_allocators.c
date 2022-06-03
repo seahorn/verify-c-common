@@ -40,6 +40,27 @@ static void s_free_allocator(struct aws_allocator *allocator, void *ptr) {
   free(ptr);
 }
 
+static void *s_realloc_allocator(struct aws_allocator *allocator, void *ptr, size_t oldsize, size_t newsize) {
+  (void)allocator;
+  (void)oldsize;
+  AWS_FATAL_PRECONDITION(newsize);
+
+  if (newsize <= oldsize) {
+    return ptr;
+  }
+
+  /* newsize is > oldsize, need more memory */
+  void *new_mem = s_malloc_allocator(allocator, newsize);
+  // AWS_PANIC_OOM(new_mem, "Unhandled OOM encountered in s_malloc_allocator");
+
+  if (ptr) {
+    memcpy(new_mem, ptr, oldsize);
+    s_free_allocator(allocator, ptr);
+  }
+
+  return new_mem;
+}
+
 static struct aws_allocator s_allocator_static = {
     .mem_acquire = s_malloc_allocator,
     .mem_release = s_free_allocator,
@@ -47,8 +68,19 @@ static struct aws_allocator s_allocator_static = {
     .mem_calloc = NULL,
 };
 
+static struct aws_allocator s_allocator_with_realloc_static = {
+    .mem_acquire = s_malloc_allocator,
+    .mem_release = s_free_allocator,
+    .mem_realloc = s_realloc_allocator,
+    .mem_calloc = NULL,
+};
+
 struct aws_allocator *sea_allocator() {
   return &s_allocator_static;
+}
+
+struct aws_allocator *sea_allocator_with_realloc() {
+  return &s_allocator_with_realloc_static;
 }
 
 #if 0

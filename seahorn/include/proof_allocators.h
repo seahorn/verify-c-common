@@ -32,3 +32,8 @@ void *can_fail_malloc_havoc(size_t size);
  * Pointer to SeaHorn-based allocator
  */
 struct aws_allocator *sea_allocator(void);
+
+/**
+ * Pointer to SeaHorn-based allocator with realloc
+ */
+struct aws_allocator *sea_allocator_with_realloc(void);
