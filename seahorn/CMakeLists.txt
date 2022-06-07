@@ -373,6 +373,11 @@ function(sea_add_unsat_test TARGET)
   add_test(NAME "${TARGET}_unsat_test" COMMAND ${VERIFY_CMD} ${VERIFY_FLAGS} --expect=unsat ${BC})
 endfunction()
 
+function(sea_add_sat_test TARGET)
+  sea_get_file_name(BC ${TARGET}.ir)
+  add_test(NAME "${TARGET}_sat_test" COMMAND ${VERIFY_CMD} ${VERIFY_FLAGS} --expect=sat ${BC})
+endfunction()
+
 set(FUZZ_FLAGS corpus -use_value_profile=1 -detect_leaks=0 -runs=50000 -timeout=60 -rss_limit_mb=4096 CACHE STRING "Flags for fuzzing")
 separate_arguments(FUZZ_FLAGS)
 
@@ -660,6 +665,8 @@ add_subdirectory(jobs2/ring_buffer_acquire2)
 add_subdirectory(jobs2/ring_buffer_release2)
 add_subdirectory(jobs2/ring_buffer_buf_belongs_to_pool2)
 add_subdirectory(jobs2/ring_buffer_acquire_up_to2)
+
+add_subdirectory(jobs_unsafe/mem_realloc_unsafe)
 
 if(${SEA_WITH_BLEEDING_EDGE})
   add_subdirectory(jobs/priority_queue_s_swap)
