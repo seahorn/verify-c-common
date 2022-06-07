@@ -8,9 +8,12 @@ verify_options:
 # Use crab solve sea.is_deref
   horn-bv2-crab-check-is-deref: ''
 # reduce used by object domain
-  horn-bv2-crab-reduce: ''
+  # horn-bv2-crab-reduce: ''
 # Use crab infer allocation range
   # horn-bv2-crab-rng: ''
-  horn-bmc-crab-dom: 'zones'
+  horn-bmc-crab-dom: 'pk'
 # Statistics
   # horn-bv2-crab-stats: ''
+  seapp-crab-lower-is-deref: true
+  seapp-crab-dom: 'zones'
+  seapp-crab-stats: true
