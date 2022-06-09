@@ -16,7 +16,6 @@ int main() {
     size_t old_size = nd_size_t();
 
     size_t new_size = nd_size_t();
-    assume(old_size <= new_size);
 
     aws_mem_realloc(allocator, (void **)&data, old_size, new_size);
 
