@@ -18,20 +18,20 @@ RUN apt -y install python3 python3-pip gcc-multilib g++-multilib \
     bison flex minisat
 RUN apt -y install clang-10 llvm-10 llvm-10-dev llvm-10-tools  
 
-# Install stp
-WORKDIR /home/usea/tmp
+# Install stp 2.3.3
+WORKDIR /home/usea/klee-tools
 RUN rm -rf stp && git clone https://github.com/stp/stp.git
-RUN cd stp && mkdir build && cd build && cmake .. && cmake --build .\
+RUN cd stp && git checkout ac1b92b && mkdir build && cd build && cmake .. && cmake --build .\
     && cmake --install .
 
 # Install uclibc
 RUN rm -rf klee-uclibc && git clone https://github.com/klee/klee-uclibc.git
 RUN cd klee-uclibc && ./configure --make-llvm-lib --with-llvm-config /usr/bin/llvm-config-10 && make -j2
 
-# Install klee-lastest
-WORKDIR /home/usea/tmp
+# Install klee-2.3
+WORKDIR /home/usea/klee-tools
 RUN rm -rf klee && git clone https://github.com/klee/klee.git
-RUN cd klee && git checkout 5719d28 && mkdir build && cd build && cmake \
+RUN cd klee && git checkout 879be79 && mkdir build && cd build && cmake \
   -DENABLE_SOLVER_STP=ON \
   -DENABLE_POSIX_RUNTIME=ON \
   -DENABLE_KLEE_UCLIBC=ON \
