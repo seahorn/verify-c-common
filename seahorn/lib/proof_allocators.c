@@ -51,7 +51,6 @@ static void *s_realloc_allocator(struct aws_allocator *allocator, void *ptr, siz
 
   /* newsize is > oldsize, need more memory */
   void *new_mem = s_malloc_allocator(allocator, newsize);
-  // AWS_PANIC_OOM(new_mem, "Unhandled OOM encountered in s_malloc_allocator");
 
   if (ptr) {
     memcpy(new_mem, ptr, oldsize);
