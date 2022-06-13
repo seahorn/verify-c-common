@@ -368,11 +368,13 @@ endmacro()
 set(VERIFY_FLAGS $ENV{VERIFY_FLAGS} CACHE STRING "Flags for verify script")
 separate_arguments(VERIFY_FLAGS)
 
+# Unit test for testing unsat
 function(sea_add_unsat_test TARGET)
   sea_get_file_name(BC ${TARGET}.ir)
   add_test(NAME "${TARGET}_unsat_test" COMMAND ${VERIFY_CMD} ${VERIFY_FLAGS} --expect=unsat ${BC})
 endfunction()
 
+# Unit test for testing sat
 function(sea_add_sat_test TARGET)
   sea_get_file_name(BC ${TARGET}.ir)
   add_test(NAME "${TARGET}_sat_test" COMMAND ${VERIFY_CMD} ${VERIFY_FLAGS} --expect=sat ${BC})
