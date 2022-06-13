@@ -3,3 +3,5 @@ hash_table_foreach_unsat_test
 hash_table_eq_unsat_test
 # following test is a spurious intermittent failure in CI
 nospec_mask_unsat_test
+# folowing test is failed as expect because it is sat test
+mem_realloc_unsafe_sat_test
