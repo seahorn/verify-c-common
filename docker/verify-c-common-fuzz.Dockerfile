@@ -9,6 +9,7 @@ USER root
 RUN apt -y remove --purge cmake
 RUN apt -y update
 RUN apt -y install wget python3-pip
+RUN python3 -m pip install --upgrade pip
 RUN pip3 install cmake --upgrade
 
 # Install dependencies (Python and LLVM Cov Tools)
