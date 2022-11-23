@@ -1,4 +1,4 @@
-
+## TODO: seahorn now uses llvm14, move klee to also use llvm14
 FROM seahorn/seahorn-llvm10:nightly
 ENV SEAHORN=/home/usea/seahorn/bin/sea PATH="$PATH:/home/usea/seahorn/bin:/home/usea/bin"
 

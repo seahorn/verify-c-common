@@ -1,4 +1,5 @@
-FROM seahorn/seahorn-llvm10:nightly
+## TODO: seahorn now uses llvm14, move smack to also use llvm14
+FROM seahorn/seahorn-llvm14:nightly
 
 ENV SEAHORN=/home/usea/seahorn/bin/sea PATH="$PATH:/home/usea/seahorn/bin:/home/usea/bin"
 
@@ -14,7 +15,7 @@ RUN pip3 install cmake --upgrade
 
 # Install dependencies (Python and LLVM Cov Tools)
 RUN apt -y install python3
-RUN apt -y install clang-10 llvm-10 llvm-10-dev llvm-10-tools lcov
+RUN apt -y install clang-14 llvm-14 llvm-14-dev llvm-14-tools lcov
 
 ## clone verify-c-common repository
 USER usea
@@ -39,6 +40,6 @@ RUN mkdir build && cd build && cmake -DCMAKE_C_COMPILER=clang-10 \
 
 WORKDIR /home/usea/verify-c-common
 
-RUN mkdir build && cd build && cmake -DSEA_LINK=llvm-link-10 -DCMAKE_C_COMPILER=clang-10 -DCMAKE_CXX_COMPILER=clang++-10 -DSEAHORN_ROOT=/home/usea/seahorn -DSEA_ENABLE_FUZZ=ON -Daws-c-common_DIR=$(pwd)/../aws-c-common/build/run/lib/aws-c-common/cmake/ ../ -GNinja && cmake --build .
+RUN mkdir build && cd build && cmake -DSEA_LINK=llvm-link-14 -DCMAKE_C_COMPILER=clang-14 -DCMAKE_CXX_COMPILER=clang++-14 -DSEAHORN_ROOT=/home/usea/seahorn -DSEA_ENABLE_FUZZ=ON -Daws-c-common_DIR=$(pwd)/../aws-c-common/build/run/lib/aws-c-common/cmake/ ../ -GNinja && cmake --build .
 
 USER root
