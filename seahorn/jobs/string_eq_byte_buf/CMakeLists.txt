@@ -7,6 +7,7 @@ add_executable(
 )
 sea_attach_bc_link(string_eq_byte_buf)
 sea_add_unsat_test(string_eq_byte_buf)
+configure_file(sea.yaml sea.yaml @ONLY)
 
 # klee
 sea_add_klee(

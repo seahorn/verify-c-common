@@ -2,7 +2,7 @@ add_executable(linked_list_begin
   aws_linked_list_begin_harness.c)
 sea_attach_bc_link(linked_list_begin)
 sea_add_unsat_test(linked_list_begin)
-
+configure_file(sea.yaml sea.yaml @ONLY)
 # klee
 sea_add_klee(linked_list_begin
   aws_linked_list_begin_harness.c)
