@@ -1,3 +1,4 @@
 verify_options:
   bound: @MAX_STRING_LEN@
   horn-bv2-tracking-mem: true
+  horn-bmc-logic: QF_ABV

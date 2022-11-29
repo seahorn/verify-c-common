@@ -1,3 +1,4 @@
 verify_options:
   horn-bv2-word-size: 1
   horn-array-sym-memcpy-unroll-count: @MAX_STRING_LEN@
+  horn-bmc-logic: QF_ABV

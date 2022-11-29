@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        verify_flag: ["", "--vac", "--horn-bmc-solver=smt-y2", "--cex", "--cex --horn-bmc-solver=smt-y2"]
+      matrix:  # explicitly adding logic for yices
+        verify_flag: ["", "--vac", "--horn-bmc-logic=QF_ABV --horn-bmc-solver=smt-y2", "--cex", "--horn-bmc-logic=QF_ABV --cex --horn-bmc-solver=smt-y2"]
         # includes a new variable blacklist for every
         # verify_flag element
         include:
@@ -22,11 +22,11 @@ jobs:
             blacklist: "df-coi"
           - verify_flag: "--vac"
             blacklist: "vac"
-          - verify_flag: "--horn-bmc-solver=smt-y2"
+          - verify_flag: "--horn-bmc-logic=QF_ABV --horn-bmc-solver=smt-y2"
             blacklist: "y2"
           - verify_flag: "--cex"
             blacklist: "cex"
-          - verify_flag: "--cex --horn-bmc-solver=smt-y2"
+          - verify_flag: "--horn-bmc-logic=QF_ABV --cex --horn-bmc-solver=smt-y2"
             blacklist: "cex-y2"
        
     steps:

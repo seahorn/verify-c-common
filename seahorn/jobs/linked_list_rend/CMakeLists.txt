@@ -1,6 +1,7 @@
 # add head and tail to list size.
 add_executable(linked_list_rend
   aws_linked_list_rend_harness.c)
+configure_file(sea.yaml sea.yaml @ONLY)
 target_compile_definitions(linked_list_rend
   # We will use our own function for is_valid check hence AWS_DEEP_CHECK is off
   PUBLIC SEA_DEEP_CHECKS=0)

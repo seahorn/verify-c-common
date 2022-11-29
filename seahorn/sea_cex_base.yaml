@@ -1,3 +1,10 @@
+# Please read before adding options
+#
+# horn-logic-bmc
+# --------------
+# This option is not added here because of https://github.com/seahorn/verify-c-common/issues/136
+# It is explicitly added for yices in CI since yices needs to know logic.
+#
 verify_options:
 # Optimization lelel. Lower to O1 for clearer counterexamples
   '-O1': ''
@@ -53,5 +60,3 @@ verify_options:
 # print memory state as a table
 # XXX still flaky, sometimes only the last byte can be trusted
   horn-bmc-hexdump: true
-  horn-bmc-logic: QF_ABV
-
