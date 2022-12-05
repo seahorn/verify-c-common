@@ -1,3 +1,4 @@
+configure_file(sea.yaml sea.yaml @ONLY)
 add_executable(
   priority_queue_init_static
   ${AWS_C_COMMON_ROOT}/source/array_list.c
