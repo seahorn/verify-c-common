@@ -9,3 +9,10 @@ array_list_pop_front_n2_unsat_test
 byte_buf_write_from_whole_string2_unsat_test
 ring_buffer_acquire2_unsat_test
 ring_buffer_acquire_up_to2_unsat_test
+# Following tests fail on LLVM14 with: 
+#   yices_solver_impl::add:  yices_assert_formula failed: the context does not support lambda terms
+# select(store(const-array,..., ...), ...) does not seem to be supported on yices 
+array_list_pop_back2_unsat_test
+array_list_push_back2_unsat_test
+array_list_set_at2_unsat_test
+byte_buf_advance2_unsat_test
