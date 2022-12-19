@@ -690,3 +690,5 @@ if(${SEA_WITH_BLEEDING_EDGE})
   add_subdirectory(jobs/hash_table_foreach_deep_precise)
 
 endif()
+
+add_subdirectory(jobs_mem_unsafe/hash_table_mem_leak)
