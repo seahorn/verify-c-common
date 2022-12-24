@@ -692,3 +692,4 @@ if(${SEA_WITH_BLEEDING_EDGE})
 endif()
 
 add_subdirectory(jobs_mem_unsafe/hash_table_mem_leak)
+add_subdirectory(jobs_mem_unsafe/hash_table_mem_leak_unbound)
