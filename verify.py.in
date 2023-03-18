@@ -61,6 +61,8 @@ def main(argv):
                               help='Path condition mode')
             argp.add_argument('--crab', action='store_true', default=False,
                               help='Using crab')
+            argp.add_argument('--clam', action='store_true', default=False,
+                              help='Using clam as front end')
             argp.add_argument('input_file', nargs=1)
             argp.add_argument('--dry-run', dest='dry_run',
                               action='store_true', default=False,
@@ -125,6 +127,13 @@ def main(argv):
                 cmd.append('--dry-run')
 
             cmd.append(args.command)
+            # Clam config
+            if args.clam:
+                cmd = ['/home/ljgy/Works/seahorn/clam/build/run/bin/clam-yaml.py']
+                clam_config = os.path.join(script_dir, 'seahorn', 
+                                          'clam.base.yaml')
+                cmd.extend(['-y', clam_config])
+
             cmd.extend(extra)
             cmd.append(input_file)
 

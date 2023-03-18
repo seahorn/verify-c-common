@@ -377,6 +377,7 @@ separate_arguments(VERIFY_FLAGS)
 # Unit test for testing unsat
 function(sea_add_unsat_test TARGET)
   sea_get_file_name(BC ${TARGET}.ir)
+  add_test(NAME "${TARGET}_clam_test" COMMAND ${VERIFY_CMD} --clam ${BC})
   add_test(NAME "${TARGET}_unsat_test" COMMAND ${VERIFY_CMD} ${VERIFY_FLAGS} --expect=unsat ${BC})
 endfunction()
 
@@ -434,6 +435,7 @@ configure_file(sea_crab_base.yaml sea.crab.yaml @ONLY)
 configure_file(sea_cex_base.yaml sea.cex.yaml @ONLY)
 configure_file(sea_vac.yaml sea.vac.yaml @ONLY)
 configure_file(sea_pcond.yaml sea.pcond.yaml @ONLY)
+configure_file(clam_base.yaml clam.base.yaml @ONLY)
 
 # compilation recipes for aws-c-common library
 add_subdirectory(aws-c-common-stubs)
@@ -702,3 +704,4 @@ if(SEA_ENABLE_CRAB_JOBS)
   add_subdirectory(jobs_crab/byte_buf_advance_crab)
   add_subdirectory(jobs_crab/byte_buf_append_crab)
 endif()
+# add_subdirectory(jobs_unsafe/hash_table_mem_leak)

@@ -17,7 +17,7 @@ FILE_DICT = {
     "--cex": "seahorn(cex).csv",
     "--cex --horn-bmc-solver=smt-y2": "seahorn(cex, smt-y2).csv",
     "klee": "klee.csv", "symbiotic": "symbiotic.csv"}
-
+LLVM_VERSION=14
 
 def extra_to_filename(extra, suffix='.csv', prefix=''):
     '''extra: --a=b --c=d to filename: a.b.c.d.csv'''
@@ -60,8 +60,8 @@ def make_new_cmake_conf():
         -DSMACK_ENABLE_NO_MEM_SPLIT={smack_enable_no_mem_split}'
     else:
         smack_args = ""
-    return f'cmake -DSEA_LINK=llvm-link-10 -DCMAKE_C_COMPILER=clang-10\
-    -DCMAKE_CXX_COMPILER=clang++-10 -DSEA_ENABLE_KLEE={use_klee} {smack_args}\
+    return f'cmake -DSEA_LINK=llvm-link-{LLVM_VERSION} -DCMAKE_C_COMPILER=clang-{LLVM_VERSION}\
+    -DCMAKE_CXX_COMPILER=clang++-{LLVM_VERSION} -DSEA_ENABLE_KLEE={use_klee} {smack_args}\
     -DSEA_WITH_BLEEDING_EDGE={use_bleeding_edge} -DSEA_ENABLE_CRAB={use_crab}\
     -DSEA_ENABLE_SYMBIOTIC={use_symbiotic} -DSEAHORN_ROOT={SEAHORN_ROOT} ../ -GNinja'
 
