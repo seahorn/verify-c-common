@@ -4,6 +4,7 @@ add_executable(hash_c_string
 sea_attach_bc_link(hash_c_string)
 sea_add_unsat_test(hash_c_string)
 
+configure_file(sea.yaml sea.yaml @ONLY)
 # klee
 sea_add_klee(hash_c_string
   ${AWS_C_COMMON_ROOT}/source/hash_table.c
