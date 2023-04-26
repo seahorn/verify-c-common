@@ -60,3 +60,4 @@ verify_options:
 # print memory state as a table
 # XXX still flaky, sometimes only the last byte can be trusted
   horn-bmc-hexdump: true
+  ignore-define-verifier-fns: ''

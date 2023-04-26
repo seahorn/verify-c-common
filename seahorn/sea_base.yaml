@@ -43,3 +43,4 @@ verify_options:
   temp-dir: /tmp/verify-c-common
 # time and result stats
   horn-stats: true
+  ignore-define-verifier-fns: ''
