@@ -7,3 +7,4 @@ exper
 aws-c-common/*
 compile_commands.json
 __pycache__
+CMakeUserPresets.json
