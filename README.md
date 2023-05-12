@@ -153,34 +153,7 @@ As a prerequisite, follow [this guide](https://github.com/seahorn/seahorn/tree/d
    ```
    `SEAHORN_ROOT` is the directory containing your local SeaHorn repository. `AWS_C_COMMON_CMAKE_DIR` is the directory under `aws-c-common` project containing the file `aws-c-common-config.cmake`.
    
-   Alternatively, the project can be configured using cmake presets. To do this, create a file in the root `verify-c-common` directory called `CMakeUserPresets.json` and copy the following code into it:
-   
-   ```json
-   {
-       "version": 6,
-       "configurePresets": [
-           {
-               "name": "default",
-               "inherits": [
-                   "defaultPresets"
-               ],
-               "cacheVariables": {
-                   "SEA_LINK": "llvm-link-14",
-                   "CMAKE_C_COMPILER": "clang-14",
-                   "CMAKE_CXX_COMPILER": "clang++-14", 
-                   "SEAHORN_ROOT": "<SEAHORN_ROOT>",
-                   "aws-c-common_DIR": "<AWS_C_COMMON_CMAKE_DIR>"
-               }
-           }
-       ],
-       "buildPresets": [
-           {
-               "name": "default",
-               "configurePreset": "default"
-           }
-       ]
-   }
-   ```
+   Alternatively, the project can be configured using cmake presets. To do this, create a file in the root `verify-c-common` directory called `CMakeUserPresets.json`. On Linux, copy the contents of `default-jammy.json` into it. You will then have to replace `SEAHORN_ROOT` and `AWS_C_COMMON_CMAKE_DIR` with their corresponding directory paths in the presets file.
    
    Then, you can simply run:
    ```bash
