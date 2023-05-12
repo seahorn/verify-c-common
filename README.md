@@ -249,7 +249,7 @@ All verification results by giving different options we collected and reasoning 
 Leave `aws-c-common` library as is if you have already built verification jobs for SeaHorn.
 
 NOTE: The recommended version of LLVM for Symbiotic is LLVM-10
-Make sure to use the correct version of LLVM and seahorn when using SMACK
+Make sure to use the correct version of LLVM and seahorn when using Symbiotic
 seahorn for LLVM-10: https://github.com/seahorn/seahorn/tree/dev10
 
 As a prerequisite, build Symbiotic following [this guide](https://github.com/staticafi/symbiotic#building-symbiotic-from-sources). Note, we require to use [LLVM](http://llvm.org/) [10.0.1](https://releases.llvm.org/download.html#10.0.1).
