@@ -8,7 +8,10 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)][data]
 
 This repository contains the unit proofs as well as a build system used in the *Verifying Verified Code* case study. *Verified Code* refers to the [aws-c-common](https://github.com/awslabs/aws-c-common) library, which is now being verified by [CBMC](https://www.cprover.org/cbmc/) as part of the library's CI process. Read more about the AWS case study that inspired our work [here
-](https://dl.acm.org/doi/10.1145/3377813.3381347). Instead of CBMC, our case study uses [SeaHorn](https://github.com/seahorn/seahorn)'s BMC engine for bounded model checking. We also adopted *de facto* semantics in the proofs and specifications, which allows this build system to use the same set of unit proofs for different verification tools and techniques. In specific, we enabled symbolic execution with [KLEE](https://klee.github.io/) and fuzzing with [libFuzzer](https://releases.llvm.org/10.0.0/docs/LibFuzzer.html).
+](https://dl.acm.org/doi/10.1145/3377813.3381347). Instead of CBMC, our case study uses [SeaHorn](https://github.com/seahorn/seahorn)'s BMC engine for bounded model checking. We also adopted *de facto* semantics in the proofs and specifications, which allows this build system to use the same set of unit proofs for different verification tools and techniques. In specific, we enabled symbolic execution with [KLEE](https://klee.github.io/) and fuzzing with [libFuzzer](https://releases.llvm.org/11.0.0/docs/LibFuzzer.html).
+NOTE: The recommended version of LLVM for KLEE is LLVM-11 (with added support for 12 and 13)
+Make sure to use the correct version of LLVM and seahorn when using KLEE
+seahorn for LLVM-11: https://github.com/seahorn/seahorn/tree/dev11
 
 # Results
 Detailed analysis of run-times is available in an accompanying [Jupyter
@@ -103,7 +106,7 @@ $ docker run -t aws-c-common:latest /bin/bash -c "cd scripts && python3 run_aws_
 ```
 Note that, it will copy a python script [`run_aws_res.py`](scripts/run_aws_res.py) under the `scripts` folder in the container.
 
-## Build locally with CMake and Clang-10
+## Build locally with CMake and Clang-14
 
 
 ### Setup AWS-C-COMMON
@@ -115,13 +118,13 @@ This is a common step for all other configurations.
    $ git clone https://github.com/awslabs/aws-c-common
    ```
 
-2. Configure `aws-c-common` as instructed, make sure to compile with `clang-10` so that fuzzing can work. Configure using the following commands:
+2. Configure `aws-c-common` as instructed, make sure to compile with `clang-14` so that fuzzing can work. Configure using the following commands:
    ```bash
    $ cd aws-c-common
    $ mkdir build
    $ cd build
    $ cmake \
-   -DCMAKE_C_COMPILER=clang-10 \
+   -DCMAKE_C_COMPILER=clang-14 \
    -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
    -DCMAKE_INSTALL_PREFIX=$(pwd)/run ../ -GNinja
    ```
@@ -145,9 +148,9 @@ As a prerequisite, follow [this guide](https://github.com/seahorn/seahorn/tree/d
 2. Configure with cmake
    ```bash
    $ cmake \
-      -DSEA_LINK=llvm-link-10 \
-      -DCMAKE_C_COMPILER=clang-10 \
-      -DCMAKE_CXX_COMPILER=clang++-10 \
+      -DSEA_LINK=llvm-link-14 \
+      -DCMAKE_C_COMPILER=clang-14 \
+      -DCMAKE_CXX_COMPILER=clang++-14 \
       -DSEAHORN_ROOT=<SEAHORN_ROOT> \
       -Daws-c-common_DIR=<AWS_C_COMMON_CMAKE_DIR> ../ -GNinja
    ```
@@ -211,14 +214,19 @@ time, but could be very useful for debugging.
 ## Build and run verification jobs for SMACK
 Leave `aws-c-common` library as is if you have already built verification jobs for SeaHorn.
 
-As a prerequisite, build SMACK following [this guide](https://github.com/smackers/smack/blob/main/docs/installation.md). Note, we require to use [LLVM](http://llvm.org/) [10.0.1](https://releases.llvm.org/download.html#10.0.1). The last commit that SMACK supports LLVM 10 is [4894245](https://github.com/smackers/smack/commit/48942451a1f48e56442c70256f3f20d117f1b309).
+As a prerequisite, build SMACK following [this guide](https://github.com/smackers/smack/blob/main/docs/installation.md). Note, we require to use [LLVM](http://llvm.org/) [12.0.1](https://releases.llvm.org/download.html#12.0.1). The last commit that SMACK supports LLVM 12 is [4894245](https://github.com/smackers/smack/commit/48942451a1f48e56442c70256f3f20d117f1b309).
+
+NOTE: The recommended version of LLVM for SMACK is LLVM-12
+Make sure to use the correct version of LLVM and seahorn when using SMACK
+seahorn for LLVM-12: https://github.com/seahorn/seahorn/tree/dev12
+
 
 Enter the verification build directory and reconfigure CMake to enable SMACK:
 ```bash
 $ cmake \
-   -DSEA_LINK=llvm-link-10 \
-   -DCMAKE_C_COMPILER=clang-10 \
-   -DCMAKE_CXX_COMPILER=clang++-10 \
+   -DSEA_LINK=llvm-link-12 \
+   -DCMAKE_C_COMPILER=clang-12 \
+   -DCMAKE_CXX_COMPILER=clang++-12 \
    -DSEAHORN_ROOT=<SEAHORN_ROOT> \
    -DSEA_ENABLE_SMACK=ON \
    -Daws-c-common_DIR=<AWS_C_COMMON_CMAKE_DIR> \
@@ -252,6 +260,10 @@ All verification results by giving different options we collected and reasoning 
 
 ## Build and run verification jobs for Symbiotic
 Leave `aws-c-common` library as is if you have already built verification jobs for SeaHorn.
+
+NOTE: The recommended version of LLVM for Symbiotic is LLVM-10
+Make sure to use the correct version of LLVM and seahorn when using SMACK
+seahorn for LLVM-10: https://github.com/seahorn/seahorn/tree/dev10
 
 As a prerequisite, build Symbiotic following [this guide](https://github.com/staticafi/symbiotic#building-symbiotic-from-sources). Note, we require to use [LLVM](http://llvm.org/) [10.0.1](https://releases.llvm.org/download.html#10.0.1).
 
@@ -294,14 +306,18 @@ We reasoned why Symbiotic can take less times on verifying `priority_queue` and 
 ## Build and run verification jobs for KLEE
 Leave `aws-c-common` library as is if you have already built verification jobs for SeaHorn.
 
-As a prerequisite, build KLEE following [this guide](https://klee.github.io/build-llvm9/). Note, we require to use [LLVM](http://llvm.org/) [10.0.1](https://releases.llvm.org/download.html#10.0.1).
+As a prerequisite, build KLEE following [this guide](https://klee.github.io/build-llvm11/). Note, we require to use [LLVM](http://llvm.org/) [11.1.0](https://releases.llvm.org/download.html#11.1.0).
+
+NOTE: The recommended version of LLVM for KLEE is LLVM-11 (with added support for 12 and 13)
+Make sure to use the correct version of LLVM and seahorn when using KLEE
+seahorn for LLVM-11: https://github.com/seahorn/seahorn/tree/dev11
 
 Enter the verification build directory and reconfigure CMake to enable KLEE:
 ```bash
 $ cmake \
-   -DSEA_LINK=llvm-link-10 \
-   -DCMAKE_C_COMPILER=clang-10 \
-   -DCMAKE_CXX_COMPILER=clang++-10 \
+   -DSEA_LINK=llvm-link-11 \
+   -DCMAKE_C_COMPILER=clang-11 \
+   -DCMAKE_CXX_COMPILER=clang++-11 \
    -DSEAHORN_ROOT=<SEAHORN_ROOT> \
    -DSEA_ENABLE_KLEE=ON \
    -Daws-c-common_DIR=<AWS_C_COMMON_CMAKE_DIR> \
@@ -328,15 +344,16 @@ Run with your local KLEE executable:
 $ klee --libc=uclibc --exit-on-error seahorn/jobs/${NAME}/llvm-ir/${NAME}.klee.ir/${NAME}.klee.ir.bc
 ```
 
+
 ## Build and run verification jobs for libFuzzer
-As a prerequisite, install the following tools: `llvm-10 llvm-10-dev llvm-10-tools lcov`.
+As a prerequisite, install the following tools: `llvm-14 llvm-14-dev llvm-14-tools lcov`.
 ### Reconfigure and rebuild `aws-c-common`
 We need to rebuild `aws-c-common` with fuzzing and coverage cflags.
 
 Reconfigure:
 ```bash
 $ cd aws-common/build/
-$ cmake -DCMAKE_C_COMPILER=clang-10 \
+$ cmake -DCMAKE_C_COMPILER=clang-14 \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
   -DCMAKE_INSTALL_PREFIX=$(pwd)/run \
   -DCMAKE_C_FLAGS='-fsanitize=fuzzer-no-link,address,undefined -fprofile-instr-generate -fcoverage-mapping' \
@@ -353,9 +370,9 @@ $ ninja install
 Enter the verification build directory and reconfigure CMake to enable fuzzing:
 ```bash
 $ cmake \
-   -DSEA_LINK=llvm-link-10 \
-   -DCMAKE_C_COMPILER=clang-10 \
-   -DCMAKE_CXX_COMPILER=clang++-10 \
+   -DSEA_LINK=llvm-link-14 \
+   -DCMAKE_C_COMPILER=clang-14 \
+   -DCMAKE_CXX_COMPILER=clang++-14 \
    -DSEAHORN_ROOT=<SEAHORN_ROOT> \
    -DSEA_ENABLE_FUZZ=ON \
    -Daws-c-common_DIR=<AWS_C_COMMON_CMAKE_DIR> \
@@ -388,7 +405,7 @@ $ ASAN_OPTIONS=detect_leaks=0 build/seahorn/jobs/<NAME>/<NAME>_fuzz corpus -use_
 This command will fuzz the target for at most `<RUN_NUM>` times or until a crash has occurred. Memory leak detection is turned off to prevent spurious memory leak warnings.
 
 ### Coverage report for fuzzing
-We configured libFuzzer to output [source-based coverage](https://releases.llvm.org/10.0.0/tools/clang/docs/SourceBasedCodeCoverage.html) data. Once a target has been fuzzed for the desired number of times, `build/seahorn/jobs/<NAME>/corpus/` will contain some corpus input files. Running the fuzzing target again with `--runs=0` will make libFuzzer run the target with existing corpus files only and output coverage data.
+We configured libFuzzer to output [source-based coverage](https://releases.llvm.org/14.0.0/tools/clang/docs/SourceBasedCodeCoverage.html) data. Once a target has been fuzzed for the desired number of times, `build/seahorn/jobs/<NAME>/corpus/` will contain some corpus input files. Running the fuzzing target again with `--runs=0` will make libFuzzer run the target with existing corpus files only and output coverage data.
 ```bash
 $ ASAN_OPTIONS=detect_leaks=0 build/seahorn/jobs/<NAME>/<NAME>_fuzz corpus -detect_leaks=0 -runs=0
 ```
