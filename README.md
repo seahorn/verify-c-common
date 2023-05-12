@@ -153,25 +153,18 @@ As a prerequisite, follow [this guide](https://github.com/seahorn/seahorn/tree/d
    ```
    `SEAHORN_ROOT` is the directory containing your local SeaHorn repository. `AWS_C_COMMON_CMAKE_DIR` is the directory under `aws-c-common` project containing the file `aws-c-common-config.cmake`.
    
-   Alternatively, the project can be configured using cmake presets. To do this, create a file in the root `verify-c-common` directory called `CMakeUserPresets.json`. On Linux, copy the contents of `default-jammy.json` into it. You will then have to replace `SEAHORN_ROOT` and `AWS_C_COMMON_CMAKE_DIR` with their corresponding directory paths in the presets file.
-   
-   Then, you can simply run:
-   ```bash
-   $ cmake --preset default
-   ```
-   to configure cmake. 
-   
    This will also allow the project to be configured and compiled within VS Code using the CMake Tools extension.
 
-   Alternatively, the project can be configured using cmake presets. To do this, create a file in the root `verify-c-common` directory called `CMakeUserPresets.json`. On Linux, copy the contents of `default-jammy.json` into it. You will then have to replace `SEAHORN_ROOT` and `AWS_C_COMMON_CMAKE_DIR` with their corresponding directory paths in the presets file.
+   Alternatively, the project can be configured using cmake presets. To do this, simply run the following command:
 
-   Then, you can simply run:
    ```bash
-   $ cmake --preset default
+   $ cmake --preset <PRESET_NAME>
    ```
-   to configure cmake. 
-   
+   Where `PRESET_NAME` is the preset you would like to use. The presets that are currently available are: `default-jammy`. These presets assume that `verify-c-common` and `seahorn` are in your home directory and that `aws-c-common` is in your `verify-c-common` directory. 
+
    This will also allow the project to be configured and compiled within VS Code using the CMake Tools extension.
+
+   If you would like to use different compilation settings or if you have `verify-c-common`, `aws-c-common` or `seahorn` in any other directory, you will need to make your own `CMakeUserPresets.json` file with your own presets.
 
 3. Compile
    ```bash
