@@ -7,10 +7,22 @@
     },
     "configurePresets": [
         {
-            "name": "defaultPresets",
-            "hidden": true,
+            "name": "default-jammy",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build"
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "SEA_LINK": "llvm-link-14",
+                "CMAKE_C_COMPILER": "clang-14",
+                "CMAKE_CXX_COMPILER": "clang++-14", 
+                "SEAHORN_ROOT": "~/seahorn/build/run",
+                "aws-c-common_DIR": "~/verify-c-common/aws-c-common/build/run/lib/aws-c-common/cmake"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "default-jammy",
+            "configurePreset": "default-jammy"
         }
     ]
 }
