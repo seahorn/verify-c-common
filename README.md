@@ -190,6 +190,43 @@ As a prerequisite, follow [this guide](https://github.com/seahorn/seahorn/tree/d
    
    This will also allow the project to be configured and compiled within VS Code using the CMake Tools extension.
 
+   Alternatively, the project can be configured using cmake presets. To do this, create a file in the root `verify-c-common` directory called `CMakeUserPresets.json` and copy the following code into it:
+   
+   ```json
+   {
+       "version": 6,
+       "configurePresets": [
+           {
+               "name": "default",
+               "inherits": [
+                   "defaultPresets"
+               ],
+               "cacheVariables": {
+                   "SEA_LINK": "llvm-link-14",
+                   "CMAKE_C_COMPILER": "clang-14",
+                   "CMAKE_CXX_COMPILER": "clang++-14", 
+                   "SEAHORN_ROOT": "<SEAHORN_ROOT>",
+                   "aws-c-common_DIR": "<AWS_C_COMMON_CMAKE_DIR>"
+               }
+           }
+       ],
+       "buildPresets": [
+           {
+               "name": "default",
+               "configurePreset": "default"
+           }
+       ]
+   }
+   ```
+   
+   Then, you can simply run:
+   ```bash
+   $ cmake --preset default
+   ```
+   to configure cmake. 
+   
+   This will also allow the project to be configured and compiled within VS Code using the CMake Tools extension.
+
 3. Compile
    ```bash
    $ ninja
