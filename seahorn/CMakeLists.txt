@@ -690,3 +690,9 @@ if(${SEA_WITH_BLEEDING_EDGE})
   add_subdirectory(jobs/hash_table_foreach_deep_precise)
 
 endif()
+
+if(${SEA_ENABLE_BENCHMARK})
+  add_subdirectory(benchmark_jobs/linked_list_pop_back_benchmark)
+  add_subdirectory(benchmark_jobs/linked_list_swap_contents_benchmark)
+endif()
+
