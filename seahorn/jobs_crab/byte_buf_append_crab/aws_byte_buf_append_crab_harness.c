@@ -6,50 +6,57 @@
 #include <aws/common/byte_buf.h>
 #include <byte_buf_helper.h>
 #include <utils.h>
+#include <nondet.h>
+#include <config.h>
 
-extern void sea_dsa_alias(const void *p, ...);
-
-#define ARRAY_SIZE 5
+#define SIZE MAX_ARRAY_SIZE
 
 int main() {
-    size_t nd_ary_sz = nd_size_t();
-    assume(nd_ary_sz <= ARRAY_SIZE);
-    struct aws_byte_buf tos[nd_ary_sz];
-    for (size_t i = 0; i < nd_ary_sz; i++) {
-        initialize_byte_buf(&tos[i]);
-        assume(aws_byte_buf_is_valid(&tos[i]));
+    /* parameters */
+    struct aws_byte_buf *buf_ary[SIZE];
+    #pragma unroll 1
+    for (unsigned i = 0; i < SIZE; ++i) {
+        struct aws_byte_buf *tmp = malloc(sizeof(struct aws_byte_buf));
+        initialize_byte_buf(tmp);
+        assume(aws_byte_buf_is_valid(tmp));
+        buf_ary[i] = tmp;
     }
+    uint8_t idx = nd_uint8_t();
+    assume(idx < SIZE);
+    struct aws_byte_buf *to = buf_ary[idx];
 
     /* save current state of the data structure */
-    struct aws_byte_buf tos_old[nd_ary_sz];
-    memcpy(&tos_old, &tos, sizeof(struct aws_byte_buf) * nd_ary_sz);
+    struct aws_byte_buf to_old = *to;
 
-    struct aws_byte_cursor froms[nd_ary_sz];
-    for (size_t i = 0; i < nd_ary_sz; i++) {
-        initialize_byte_cursor(&froms[i]);
-        assume(aws_byte_cursor_is_valid(&froms[i]));
+    struct aws_byte_cursor *cursor_ary[SIZE];
+    #pragma unroll 1
+    for (unsigned i = 0; i < SIZE; ++i) {
+        struct aws_byte_cursor *tmp = malloc(sizeof(struct aws_byte_cursor));
+        initialize_byte_cursor(tmp);
+        assume(aws_byte_cursor_is_valid(tmp));
+        cursor_ary[i] = tmp;
     }
+    uint8_t idx2 = nd_uint8_t();
+    assume(idx2 < SIZE);
+    struct aws_byte_cursor *from = cursor_ary[idx2];
 
     /* save current state of the data structure */
-    struct aws_byte_cursor froms_old[nd_ary_sz];
-    memcpy(&froms_old, &froms, sizeof(struct aws_byte_cursor) * nd_ary_sz);
+    struct aws_byte_cursor from_old = *from;
 
-    for (size_t i = 0; i < nd_ary_sz; i++) {
-        if (aws_byte_buf_append(&tos[i], &froms[i]) == AWS_OP_SUCCESS) {
-            sassert(tos[i].len == tos_old[i].len + froms[i].len);
-        } else {
-            /* if the operation return an error, to must not change */
-            // assert_bytes_match(tos_old[i].buffer, tos[i].buffer, tos[i].len);
-            sassert(tos_old[i].len == tos[i].len);
-        }
-
-        sassert(aws_byte_buf_is_valid(&tos[i]));
-        sassert(aws_byte_cursor_is_valid(&froms[i]));
-        sassert(tos_old[i].allocator == tos[i].allocator);
-        sassert(tos_old[i].capacity == tos[i].capacity);
-        // assert_bytes_match(froms_old[i].ptr, froms[i].ptr, froms[i].len);
-        sassert(froms_old[i].len == froms[i].len);
+    if (aws_byte_buf_append(to, from) == AWS_OP_SUCCESS) {
+        sassert(to->len == to_old.len + from->len);
+    } else {
+        /* if the operation return an error, to must not change */
+        assert_bytes_match(to_old.buffer, to->buffer, to->len);
+        sassert(to_old.len == to->len);
     }
+
+    sassert(aws_byte_buf_is_valid(to));
+    sassert(aws_byte_cursor_is_valid(from));
+    sassert(to_old.allocator == to->allocator);
+    sassert(to_old.capacity == to->capacity);
+    assert_bytes_match(from_old.ptr, from->ptr, from->len);
+    sassert(from_old.len == from->len);
 
     return 0;
 }

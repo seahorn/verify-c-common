@@ -45,4 +45,8 @@
 #define MAX_HEAP_HEIGHT @MAX_HEAP_HEIGHT@
 #endif
 
+#ifndef MAX_ARRAY_SIZE
+#define MAX_ARRAY_SIZE @MAX_ARRAY_SIZE@
+#endif
+
 /* clang-format on */

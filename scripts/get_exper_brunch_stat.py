@@ -17,7 +17,7 @@ def read_brunchstat_from_log(log_file_name):
     cur_test = None
     while line:
         # look for next test
-        new_test = re.search(BRUNCH_DICT["job_name"], line)
+        new_test = re.search("Testing: ", line)
         if new_test:
             new_test_data = defaultdict(lambda: 'n/a')
             span = new_test.span()
@@ -33,8 +33,7 @@ def read_brunchstat_from_log(log_file_name):
                 stat_num = stat[-1]
                 data[-1][stat_name] = stat_num
         line = log_file.readline()
-    if cur_test:
-        data[cur_test] = move_dict_items_to_lst(row_dict)
+
     log_file.close()
     return data
 
@@ -116,6 +115,30 @@ def write_brunchstat_into_csv(data, out_file):
         for job_data in data:
             row = (job_data[k] for k, _ in metric_serlz)
             writer.writerow(row)
+
+
+# def read_timimg_results(result_dir):
+#     log_file = open(log_file_name, 'r')
+#     line = log_file.readline()
+#     data = defaultdict(list)
+#     row_dict = {}
+#     while line:
+#         if "************** ANALYSIS RESULTS ****************" in line:
+#             result_status = Status.SUCCESS
+#         if "** OS Error:" in line:
+#             result_status = Status.TIMEOUT
+#         if "BRUNCH_STAT" in line:
+#             parts = line.strip().split()
+#             name = parts[1]
+#             if name == "Clam":
+#                 number = float(parts[2])
+#                 if result_status == Status.CLAM_ERROR:
+#                     pairs.append([dirpath.strip().split('/')[1], "error"])
+#                 elif result_status == Status.TIMEOUT:
+#                     pairs.append([dirpath.strip().split('/')[1], "timeout"])
+#                 else:
+#                     pairs.append([dirpath.strip().split('/')[1], number])
+#     draw_results_table(pairs, result_dir)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(

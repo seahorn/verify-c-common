@@ -14,7 +14,8 @@ option(SEA_LLVM_MEM_BUILTINS "Use LLVM builtins memcpy/memmove without memory sa
 
 
 option(SEA_ENABLE_FUZZ "Enable fuzzing" OFF)
-option(SEA_ENABLE_CRAB "Enable Seahorn using Clam/Crab" OFF)
+option(SEA_ENABLE_CRAB "Enable Seahorn using Crab" OFF)
+option(SEA_ENABLE_CLAM "Enable Seahorn using Clam" OFF)
 option(SEA_WITH_BLEEDING_EDGE "Enable bleeding edge proofs" OFF)
 
 option(SEA_ENABLE_KLEE "Enable klee" OFF)
@@ -58,6 +59,10 @@ set(SEA_PP "${SEAHORN_ROOT}/bin/seapp" CACHE STRING "Path to seapp binary")
 set(LLVMIR_OPT ${SEA_OPT})
 
 set(AWS_C_COMMON_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/aws-c-common)
+set(AWS_C_COMPRESSION_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/aws-c-compression)
+set(AWS_C_SDKUTILS_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/aws-c-sdkutils)
+set(AWS_C_IO_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/aws-c-io)
+set(AWS_C_CAL_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/aws-c-cal)
 
 if(SEA_ENABLE_FUZZ)
   find_package(aws-c-common REQUIRED)
@@ -75,5 +80,9 @@ include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR}/include)
 
 include_directories(seahorn/include)
 include_directories(aws-c-common/include)
+include_directories(aws-c-compression/include)
+include_directories(aws-c-sdkutils/include)
+include_directories(aws-c-io/include)
+include_directories(aws-c-cal/include)
 include_directories(${SEAHORN_ROOT}/include)
 add_subdirectory(seahorn)

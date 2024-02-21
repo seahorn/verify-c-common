@@ -2,10 +2,12 @@ job_name: "job_name"
 Result: "result"
 bmc.circ_sz: "bmc_circuit_size"
 bmc.dag_sz: "bmc_dag_size"
-crab.isderef.not.solve: "crab.isderef.not.solve" # for crab
-crab.isderef.solve: "crab.isderef.solve" # for crab
+crab.opsem.isderef.not.solve: "opsem.isderef.not.solve" # for crab
+crab.opsem.isderef.solve: "opsem.isderef.solve" # for crab
 crab.pp.isderef.not.solve: "pp.isderef.not.solve"
 crab.pp.isderef.solve: "pp.isderef.solve"
+opsem.crab: "opsem_crab_time"
+seapp.crab: "pp_crab_time"
 BMC: "bmc_time"
 BMC.solve: "bmc_solve_time"
 Control dependence analysis: "cda_time"

@@ -2,6 +2,7 @@ clam_options:
 # CLANG
 #
   '-g' : ''
+  'inline': ''
 # Optimization level for seaopt  
   '-O3': ''
   save-temps: ''
@@ -16,7 +17,7 @@ clam_options:
 #  
 # ANALYSIS
 #
-  crab-dom : 'int'
+  crab-dom : 'zones'
   crab-inter : ''
   crab-inter-recursive-functions : true
   crab-inter-exact-summary-reuse : false
@@ -29,15 +30,17 @@ clam_options:
   crab-widening-delay: '2'
   crab-widening-jump-set: '0'
   crab-preserve-invariants: false
-  crab-dom-param: "region.is_dereferenceable=true:object.reduce_everywhere=true"
-  crab-check: 'bounds'
+  crab-dom-param: "region.is_dereferenceable=true:object.singletons_in_base=false:object.reduction_level=NONE"
+  crab-check: 'is-deref' # bounds assert
 #
 # OUTPUT
 #
 # crab-sanity-checks : ''
   crab-disable-warnings: ''
-# crab-print-invariants: false
+  # crab-heap-dot: ''
+  crab-print-invariants: false
 # crab-stats: ''
   # crab-verbose: 5
   # log: 'object-print:inter:object-forget:object-project:object-leq:object-meet:inter:object-join:object-copy:inter-group'
-  # ocrab: 'clam.crabir'
+  # ocrab: 'obj.crabir'
+  # crab-heap-dot: ''

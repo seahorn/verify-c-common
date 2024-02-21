@@ -5,18 +5,18 @@ import csv
 import glob
 import subprocess
 import argparse
-from get_exper_brunch_stat import *
+from get_exper_brunch_stat import read_brunchstat_from_log, write_brunchstat_into_csv
 
-BUILDABSPATH = os.path.abspath('../exper/')
+BUILDABSPATH = os.path.abspath('../build/')
 DATAABSPATH = os.path.abspath('../') + "/data"
-SEAHORN_ROOT = '../../build-seahorn'  # Put your seahorn root dir here
+SEAHORN_ROOT = '/home/yusen/seawork/seahorn/build/run'  # Put your seahorn root dir here
 FILE_DICT = {
     "": "seahorn.csv",
     "--vac": "seahorn(vac).csv",
     "--horn-bmc-solver=smt-y2": "seahorn(smt-y2).csv",
     "--cex": "seahorn(cex).csv",
     "--cex --horn-bmc-solver=smt-y2": "seahorn(cex, smt-y2).csv",
-    "klee": "klee.csv", "symbiotic": "symbiotic.csv"}
+    "klee": "klee.csv", "symbiotic": "symbiotic.csv", "clam": "clam.csv"}
 LLVM_VERSION=14
 
 def extra_to_filename(extra, suffix='.csv', prefix=''):
@@ -52,7 +52,7 @@ def make_new_cmake_conf():
     use_klee = "ON" if args.klee else "OFF"
     use_symbiotic = "ON" if args.symbiotic else "OFF"
     use_bleeding_edge = "ON" if args.bleed_edge else "OFF"
-    use_crab = "ON" if "--crab" in extra else "OFF"
+    # use_crab = "ON" if "--crab" in extra else "OFF"
     if args.smack_parser:
         use_smack = "ON" if args.smack else "OFF"
         smack_enable_no_mem_split = "ON" if args.mem_no_split else "OFF"
@@ -62,7 +62,7 @@ def make_new_cmake_conf():
         smack_args = ""
     return f'cmake -DSEA_LINK=llvm-link-{LLVM_VERSION} -DCMAKE_C_COMPILER=clang-{LLVM_VERSION}\
     -DCMAKE_CXX_COMPILER=clang++-{LLVM_VERSION} -DSEA_ENABLE_KLEE={use_klee} {smack_args}\
-    -DSEA_WITH_BLEEDING_EDGE={use_bleeding_edge} -DSEA_ENABLE_CRAB={use_crab}\
+    -DSEA_WITH_BLEEDING_EDGE={use_bleeding_edge} -DSEA_ENABLE_CRAB=OFF\
     -DSEA_ENABLE_SYMBIOTIC={use_symbiotic} -DSEAHORN_ROOT={SEAHORN_ROOT} ../ -GNinja'
 
 
@@ -99,18 +99,6 @@ def collect_res_from_ctest(file_name):
     print("Done, find result csv file at: %s" % file_name)
 
 
-def extra_to_filename(extra, suffix='csv'):
-    '''extra: --a=b --c=d to filename: a.b.c.d.csv'''
-    if (len(extra) == 0):
-        return f'base.{suffix}'
-    parts = []
-    for flag in extra:
-        if flag.startswith('--'):
-            flag = flag[2:]
-        parts.extend(flag.split('='))
-    return f'{"_".join(parts)}.{suffix}'
-
-
 def run_ctest_for_seahorn():
     print("[SeaHorn] Start making SeaHorn results...")
     set_env = ''
@@ -120,7 +108,7 @@ def run_ctest_for_seahorn():
         set_env = f'env VERIFY_FLAGS=\"{verify_flags}\"'
     cmake_conf = make_new_cmake_conf()
     command_lst = ["rm -rf *", cmake_conf, "ninja",
-                   f'{set_env} ctest -j{os.cpu_count()} -D ExperimentalTest -R . --timeout {args.timeout}']
+                   f'{set_env} ctest -j 12 -D ExperimentalTest -R . --timeout {args.timeout}']
     make_build_path(extra)
     cddir = "cd " + BUILDABSPATH
     for strcmd in command_lst:
@@ -137,6 +125,22 @@ def run_ctest_for_seahorn():
     collect_stat_from_ctest_log(extra_to_filename(extra, suffix='.brunch.csv'),
                                 True if "--crab" in extra else False)
 
+def run_ctest_for_clam():
+    print("[Clam] Start making Clam results...")
+    cmake_conf = make_new_cmake_conf()
+    command_lst = ["rm -rf *", cmake_conf, "ninja",
+                   f'ctest -j{os.cpu_count()} -D ExperimentalTest -R smack_ --timeout 200']
+    make_build_path(["--clam"])
+    for strcmd in command_lst:
+        cddir += " ; " + strcmd
+    if args.debug:
+        print(f'[Command] {cddir}')
+    process = subprocess.Popen(
+        '/bin/bash',
+        stdin=subprocess.PIPE,
+        stdout=get_output_level())
+    _ = process.communicate(cddir.encode())
+    collect_res_from_ctest(FILE_DICT["klee"])
 
 def collect_stat_from_ctest_log(outfile, use_crab):
     test_tmpdir = os.path.join(BUILDABSPATH, 'Testing', 'Temporary')
@@ -176,8 +180,8 @@ def run_ctest_for_klee():
 def run_ctest_for_smack():
     cmake_conf = make_new_cmake_conf()
     command_lst = ["rm -rf *", cmake_conf, "ninja",
-                   f'ctest -j{os.cpu_count()} -D ExperimentalTest -R smack_ --timeout {args.timeout}']
-    print("Start making SMACK results...")
+                   f'ctest -j{os.cpu_count()} -D ExperimentalTest -R smack_ --timeout 200']
+    print("[SMACK] Start making SMACK results...")
     make_build_path(["--smack"])
     cddir = "cd " + BUILDABSPATH
     for strcmd in command_lst:
@@ -192,7 +196,6 @@ def run_ctest_for_smack():
     mem_split = 'mem_no_split' if args.mem_no_split else 'mem_split'
     collect_res_from_ctest(extra_to_filename(
         [str(args.precise), str(args.checks), mem_split]))
-
 
 def run_ctest_for_symbiotic():
     cmake_conf = make_new_cmake_conf()
@@ -211,7 +214,6 @@ def run_ctest_for_symbiotic():
     _ = process.communicate(cddir.encode())
     collect_stat_from_ctest_log(FILE_DICT["symbiotic"])
 
-
 def main():
     os.makedirs(DATAABSPATH, exist_ok=True)
     os.makedirs(BUILDABSPATH, exist_ok=True)
@@ -223,6 +225,8 @@ def main():
         run_ctest_for_smack()
     if args.symbiotic:
         run_ctest_for_symbiotic()
+    if args.clam:
+        run_ctest_for_clam()
 
 
 if __name__ == "__main__":
@@ -232,6 +236,7 @@ if __name__ == "__main__":
     parser.add_argument('--seahorn', action='store_true', default=True)
     parser.add_argument('--klee', action='store_true', default=False)
     parser.add_argument('--symbiotic', action='store_true', default=False)
+    parser.add_argument('--clam', action='store_true', default=False)
     parser.add_argument('--bleed_edge', action='store_true', default=False)
     parser.add_argument('--debug', action='store_true', default=False)
     parser.add_argument('--timeout', type=int, default=2000,

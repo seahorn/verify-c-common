@@ -52,3 +52,21 @@ sea_attach_bc(hash_table_state_is_valid_ignore_entry_count_override)
 
 add_library(aws_hash_iter_overrides aws_hash_iter_overrides.c)
 sea_attach_bc(aws_hash_iter_overrides)
+
+add_library(aws_logger_overrides aws_logger_overrides.c)
+sea_attach_bc(aws_logger_overrides)
+
+add_library(aws_hash_string_overrides aws_hash_string_overrides.c)
+sea_attach_bc(aws_hash_string_overrides)
+
+add_library(aws_hash_byte_cursor_ptr_overrides aws_hash_byte_cursor_ptr_overrides.c)
+sea_attach_bc(aws_hash_byte_cursor_ptr_overrides)
+
+add_library(aws_ref_count_overrides aws_ref_count_overrides.c)
+sea_attach_bc(aws_ref_count_overrides)
+
+add_library(snprintf_overrides snprintf_overrides.c)
+sea_attach_bc(snprintf_overrides)
+
+add_library(aws_nospec_mask_overrides aws_nospec_mask_overrides.c)
+sea_attach_bc(aws_nospec_mask_overrides)

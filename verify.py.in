@@ -51,7 +51,7 @@ def main(argv):
                               help='Do not produce any output')
             argp.add_argument('--expect', type=str, default=None,
                               help='Expected string in the output')
-            argp.add_argument('--command', type=str, default='fpf',
+            argp.add_argument('--command', type=str, default='fpcf',
                               help='sea command')
             argp.add_argument('--cex', action='store_true', default=False,
                               help='Counterexample mode')
@@ -129,7 +129,7 @@ def main(argv):
             cmd.append(args.command)
             # Clam config
             if args.clam:
-                cmd = ['/home/ljgy/Works/seahorn/clam/build/run/bin/clam-yaml.py']
+                cmd = ['/home/yusen/clam/build/run/bin/clam-yaml.py']
                 clam_config = os.path.join(script_dir, 'seahorn', 
                                           'clam.base.yaml')
                 cmd.extend(['-y', clam_config])

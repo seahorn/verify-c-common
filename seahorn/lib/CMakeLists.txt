@@ -18,6 +18,7 @@ add_library(
   allocator_override.c
   bcmp.c
   error_override.c
+  pthread_helper.c
 )
 if(SEA_ALLOCATOR_CAN_FAIL)
   target_compile_definitions(sea_proofs PRIVATE SEA_ALLOCATOR_CAN_FAIL)
