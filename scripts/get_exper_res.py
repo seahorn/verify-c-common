@@ -5,8 +5,7 @@ import csv
 import glob
 import subprocess
 import argparse
-from get_exper_brunch_stat import read_brunchstat_from_log, write_brunchstat_into_csv
-
+from get_exper_brunch_stat import *
 BUILDABSPATH = os.path.abspath('../build/')
 DATAABSPATH = os.path.abspath('../') + "/data"
 SEAHORN_ROOT = '/home/yusen/seawork/seahorn/build/run'  # Put your seahorn root dir here
@@ -62,7 +61,7 @@ def make_new_cmake_conf():
         smack_args = ""
     return f'cmake -DSEA_LINK=llvm-link-{LLVM_VERSION} -DCMAKE_C_COMPILER=clang-{LLVM_VERSION}\
     -DCMAKE_CXX_COMPILER=clang++-{LLVM_VERSION} -DSEA_ENABLE_KLEE={use_klee} {smack_args}\
-    -DSEA_WITH_BLEEDING_EDGE={use_bleeding_edge} -DSEA_ENABLE_CRAB=OFF\
+    -DSEA_WITH_BLEEDING_EDGE={use_bleeding_edge} -DSEA_ENABLE_CRAB=ON\
     -DSEA_ENABLE_SYMBIOTIC={use_symbiotic} -DSEAHORN_ROOT={SEAHORN_ROOT} ../ -GNinja'
 
 
@@ -96,7 +95,7 @@ def collect_res_from_ctest(file_name):
     read_data_from_xml(res_data)
     write_data_into_csv(
         "{dir}/{file}".format(dir="../data", file=file_name), res_data)
-    print("Done, find result csv file at: %s" % file_name)
+    print(f'[Results] Please find result csv file at: {os.path.abspath("../data")}')
 
 
 def run_ctest_for_seahorn():
@@ -108,7 +107,7 @@ def run_ctest_for_seahorn():
         set_env = f'env VERIFY_FLAGS=\"{verify_flags}\"'
     cmake_conf = make_new_cmake_conf()
     command_lst = ["rm -rf *", cmake_conf, "ninja",
-                   f'{set_env} ctest -j 12 -D ExperimentalTest -R . --timeout {args.timeout}']
+                   f'{set_env} ctest -j 1 -D ExperimentalTest -R . --timeout {args.timeout}']
     make_build_path(extra)
     cddir = "cd " + BUILDABSPATH
     for strcmd in command_lst:

@@ -1,5 +1,7 @@
 job_name: "job_name"
 Result: "result"
+pp_loc: "pp_loc"
+opsem_loc: "opsem_loc"
 bmc.circ_sz: "bmc_circuit_size"
 bmc.dag_sz: "bmc_dag_size"
 crab.opsem.isderef.not.solve: "opsem.isderef.not.solve" # for crab
@@ -7,6 +9,8 @@ crab.opsem.isderef.solve: "opsem.isderef.solve" # for crab
 crab.pp.isderef.not.solve: "pp.isderef.not.solve"
 crab.pp.isderef.solve: "pp.isderef.solve"
 opsem.crab: "opsem_crab_time"
+opsem.crab.solve: "opsem_crab_solve_time"
+pp.crab.solve: "pp_crab_solve_time"
 seapp.crab: "pp_crab_time"
 BMC: "bmc_time"
 BMC.solve: "bmc_solve_time"
