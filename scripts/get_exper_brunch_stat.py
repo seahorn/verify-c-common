@@ -3,7 +3,7 @@ import re
 import csv
 import argparse
 import yaml
-import glob
+import glob, os
 from collections import defaultdict
 
 METRICS_FILE = "metrics.yaml"
@@ -17,7 +17,7 @@ def read_brunchstat_from_log(log_file_name):
     cur_test = None
     while line:
         # look for next test
-        new_test = re.search("Test: ", line)
+        new_test = re.search("Testing: ", line)
         if new_test:
             new_test_data = defaultdict(lambda: 'n/a')
             span = new_test.span()
@@ -25,6 +25,8 @@ def read_brunchstat_from_log(log_file_name):
             # remove _unsat_test
             cur_test = test_name[:-12]
             new_test_data['job_name'] = cur_test
+            new_test_data['pp_loc'] = get_loc_info(cur_test, True)
+            new_test_data['opsem_loc'] = get_loc_info(cur_test, False)
             data.append(new_test_data)
         elif line.startswith("BRUNCH_STAT"):
             stat = line.split()
@@ -37,6 +39,27 @@ def read_brunchstat_from_log(log_file_name):
     log_file.close()
     return data
 
+def get_loc_info(file_name, is_pp):
+    # Directory where the files are located
+    directory_path = "/tmp/verify-c-common/"
+
+    ir_name = f"{file_name}.ir.peel.fat.pp.ms.bc" if is_pp else f"{file_name}.ir.peel.fat.pp.ms.crab.o.ul.cut.o.bc"
+
+    # Construct the full path to the file with its pattern
+    full_path = os.path.join(directory_path, ir_name)
+    
+    # Get the LOC of the file
+    LOC = 'n/a'
+    with open(full_path, 'r') as file:
+        lines = file.readlines()
+        start = False
+        for line in lines:
+            if start:
+                LOC += 1
+            if '@main' in line:
+                LOC = 0
+                start = True
+    return LOC
 
 def read_symbiotic_bruchstat_from_log(log_file_name, xml_file_dir, time_out):
     log_file = open(log_file_name, 'r')
@@ -115,13 +138,42 @@ def write_brunchstat_into_csv(data, out_file):
         for job_data in data:
             row = (job_data[k] for k, _ in metric_serlz)
             writer.writerow(row)
+    print(f'[Statistics] Please find stat csv file at {out_file}')
+
+
+# def read_timimg_results(result_dir):
+#     log_file = open(log_file_name, 'r')
+#     line = log_file.readline()
+#     data = defaultdict(list)
+#     row_dict = {}
+#     while line:
+#         if "************** ANALYSIS RESULTS ****************" in line:
+#             result_status = Status.SUCCESS
+#         if "** OS Error:" in line:
+#             result_status = Status.TIMEOUT
+#         if "BRUNCH_STAT" in line:
+#             parts = line.strip().split()
+#             name = parts[1]
+#             if name == "Clam":
+#                 number = float(parts[2])
+#                 if result_status == Status.CLAM_ERROR:
+#                     pairs.append([dirpath.strip().split('/')[1], "error"])
+#                 elif result_status == Status.TIMEOUT:
+#                     pairs.append([dirpath.strip().split('/')[1], "timeout"])
+#                 else:
+#                     pairs.append([dirpath.strip().split('/')[1], number])
+#     draw_results_table(pairs, result_dir)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='in and out files')
     parser.add_argument('logfile', type=str, help=".log file to read from")
-    parser.add_argument('--outfile', '-o', type=str,
-                        default="brunch_stat.csv", help="ouput csv filename")
+    parser.add_argument(
+        '--outfile',
+        '-o',
+        type=str,
+        default="brunch_stat.csv",
+        help="ouput csv filename")
     args = parser.parse_args()
     data = read_brunchstat_from_log(args.logfile)
     write_brunchstat_into_csv(data, args.outfile)

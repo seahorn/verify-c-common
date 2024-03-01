@@ -40,4 +40,5 @@ size_t fuzz_max_array_list_item_size(void);
  */
 size_t fuzz_max_array_list_len(void);
 
+
 SEAHORN_EXTERN_C_END

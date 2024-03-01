@@ -22,6 +22,6 @@ sea_add_smack(byte_buf_secure_zero
 
 # symbiotic
 sea_add_symbiotic(byte_buf_secure_zero 
-  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   ${AWS_C_COMMON_ROOT}/source/common.c
+  ${AWS_C_COMMON_ROOT}/source/byte_buf.c
   aws_byte_buf_secure_zero_harness.c)

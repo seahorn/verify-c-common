@@ -1,0 +1,18 @@
+verify_options:
+# Use crab infer bounds / range (before loop unrolling)
+  seapp-crab-lower-is-deref: true
+  seapp-crab-dom: 'zones'
+  seapp-crab-stats: true
+  seapp-crab-disable-warning: true
+  seapp-crab-obj-reduction: 'OPT'
+# Use crab infer bounds(after loop unrolling)
+  horn-bv2-crab-check-is-deref: ''
+  horn-bmc-crab-dom: 'zones'
+  horn-bv2-crab-obj-reduction: 'OPT'
+  # log: 'opsem-crab'
+  # log: 'opsem-crab-ir'
+  crab-disable-warning: true
+# Statistics
+  # crab-show-stats: ''
+  # horn-bv2-crab-stats: ''
+  # log: 'opsem-crab-ir:opsem-crab:seapp-crab-ir:seapp-crab'

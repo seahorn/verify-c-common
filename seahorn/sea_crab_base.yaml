@@ -1,12 +1,5 @@
-# Please read before adding options
-#
-# horn-logic-bmc
-# --------------
-# This option is not added here because of https://github.com/seahorn/verify-c-common/issues/136
-# It is explicitly added for yices in CI since yices needs to know logic.
-#
 verify_options:
-# Optimization lelel. Lower to O1 for clearer counterexamples
+# Optimization level.
   '-O3': ''
 # 
 # PREPROCESSING
@@ -18,6 +11,7 @@ verify_options:
   externalize-addr-taken-functions: ''
   no-kill-vaarg: ''
   with-arith-overflow: true
+  # disable program transformation to single assume
   horn-unify-assumes: false
 # do not instrument library functions with memory assertions
   no-fat-fns: 'bcmp,memcpy,assert_bytes_match,ensure_linked_list_is_allocated,sea_aws_linked_list_is_valid'
@@ -50,14 +44,5 @@ verify_options:
   temp-dir: /tmp/verify-c-common
 # time and result stats
   horn-stats: true
-# produce counterexample harness
-  cex: /tmp/h.ll
-# printable counterexample log
-  log: cex
-# number of words to unroll symbolic memcpy for array-based memory representation
-# should be at least MAX_BUFFER_SIZE
-  horn-array-sym-memcpy-unroll-count: 10
-# print memory state as a table
-# XXX still flaky, sometimes only the last byte can be trusted
-  horn-bmc-hexdump: true
+# ignore converting function with prefix sea_nd to nd function
   ignore-define-verifier-fns: ''

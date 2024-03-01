@@ -175,3 +175,17 @@ INLINE void *memset(void * dst, int s, size_t count) {
 }
 #endif
 #endif
+
+INLINE void *memchr(const void *str, int c, size_t n) {
+  sassert(sea_is_dereferenceable(str, n));
+  return __builtin_memchr(str, c, n);
+}
+
+INLINE int strncmp(const char *str1, const char *str2, size_t n) {
+    for (size_t i = 0; i < n; i++) {
+        if (str1[i] == '\0' || str2[i] == '\0') {
+            return memcmp(str1, str2, i);
+        }
+    }
+    return memcmp(str1, str2, n);
+}

@@ -3,7 +3,7 @@ add_executable(
   ${AWS_C_COMMON_ROOT}/source/common.c
   aws_hash_iter_done_harness.c
 )
-target_compile_definitions(hash_iter_done PUBLIC MAX_TABLE_SIZE=SIZE_MAX)
+target_compile_definitions(hash_iter_done PUBLIC MAX_TABLE_SIZE=${MAX_TABLE_SIZE})
 sea_link_libraries(hash_iter_done hash_table.opt.ir)
 sea_overlink_libraries(hash_iter_done hash_table_state_is_valid_override.ir)
 sea_attach_bc_link(hash_iter_done)

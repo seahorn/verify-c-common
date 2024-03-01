@@ -51,7 +51,7 @@ def main(argv):
                               help='Do not produce any output')
             argp.add_argument('--expect', type=str, default=None,
                               help='Expected string in the output')
-            argp.add_argument('--command', type=str, default='fpf',
+            argp.add_argument('--command', type=str, default='fpcf',
                               help='sea command')
             argp.add_argument('--cex', action='store_true', default=False,
                               help='Counterexample mode')
@@ -59,6 +59,10 @@ def main(argv):
                               help='Vacuity mode')
             argp.add_argument('--pcond', action='store_true', default=False,
                               help='Path condition mode')
+            argp.add_argument('--crab', action='store_true', default=False,
+                              help='Using crab')
+            argp.add_argument('--clam', action='store_true', default=False,
+                              help='Using clam as front end')
             argp.add_argument('input_file', nargs=1)
             argp.add_argument('--dry-run', dest='dry_run',
                               action='store_true', default=False,
@@ -101,6 +105,12 @@ def main(argv):
                 vac_config = os.path.join(script_dir, 'seahorn',
                                           'sea.vac.yaml')
                 cmd.extend(['-y', vac_config])
+            
+            # Crab in Opsem config
+            if args.crab:
+                crab_config = os.path.join(script_dir, 'seahorn', 
+                                          'sea.crab.yaml')
+                cmd.extend(['-y', crab_config])
 
             # pcond config
             if args.pcond:
@@ -117,6 +127,13 @@ def main(argv):
                 cmd.append('--dry-run')
 
             cmd.append(args.command)
+            # Clam config
+            if args.clam:
+                cmd = ['/home/yusen/clam/build/run/bin/clam-yaml.py']
+                clam_config = os.path.join(script_dir, 'seahorn', 
+                                          'clam.base.yaml')
+                cmd.extend(['-y', clam_config])
+
             cmd.extend(extra)
             cmd.append(input_file)
 

@@ -15,6 +15,6 @@ sea_add_smack(ptr_eq
   aws_ptr_eq_harness.c)
 
 # symbiotic
-sea_add_symbiotic(ptr_eq
-  ${AWS_C_COMMON_ROOT}/source/hash_table.c
-  aws_ptr_eq_harness.c)
+# sea_add_symbiotic(ptr_eq
+#   ${AWS_C_COMMON_ROOT}/source/hash_table.c
+#   aws_ptr_eq_harness.c)

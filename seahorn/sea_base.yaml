@@ -11,7 +11,7 @@ verify_options:
   externalize-addr-taken-functions: ''
   no-kill-vaarg: ''
   with-arith-overflow: true
-  horn-unify-assumes: true
+  horn-unify-assumes: false
   horn-gsa: ''
 # do not instrument library functions with memory assertions 
   no-fat-fns: 'bcmp,memcpy,assert_bytes_match,ensure_linked_list_is_allocated,sea_aws_linked_list_is_valid'
@@ -23,9 +23,9 @@ verify_options:
   bmc: opsem
   horn-vcgen-use-ite: ''
 # ignore control flow
-  horn-vcgen-only-dataflow: true
+  horn-vcgen-only-dataflow: false
 # reduce by data dependence
-  horn-bmc-coi: true
+  horn-bmc-coi: false
 # static allocator supports symbolic allocation size
   sea-opsem-allocator: static
 # stack allocation from a symbolic starting point
@@ -43,4 +43,5 @@ verify_options:
   temp-dir: /tmp/verify-c-common
 # time and result stats
   horn-stats: true
+  # seapp-peel-loops: 1
   ignore-define-verifier-fns: ''

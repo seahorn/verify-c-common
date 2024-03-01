@@ -44,6 +44,9 @@ void assert_byte_from_buffer_matches(
 void save_byte_from_array(const uint8_t *const array, const size_t size,
                           struct store_byte_from_buffer *const storage) {
   storage->index = nd_size_t();
+  #ifdef __CRAB__
+  assume(storage->index < size);
+  #endif
   if (size > 0 && array && storage) {
     assume(storage->index < size);
     storage->byte = array[storage->index];
