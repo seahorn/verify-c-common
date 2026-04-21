@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <macros.h>
 
 /**
  * Mark nondet functions as not accessing memory
@@ -11,6 +12,8 @@
  * Note: using each nondet function only once grately simplifies debugging.
  */
 #define NONDET_FN_ATTR __declspec(noalias)
+
+SEAHORN_EXTERN_C_BEGIN
 
 /**
  * Non-determinstic functions 
@@ -35,3 +38,5 @@ extern NONDET_FN_ATTR int nd_store_mem_size(void);
  */
 #define NDMEM_FN_ATTR __declspec(noalias)
 extern NDMEM_FN_ATTR void memhavoc(void *ptr, size_t size);
+
+SEAHORN_EXTERN_C_END
