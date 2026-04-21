@@ -4,7 +4,10 @@
 #
 # LLVM IR utils for cmake
 
-cmake_minimum_required(VERSION 3.10)
+if(CMAKE_VERSION VERSION_LESS "3.10")
+  message(FATAL_ERROR "LLVMIRUtil requires CMake 3.10 or newer")
+endif()
+cmake_policy(VERSION 3.10)
 
 include(CMakeParseArguments)
 
