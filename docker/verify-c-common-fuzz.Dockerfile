@@ -40,6 +40,6 @@ RUN mkdir build && cd build && cmake -DCMAKE_C_COMPILER=clang-14 \
 
 WORKDIR /home/usea/verify-c-common
 
-RUN mkdir build && cd build && cmake -DSEA_LINK=llvm-link-14 -DCMAKE_C_COMPILER=clang-14 -DCMAKE_CXX_COMPILER=clang++-14 -DSEAHORN_ROOT=/home/usea/seahorn -DSEA_ENABLE_FUZZ=ON -Daws-c-common_DIR=$(pwd)/../aws-c-common/build/run/lib/aws-c-common/cmake/ ../ -GNinja && cmake --build .
+RUN mkdir build && cd build && cmake -DSEA_LINK=llvm-link-14 -DCMAKE_C_COMPILER=clang-14 -DCMAKE_CXX_COMPILER=clang++-14 -DSEAHORN_ROOT=/home/usea/seahorn -DSEA_ENABLE_FUZZ=ON -Daws-c-common_DIR=$(pwd)/aws-c-common/build/run/lib/cmake/aws-c-common/ ../ -GNinja && cmake --build .
 
 USER root
