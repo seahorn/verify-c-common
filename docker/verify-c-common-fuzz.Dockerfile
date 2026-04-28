@@ -31,7 +31,7 @@ WORKDIR /home/usea/verify-c-common
 RUN rm -rf aws-c-common && git clone https://github.com/awslabs/aws-c-common.git
 
 WORKDIR /home/usea/verify-c-common/aws-c-common
-RUN mkdir build && cd build && cmake -DCMAKE_C_COMPILER=clang-10 \
+RUN mkdir build && cd build && cmake -DCMAKE_C_COMPILER=clang-14 \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
   -DCMAKE_INSTALL_PREFIX=$(pwd)/run \
   -DCMAKE_C_FLAGS='-fsanitize=fuzzer-no-link,address,undefined -fprofile-instr-generate -fcoverage-mapping' \
