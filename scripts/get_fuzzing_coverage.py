@@ -11,8 +11,8 @@ CORPUS_DIRNAME = 'corpus'
 RAW_NAME = 'default.profraw'
 DATA_NAME = 'default.profdata'
 ALL_FUZZ_FILENAME = 'all_fuzz.info'
-LLVM_COV = shutil.which('llvm-cov-10')
-LLVM_PROFDATA = shutil.which('llvm-profdata-10')
+LLVM_COV = shutil.which('llvm-cov-14')
+LLVM_PROFDATA = shutil.which('llvm-profdata-14')
 LCOV = shutil.which('lcov')
 GENHTML = shutil.which('genhtml')
 
@@ -82,7 +82,7 @@ def main(args):
     print("Please provide full path to build directory")
     return
   if not LLVM_COV or not LLVM_PROFDATA:
-    print("No llvm-cov-10 or llvm-profdata available!")
+    print("No llvm-cov-14 or llvm-profdata-14 available!")
     return
   print("Collecting fuzzing coverage in {}".format(build_dir))
   data_dir = os.path.join(VCC_ROOT_DIR, 'data')
