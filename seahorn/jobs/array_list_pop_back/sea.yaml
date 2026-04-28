@@ -1,0 +1,2 @@
+verify_options:
+  horn-bv2-allow-partial-word-memset: true
