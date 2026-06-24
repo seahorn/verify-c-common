@@ -9,6 +9,9 @@ verify_options:
   enable-indvar: ''
   no-lower-gv-init-struct: ''
   externalize-addr-taken-functions: ''
+# lower constant-length whole-struct memcpy into field-wise loads/stores
+# (sound Tier-1 recovery: struct type taken from a GEP on the same pointer)
+  horn-promote-memcpy: true
   no-kill-vaarg: ''
   with-arith-overflow: true
   horn-unify-assumes: true
