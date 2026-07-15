@@ -1,2 +1,10 @@
 # folowing test is failed as expect because it is sat test
 mem_realloc_unsafe_sat_test
+# hash_table_eq: pre-existing vacuity failure, blacklisted since Jan 2021
+# (e798353), erroneously unblacklisted 2026-04-30 (958d9e1) while the vac CI
+# job was disabled. The vac harness runs --assert-on-backedge=true --bound=4
+# and the loop over the symbolic table size at aws-c-common hash_table.c:754
+# (for i < a->p_impl->size) has a reachable backedge at that bound. Fails
+# identically on dev16/17/18; unrelated to solver or LLVM version. Real fix:
+# cap table size in the harness precondition or raise the bound for this job.
+hash_table_eq_unsat_test
