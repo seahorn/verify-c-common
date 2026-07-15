@@ -35,7 +35,9 @@ jobs:
           token: ${{ secrets.VCC_CODECOV_TOKEN }}
           files: ./all_fuzz.info
           name: codecov-verify-c-common
-          fail_ci_if_error: true
+          # tokenless fallback on fork PRs (secrets unavailable) is rate-limited
+          # by codecov; do not fail the job on upload errors
+          fail_ci_if_error: false
           verbose: true
 
       # disable for now
