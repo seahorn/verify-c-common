@@ -13,3 +13,28 @@ hash_table_create_unsat_test
 hash_table_remove_unsat_test
 hash_table_put_unsat_test
 hash_table_foreach_unsat_test
+# The following tests fail in the plain-z3 cex config (no QF_ABV logic):
+# 16 exceed the 2000s ctest timeout and 2 come back "unknown" from z3
+# (hash_iter_begin2, hash_iter_begin_done2). Pre-existing, not a dev18
+# regression: sampled identical timeout on a dev16 build; this job was
+# long-disabled so the blacklist is stale (same pattern as vac/cex-y2,
+# 2026-07-15). All 18 pass quickly in the cex + smt-y2 config, which
+# stays fully unblacklisted, so cex coverage for them is retained there.
+byte_buf_init_copy_from_cursor_unsat_test
+byte_buf_write_unsat_test
+byte_buf_write_from_whole_buffer_unsat_test
+byte_buf_write_from_whole_cursor_unsat_test
+byte_cursor_read_unsat_test
+byte_cursor_read_and_fill_buffer_unsat_test
+hash_iter_next_unsat_test
+hash_table_init_bounded_unsat_test
+linked_list_push_back_unsat_test
+linked_list_push_front_unsat_test
+byte_buf_write2_unsat_test
+byte_buf_write_from_whole_buffer2_unsat_test
+byte_buf_write_from_whole_cursor2_unsat_test
+byte_cursor_read2_unsat_test
+byte_cursor_read_and_fill_buffer2_unsat_test
+hash_iter_begin2_unsat_test
+hash_iter_next2_unsat_test
+hash_iter_begin_done2_unsat_test
