@@ -15,7 +15,7 @@ option(SEA_LLVM_MEM_BUILTINS "Use LLVM builtins memcpy/memmove without memory sa
 
 option(SEA_ENABLE_FUZZ "Enable fuzzing" OFF)
 option(SEA_WITH_BLEEDING_EDGE "Enable bleeding edge proofs" OFF)
-
+option(SEA_ENABLE_BENCHMARK "Enable benchmarking jobs" OFF)
 option(SEA_ENABLE_KLEE "Enable klee" OFF)
 option(SEA_ENABLE_SMACK "Enable SMACK" OFF)
 option(SEA_ENABLE_SYMBIOTIC "Enable symbiotic" OFF)
